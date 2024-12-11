@@ -1,4 +1,4 @@
-# FS22_DashboardLive
+# FS25_DashboardLive
 
 Dashboard Live (short: DBL) has to be placed into your mod folder. It's functions have to be built into your vehicles dashboards (xml and i3d, if applicable) and then allows you to display all kinds of information in your board computers and/or dashboards. It's usable in all kinds of vehicle, no matter what brand or type. 
 
@@ -14,7 +14,7 @@ In MultiPlayer game, DBL synchronises engine temperature, fuel and air consumpti
 
 **Please report bugs and problems as issues. For ideas and wishes please open a discussion.**
 
-Here you will find the most actual documentation of DBL: https://github.com/jason0611/FS22_DashboardLive/blob/master/doc/DashboardLive.pdf
+Here you will find the most actual documentation of DBL: https://github.com/jason0611/FS25_DashboardLive/blob/master/doc/DashboardLive.pdf
 
 ```
 -- Feature-Backlog: (+) realized | (-) planned | (?) found no way until now | (%) impossible
