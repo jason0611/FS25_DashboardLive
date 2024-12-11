@@ -151,10 +151,10 @@ function DashboardLive:onPreLoad(savegame)
 	local spec = self.spec_DashboardLive
 	
 	DashboardLive.vanillaIntegrationXML = DashboardLive.MOD_PATH.."xml/vanillaDashboards.xml"
-	DashboardLive.vanillaIntegrationXMLFile = XMLFile.loadIfExists("VanillaDashboards", DashboardLive.vanillaIntegrationXML, DashboardLive.vanillaSchema)
+	--DashboardLive.vanillaIntegrationXMLFile = XMLFile.loadIfExists("VanillaDashboards", DashboardLive.vanillaIntegrationXML, DashboardLive.vanillaSchema)
 
 	DashboardLive.modIntegrationXML = DashboardLive.MODSETTINGSDIR.."modDashboards.xml"
-	DashboardLive.modIntegrationXMLFile = XMLFile.loadIfExists("ModDashboards", DashboardLive.modIntegrationXML, DashboardLive.vanillaSchema)
+	--DashboardLive.modIntegrationXMLFile = XMLFile.loadIfExists("ModDashboards", DashboardLive.modIntegrationXML, DashboardLive.vanillaSchema)
 end
 
 function DashboardLive:onLoad(savegame)
@@ -203,8 +203,25 @@ function DashboardLive:onLoad(savegame)
 	if DashboardLive.vanillaIntegrationXMLFile ~= nil then
 		DashboardUtils.createVanillaNodes(self, DashboardLive.vanillaIntegrationXMLFile, DashboardLive.modIntegrationXMLFile)
 	end
-	
-	-- Load and initialize Dashboards from XML
+end
+
+function DashboardLive:onRegisterDashboardValueTypes()
+--	local cruiseControlReverse = DashboardValueType.new("drivable", "cruiseControlReverse")
+--	cruiseControlReverse:setValue(spec.cruiseControl, "speedReverse")
+--	self:registerDashboardValueType(cruiseControlReverse)
+
+-- local valueType = DashboardValueType.new("specName", "dblValueType")
+-- valueType:setFunction("name", valueObject, valueFunc)
+-- valueType:setAdditionalFunctions(DashboardLive.getDBLAttributesValueType)
+-- self:registerDashboardValueType(valueType)
+
+	-- page
+	local page = DashboardValueType.new("dashboardLive", "page")
+	page:setFunction("dblPage", self, DashboardLive.getDashboardLivePage)
+	page:setAdditionalFunctions(DashboardLive.getDBLAttributesPage)
+	self:registerDashboardValueType(page)
+
+	-- OLD PART: Load and initialize Dashboards from XML
 	if self.loadDashboardsFromXML ~= nil then
 		local dashboardData
 		dbgprint("onLoad : loadDashboardsFromXML", 2)
