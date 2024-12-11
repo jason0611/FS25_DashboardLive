@@ -11,8 +11,8 @@ GMSDebug:enableConsoleCommands()
 
 local specName = g_currentModName..".DashboardLive"
 
--- Definitionof displayType="AUDIO"
-Dashboard.TYPES.AUDIO = 8
+-- Definition of displayType="AUDIO"
+Dashboard.TYPES.AUDIO = 9
 
 if g_specializationManager:getSpecializationByName("DashboardLive") == nil then
   	g_specializationManager:addSpecialization("DashboardLive", "DashboardLive", g_currentModDirectory.."DashboardLive.lua", nil)

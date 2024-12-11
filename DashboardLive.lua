@@ -128,6 +128,7 @@ function DashboardLive.registerEventListeners(vehicleType)
 	SpecializationUtil.registerEventListener(vehicleType, "onLoad", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", DashboardLive)
     SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", DashboardLive)
+    SpecializationUtil.registerEventListener(vehicleType, "onRegisterDashboardValueTypes", DashboardLive)
     SpecializationUtil.registerEventListener(vehicleType, "onRegisterActionEvents", DashboardLive)
  	SpecializationUtil.registerEventListener(vehicleType, "onReadStream", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onWriteStream", DashboardLive)
@@ -139,11 +140,11 @@ function DashboardLive.registerEventListeners(vehicleType)
 end
 
 function DashboardLive.registerOverwrittenFunctions(vehicleType)
-	SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadDashboardGroupFromXML", DashboardLive.loadDashboardGroupFromXML)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "getIsDashboardGroupActive", DashboardLive.getIsDashboardGroupActive)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadEmitterDashboardFromXML", DashboardLive.addDarkModeToLoadEmitterDashboardFromXML)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadTextDashboardFromXML", DashboardLive.addDarkModeToLoadTextDashboardFromXML)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadNumberDashboardFromXML", DashboardLive.addDarkModeToLoadNumberDashboardFromXML)
+	--SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadDashboardGroupFromXML", DashboardLive.loadDashboardGroupFromXML)
+    --SpecializationUtil.registerOverwrittenFunction(vehicleType, "getIsDashboardGroupActive", DashboardLive.getIsDashboardGroupActive)
+    --SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadEmitterDashboardFromXML", DashboardLive.addDarkModeToLoadEmitterDashboardFromXML)
+    --SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadTextDashboardFromXML", DashboardLive.addDarkModeToLoadTextDashboardFromXML)
+    --SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadNumberDashboardFromXML", DashboardLive.addDarkModeToLoadNumberDashboardFromXML)
 end
 
 function DashboardLive:onPreLoad(savegame)
@@ -215,12 +216,134 @@ function DashboardLive:onRegisterDashboardValueTypes()
 -- valueType:setAdditionalFunctions(DashboardLive.getDBLAttributesValueType)
 -- self:registerDashboardValueType(valueType)
 
+	local dblValueType 
 	-- page
-	local page = DashboardValueType.new("dashboardLive", "page")
-	page:setFunction("dblPage", self, DashboardLive.getDashboardLivePage)
-	page:setAdditionalFunctions(DashboardLive.getDBLAttributesPage)
-	self:registerDashboardValueType(page)
+	dblValueType = DashboardValueType.new("dbl", "page")
+	dblValueType:setFunction("dblPage", self, DashboardLive.getDashboardLivePage)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesPage)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- base
+	dblValueType = DashboardValueType.new("dbl", "base")
+	dblValueType:setFunction("dblBase", self, DashboardLive.getDashboardLiveBase)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesBase)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- miniMap
+	dblValueType = DashboardValueType.new("dbl", "miniMap")
+	dblValueType:setFunction("dblMiniMap", self, DashboardLive.getDashboardLiveMiniMap)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesMiniMap)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- combine
+	dblValueType = DashboardValueType.new("dbl", "combine")
+	dblValueType:setFunction("dblCombine", self, DashboardLive.getDashboardLiveCombine)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesCombine)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- rda
+	dblValueType = DashboardValueType.new("dbl", "rda")
+	dblValueType:setFunction("dblRda", self, DashboardLive.getDashboardLiveRDA)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesRDA)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- vca
+	dblValueType = DashboardValueType.new("dbl", "vca")
+	dblValueType:setFunction("dblVca", self, DashboardLive.getDashboardLiveVCA)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesVCA)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- cruiseControl
+	dblValueType = DashboardValueType.new("dbl", "cc")
+	dblValueType:setFunction("dblCc", self, DashboardLive.getDashboardLiveCC)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesCC)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- hlm
+	dblValueType = DashboardValueType.new("dbl", "hlm")
+	dblValueType:setFunction("dblHlm", self, DashboardLive.getDashboardLiveHLM)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesHLM)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- gps
+	dblValueType = DashboardValueType.new("dbl", "gps")
+	dblValueType:setFunction("dblGps", self, DashboardLive.getDashboardLiveGPS)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesGPS)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- gpsLane
+	dblValueType = DashboardValueType.new("dbl", "gpsLane")
+	dblValueType:setFunction("dblGpsLane", self, DashboardLive.getDashboardLiveGPSLane)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesGPSNumbers)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- gpsWidth
+	dblValueType = DashboardValueType.new("dbl", "gpsWidth")
+	dblValueType:setFunction("dblGpsWidth", self, DashboardLive.getDashboardLiveGPSWidth)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesGPSNumbers)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- ps
+	dblValueType = DashboardValueType.new("dbl", "ps")
+	dblValueType:setFunction("dblPs", self, DashboardLive.getDashboardLivePS)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesPS)
+	self:registerDashboardValueType(dblValueType)
 
+	-- selection
+	dblValueType = DashboardValueType.new("dbl", "selection")
+	dblValueType:setFunction("dblSelection", self, DashboardLive.getDashboardLiveSelection)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesSelection)
+	self:registerDashboardValueType(dblValueType)
+
+	-- baler
+	dblValueType = DashboardValueType.new("dbl", "baler")
+	dblValueType:setFunction("dblBaler", self, DashboardLive.getDashboardLiveBaler)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesBaler)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- lock steering axle by Ifko|nator
+	dblValueType = DashboardValueType.new("dbl", "lockSteeringAxle")
+	dblValueType:setFunction("dblLockSteeringAxle", self, DashboardLive.getDashboardLiveLSA)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesLSA)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- combineXP by yumi
+	dblValueType = DashboardValueType.new("dbl", "combineXP")
+	dblValueType:setFunction("dblCombineXP", self, DashboardLive.getDashboardLiveCXP)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesCXP)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- frontLoader
+	dblValueType = DashboardValueType.new("dbl", "frontLoader")
+	dblValueType:setFunction("dblFrontLoader", self, DashboardLive.getDashboardLiveFrontloader)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesFrontloader)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- precision Farming
+	dblValueType = DashboardValueType.new("dbl", "precfarming")
+	dblValueType:setFunction("dblPrecfarming", self, DashboardLive.getDashboardLivePrecisionFarming)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesPrecisionFarming)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- CVTaddon
+	dblValueType = DashboardValueType.new("dbl", "cvt")
+	dblValueType:setFunction("dblCvt", self, DashboardLive.getDashboardLiveCVT)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesCVT)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- Realistic Damage System (RDS)
+	dblValueType = DashboardValueType.new("dbl", "rds")
+	dblValueType:setFunction("dblRds", self, DashboardLive.getDashboardLiveRDS)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesRDS)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- print
+	dblValueType = DashboardValueType.new("dbl", "print")
+	dblValueType:setFunction("dblPrint", self, DashboardLive.getDashboardLivePrint)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesPrint)
+	self:registerDashboardValueType(dblValueType)
+	
+--[[
 	-- OLD PART: Load and initialize Dashboards from XML
 	if self.loadDashboardsFromXML ~= nil then
 		local dashboardData
@@ -567,6 +690,7 @@ function DashboardLive:onRegisterDashboardValueTypes()
         	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
         end
     end
+--]]
 end
 
 function DashboardLive:onPostLoad(savegame)
@@ -580,10 +704,10 @@ function DashboardLive:onPostLoad(savegame)
 	spec.modVCAFound = self.vcaGetState ~= nil
 	
 	-- Check if Mod EV exists
-	spec.modEVFound = FS22_EnhancedVehicle ~= nil and FS22_EnhancedVehicle.FS22_EnhancedVehicle ~= nil and FS22_EnhancedVehicle.FS22_EnhancedVehicle.onActionCall ~= nil
+	spec.modEVFound = FS25_EnhancedVehicle ~= nil and FS25_EnhancedVehicle.FS25_EnhancedVehicle ~= nil and FS25_EnhancedVehicle.FS25_EnhancedVehicle.onActionCall ~= nil
 	
 	-- Check if Mod SpeedControl exists
-	spec.modSpeedControlFound = self.speedControl ~= nil --FS22_SpeedControl ~= nil and FS22_SpeedControl.SpeedControl ~= nil
+	spec.modSpeedControlFound = self.speedControl ~= nil 
 	
 	--Check if Mod HeadlandManagement exists
 	spec.modHLMFound = self.spec_HeadlandManagement ~= nil
@@ -691,12 +815,15 @@ function DashboardLive:onRegisterActionEvents(isActiveForInput)
 		_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM', self, DashboardLive.ZOOM, false, true, true, true)	
 		_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM_PERM', self, DashboardLive.ZOOM, false, true, false, true)
 		
+		_, hudActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_HUDVISIBILITY', self, DashboardLive.HUDVISIBILITY, false, true, false, true)	
+		
 		_, mapOrientationActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_MAPORIENTATION', self, DashboardLive.MAPORIENTATION, false, true, false, true)	
 		
 		if spec.darkModeExists then
 			_, darkModeActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_DARKMODE', self, DashboardLive.DARKMODE, false, true, false, true)		
 		end
 		
+--[[
 		if g_server ~= nil then 
 			if DashboardLive.editMode and DashboardLive.editSymbol ~= nil and self:getIsActiveForInput(true) and spec ~= nil then 
 				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_XUP', self, DashboardLive.MOVESYMBOL, false, true, true, true)
@@ -722,6 +849,7 @@ function DashboardLive:onRegisterActionEvents(isActiveForInput)
 				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_PRINTOUT', self, DashboardLive.PRINTSYMBOL, false, true, false, true)				
 			end	
 		end
+--]]
 	end
 end
 
@@ -793,6 +921,13 @@ function DashboardLive:ZOOM(actionName, keyStatus, arg3, arg4, arg5)
 	spec.zoomPressed = true
 end
 
+function DashboardLive:HUDVISIBILITY(actionName, keyStatus)
+	dbgprint("HUDVISIBILITY", 3)
+	if actionName == "DBL_HUDVISIBILITY" then
+		g_currentMission.hud:consoleCommandToggleVisibility()
+	end
+end
+
 function DashboardLive:DARKMODE(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("DARKMODE", 4)
 	local spec = self.spec_DashboardLive
@@ -805,12 +940,12 @@ function DashboardLive:DARKMODE(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("DARKMODE: set to "..tostring(spec.darkMode), 2)
 end
 
--- Dashboard Editor Mode
+--[[ Dashboard Editor Mode
 
 function DashboardLive:startEditorMode(node, index)
 	if g_server ~= nil then
 		if tostring(node) ~= nil and tonumber(index) ~= nil then
-			DashboardUtils.createEditorNode(g_currentMission.controlledVehicle, tostring(node), tonumber(index), false)
+			DashboardUtils.createEditorNode(g_currentMission.hud.controlledVehicle, tostring(node), tonumber(index), false)
 			DashboardLive.editMode = true
 			print("DBL Editor Mode enabled")
 		else
@@ -830,7 +965,7 @@ addConsoleCommand("dblEditorMode", "Glowins Mod Smithery: Enable Editor Mode: db
 function DashboardLive:startEditorModeAddMiniMap(node)
 	if g_server ~= nil then
 		if tostring(node) ~= nil then
-			DashboardUtils.createEditorNode(g_currentMission.controlledVehicle, tostring(node), 0, true)
+			DashboardUtils.createEditorNode(g_currentMission.hud.controlledVehicle, tostring(node), 0, true)
 			DashboardLive.editMode = true
 			print("DBL Editor Mode enabled")
 		else
@@ -938,6 +1073,7 @@ function DashboardLive:PRINTSYMBOL(actionName, keyStatus)
 	print("</vanillaDashboard>")
 	print("==============================")
 end
+--]]
 
 
 
@@ -1249,6 +1385,7 @@ local function getFillTypeSourceVehicle(sprayer)
     return sprayer, sprayer:getSprayerFillUnitIndex()
 end
 
+-- handle nearly all about attachers and attached vehicles
 local function getAttachedStatus(vehicle, element, mode, default)
 	if element.dblAttacherJointIndices == nil then
 		if element.attacherJointIndices ~= nil then
@@ -1706,8 +1843,8 @@ function DashboardLive:catchBooleanForDashboardStateFunc(superfunc, dashboard, n
 	end
 	return superfunc(self, dashboard, tonumber(newValue) or 0, minValue, maxValue, isActive)
 end
-Dashboard.defaultAnimationDashboardStateFunc = Utils.overwrittenFunction(Dashboard.defaultAnimationDashboardStateFunc, DashboardLive.catchBooleanForDashboardStateFunc)
-Dashboard.defaultSliderDashboardStateFunc = Utils.overwrittenFunction(Dashboard.defaultSliderDashboardStateFunc, DashboardLive.catchBooleanForDashboardStateFunc)
+--Dashboard.defaultAnimationDashboardStateFunc = Utils.overwrittenFunction(Dashboard.defaultAnimationDashboardStateFunc, DashboardLive.catchBooleanForDashboardStateFunc)
+--Dashboard.defaultSliderDashboardStateFunc = Utils.overwrittenFunction(Dashboard.defaultSliderDashboardStateFunc, DashboardLive.catchBooleanForDashboardStateFunc)
 
 -- Append schema definitions to registerDashboardXMLPath function 
 function DashboardLive.addDarkModeToRegisterDashboardXMLPaths(schema, basePath, availableValueTypes)
@@ -1814,7 +1951,7 @@ function DashboardLive:addDarkModeToDefaultEmitterDashboardStateFunc(dashboard, 
 		end
 	end
 end
-Dashboard.defaultEmitterDashboardStateFunc = Utils.prependedFunction(Dashboard.defaultEmitterDashboardStateFunc, DashboardLive.addDarkModeToDefaultEmitterDashboardStateFunc)
+--Dashboard.defaultEmitterDashboardStateFunc = Utils.prependedFunction(Dashboard.defaultEmitterDashboardStateFunc, DashboardLive.addDarkModeToDefaultEmitterDashboardStateFunc)
 
 -- Prepended function defaultTextDashboardStateFunc to enable dark mode
 function DashboardLive:addDarkModeToDefaultTextDashboardStateFunc(dashboard, newValue, minValue, maxValue, isActive)
@@ -1836,7 +1973,7 @@ function DashboardLive:addDarkModeToDefaultTextDashboardStateFunc(dashboard, new
 		end
 	end
 end
-Dashboard.defaultTextDashboardStateFunc = Utils.prependedFunction(Dashboard.defaultTextDashboardStateFunc, DashboardLive.addDarkModeToDefaultTextDashboardStateFunc)
+--Dashboard.defaultTextDashboardStateFunc = Utils.prependedFunction(Dashboard.defaultTextDashboardStateFunc, DashboardLive.addDarkModeToDefaultTextDashboardStateFunc)
 
 -- Prepended function defaultNumberDashboardStateFunc to enable dark mode
 function DashboardLive:addDarkModeToDefaultNumberDashboardStateFunc(dashboard, newValue, minValue, maxValue, isActive)
@@ -1856,7 +1993,12 @@ function DashboardLive:addDarkModeToDefaultNumberDashboardStateFunc(dashboard, n
         end
 	end
 end
-Dashboard.defaultNumberDashboardStateFunc = Utils.prependedFunction(Dashboard.defaultNumberDashboardStateFunc, DashboardLive.addDarkModeToDefaultNumberDashboardStateFunc)
+--Dashboard.defaultNumberDashboardStateFunc = Utils.prependedFunction(Dashboard.defaultNumberDashboardStateFunc, DashboardLive.addDarkModeToDefaultNumberDashboardStateFunc)
+
+-- displayType="AUDIO"
+function DashboardLive.initAudioDashboardSchema(...)
+	-- already set by initSpecialization
+end
 
 function DashboardLive:loadAudioDashboardFromXML(xmlFile, key, dashboard)
 	dbgprint("Audio: loadAudioDashboardFromXML", 2)
@@ -1907,7 +2049,7 @@ function DashboardLive.defaultAudioStateFunc(self, dashboard, newValue, minValue
         newValue = newValue and isActive
     end
     
-    if self == g_currentMission.controlledVehicle then
+    if self == g_currentMission.hud.controlledVehicle then
 		if newValue and not dashboard.played and not isSamplePlaying(dashboard.dblAudioSample) then
 			dashboard.played = true
 			playSample(dashboard.dblAudioSample, dashboard.dblAudioLoop, dashboard.dblAudioVolume, 0, 0, 0)
@@ -1934,6 +2076,7 @@ function DashboardLive.defaultAudioStateFunc(self, dashboard, newValue, minValue
 		end
 	end
 end
+Dashboard.registerDisplayType(Dashboard.TYPES.AUDIO, false, DashboardLive.initAudioDashboardSchema, DashboardLive.loadAudioDashboardFromXML, DashboardLive.defaultAudioStateFunc)
 
 -- Overwritten function loadDashboardFromXML to load displayType="AUDIO"
 function DashboardLive:overWrittenLoadDashboardFromXML(superfunc, xmlFile, key, dashboard, dashboardData)
@@ -1956,7 +2099,7 @@ function DashboardLive:overWrittenLoadDashboardFromXML(superfunc, xmlFile, key, 
 	end
 	return false
 end
-Dashboard.loadDashboardFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardFromXML, DashboardLive.overWrittenLoadDashboardFromXML)
+--Dashboard.loadDashboardFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardFromXML, DashboardLive.overWrittenLoadDashboardFromXML)
 
 -- GROUPS
 
@@ -2187,8 +2330,6 @@ function DashboardLive:getIsDashboardGroupActive(superFunc, group)
 end
 
 -- ELEMENTS
-
--- base fillType vca hlm gps gps_lane gps_width proseed selector
 
 -- readAttributes
 -- page
@@ -2560,6 +2701,7 @@ function DashboardLive.getDBLAttributesCVT(self, xmlFile, key, dashboard)
 	return true
 end
 
+-- Realistic Damage System
 function DashboardLive.getDBLAttributesRDS(self, xmlFile, key, dashboard)
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", ""))
     dbgprint("getDBLAttributesCVT : command: "..tostring(dashboard.dblCommand), 2)
@@ -2908,7 +3050,7 @@ function DashboardLive.getDashboardLiveMiniMap(self, dashboard)
 	local heading = math.atan2(dx, dz) + math.pi
 
 	if cmd == "map" then
-		if self == g_currentMission.controlledVehicle then
+		if self == g_currentMission.hud.controlledVehicle then
 			-- zoom
 			local speed = self:getLastSpeed()
 			local width = g_currentMission.mapWidth
@@ -2949,7 +3091,7 @@ function DashboardLive.getDashboardLiveMiniMap(self, dashboard)
 		return true
 		
 	elseif cmd == "posmarker" then
-		if self == g_currentMission.controlledVehicle then
+		if self == g_currentMission.hud.controlledVehicle then
 			if spec.orientation == "rotate" then 
 				heading = 0
 			end			
@@ -3875,11 +4017,11 @@ function DashboardLive:onUpdate(dt)
 	local spec = self.spec_DashboardLive
 	if (spec.zoomPressed or spec.zoomPerm) and not spec.zoomed then
 		dbgprint("Zooming in", 4)
-		g_currentMission:consoleCommandSetFOV("20")
+		g_cameraManager:consoleCommandSetFOV("20")
 		spec.zoomed = true
 	elseif (not spec.zoomPressed and not spec.zoomPerm) and spec.zoomed then
 		dbgprint("Zoomig out", 4)
-		g_currentMission:consoleCommandSetFOV("-1")
+		g_cameraManager:consoleCommandSetFOV("-1")
 		spec.zoomed = false
 	end
 	spec.zoomPressed = false

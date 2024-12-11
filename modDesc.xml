@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="93">
 	<author>Glowins Modschmiede</author>
-	<version>1.9.0.1</version>
+	<version>1.9.1.0</version>
 	<contributors>AgrarPlay und LUWZ, Farming Duds, Myiamoto86, HiPhi77, NickiJF15</contributors>
 	<title>
 		<en>Dashboard Live</en>
@@ -404,8 +404,9 @@ Mais ideias ou solicitações são bem-vindas em <a href="https://github.com/jas
 		<action name="DBL_ZOOM_PERM"	category="VEHICLE" ignoreComboMask="false" />
 		<action name="DBL_MAPORIENTATION" category="VEHICLE" ignoreComboMask="false" />
 		<action name="DBL_DARKMODE"		category="VEHICLE"	ignoreComboMask="false" />
+		<action name="DBL_HUDVISIBILITY" category="VEHICLE"	ignoreComboMask="false" />
 		
-		<!-- Editor Mode only -->
+		<!-- Editor Mode only
 		<action name="DBL_XUP" 			category="VEHICLE" ignoreComboMask="false" />
 		<action name="DBL_XDN" 			category="VEHICLE" ignoreComboMask="false" />
 		<action name="DBL_YUP" 			category="VEHICLE" ignoreComboMask="false" />
@@ -427,6 +428,7 @@ Mais ideias ou solicitações são bem-vindas em <a href="https://github.com/jas
 		<action name="DBL_SI" 			category="VEHICLE" ignoreComboMask="false" />
 		<action name="DBL_SO"			category="VEHICLE" ignoreComboMask="false" />
 		<action name="DBL_PRINTOUT" 	category="VEHICLE" ignoreComboMask="false" />
+		-->
 	</actions>
 	<inputBinding>	
 		<actionBinding action="DBL_PAGEGRPUP">
@@ -446,6 +448,9 @@ Mais ideias ou solicitações são bem-vindas em <a href="https://github.com/jas
 		</actionBinding>
 		<actionBinding action="DBL_ZOOM_PERM">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lshift KEY_rshift KEY_space" neutralInput="0" index="1" />
+		</actionBinding>
+		<actionBinding action="DBL_HUDVISIBILITY">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_space" neutralInput="0" index="1" />
 		</actionBinding>
 		<actionBinding action="DBL_MAPORIENTATION">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_9" neutralInput="0" index="1" />
@@ -504,6 +509,10 @@ Mais ideias ou solicitações são bem-vindas em <a href="https://github.com/jas
             <br>MiniMap: Modo de exibição</br>
             <ru>МиниКарта: Режим отображения</ru>
         </text>
+        <text name="input_DBL_HUDVISIBILITY">
+            <en>Switch HUD visibility</en>
+            <de>HUD sichtbar an/aus</de>
+        </text>
         <text name="input_DBL_DARKMODE">
             <en>Switch Dark Mode</en>
             <cz>Přepnout na tmavý režim</cz>
@@ -511,6 +520,7 @@ Mais ideias ou solicitações são bem-vindas em <a href="https://github.com/jas
             <br>Alternar Dark Mode</br>
             <ru>Переключить на тёмный режим</ru>
         </text>
+<!--
         <text name="input_DBL_XUP">
             <en>DBL: Editor Mode: X+</en>
             <cz>DBL: Režim editoru: X+</cz>
@@ -658,5 +668,6 @@ Mais ideias ou solicitações são bem-vindas em <a href="https://github.com/jas
             <br>DBL: Modo Editor: Imprimir no registro</br>
             <ru>DBL: Редактирование: Записать в журнал</ru>
         </text>
+-->
 	</l10n>
 </modDesc>
