@@ -1,5 +1,5 @@
 --
--- Dashboard Extension for FS22
+-- Dashboard Extension for FS25
 --
 -- Jason06 / Glowins Modschmiede
 --
