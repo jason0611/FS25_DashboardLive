@@ -207,14 +207,6 @@ function DashboardLive:onLoad(savegame)
 end
 
 function DashboardLive:onRegisterDashboardValueTypes()
---	local cruiseControlReverse = DashboardValueType.new("drivable", "cruiseControlReverse")
---	cruiseControlReverse:setValue(spec.cruiseControl, "speedReverse")
---	self:registerDashboardValueType(cruiseControlReverse)
-
--- local valueType = DashboardValueType.new("specName", "dblValueType")
--- valueType:setFunction("name", valueObject, valueFunc)
--- valueType:setAdditionalFunctions(DashboardLive.getDBLAttributesValueType)
--- self:registerDashboardValueType(valueType)
 
 	local dblValueType 
 	-- page
@@ -342,355 +334,6 @@ function DashboardLive:onRegisterDashboardValueTypes()
 	dblValueType:setFunction("dblPrint", self, DashboardLive.getDashboardLivePrint)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesPrint)
 	self:registerDashboardValueType(dblValueType)
-	
---[[
-	-- OLD PART: Load and initialize Dashboards from XML
-	if self.loadDashboardsFromXML ~= nil then
-		local dashboardData
-		dbgprint("onLoad : loadDashboardsFromXML", 2)
-        -- page
-        dashboardData = {
-        					valueTypeToLoad = "page",
-        					valueObject = self,
-        					valueFunc = DashboardLive.getDashboardLivePage,
-        					additionalAttributesFunc = DashboardLive.getDBLAttributesPage
-        				}
-        self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData)
-        if spec.vanillaIntegration then
-        	dbgprint("onLoad : VanillaIntegration <page>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-        end
-        if spec.modIntegration then
-        	dbgprint("onLoad : ModIntegration <page>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-        end
-        
-        -- base
-        dashboardData = {	
-        					valueTypeToLoad = "base",
-                        	valueObject = self,
-                        	valueFunc = DashboardLive.getDashboardLiveBase,
-                            additionalAttributesFunc = DashboardLive.getDBLAttributesBase
-                        }
-        self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData)
-        if spec.vanillaIntegration then
-        	dbgprint("onLoad : VanillaIntegration <base>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-        end
-        if spec.modIntegration then
-        	dbgprint("onLoad : ModIntegration <base>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-        end
-        
-        -- miniMap
-        dashboardData = {	
-        					valueTypeToLoad = "miniMap",
-                        	valueObject = self,
-                        	valueFunc = DashboardLive.getDashboardLiveMiniMap,
-                            additionalAttributesFunc = DashboardLive.getDBLAttributesMiniMap
-                        }
-        self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData)
-        if spec.vanillaIntegration then
-        	dbgprint("onLoad : VanillaIntegration <miniMap>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-        end
-        if spec.modIntegration then
-        	dbgprint("onLoad : ModIntegration <miniMap>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-        end
-        
-        -- combine
-        dashboardData = {	
-        					valueTypeToLoad = "combine",
-                        	valueObject = self,
-                        	valueFunc = DashboardLive.getDashboardLiveCombine,
-                            additionalAttributesFunc = DashboardLive.getDBLAttributesCombine
-                        }
-        self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData)
-        if spec.vanillaIntegration then
-        	dbgprint("onLoad : VanillaIntegration <combine>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-        end
-        if spec.modIntegration then
-        	dbgprint("onLoad : ModIntegration <combine>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-        end
-        -- rda
-        dashboardData = {	
-        					valueTypeToLoad = "rda",
-                        	valueObject = self,
-                        	valueFunc = DashboardLive.getDashboardLiveRDA,
-                            additionalAttributesFunc = DashboardLive.getDBLAttributesRDA
-                        }
-        self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData)
-        if spec.vanillaIntegration then
-        	dbgprint("onLoad : VanillaIntegration <rda>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-        end
-        if spec.modIntegration then
-        	dbgprint("onLoad : ModIntegration <rda>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-        end
-        -- vca
-        dashboardData = {	
-        					valueTypeToLoad = "vca",
-                        	valueObject = self,
-                        	valueFunc = DashboardLive.getDashboardLiveVCA,
-                            additionalAttributesFunc = DashboardLive.getDBLAttributesVCA
-                        }
-        self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData)
-        if spec.vanillaIntegration then
-        	dbgprint("onLoad : VanillaIntegration <vca>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-        end
-        if spec.modIntegration then
-        	dbgprint("onLoad : ModIntegration <vca>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-        end
-        
-        -- cruiseControl
-        dashboardData = {	
-        					valueTypeToLoad = "cc",
-                        	valueObject = self,
-                        	valueFunc = DashboardLive.getDashboardLiveCC,
-                            additionalAttributesFunc = DashboardLive.getDBLAttributesCC
-                        }
-        self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData)
-        if spec.vanillaIntegration then
-        	dbgprint("onLoad : VanillaIntegration <vca>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-        end
-        if spec.modIntegration then
-        	dbgprint("onLoad : ModIntegration <vca>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-        end
-        
-		-- hlm
-        dashboardData = {	
-        					valueTypeToLoad = "hlm",
-                        	valueObject = self,
-                        	valueFunc = DashboardLive.getDashboardLiveHLM,
-                            additionalAttributesFunc = DashboardLive.getDBLAttributesHLM
-                        }
-        self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData)
-        if spec.vanillaIntegration then
-        	dbgprint("onLoad : VanillaIntegration <hlm>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-        end
-        if spec.modIntegration then
-        	dbgprint("onLoad : ModIntegration <hlm>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-        end
-		-- gps
-        dashboardData = {	
-        					valueTypeToLoad = "gps",
-                        	valueObject = self,
-                        	valueFunc = DashboardLive.getDashboardLiveGPS,
-                            additionalAttributesFunc = DashboardLive.getDBLAttributesGPS
-                        }
-        self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData)
-        if spec.vanillaIntegration then
-        	dbgprint("onLoad : VanillaIntegration <gps>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-        end
-        if spec.modIntegration then
-        	dbgprint("onLoad : ModIntegration <gps>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-        end
-		-- gpsLane
-        dashboardData = {	
-        					valueTypeToLoad = "gpsLane",
-                        	valueObject = self,
-                        	valueFunc = DashboardLive.getDashboardLiveGPSLane,
-                        	additionalAttributesFunc = DashboardLive.getDBLAttributesGPSNumbers
-                        }
-        self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData)
-		if spec.vanillaIntegration then
-        	dbgprint("onLoad : VanillaIntegration <gpsLane>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-        end
-        if spec.modIntegration then
-        	dbgprint("onLoad : ModIntegration <gpsLane>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-        end
-		-- gpsWidth
-        dashboardData = {	
-        					valueTypeToLoad = "gpsWidth",
-                        	valueObject = self,
-                        	valueFunc = DashboardLive.getDashboardLiveGPSWidth,
-                        	additionalAttributesFunc = DashboardLive.getDBLAttributesGPSNumbers
-                        }
-        self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData)
-        if spec.vanillaIntegration then
-        	dbgprint("onLoad : VanillaIntegration <gpsWidth>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-        end
-        if spec.modIntegration then
-        	dbgprint("onLoad : ModIntegration <gpsWidth>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-        end
-		-- ps
-        dashboardData = {	
-        					valueTypeToLoad = "proSeed",
-                        	valueObject = self,
-                        	valueFunc = DashboardLive.getDashboardLivePS,
-                            additionalAttributesFunc = DashboardLive.getDBLAttributesPS
-                        }
-        self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData)
-        if spec.vanillaIntegration then
-        	dbgprint("onLoad : VanillaIntegration <ps>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-        end
-        if spec.modIntegration then
-        	dbgprint("onLoad : ModIntegration <ps>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-        end
-		-- selection
-        dashboardData = {	
-        					valueTypeToLoad = "selection",
-                        	valueObject = self,
-                        	valueFunc = DashboardLive.getDashboardLiveSelection,
-                            additionalAttributesFunc = DashboardLive.getDBLAttributesSelection
-                        }
-        self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData)  
-        if spec.vanillaIntegration then
-        	dbgprint("onLoad : VanillaIntegration <selection>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-        end
-        if spec.modIntegration then
-        	dbgprint("onLoad : ModIntegration <selection>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-        end
-        -- baler
-        dashboardData = {
-        					valueTypeToLoad = "baler",
-        					valueObject = self,
-        					valueFunc = DashboardLive.getDashboardLiveBaler,
-        					additionalAttributesFunc = DashboardLive.getDBLAttributesBaler
-        				}
-        self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData)
-        if spec.vanillaIntegration then
-        	dbgprint("onLoad : VanillaIntegration <baler>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-        end
-        if spec.modIntegration then
-        	dbgprint("onLoad : ModIntegration <baler>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-        end
-        -- lock steering axle by Ifko|nator (www.lsfarming-mods.com)
-        dashboardData = {	
-        					valueTypeToLoad = "lockSteeringAxle",
-                        	valueObject = self,
-                        	valueFunc = DashboardLive.getDashboardLiveLSA,
-                        	additionalAttributesFunc = DashboardLive.getDBLAttributesLSA
-                        }
-        self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData)  
-        if spec.vanillaIntegration then
-        	dbgprint("onLoad : VanillaIntegration <lockSteeringAxle>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-        end
-        if spec.modIntegration then
-        	dbgprint("onLoad : ModIntegration <lockSteeringAxle>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-        end
-         -- combineXP by yumi
-        dashboardData = {	
-        					valueTypeToLoad = "combineXP",
-                        	valueObject = self,
-                        	valueFunc = DashboardLive.getDashboardLiveCXP,
-                        	additionalAttributesFunc = DashboardLive.getDBLAttributesCXP
-                        }
-        self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData)  
-        if spec.vanillaIntegration then
-        	dbgprint("onLoad : VanillaIntegration <combineXP>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-        end
-        if spec.modIntegration then
-        	dbgprint("onLoad : ModIntegration <combineXP>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-        end
-        -- frontLoader
-        dashboardData = {
-							valueTypeToLoad = "frontLoader",
-							valueObject = self,
-							valueFunc = DashboardLive.getDashboardLiveFrontloader,
-							additionalAttributesFunc = DashboardLive.getDBLAttributesFrontloader
-		}
-		self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData) 
-		if spec.vanillaIntegration then
-        	dbgprint("onLoad : VanillaIntegration <frontLoader>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-        end
-        if spec.modIntegration then
-        	dbgprint("onLoad : ModIntegration <frontLoader>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-        end
-		-- precision Farming
-		dashboardData = {
-			valueTypeToLoad = "precfarming",
-			valueObject = self,
-			valueFunc = DashboardLive.getDashboardLivePrecisionFarming,
-			additionalAttributesFunc = DashboardLive.getDBLAttributesPrecisionFarming
-		}
-		self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData) 
-		if spec.vanillaIntegration then
-			dbgprint("onLoad : VanillaIntegration <precisionfarming>", 2)
-			self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-		end
-		if spec.modIntegration then
-			dbgprint("onLoad : ModIntegration <precisionfarming>", 2)
-			self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-		end
-		-- CVTaddon
-		dashboardData = {
-			valueTypeToLoad = "cvt",
-			valueObject = self,
-			valueFunc = DashboardLive.getDashboardLiveCVT,
-			additionalAttributesFunc = DashboardLive.getDBLAttributesCVT
-		}
-		self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData) 
-		if spec.vanillaIntegration then
-			dbgprint("onLoad : VanillaIntegration <CVTaddon>", 2)
-			self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-		end
-		if spec.modIntegration then
-			dbgprint("onLoad : ModIntegration <CVTaddon>", 2)
-			self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-		end
-		-- Realistic Damage System (RDS)
-		dashboardData = {
-			valueTypeToLoad = "rds",
-			valueObject = self,
-			valueFunc = DashboardLive.getDashboardLiveRDS,
-			additionalAttributesFunc = DashboardLive.getDBLAttributesRDS
-		}
-		self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData) 
-		if spec.vanillaIntegration then
-			dbgprint("onLoad : VanillaIntegration <RDS>", 2)
-			self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-		end
-		if spec.modIntegration then
-			dbgprint("onLoad : ModIntegration <RDS>", 2)
-			self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-		end
-        -- print
-        dashboardData = {	
-        					valueTypeToLoad = "print",
-                        	valueObject = self,
-                        	valueFunc = DashboardLive.getDashboardLivePrint,
-                            additionalAttributesFunc = DashboardLive.getDBLAttributesPrint
-                        }
-        self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive", dashboardData)  
-        if spec.vanillaIntegration then
-        	dbgprint("onLoad : VanillaIntegration <print>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.vanillaIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.vanillaIntegration), dashboardData)
-        end
-        if spec.modIntegration then
-        	dbgprint("onLoad : ModIntegration <print>", 2)
-        	self:loadDashboardsFromXML(DashboardLive.modIntegrationXMLFile, string.format("vanillaDashboards.vanillaDashboard(%d).dashboardLive", spec.modIntegration), dashboardData)
-        end
-    end
---]]
 end
 
 function DashboardLive:onPostLoad(savegame)
@@ -2111,42 +1754,47 @@ function DashboardLive:loadDashboardGroupFromXML(superFunc, xmlFile, key, group)
     dbgprint("loadDashboardGroupFromXML : "..self:getName()..": group: "..tostring(group.name), 2)
     
     group.dblCommand = lower(xmlFile:getValue(key .. "#dbl"))
-    dbgprint("loadDashboardGroupFromXML : dblCommand: "..tostring(group.dblCommand), 2)
-	
-	if group.dblCommand == "page" then
-		group.dblPage = xmlFile:getValue(key .. "#page")
-		group.dblPageGroup = xmlFile:getValue(key .. "#group") or 1
-		dbgprint("loadDashboardGroupFromXML : group: "..tostring(group.dblPageGroup).." / page: "..tostring(group.dblPage), 2)
+
+    if group.dblCommand ~= nil then
+		dbgprint("loadDashboardGroupFromXML : dblCommand: "..tostring(group.dblCommand), 2)
+		
+		if group.dblCommand == "page" then
+			group.dblPage = xmlFile:getValue(key .. "#page")
+			group.dblPageGroup = xmlFile:getValue(key .. "#group") or 1
+			dbgprint("loadDashboardGroupFromXML : group: "..tostring(group.dblPageGroup).." / page: "..tostring(group.dblPage), 2)
+		end
+		
+		if group.dblCommand == "darkmode" then
+			local spec = self.spec_DashboardLive
+			if spec ~= nil then spec.darkModeExists = "true" end
+		end
+		
+		group.dblOperator = lower(xmlFile:getValue(key .. "#op", "and"))
+		dbgprint("loadDashboardGroupFromXML : dblOperator: "..tostring(group.dblOperator), 2)
+		
+		group.dblOption = xmlFile:getValue(key .. "#dblOption")
+		dbgprint("loadDashboardGroupFromXML : dblOption: "..tostring(group.dblOption), 2)
+		
+		group.dblTrailer = xmlFile:getValue(key .. "#dblTrailer")
+		dbgprint("loadDashboardGroupFromXML : dblTrailer: "..tostring(group.dblTrailer), 2)
+		
+		group.dblActiveWithoutImplement = xmlFile:getValue(key.. "#dblActiveWithoutImplement", false)
+		dbgprint("loadDashboardGroupFromXML : dblActiveWithoutImplement: "..tostring(group.dblActiveWithoutImplement), 2)
+		
+		group.dblAttacherJointIndices = xmlFile:getValue(key .. "#dblAttacherJointIndices", nil, true)
+		dbgprint("loadDashboardGroupFromXML : dblAttacherJointIndices: "..tostring(group.dblAttacherJointIndices), 2)
+		
+		group.dblSelection = xmlFile:getValue(key .. "#dblSelection", nil, true)
+		dbgprint("loadDashboardGroupFromXML : dblSelection: "..tostring(group.dblSelection), 2)
+		
+		group.dblSelectionGroup = xmlFile:getValue(key .. "#dblSelectionGroup", nil, true)
+		dbgprint("loadDashboardGroupFromXML : dblSelectionGroup: "..tostring(group.dblSelectionGroup), 2)
+		
+		group.dblRidgeMarker = xmlFile:getValue(key .. "#dblRidgeMarker")
+		dbgprint("loadDashboardGroupFromXML : dblRidgeMarker: "..tostring(group.dblRidgeMarker), 2)
+	else
+		dbgprint("loadDashboardGroupFromXML : no dbl command given", 2)
 	end
-	
-	if group.dblCommand == "darkmode" then
-		local spec = self.spec_DashboardLive
-		if spec ~= nil then spec.darkModeExists = "true" end
-	end
-	
-	group.dblOperator = lower(xmlFile:getValue(key .. "#op", "and"))
-	dbgprint("loadDashboardGroupFromXML : dblOperator: "..tostring(group.dblOperator), 2)
-	
-	group.dblOption = xmlFile:getValue(key .. "#dblOption")
-	dbgprint("loadDashboardGroupFromXML : dblOption: "..tostring(group.dblOption), 2)
-	
-	group.dblTrailer = xmlFile:getValue(key .. "#dblTrailer")
-	dbgprint("loadDashboardGroupFromXML : dblTrailer: "..tostring(group.dblTrailer), 2)
-	
-	group.dblActiveWithoutImplement = xmlFile:getValue(key.. "#dblActiveWithoutImplement", false)
-	dbgprint("loadDashboardGroupFromXML : dblActiveWithoutImplement: "..tostring(group.dblActiveWithoutImplement), 2)
-	
-	group.dblAttacherJointIndices = xmlFile:getValue(key .. "#dblAttacherJointIndices")
-	dbgprint("loadDashboardGroupFromXML : dblAttacherJointIndices: "..tostring(group.dblAttacherJointIndices), 2)
-	
-	group.dblSelection = xmlFile:getValue(key .. "#dblSelection")
-	dbgprint("loadDashboardGroupFromXML : dblSelection: "..tostring(group.dblSelection), 2)
-	
-	group.dblSelectionGroup = xmlFile:getValue(key .. "#dblSelectionGroup")
-	dbgprint("loadDashboardGroupFromXML : dblSelectionGroup: "..tostring(group.dblSelectionGroup), 2)
-	
-	group.dblRidgeMarker = xmlFile:getValue(key .. "#dblRidgeMarker")
-	dbgprint("loadDashboardGroupFromXML : dblRidgeMarker: "..tostring(group.dblRidgeMarker), 2)
     
     return true
 end
