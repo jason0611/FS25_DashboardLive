@@ -64,7 +64,7 @@ function DashboardLive.initSpecialization()
 	schema:register(XMLValueType.STRING, Dashboard.GROUP_XML_KEY .. "#dblTrailer", "DBL Trailer")
 	dbgprint("initSpecialization : DashboardLive group options registered", 2)
 	
-	Dashboard.registerDashboardXMLPaths(schema, "vehicle.dashboard.dashboardLive", "base fillLevel fillType vca hlm gps gps_lane gps_width proseed selector")
+	Dashboard.registerDashboardXMLPaths(schema, "vehicle.dashboard.dashboardLive", "dbl.base dbl.fillLevel dbl.fillType dbl.vca dbl.hlm dbl.gps dbl.gps_lane dbl.gps_width dbl.proseed dbl.selector")
 	DashboardLive.DBL_XML_KEY = "vehicle.dashboard.dashboardLive.dashboard(?)"
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#cmd", "DashboardLive command")
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#joints")
@@ -142,9 +142,9 @@ end
 function DashboardLive.registerOverwrittenFunctions(vehicleType)
 	SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadDashboardGroupFromXML", DashboardLive.loadDashboardGroupFromXML)
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "getIsDashboardGroupActive", DashboardLive.getIsDashboardGroupActive)
-    --SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadEmitterDashboardFromXML", DashboardLive.addDarkModeToLoadEmitterDashboardFromXML)
-    --SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadTextDashboardFromXML", DashboardLive.addDarkModeToLoadTextDashboardFromXML)
-    --SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadNumberDashboardFromXML", DashboardLive.addDarkModeToLoadNumberDashboardFromXML)
+    SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadEmitterDashboardFromXML", DashboardLive.addDarkModeToLoadEmitterDashboardFromXML)
+    SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadTextDashboardFromXML", DashboardLive.addDarkModeToLoadTextDashboardFromXML)
+    SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadNumberDashboardFromXML", DashboardLive.addDarkModeToLoadNumberDashboardFromXML)
 end
 
 function DashboardLive:onPreLoad(savegame)
@@ -1075,7 +1075,7 @@ local function getAttachedStatus(vehicle, element, mode, default)
     		implement = vehicle:getImplementFromAttacherJointIndex(tonumber(jointIndex)) 
     	end
     	jointExists = vehicle:getAttacherJointByJointDescIndex(tonumber(jointIndex)) ~= nil
-    	dbgprint("jointExists: "..tostring(jointExists).." / implement: "..tostring(implement), 4)
+    	dbgprint("mode: "..tostring(mode).." / jointExists: "..tostring(jointExists).." / implement: "..tostring(implement), 4)
     	--dbgprint_r(implement, 4, 1)
     	
     	if implement ~= nil then
@@ -2139,7 +2139,7 @@ end
 -- extendedCruiseControl / speedControl
 function DashboardLive.getDBLAttributesCC(self, xmlFile, key, dashboard)
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd"))
-    dbgprint("getDBLAttributesVCA : cmd: "..tostring(dashboard.dblCommand), 2)
+    dbgprint("getDBLAttributesECC : cmd: "..tostring(dashboard.dblCommand), 2)
     
     if dashboard.dblCommand == nil then 
     	Logging.xmlWarning(self.xmlFile, "No '#cmd' given for valueType 'cc'")
@@ -2147,7 +2147,7 @@ function DashboardLive.getDBLAttributesCC(self, xmlFile, key, dashboard)
     end
     
     dashboard.dblState = xmlFile:getValue(key .. "#state")
-    dbgprint("getDBLAttributesCC : state: "..tostring(dashboard.dblCond), 2)
+    dbgprint("getDBLAttributesECC : state: "..tostring(dashboard.dblCond), 2)
 
 	return true
 end
