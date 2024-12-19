@@ -140,8 +140,8 @@ function DashboardLive.registerEventListeners(vehicleType)
 end
 
 function DashboardLive.registerOverwrittenFunctions(vehicleType)
-	--SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadDashboardGroupFromXML", DashboardLive.loadDashboardGroupFromXML)
-    --SpecializationUtil.registerOverwrittenFunction(vehicleType, "getIsDashboardGroupActive", DashboardLive.getIsDashboardGroupActive)
+	SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadDashboardGroupFromXML", DashboardLive.loadDashboardGroupFromXML)
+    SpecializationUtil.registerOverwrittenFunction(vehicleType, "getIsDashboardGroupActive", DashboardLive.getIsDashboardGroupActive)
     --SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadEmitterDashboardFromXML", DashboardLive.addDarkModeToLoadEmitterDashboardFromXML)
     --SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadTextDashboardFromXML", DashboardLive.addDarkModeToLoadTextDashboardFromXML)
     --SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadNumberDashboardFromXML", DashboardLive.addDarkModeToLoadNumberDashboardFromXML)
