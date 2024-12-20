@@ -2638,21 +2638,11 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			local fieldNum = 0
 			local x, _, z = getWorldTranslation(self.rootNode)
 			local farmland = g_farmlandManager:getFarmlandAtWorldPosition(x, z)
-			-- interpolate field number from number position on minimap
-			local dist = math.huge
-			if farmland ~= nil then
-				local fields = g_fieldManager.farmlandIdFieldMapping[farmland.id]
-				if fields ~= nil then
-					for _, field in pairs(fields) do
-						local rx, rz = field.posX, field.posZ
-						dx, dz = rx - x, rz - z
-						rdist = math.sqrt(dx^2 + dz^2)
-						dist = math.min(dist, rdist)				
-						if rdist == dist then fieldNum = field.fieldId end
-					end
-				end
+			if farmland ~= nil then 
+				fieldNum = farmland.id 
 			end
 			returnValue = fieldNum
+			dbgprint("fieldnumber: "..tostring(returnValue), 4)
 			
 		elseif cmds == "motorfan" then
 			if specMO ~= nil then
@@ -2730,7 +2720,7 @@ function DashboardLive.getDashboardLiveMiniMap(self, dashboard)
 			local speed = self:getLastSpeed()
 			local width = g_currentMission.mapWidth
 			local scale = DashboardLive.scale
-			local zoomFactor = MathUtil.clamp(speed / 50, 0, 1)
+			local zoomFactor = math.clamp(speed / 50, 0, 1)
 			local zoomTarget
 	
 			-- zoom-in on field
