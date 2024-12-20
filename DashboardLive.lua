@@ -207,131 +207,152 @@ function DashboardLive:onLoad(savegame)
 end
 
 function DashboardLive:onRegisterDashboardValueTypes()
-
+	dbgprint("onRegisterDashboardValueTypes : "..self:getName(), 2)
+	
 	local dblValueType 
 	-- page
 	dblValueType = DashboardValueType.new("dbl", "page")
-	dblValueType:setFunction("dblPage", self, DashboardLive.getDashboardLivePage)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLivePage)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesPage)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- base
 	dblValueType = DashboardValueType.new("dbl", "base")
-	dblValueType:setFunction("dblBase", self, DashboardLive.getDashboardLiveBase)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLiveBase)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesBase)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- miniMap
 	dblValueType = DashboardValueType.new("dbl", "miniMap")
-	dblValueType:setFunction("dblMiniMap", self, DashboardLive.getDashboardLiveMiniMap)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLiveMiniMap)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesMiniMap)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- combine
 	dblValueType = DashboardValueType.new("dbl", "combine")
-	dblValueType:setFunction("dblCombine", self, DashboardLive.getDashboardLiveCombine)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLiveCombine)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesCombine)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- rda
 	dblValueType = DashboardValueType.new("dbl", "rda")
-	dblValueType:setFunction("dblRda", self, DashboardLive.getDashboardLiveRDA)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLiveRDA)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesRDA)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- vca
 	dblValueType = DashboardValueType.new("dbl", "vca")
-	dblValueType:setFunction("dblVca", self, DashboardLive.getDashboardLiveVCA)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLiveVCA)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesVCA)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- cruiseControl
 	dblValueType = DashboardValueType.new("dbl", "cc")
-	dblValueType:setFunction("dblCc", self, DashboardLive.getDashboardLiveCC)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLiveCC)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesCC)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- hlm
 	dblValueType = DashboardValueType.new("dbl", "hlm")
-	dblValueType:setFunction("dblHlm", self, DashboardLive.getDashboardLiveHLM)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLiveHLM)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesHLM)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- gps
 	dblValueType = DashboardValueType.new("dbl", "gps")
-	dblValueType:setFunction("dblGps", self, DashboardLive.getDashboardLiveGPS)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLiveGPS)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesGPS)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- gpsLane
 	dblValueType = DashboardValueType.new("dbl", "gpsLane")
-	dblValueType:setFunction("dblGpsLane", self, DashboardLive.getDashboardLiveGPSLane)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLiveGPSLane)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesGPSNumbers)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- gpsWidth
 	dblValueType = DashboardValueType.new("dbl", "gpsWidth")
-	dblValueType:setFunction("dblGpsWidth", self, DashboardLive.getDashboardLiveGPSWidth)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLiveGPSWidth)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesGPSNumbers)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- ps
 	dblValueType = DashboardValueType.new("dbl", "ps")
-	dblValueType:setFunction("dblPs", self, DashboardLive.getDashboardLivePS)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLivePS)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesPS)
 	self:registerDashboardValueType(dblValueType)
 
 	-- selection
 	dblValueType = DashboardValueType.new("dbl", "selection")
-	dblValueType:setFunction("dblSelection", self, DashboardLive.getDashboardLiveSelection)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLiveSelection)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesSelection)
 	self:registerDashboardValueType(dblValueType)
 
 	-- baler
 	dblValueType = DashboardValueType.new("dbl", "baler")
-	dblValueType:setFunction("dblBaler", self, DashboardLive.getDashboardLiveBaler)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLiveBaler)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesBaler)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- lock steering axle by Ifko|nator
 	dblValueType = DashboardValueType.new("dbl", "lockSteeringAxle")
-	dblValueType:setFunction("dblLockSteeringAxle", self, DashboardLive.getDashboardLiveLSA)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLiveLSA)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesLSA)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- combineXP by yumi
 	dblValueType = DashboardValueType.new("dbl", "combineXP")
-	dblValueType:setFunction("dblCombineXP", self, DashboardLive.getDashboardLiveCXP)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLiveCXP)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesCXP)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- frontLoader
 	dblValueType = DashboardValueType.new("dbl", "frontLoader")
-	dblValueType:setFunction("dblFrontLoader", self, DashboardLive.getDashboardLiveFrontloader)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLiveFrontloader)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesFrontloader)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- precision Farming
 	dblValueType = DashboardValueType.new("dbl", "precfarming")
-	dblValueType:setFunction("dblPrecfarming", self, DashboardLive.getDashboardLivePrecisionFarming)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLivePrecisionFarming)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesPrecisionFarming)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- CVTaddon
 	dblValueType = DashboardValueType.new("dbl", "cvt")
-	dblValueType:setFunction("dblCvt", self, DashboardLive.getDashboardLiveCVT)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLiveCVT)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesCVT)
-	self:registerDashboardValueType(dblValueType)
 	
 	-- Realistic Damage System (RDS)
 	dblValueType = DashboardValueType.new("dbl", "rds")
-	dblValueType:setFunction("dblRds", self, DashboardLive.getDashboardLiveRDS)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLiveRDS)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesRDS)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- print
 	dblValueType = DashboardValueType.new("dbl", "print")
-	dblValueType:setFunction("dblPrint", self, DashboardLive.getDashboardLivePrint)
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setFunction("value", self, DashboardLive.getDashboardLivePrint)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesPrint)
 	self:registerDashboardValueType(dblValueType)
 end
@@ -376,6 +397,9 @@ function DashboardLive:onPostLoad(savegame)
     		dbgprint("onPostLoad : no pages found in group "..group.name, 2)
     	end
     end
+    
+    --self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive")
+    
     dbgprint_r(spec.pageGroups, 4, 3)
 end
 
@@ -1722,8 +1746,11 @@ end
 Dashboard.registerDisplayType(Dashboard.TYPES.AUDIO, false, DashboardLive.initAudioDashboardSchema, DashboardLive.loadAudioDashboardFromXML, DashboardLive.defaultAudioStateFunc)
 
 -- Overwritten function loadDashboardFromXML to load displayType="AUDIO"
-function DashboardLive:overWrittenLoadDashboardFromXML(superfunc, xmlFile, key, dashboard, dashboardData)
-	if superfunc(self, xmlFile, key, dashboard, dashboardData) then
+function DashboardLive:overWrittenLoadDashboardFromXML(superfunc, xmlFile, key, dashboard, valueType, components, i3dMappings, parentNode)
+
+--xmlFile, key, dashboard, dashboardData
+
+	if superfunc(self, xmlFile, key, dashboard, valueType, components, i3dMappings, parentNode) then
 		if dashboard.displayTypeIndex == Dashboard.TYPES.AUDIO then
 			dbgprint("loadDashboardFromXML: displayType AUDIO", 2)
 			if not DashboardLive.loadAudioDashboardFromXML(self, xmlFile, key, dashboard) then
@@ -1731,12 +1758,12 @@ function DashboardLive:overWrittenLoadDashboardFromXML(superfunc, xmlFile, key, 
 			end
 			dbgprint("loadDashboardFromXML : Audio loaded succesfully", 2)
 			
-			if dashboardData.additionalAttributesFunc ~= nil then
-				if not dashboardData.additionalAttributesFunc(self, xmlFile, key, dashboard) then
+			if valueType.loadFunction ~= nil then
+				if not valueType.loadFunction(self, xmlFile, key, dashboard) then
 					return false
 				end
 			end
-			dashboard.stateFunc = DashboardLive.defaultAudioStateFunc
+			dashboard.stateFunction = DashboardLive.defaultAudioStateFunc
 		end
 		return true
 	end
@@ -2918,6 +2945,7 @@ function DashboardLive.getDashboardLiveVCA(self, dashboard)
 		end
 	end
 	
+	dbgprint("getDashboardLiveVCA : result: "..tostring(returnValue), 4)
 	return returnValue
 end
 
