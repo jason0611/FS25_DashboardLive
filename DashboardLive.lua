@@ -2246,10 +2246,10 @@ end
 
 -- selector
 function DashboardLive.getDBLAttributesSelection(self, xmlFile, key, dashboard)
-	dashboard.dblSelection = xmlFile:getValue(key .. "#selection")
+	dashboard.dblSelection = xmlFile:getValue(key .. "#selection", nil, true)
 	dbgprint("getDBLAttributesSelection : selection: "..tostring(dashboard.dblSelection), 2)
 	
-	dashboard.dblSelectionGroup = xmlFile:getValue(key .. "#selectionGroup")
+	dashboard.dblSelectionGroup = xmlFile:getValue(key .. "#selectionGroup", nil, true)
 	dbgprint("getDBLAttributesSelection : selectionGroup: "..tostring(dashboard.dblSelectionGroup), 2)
 	
 	if dashboard.dblSelection == nil and dashboard.dblSelectionGroup == nil then 
