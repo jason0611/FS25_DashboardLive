@@ -3024,46 +3024,46 @@ end
 function DashboardLive.getDashboardLiveGPS(self, dashboard)
 	dbgprint("getDashboardLiveGPS : dblOption: "..tostring(dashboard.dblOption), 4)
 	local spec = self.spec_DashboardLive
+	local specAI = self.spec_aiAutomaticSteering
 	local specGS = self.spec_globalPositioningSystem
 	local specHLM = self.spec_HeadlandManagement
 	local o = dashboard.dblOption
 	
 	local returnValue = false
 	
-	if spec.modGuidanceSteeringFound or spec.modVCAFound or spec.modEVFound then
-		if o == "on" then
-			returnValue = specGS ~= nil and specGS.lastInputValues ~= nil and specGS.lastInputValues.guidanceIsActive
-			returnValue = returnValue or (spec.modVCAFound and self:vcaGetState("snapDirection") ~= 0) 
-			returnValue = returnValue or (spec.modEVFound and self.vData.is[5])
-			--returnValue = returnValue or (specHLM ~= nil and specHLM.exists and specHLM.isOn and specHLM.contour ~= 0)
-			
-			if dashboard.dblCond ~= nil and type(returnValue) == "boolean" then
-				if dashboard.dblCond == "not" then
-					returnValue = not returnValue
-				end
-			end
+	if o == "on" then
+		--returnValue = specAI ~= nil and specAI.steeringFieldCourse ~= nil
+		returnValue = specAI ~= nil and self:getAIAutomaticSteeringState() > 1
+		returnValue = returnValue or specGS ~= nil and specGS.lastInputValues ~= nil and specGS.lastInputValues.guidanceIsActive
+		returnValue = returnValue or (spec.modVCAFound and self:vcaGetState("snapDirection") ~= 0) 
+		returnValue = returnValue or (spec.modEVFound and self.vData.is[5])
 		
-		elseif o == "active" then
-			returnValue = specGS ~= nil and specGS.lastInputValues ~= nil and specGS.lastInputValues.guidanceSteeringIsActive
-			returnValue = returnValue or (spec.modVCAFound and self:vcaGetState("snapIsOn")) 
-			returnValue = returnValue or (spec.modEVFound and self.vData.is[5])
-			--returnValue = returnValue or (specHLM ~= nil and specHLM.exists and specHLM.isOn and not specHLM.isActive and specHLM.contour ~= 0 and not specHLM.contourSetActive)
-			
-			if dashboard.dblCond ~= nil and type(returnValue) == "boolean" then
-				if dashboard.dblCond == "not" then
-					returnValue = not returnValue
-				end
+		if dashboard.dblCond ~= nil and type(returnValue) == "boolean" then
+			if dashboard.dblCond == "not" then
+				returnValue = not returnValue
 			end
+		end
 	
-		elseif o == "lane+" then
-			returnValue = specGS ~= nil and specGS.lastInputValues ~= nil and specGS.lastInputValues.guidanceIsActive
-			returnValue = returnValue and specGS.guidanceData ~= nil and specGS.guidanceData.currentLane ~= nil and specGS.guidanceData.currentLane >= 0	
+	elseif o == "active" then
+		returnValue = specAI ~= nil and self:getAIAutomaticSteeringState() > 2
+		returnValue = returnValue or (specGS ~= nil and specGS.lastInputValues ~= nil and specGS.lastInputValues.guidanceSteeringIsActive)
+		returnValue = returnValue or (spec.modVCAFound and self:vcaGetState("snapIsOn")) 
+		returnValue = returnValue or (spec.modEVFound and self.vData.is[5])
+		
+		if dashboard.dblCond ~= nil and type(returnValue) == "boolean" then
+			if dashboard.dblCond == "not" then
+				returnValue = not returnValue
+			end
+		end
 
-		elseif o == "lane-" then
-			returnValue = specGS ~= nil and specGS.lastInputValues ~= nil and specGS.lastInputValues.guidanceIsActive
-			returnValue = returnValue and specGS.guidanceData ~= nil and specGS.guidanceData.currentLane ~= nil and specGS.guidanceData.currentLane < 0
-		end	
-	end
+	elseif o == "lane+" then
+		returnValue = specGS ~= nil and specGS.lastInputValues ~= nil and specGS.lastInputValues.guidanceIsActive
+		returnValue = returnValue and specGS.guidanceData ~= nil and specGS.guidanceData.currentLane ~= nil and specGS.guidanceData.currentLane >= 0	
+
+	elseif o == "lane-" then
+		returnValue = specGS ~= nil and specGS.lastInputValues ~= nil and specGS.lastInputValues.guidanceIsActive
+		returnValue = returnValue and specGS.guidanceData ~= nil and specGS.guidanceData.currentLane ~= nil and specGS.guidanceData.currentLane < 0
+	end	
 	
 	return returnValue
 end
@@ -3106,41 +3106,6 @@ function DashboardLive.getDashboardLiveGPSLane(self, dashboard)
 			returnValue = gsValue > 0.02
 		end		
 	end
-	
-	--[[
-	if o == "map" then
-		local spec = self.spec_DashboardLive
-		if spec == nil then return false; end
-		
-		local x, _, z = localToWorld(self.rootNode, 0, 0, 0)
-		local xf, _, zf = localToWorld(self.rootNode, 0, 0, 1)
-		local dx, dz = xf - x, zf - z
-		local heading = math.atan2(dx, dz) + math.pi
-		local scale = DashboardLive.scale
-		local quotient = 2 * g_currentMission.mapWidth
-		local zoomTarget = 1
-		
-		local speed = self:getLastSpeed()
-		if speed > 50 then
-			zoomTarget = 5
-		elseif speed > 30 then 
-			zoomTarget = 4
-		elseif speed > 20 then
-			zoomTarget = 3
-		elseif speed > 10 then
-			zoomTarget = 2
-		end
-		if spec.mapZoom < zoomTarget then
-			spec.mapZoom = spec.mapZoom + 0.1
-		elseif spec.mapZoom > zoomTarget then
-			spec.mapZoom = spec.mapZoom - 0.1
-		end
-
-		local mapNode = I3DUtil.indexToObject(self.components, "dbl_mapPlane", self.i3dMappings)
-		setShaderParameter(mapNode, "map", x/quotient, -z/quotient, scale * spec.mapZoom, heading)
-		returnvalue = true
-	end
-	--]]
 	
 	if o == "headingdelta" then
 		local x1, y1, z1 = localToWorld(self.rootNode, 0, 0, 0)
