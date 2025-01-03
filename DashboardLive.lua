@@ -1745,6 +1745,7 @@ function DashboardLive.defaultAudioStateFunc(self, dashboard, newValue, minValue
 end
 Dashboard.registerDisplayType(Dashboard.TYPES.AUDIO, false, DashboardLive.initAudioDashboardSchema, DashboardLive.loadAudioDashboardFromXML, DashboardLive.defaultAudioStateFunc)
 
+--[[
 -- Overwritten function loadDashboardFromXML to load displayType="AUDIO"
 function DashboardLive:overWrittenLoadDashboardFromXML(superfunc, xmlFile, key, dashboard, valueType, components, i3dMappings, parentNode)
 
@@ -1769,7 +1770,8 @@ function DashboardLive:overWrittenLoadDashboardFromXML(superfunc, xmlFile, key, 
 	end
 	return false
 end
---Dashboard.loadDashboardFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardFromXML, DashboardLive.overWrittenLoadDashboardFromXML)
+Dashboard.loadDashboardFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardFromXML, DashboardLive.overWrittenLoadDashboardFromXML)
+--]]
 
 -- GROUPS
 
