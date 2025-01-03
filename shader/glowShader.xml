@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomShader version="5">
+    <Parameters>
+        <Parameter name="lightControl"     target="lightControl"     type="float"  group="base"              defaultValue="1.0"              minValue="0.0"         maxValue="10"          description="X - glowing intensity, can go above 1\nin STATIC_LIGHT mesh completely black while value is below -1, used to shut display completely off independent of diffuse map" />
+        <Parameter name="sliderPos"        target="sliderPos"        type="float2" group="slider"            defaultValue="1.0 0.0"          minValue="0 0"         maxValue="1 10"        description="X - 0..1 position of the slider Y - Automatic scroll speed depending on time"/>
+        <Parameter name="colorScale"       target="colorScale"       type="float3" group="color"             defaultValue="1.0 1.0 1.0"      minValue="0 0 0"       maxValue="1 1 1"       description="XYZ - extra color control" />
+        <Parameter name="baseColor"        target="baseColor"        type="float4" group="mask"              defaultValue="0.01 0.01 0.01 0" minValue="0 0 0 0"     maxValue="1 1 1 1"     description="XYZ - base color\nW>0 - overwrite baseMap by baseColor.rgb" />
+        <Parameter name="emitColor"        target="emitColor"        type="float4" group="mask"              defaultValue="1.0 0.0 0.0 0"    minValue="0 0 0 0"     maxValue="1 1 1 1"     description="XYZ - emit color\nW>0 - overwrite emissiveColor by emitColor.rgb" />
+        <Parameter name="blinkSimple"      target="blinkSimple"      type="float2" group="blink"             defaultValue="1 0"              minValue="0 0"         maxValue="100 100"     description="X - frequency control\nY - time offset" />
+        <Parameter name="pulseSpeed"       target="pulseSpeed"       type="float"  group="pulse"             defaultValue="3"                minValue="0"           maxValue="50"          description="X - pulsating Speed" />
+        <Parameter name="fresnelControl"   target="fresnelControl"   type="float2" group="fresnel"           defaultValue="0.15 4.0"         minValue="0.0 0.0"     maxValue="10.0 10.0"   description="X - fresnel Bias\nY - fresnel Power" />
+        <Parameter name="lightTypeBitMask" target="lightTypeBitMask" type="float"  group="lightType"         defaultValue="0"                minValue="0"           maxValue="65536"       description="X - bitMask for 8 lightIds, float converted into 8 ints - b0,b1,b2,b3,b4,b5,b6,b7,b8 - can be only 0,1,2,3" />
+        <Parameter name="lightTypeSpeed"   target="lightTypeSpeed"   type="float3" group="lightType"         defaultValue="1.0 1.0 1.0"      minValue="-10 -10 -10" maxValue="10 10 10"    description="X - visScale1 (slide) time scale\nY - visScale2 (1 wave) time scale\nZ - visScale3 (6 wave) time scale" />
+        <Parameter name="markerScale"      target="markerScale"      type="float1" group="markerScaleAttr"   defaultValue="0.0"              minValue="-100"        maxValue="100"         description="X - scale on Z for red color of vertex paint" />
+        <Parameter name="markerScaleColor" target="markerScaleColor" type="float3" group="markerScaleAttr"   defaultValue="0.0 0.0 0.0"      minValue="0.0 0.0 0.0" maxValue="2.0 2.0 2.0" description="X - tinting glow color for marker variations" />
+        <Parameter name="uvPannerSpeed"    target="uvPannerSpeed"    type="float"  group="uvPannerSpeedAttr" defaultValue="1.0"              minValue="0.0"         maxValue="10.0"        description="X - tinting glow color for marker variations" />
+        <Parameter name="rotateSpeedSteps" target="rotateSpeedSteps" type="float2" group="loadingCircle"     defaultValue="1 8"              minValue="0 0"         maxValue="100 100"     description="X - speed of rotation, Y - steps of the rotation" />
+        <Parameter name="uvCenterSize"     target="uvCenterSize"     type="float4" group="loadingCircle"     defaultValue="0.5 0.5 1.0 1.0"  minValue="-8.0 -8.0 0.0 0.0" maxValue="8.0 8.0 50.0 50.0" description="XY - rotation center in UV space (for example, 0.25 0.5 )\nZW - proportion of the texture ( for example, 2x1 (horizontal x vertical) == 512x256 )"/>
+        <Parameter name="scrollSpeed"      target="scrollSpeed"      type="float2" group="loadingBar"        defaultValue="0.5 0.25"         minValue="0.0 -10.0"   maxValue="10.0 10.0" description="X - speed of scrolling, Y - scroll length until it wraps"/>
+    </Parameters>
+    <UvUsages>
+        <UvUsage textureName="baseMap"       uvType="uv0" uvScale="1.0"/>
+        <UvUsage textureName="normalMap"     uvType="uv0" uvScale="1.0"/>
+        <UvUsage textureName="glossMap"      uvType="uv0" uvScale="1.0"/>
+        <UvUsage textureName="mEmissiveMap"  uvType="uv0" uvScale="1.0"/>
+        <UvUsage textureName="mExtraBaseMap" uvType="uv0" uvScale="1.0"/>
+    </UvUsages>
+    <Textures>
+        <Texture name = "mEmissiveMap"  group="emissiveMap"  defaultColorProfile="sRGB" defaultFilename="$data/shared/materialHolders/defaultGlow_diffuse.png"/>
+        <Texture name = "mExtraBaseMap" group="extraBaseMap" defaultColorProfile="sRGB" defaultFilename="$data/shared/default_diffuse.png"/>
+    </Textures>
+    <VertexAttributes>
+        <VertexAttribute name="uv1"   group="uv1Attr"/>
+        <VertexAttribute name="uv2"   group="uv2Attr"/>
+        <VertexAttribute name="color" group="colorAttr"/>
+    </VertexAttributes>
+    <Variations>
+        <Variation name = "multiplySSAO" groups="base multiplySSAO">
+<![CDATA[
+    //Used for cutting out glow intensity using SSAO pass. Reduces the usage of custom emmisive maps.
+    #define MULTIPLY_SSAO
+]]>
+        </Variation>
+        <Variation name = "alphaTestDisable_extraBaseMap" groups="base extraBaseMap">
+<![CDATA[
+/*
+    // DEFAULT BEHAVIOUR
+    if uv.x > 0 uses baseMap.rgba - for glowing
+
+    baseMap.rgb - color
+    baseMap.w   - intensity
+    extraBaseMap.rgb - second Base Map
+*/
+    #define ALPHA_TEST_DISABLE
+    #define EXTRA_BASE_MAP
+]]>
+        </Variation>
+        <Variation name = "alphaTestDisable" groups="base">
+<![CDATA[
+    #define ALPHA_TEST_DISABLE
+]]>
+        </Variation>
+        <Variation name = "alphaTestDisable_secondUV" groups="base uv1Attr">
+<![CDATA[
+    #define ALPHA_TEST_DISABLE
+    #define SECONDUV
+    #define SECONDUV_EMISSIVE_BASEMAP_ALPHA
+]]>
+        </Variation>
+        <Variation name = "customEmissiveMap" groups="base emissiveMap">
+<![CDATA[
+/*
+    if uv.x > 0 uses mEmissiveMap.rgba for glowing
+
+    mEmissiveMap.rgb - color
+    mEmissiveMap.w   - intensity ( can be as gradient)
+*/
+    #define CUSTOM_EMISSIVE_MAP
+]]>
+        </Variation>
+        <Variation name = "customEmissiveMap_multiplySSAO" groups="base emissiveMap multiplySSAO">
+<![CDATA[
+    #define CUSTOM_EMISSIVE_MAP
+    #define MULTIPLY_SSAO
+]]>
+        </Variation>
+        <Variation name = "customEmissiveMap_secondUV" groups="base emissiveMap uv1Attr">
+            <UvUsages>
+                <UvUsage textureName="mEmissiveMap" uvType="uv1" uvScale="1.0"/>
+            </UvUsages>
+<![CDATA[
+    #define CUSTOM_EMISSIVE_MAP
+    #define SECONDUV
+    #define SECONDUV_EMISSIVEMAP
+]]>
+        </Variation>
+        <Variation name = "slider" groups="base slider uv1Attr">
+<![CDATA[
+/*
+    control intensity based on sliderPos // uv1.x <= object.sliderPos;
+*/
+    #define SLIDER
+]]>
+        </Variation>
+        <Variation name = "slider_customEmissiveMap" groups="base slider uv1Attr emissiveMap">
+<![CDATA[
+    #define SLIDER
+    #define CUSTOM_EMISSIVE_MAP
+]]>
+        </Variation>
+        <Variation name = "loadingCircle" groups="base loadingCircle">
+<![CDATA[
+    #define LOADING_CIRCLE
+]]>
+        </Variation>
+        <Variation name = "loadingBar" groups="base loadingBar">
+<![CDATA[
+    #define LOADING_BAR
+]]>
+        </Variation>
+        <Variation name = "additive_colorScale" groups="base color">
+<![CDATA[
+    #define ADDITIVE_BLENDING
+    #define COLOR_SCALE
+]]>
+        </Variation>
+        <Variation name = "additive_colorScale_uvGradient" groups="base color">
+<![CDATA[
+    #define ADDITIVE_BLENDING
+    #define COLOR_SCALE
+    #define UV_GRADIENT
+]]>
+        </Variation>
+        <Variation name = "additive_colorScale_fresnel_pulsating" groups="base color pulse fresnel">
+<![CDATA[
+    #define ADDITIVE_BLENDING
+    #define COLOR_SCALE
+    #define FRESNEL
+    #define PULSATING
+]]>
+        </Variation>
+        <Variation name = "additive_billboard_pulsating" groups="base pulse">
+<![CDATA[
+    #define ADDITIVE_BLENDING
+    #define PULSATING
+    #define BILLBOARD
+]]>
+        </Variation>
+        <Variation name = "staticLight" groups="base blink mask">
+<![CDATA[
+/*
+    if baseColor.w > 0  - overwrite baseColor
+    if emitColor.w > 0  - overwrite emissiveColor
+    if uv.y < -1        - blinking
+*/
+    #define STATIC_LIGHT
+]]>
+        </Variation>
+        <Variation name = "staticLight_uvPanner" groups="base blink mask uvPannerSpeedAttr">
+<![CDATA[
+    #define STATIC_LIGHT
+    #define UV_PANNER
+]]>
+        </Variation>
+        <Variation name = "staticLight_specularUV2" groups="base blink mask uv1Attr">
+            <UvUsages>
+                <UvUsage textureName="glossMap"  uvType="uv1" uvScale="1.0"/>
+            </UvUsages>
+<![CDATA[
+    #define STATIC_LIGHT
+    // Enables 2nd UV set for vmaks (specular)
+    #define SPECULAR_SECONDUV
+]]>
+        </Variation>
+        <Variation name = "staticLight_specularUV2_normalUV3" groups="base blink mask uv1Attr uv2Attr">
+            <UvUsages>
+                <UvUsage textureName="glossMap"  uvType="uv1" uvScale="1.0"/>
+                <UvUsage textureName="normalMap" uvType="uv2" uvScale="1.0"/>
+            </UvUsages>
+<![CDATA[
+    #define STATIC_LIGHT
+    #define SPECULAR_SECONDUV
+    // Enables 3nd UV set for normalMap
+    #define NORMAL_THIRDUV
+]]>
+        </Variation>
+        <Variation name = "baseMap_colorScale_blink" groups="base color blink">
+<![CDATA[
+    #define COLOR_SCALE
+    #define BLINK
+]]>
+        </Variation>
+        <Variation name = "multiType" groups="base emissiveMap lightType uv1Attr uv2Attr colorAttr">
+<![CDATA[
+    #define SECONDUV
+    #define THIRDUV
+    #define MULTI_TYPE
+]]>
+        </Variation>
+        <Variation name = "multiType_markerScale" groups="base emissiveMap lightType uv1Attr uv2Attr colorAttr markerScaleAttr">
+<![CDATA[
+    #define SECONDUV
+    #define THIRDUV
+    #define MULTI_TYPE
+    #define MARKER_SCALE
+]]>
+        </Variation>
+        <Variation name = "multiType_alpha" groups="base emissiveMap lightType uv1Attr uv2Attr colorAttr alphaAttr">
+<![CDATA[
+    //getMultiTypeLight passed to ALPHA_FS
+    #define SECONDUV
+    #define THIRDUV
+    #define MULTI_TYPE
+    #define MULTI_TYPE_ALPHA
+]]>
+        </Variation>
+        <Variation name = "multiType_markerScale_alpha" groups="base emissiveMap lightType uv1Attr uv2Attr colorAttr markerScaleAttr alphaAttr">
+<![CDATA[
+    #define SECONDUV
+    #define THIRDUV
+    #define MULTI_TYPE
+    #define MULTI_TYPE_ALPHA
+    #define MARKER_SCALE
+]]>
+        </Variation>
+    </Variations>
+    <LodLevel startDistance="0">
+        <CodeInjections>
+            <CodeInjection position="CONFIG_DEFINES">
+<![CDATA[
+#if defined( ADDITIVE_BLENDING )
+    #if defined( ALPHA_BLENDED )  // only for alpha blended materials
+        #undef FOG_INSCATTERING   // only apply the fog extinction
+        #define DISABLE_SPECULAR  // also remove specular
+    #endif
+#endif
+#if defined(SPECULAR_SECONDUV)
+    // Remap gloss map lookups to our custom tex coord
+    #define GLOSS_MAP_TEXCOORDS In.vs.glossMapTexCoords2
+#endif
+#if defined(NORMAL_THIRDUV)
+    #define NORMAL_MAP_TEXCOORDS In.vs.normalMapTexCoords3
+#endif
+
+#if defined(SLIDER)
+    #if !defined( ALPHA_BLENDED ) && !defined( ALPHA_TESTED )
+        #define ALPHA_TESTED
+    #endif
+#endif
+]]>
+            </CodeInjection>
+            <CodeInjection position = "OBJECT_PARAMETERS">
+<![CDATA[
+/*
+    FS25                                <- FS22
+    -------------------------------------------------------------------------------------
+    blinkSimple                         <- blinkOffset    // renamed because of new vehicleShader.xml
+                                        <- blinkSpeed
+*/
+#if defined( ALPHA_TEST_DISABLE )
+    #undef ALPHA_TESTED
+#endif
+    float lightControl; // glowing intensity, can go above 1
+#if defined( SLIDER )
+/*
+    sliderPos.x - position of the slider
+    sliderPos.y - scroll speed depending on time
+*/
+    float2 sliderPos;
+#endif
+#if defined( COLOR_SCALE )
+    float3 colorScale; // extra color control
+#endif
+#if defined( STATIC_LIGHT )
+    float4 baseColor;
+    float4 emitColor;
+#endif
+#if defined( STATIC_LIGHT ) || defined( BLINK )
+/*
+    blinkSimple.x - frequency control
+    blinkSimple.y - time offset
+*/
+    float2 blinkSimple;
+#endif
+#if defined( PULSATING )
+    float pulseSpeed;
+#endif
+/*
+    lightTypeBitMask - bitMask for 8 lightIds
+    float converted into 8 ints - b0,b1,b2,b3,b4,b5,b6,b7,b8
+    b0,b1,b2,b3,b4,b5,b6,b7,b8 - can be only 0,1,2,3
+    example:
+    3       3   0   0   0      3 0 0 0    11
+    70      2   4   0   64     2 1 0 1    1000110
+    100     0   4   32  64     0 1 2 1    1100100
+    130     2   0   0   128    2 0 0 2    10000010
+    215     3   4   16  192    3 1 1 3    11010111
+    255     3   12  48  192    3 3 3 3    11111111
+*/
+    float lightTypeBitMask;
+/*
+    lightTypeSpeed.x - visScale1 (slide) time scale
+    lightTypeSpeed.y - visScale2 (1 wave) time scale
+    lightTypeSpeed.z - visScale3 (6 wave) time scale
+*/
+    float3 lightTypeSpeed;
+#if defined(MARKER_SCALE)
+    float  markerScale;
+    float3 markerScaleColor;
+#endif
+#if defined(UV_PANNER)
+    float uvPannerSpeed;
+#endif
+#if defined(FRESNEL)
+    float2 fresnelControl;
+#endif
+#if defined( LOADING_CIRCLE )
+    float2 rotateSpeedSteps;
+    float4 uvCenterSize;
+#endif
+#if defined( LOADING_BAR )
+    float2 scrollSpeed;
+#endif
+]]>
+            </CodeInjection>
+            <CodeInjection position="LIB_FUNCTION">
+<![CDATA[
+// Custom pixel/vertex functions
+#include "$data/shaders/sharedFunctions.gsl"
+// Extra functions related to the glowShader only
+]]>
+            </CodeInjection>
+            <CodeInjection position="LIB_FUNCTION_VS">
+<![CDATA[
+// Custom vertex functions
+#include "$data/shaders/sharedFunctions_vs.gsl"
+// Extra functions related to the glowShader only
+
+float getBlinking(float blinkFrequency, float blinkTimeOffset){
+    float mTime = blinkFrequency*cTime_s + blinkTimeOffset;
+    return saturate(4*abs(frac(mTime)-0.5)-0.8);
+}
+]]>
+            </CodeInjection>
+            <CodeInjection position="GET_POSITION_VS">
+<![CDATA[
+{
+    float3 mDeformed = In.position.xyz;
+    #if defined(MARKER_SCALE)
+        float4 mVertexColor = In.color.rgba;
+        mDeformed.z += (mVertexColor.r * object.markerScale);
+    #endif
+    #if defined(SKINNING)
+        return skinPrevPoint(mDeformed.xyz, In, instance, object);
+    #else
+        return mDeformed.xyz;
+    #endif
+}
+]]>
+            </CodeInjection>
+            <CodeInjection position="POST_GET_WORLD_POSE_VS">
+<![CDATA[
+#if defined( BILLBOARD )
+{
+    // this assumes z = 0
+    float3 camToPos = float3(instance.modelMatrix[0][3], instance.modelMatrix[1][3], instance.modelMatrix[2][3]);
+    float3 upVector = float3(instance.modelMatrix[0][1], instance.modelMatrix[1][1], instance.modelMatrix[2][1]);
+    float3 sideVector = normalize(cross(camToPos, upVector));
+    // Allow scaling
+    sideVector *= length(float3(instance.modelMatrix[0][0], instance.modelMatrix[1][0], instance.modelMatrix[2][0]));
+    worldPosition = sideVector*In.position.x + upVector*In.position.y + camToPos;
+    prevWorldPosition = worldPosition;
+}
+#endif
+]]>
+            </CodeInjection>
+            <CodeInjection position="VS_OUTPUT">
+<![CDATA[
+    float mVisScale : TEXCOORDn;
+#if defined(SPECULAR_SECONDUV)
+    float2 glossMapTexCoords2 : TEXCOORDn;
+#endif
+#if defined(NORMAL_THIRDUV)
+    float2 normalMapTexCoords3 : TEXCOORDn;
+#endif
+#if defined( SLIDER ) || defined( SECONDUV )
+    float2 albedoMapTexCoord2 : TEXCOORDn;
+    #if defined( MULTI_TYPE )
+        int   uvIndex     : TEXCOORDn;
+        float randFromPos : TEXCOORDn;
+    #endif
+#endif
+#if defined( THIRDUV )
+    float2 albedoMapTexCoord3 : TEXCOORDn;
+#endif
+]]>
+            </CodeInjection>
+            <CodeInjection position="POST_SET_TEXCOORDS_VS">
+<![CDATA[
+#if defined(SPECULAR_SECONDUV)
+    // Pass second UVSet to the Pixel Shader
+    Out.glossMapTexCoords2  = convertDefaultTexCoords(In, object, In.texCoords1.xy);
+#endif
+#if defined(NORMAL_THIRDUV)
+    // Pass third UVSet to the Pixel Shader
+    Out.normalMapTexCoords3 = convertDefaultTexCoords(In, object, In.texCoords2.xy);
+#endif
+#if defined( THIRDUV )
+    // Pass third UVSet to the Pixel Shader
+    Out.albedoMapTexCoord3 = convertDefaultTexCoords(In, object, In.texCoords2.xy);
+#endif
+#if defined( SLIDER ) || defined( SECONDUV )
+    Out.albedoMapTexCoord2 = convertDefaultTexCoords( In, object, In.texCoords1.xy );
+    #if defined( MULTI_TYPE )
+        Out.uvIndex = (int)(clamp(floor(Out.albedoMapTexCoord2.x),0,7));
+        Out.randFromPos = getRandFromPos(In, instance, object, 0.0).x;
+    #endif
+#endif
+#if defined( LOADING_CIRCLE )
+    float2 mUV = getDefaultTexCoords(In, instance, object);
+    float offset = floor(object.rotateSpeedSteps.x * cTime_s * object.rotateSpeedSteps.y) / object.rotateSpeedSteps.y * 2 * 3.14159265359;
+    mUV = getUVRotatedAroundCenter(mUV, offset, object.uvCenterSize);
+
+    Out.defaultTexCoords = mUV;
+#endif
+#if defined( LOADING_BAR )
+    float2 mUV = getDefaultTexCoords(In, instance, object);
+    float offset = (frac(object.scrollSpeed.x * cTime_s) * object.scrollSpeed.y);
+    mUV.x += offset;
+    Out.defaultTexCoords = mUV;
+#endif
+
+]]>
+            </CodeInjection>
+            <CodeInjection position="VS_END">
+<![CDATA[
+    Out.mVisScale = 1.0;
+    float pi = 3.14159265359;
+#if defined( PULSATING )
+    Out.mVisScale = cos( object.pulseSpeed * cTime_s )* 0.5 + 0.5; // 0..1
+#endif
+#if defined( STATIC_LIGHT )
+    // the same formula from vehicleShader
+    if (Out.defaultTexCoords.y < -1.0){
+        // Blinking
+        Out.mVisScale = getBlinking(object.blinkSimple.x,object.blinkSimple.y);
+    }
+#endif
+#if defined( BLINK )
+    Out.mVisScale = getBlinking(object.blinkSimple.x,object.blinkSimple.y);
+#endif
+]]>
+            </CodeInjection>
+            <CodeInjection position = "LIB_FUNCTION_FS">
+<![CDATA[
+// Custom pixel functions
+#include "$data/shaders/sharedFunctions_fs.gsl"
+// Extra functions related to the glowShader only
+
+#if defined(MULTI_TYPE)
+    float getVisScale(FS_INPUT In, FS_GLOBALS globals, PerInstanceParameters& instance, ObjectParameters& object,
+                            uint lightType, float slideOffset, float timeOffset, float3 lightTypeSpeed){
+        float pi = 3.14159265359;
+        float visScale1 = 1.0;
+        {
+            // slide
+            float mTime = 0.5*cTime_s*lightTypeSpeed.x + timeOffset;
+            mTime = saturate(2*(frac(mTime)-0.5)+0.2);
+            visScale1 = gradientAnimate01(1-slideOffset,0.025,mTime);
+        }
+        float visScale2 = 1.0;
+        {
+            // 1 wave
+            float mTime = 0.5*cTime_s*lightTypeSpeed.y + timeOffset;
+            visScale2 = 2*triangleWave((mTime - slideOffset))-1;
+        }
+        float visScale3 = 1.0;
+        {
+            // 6 wave
+            float mTime = 0.1*cTime_s*lightTypeSpeed.z + timeOffset;
+            visScale3 = triangleWave(2*pi*(mTime - slideOffset));
+            visScale3 *= visScale3*visScale3; // power of 8
+        }
+        // Calculations are kept out of if/else so that it can be shared for all light ids
+        float visScaleOut = ( lightType == 1 ? visScale1 : (lightType == 2 ? visScale2 : ( lightType == 3 ? visScale3 : 1.0) ) );
+        return saturate(visScaleOut);
+    }
+    float3 getMultiTypeLight(FS_INPUT In, FS_GLOBALS globals, PerInstanceParameters& instance, ObjectParameters& object ){
+        // lightType - 0,1,2,3
+        float4 lightsInt = tex2DSample(mEmissiveMap, standardMaterialSampler, In.vs.albedoMapTexCoord2 );
+        uint lightTypeMaskU = (uint)object.lightTypeBitMask;
+        uint lightType = (lightTypeMaskU >> (In.vs.uvIndex * 2)) & 3U;
+        float slideOffset = In.vs.albedoMapTexCoord3.x;
+        // offset in time based on vertex color and position of the object
+        float timeOffset = In.vs.randFromPos + In.vs.vertexColor.r;
+        return ( lightsInt.rgb * getVisScale(In, globals, instance, object, lightType, slideOffset, timeOffset, object.lightTypeSpeed) );
+    }
+#endif
+]]>
+            </CodeInjection>
+            <CodeInjection position = "FS_GLOBALS">
+<![CDATA[
+    float4 gEmissiveColor;
+    float3 gDiffuseColor;
+    float  gAlpha;
+    float  gLightControl;
+    bool   gIsEmissiveActivated;
+]]>
+            </CodeInjection>
+            <CodeInjection position = "START_FS">
+<![CDATA[
+    globals.gEmissiveColor = float4(1.0,1.0,1.0,1.0);
+    globals.gDiffuseColor  = float3(1.0,1.0,1.0);
+    globals.gAlpha = 1.0;
+    globals.gLightControl = object.lightControl;
+    //
+    // Environment Conditions control
+    // set to 1 or 0, depends on "Wheater Required Mask"
+    // for example can be visible only at "Night" (object will be rendered and instance.visibility will be set to 1.0)
+    // Note: if you want you object to be visible at "Day" -> set "Render Invisible" to true
+    //       in this case object will be rendered, but instance.visibility will be set to 0.0
+    //
+    globals.gLightControl *= instance.visibility;
+    //
+    {
+        float2 uvToCheck = In.vs.defaultTexCoords.xy;
+        #if defined(MULTI_TYPE)
+            uvToCheck = In.vs.albedoMapTexCoord2.xy;
+        #endif
+        globals.gIsEmissiveActivated = globals.gLightControl > 0.0 && uvToCheck.x > 0.0;
+    }
+    //
+#if defined( ALBEDO_MAP )
+    #if defined(UV_PANNER)
+    float2 uvPannerCoords = In.vs.defaultTexCoords;
+    uvPannerCoords.x += (cTime_s * object.uvPannerSpeed);
+    float4 mBaseMap = tex2DSample(baseMap, ALBEDO_MAP_SAMPLER, uvPannerCoords).xyzw;
+    #else
+    float4 mBaseMap = tex2DSample(baseMap, ALBEDO_MAP_SAMPLER, In.vs.defaultTexCoords).xyzw;
+    #endif
+    #if defined( SECONDUV_EMISSIVE_BASEMAP_ALPHA )
+        // load baseMap.w from uv1
+        // than emissiveColor.w (emisive intensity) uses alpha as glowing mask
+        mBaseMap.w = tex2DSample(baseMap, ALBEDO_MAP_SAMPLER, In.vs.albedoMapTexCoord2).w;
+    #endif
+    globals.gEmissiveColor = mBaseMap.rgba;
+    globals.gDiffuseColor  = mBaseMap.rgb;
+    #if defined( STATIC_LIGHT )
+        globals.gDiffuseColor.rgb = mBaseMap.rgb;
+        {
+            float mBlend = saturate(globals.gLightControl*In.vs.mVisScale);
+            if (object.baseColor.w>0){
+                // modify baseColor when it glowing (because baseColor is different from emissiveColor)
+                globals.gDiffuseColor.rgb  = lerp(object.baseColor.rgb, float3(0.01,0.01,0.01), mBlend);
+            }
+            globals.gEmissiveColor.xyzw = mBaseMap.xyzw;
+            if (object.emitColor.w>0){
+                globals.gEmissiveColor.rgb = object.emitColor.rgb; // owerwrite missive color
+                // modify baseColor when it glowing (because baseColor is different from emissiveColor)
+                // take in account previously modified baseColor (if it happend)
+                globals.gDiffuseColor.rgb  = lerp(globals.gDiffuseColor.rgb, float3(0.01,0.01,0.01), mBlend);
+            }
+            // mesh completely black while value is below -1 -> used to shut display completely off independent of diffuse map
+            if (object.lightControl<=-1){
+                globals.gDiffuseColor.rgb = float3(0.0, 0.0, 0.0);
+                globals.gEmissiveColor.xyzw = float4(0.0, 0.0, 0.0, 0.0);
+            }
+        }
+    #elif defined( MULTI_TYPE )
+        globals.gEmissiveColor.xyz = getMultiTypeLight(In, globals, instance, object);
+        #if defined(MARKER_SCALE)
+            globals.gEmissiveColor.xyz += object.markerScaleColor;
+        #endif
+        globals.gDiffuseColor.rgb = mBaseMap.rgb;
+    #else
+        // DEFAULT BEHAVIOUR
+        globals.gEmissiveColor.xyzw = mBaseMap.xyzw;
+        globals.gDiffuseColor.rgb = mBaseMap.rgb;
+    #endif
+#endif
+#if defined( CUSTOM_EMISSIVE_MAP )
+    #if defined( SECONDUV_EMISSIVEMAP )
+        globals.gEmissiveColor.xyzw = tex2DSample(mEmissiveMap, EMISSIVE_MAP_SAMPLER, In.vs.albedoMapTexCoord2).xyzw;
+    #else
+        globals.gEmissiveColor.xyzw = tex2DSample(mEmissiveMap, EMISSIVE_MAP_SAMPLER, In.vs.defaultTexCoords).xyzw;
+    #endif
+#endif
+#if defined( COLOR_SCALE )
+    globals.gEmissiveColor.xyz *= object.colorScale.rgb;
+#endif
+#if defined( SLIDER )
+    float mask = float(In.vs.albedoMapTexCoord2.x <= (object.sliderPos.x + frac(object.sliderPos.y * cTime_s)));
+    globals.gAlpha = mask;
+    globals.gEmissiveColor.w *= mask;
+#endif
+#if defined( STATIC_LIGHT ) || defined( BLINK )
+    globals.gEmissiveColor.w *= In.vs.mVisScale;
+#endif
+]]>
+            </CodeInjection>
+            <CodeInjection position = "POST_DIFFUSE_COLOR_FS">
+<![CDATA[
+#if defined( ALBEDO_MAP )
+    #if defined( STATIC_LIGHT )
+        if ( In.vs.defaultTexCoords.x > 0.0 ){
+            // overwrite the diffuse
+            diffuseColor.rgb = globals.gDiffuseColor.rgb;
+        }
+    #endif
+    #if defined( EXTRA_BASE_MAP )
+        if (!(globals.gLightControl>0)){
+            diffuseColor.rgb = tex2DSample(mExtraBaseMap, standardMaterialSampler, In.vs.defaultTexCoords).rgb;
+        }
+    #endif
+#endif
+]]>
+            </CodeInjection>
+            <CodeInjection position="EMISSIVE_FS">
+<![CDATA[
+if ( globals.gIsEmissiveActivated ){
+
+    #if defined(EMISSIVE_MAP)
+        emissiveColor.rgb *= globals.gEmissiveColor.xyz;
+    #else
+        // DEFAULT BEHAVIOUR
+        emissiveColor.rgb = globals.gEmissiveColor.xyz;
+    #endif
+    #if defined( UV_GRADIENT )
+        emissiveColor.rgb = saturate(In.vs.defaultTexCoords.y*In.vs.defaultTexCoords.y*In.vs.defaultTexCoords.y);
+        emissiveColor.rgb *= globals.gEmissiveColor.xyz;
+    #endif
+    #if defined( FRESNEL )
+        globals.gEmissiveColor.w *= getFresnel( facing, object.fresnelControl.x , object.fresnelControl.y);
+    #endif
+
+    float mLightControl = globals.gLightControl;
+    #if GPU_PROFILE < GPU_PROFILE_MEDIUM
+        mLightControl = saturate(mLightControl);
+    #endif
+    emissiveColor *= mLightControl;
+    emissiveColor *= globals.gEmissiveColor.w;
+    #if defined(MULTIPLY_SSAO)
+        emissiveColor *= (ssao * ssao); // the same as pow(ssao, 2.0)
+    #endif
+}
+]]>
+            </CodeInjection>
+            <CodeInjection position="POST_GLOSS_COLOR_FS">
+<![CDATA[
+#if defined( DISABLE_SPECULAR )
+    #if defined( SPECULAR )
+        #undef SPECULAR
+    #endif
+#endif
+]]>
+            </CodeInjection>
+            <CodeInjection position="ALPHA_FS">
+<![CDATA[
+#if defined(ALPHA_BLENDED) || defined(ALPHA_TESTED)
+    alpha *= globals.gAlpha;
+#endif
+#if defined(PULSATING)
+    alpha = lerp(alpha, 2*alpha, In.vs.mVisScale );
+#endif
+#if defined(ALPHA_BLENDED)
+    reflectingLightingScale = alpha;
+#endif
+#if defined(MULTI_TYPE_ALPHA)
+    alpha *= getMultiTypeLight(In, globals, instance, object).r;
+#endif
+]]>
+            </CodeInjection>
+            <CodeInjection position="FINAL_POS_FS">
+<![CDATA[
+#if defined( ADDITIVE_BLENDING )
+    #if defined(ALPHA_BLENDED)
+        oColor.a = 0.0;
+    #endif
+#endif
+]]>
+            </CodeInjection>
+        </CodeInjections>
+    </LodLevel>
+</CustomShader>
