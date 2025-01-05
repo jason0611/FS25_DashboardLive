@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CustomShader version="5">
     <Parameters>
-		<Parameter name = "map"          target = "map"          type = "float4" group="base"   defaultValue="0 0 0.2 0"/>
-        <Parameter name = "lightControl" target = "lightControl" type = "float"  group="base"   defaultValue = "1.0"              minValue = "0.0"             maxValue = "10"/>
+        <Parameter name="map"			   target="map"            	 type="float4" group="base"   	         defaultValue="0 0 0.2 0"/>
+        <Parameter name="lightControl"     target="lightControl"     type="float"  group="base"              defaultValue="1.0"              minValue="0.0"         maxValue="10"          description="X - glowing intensity, can go above 1\nin STATIC_LIGHT mesh completely black while value is below -1, used to shut display completely off independent of diffuse map" />
     </Parameters>
     <UvUsages/>
     <Textures/>
@@ -13,7 +13,8 @@
             <CodeInjection position = "OBJECT_PARAMETERS">
 <![CDATA[
     float lightControl; // glowing intensity, can go above 1
-// map.x: horizontal scroll
+
+	// map.x: horizontal scroll
 	// map.y: vertical scroll
 	// map.z: zoom factor
 	// map.w: rotation (radiant)
@@ -23,7 +24,7 @@
             <CodeInjection position="POST_SET_TEXCOORDS_VS">
 <![CDATA[
 #if defined(ALBEDO_MAP) || defined(EMISSIVE_MAP)
-    float2 mapPos = getDefaultTexCoords(In, object);
+    float2 mapPos = getDefaultTexCoords(In, instance, object);
     
     float2 rotCenter = 0.5;
 	float radiant = object.map.w;
@@ -48,6 +49,7 @@
 	
     Out.defaultTexCoords = mapPos;
 #endif
+
 ]]>
             </CodeInjection>
             <CodeInjection position = "LIB_FUNCTION_FS">
@@ -64,7 +66,8 @@ float linearstepFS(float a, float b, float x){
     float4 gEmissiveColor;
     float3 gDiffuseColor;
     float  gAlpha;
-    float  lightControl;
+    float  gLightControl;
+    bool   gIsEmissiveActivated;
 ]]>
             </CodeInjection>
             <CodeInjection position = "START_FS">
@@ -72,33 +75,104 @@ float linearstepFS(float a, float b, float x){
     globals.gEmissiveColor = float4(1.0,1.0,1.0,1.0);
     globals.gDiffuseColor  = float3(1.0,1.0,1.0);
     globals.gAlpha = 1.0;
-    globals.lightControl = object.lightControl;
+    globals.gLightControl = object.lightControl;
+    //
     // Environment Conditions control
-    globals.lightControl *= object.visibility;
+    // set to 1 or 0, depends on "Wheater Required Mask"
+    // for example can be visible only at "Night" (object will be rendered and instance.visibility will be set to 1.0)
+    // Note: if you want you object to be visible at "Day" -> set "Render Invisible" to true
+    //       in this case object will be rendered, but instance.visibility will be set to 0.0
+    //
+    globals.gLightControl *= instance.visibility;
+    //
+    {
+        float2 uvToCheck = In.vs.defaultTexCoords.xy;
+        #if defined(MULTI_TYPE)
+            uvToCheck = In.vs.albedoMapTexCoord2.xy;
+        #endif
+        globals.gIsEmissiveActivated = globals.gLightControl > 0.0 && uvToCheck.x > 0.0;
+    }
+    //
 #if defined( ALBEDO_MAP )
-    float4 mBaseMap = tex2D(baseMap, In.vs.defaultTexCoords).xyzw;
+    #if defined(UV_PANNER)
+    float2 uvPannerCoords = In.vs.defaultTexCoords;
+    uvPannerCoords.x += (cTime_s * object.uvPannerSpeed);
+    float4 mBaseMap = tex2DSample(baseMap, ALBEDO_MAP_SAMPLER, uvPannerCoords).xyzw;
+    #else
+    float4 mBaseMap = tex2DSample(baseMap, ALBEDO_MAP_SAMPLER, In.vs.defaultTexCoords).xyzw;
+    #endif
+    #if defined( SECONDUV_EMISSIVE_BASEMAP_ALPHA )
+        // load baseMap.w from uv1
+        // than emissiveColor.w (emisive intensity) uses alpha as glowing mask
+        mBaseMap.w = tex2DSample(baseMap, ALBEDO_MAP_SAMPLER, In.vs.albedoMapTexCoord2).w;
+    #endif
     globals.gEmissiveColor = mBaseMap.rgba;
     globals.gDiffuseColor  = mBaseMap.rgb;
-    // DEFAULT BEHAVIOUR
-    globals.gEmissiveColor.xyzw = mBaseMap.xyzw;
-    globals.gDiffuseColor.rgb  = mBaseMap.rgb;
+    #if defined( STATIC_LIGHT )
+        globals.gDiffuseColor.rgb = mBaseMap.rgb;
+        {
+            float mBlend = saturate(globals.gLightControl*In.vs.mVisScale);
+            if (object.baseColor.w>0){
+                // modify baseColor when it glowing (because baseColor is different from emissiveColor)
+                globals.gDiffuseColor.rgb  = lerp(object.baseColor.rgb, float3(0.01,0.01,0.01), mBlend);
+            }
+            globals.gEmissiveColor.xyzw = mBaseMap.xyzw;
+            if (object.emitColor.w>0){
+                globals.gEmissiveColor.rgb = object.emitColor.rgb; // owerwrite missive color
+                // modify baseColor when it glowing (because baseColor is different from emissiveColor)
+                // take in account previously modified baseColor (if it happend)
+                globals.gDiffuseColor.rgb  = lerp(globals.gDiffuseColor.rgb, float3(0.01,0.01,0.01), mBlend);
+            }
+            // mesh completely black while value is below -1 -> used to shut display completely off independent of diffuse map
+            if (object.lightControl<=-1){
+                globals.gDiffuseColor.rgb = float3(0.0, 0.0, 0.0);
+                globals.gEmissiveColor.xyzw = float4(0.0, 0.0, 0.0, 0.0);
+            }
+        }
+    #elif defined( MULTI_TYPE )
+        globals.gEmissiveColor.xyz = getMultiTypeLight(In, globals, instance, object);
+        #if defined(MARKER_SCALE)
+            globals.gEmissiveColor.xyz += object.markerScaleColor;
+        #endif
+        globals.gDiffuseColor.rgb = mBaseMap.rgb;
+    #else
+        // DEFAULT BEHAVIOUR
+        globals.gEmissiveColor.xyzw = mBaseMap.xyzw;
+        globals.gDiffuseColor.rgb = mBaseMap.rgb;
+    #endif
+#endif
+#if defined( CUSTOM_EMISSIVE_MAP )
+    #if defined( SECONDUV_EMISSIVEMAP )
+        globals.gEmissiveColor.xyzw = tex2DSample(mEmissiveMap, EMISSIVE_MAP_SAMPLER, In.vs.albedoMapTexCoord2).xyzw;
+    #else
+        globals.gEmissiveColor.xyzw = tex2DSample(mEmissiveMap, EMISSIVE_MAP_SAMPLER, In.vs.defaultTexCoords).xyzw;
+    #endif
+#endif
+#if defined( COLOR_SCALE )
+    globals.gEmissiveColor.xyz *= object.colorScale.rgb;
+#endif
+#if defined( SLIDER )
+    float mask = float(In.vs.albedoMapTexCoord2.x <= (object.sliderPos.x + frac(object.sliderPos.y * cTime_s)));
+    globals.gAlpha = mask;
+    globals.gEmissiveColor.w *= mask;
+#endif
+#if defined( STATIC_LIGHT ) || defined( BLINK )
+    globals.gEmissiveColor.w *= In.vs.mVisScale;
 #endif
 ]]>
             </CodeInjection>
             <CodeInjection position="EMISSIVE_FS">
 <![CDATA[
-// ---------------------------------------------
-if ( In.vs.defaultTexCoords.x > 0.0 ){
-    // DEFAULT BEHAVIOUR
-    emissiveColor.rgb = globals.gEmissiveColor.xyz;
-    float mLightControl = globals.lightControl;
-#if GPU_PROFILE < GPU_PROFILE_MEDIUM
-    mLightControl = saturate(mLightControl);
-#endif
+if ( globals.gIsEmissiveActivated ){    
+	// DEFAULT BEHAVIOUR
+	emissiveColor.rgb = globals.gEmissiveColor.xyz;
+	float mLightControl = globals.gLightControl;
+    #if GPU_PROFILE < GPU_PROFILE_MEDIUM
+        mLightControl = saturate(mLightControl);
+    #endif
     emissiveColor *= mLightControl;
     emissiveColor *= globals.gEmissiveColor.w;
 }
-// ---------------------------------------------
 ]]>
             </CodeInjection>
         </CodeInjections>
