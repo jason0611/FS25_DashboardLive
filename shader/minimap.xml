@@ -24,7 +24,7 @@
             <CodeInjection position="POST_SET_TEXCOORDS_VS">
 <![CDATA[
 #if defined(ALBEDO_MAP) || defined(EMISSIVE_MAP)
-    float2 mapPos = getDefaultTexCoords(In, object);
+    float2 mapPos = getDefaultTexCoords(In, instance, object);
     
     float2 rotCenter = 0.5;
 	float radiant = object.map.w;
