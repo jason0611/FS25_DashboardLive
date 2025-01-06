@@ -1540,8 +1540,8 @@ function DashboardLive:catchBooleanForDashboardStateFunc(superfunc, dashboard, n
 	end
 	return superfunc(self, dashboard, tonumber(newValue) or 0, minValue, maxValue, isActive)
 end
---Dashboard.defaultAnimationDashboardStateFunc = Utils.overwrittenFunction(Dashboard.defaultAnimationDashboardStateFunc, DashboardLive.catchBooleanForDashboardStateFunc)
---Dashboard.defaultSliderDashboardStateFunc = Utils.overwrittenFunction(Dashboard.defaultSliderDashboardStateFunc, DashboardLive.catchBooleanForDashboardStateFunc)
+Dashboard.defaultAnimationDashboardStateFunc = Utils.overwrittenFunction(Dashboard.defaultAnimationDashboardStateFunc, DashboardLive.catchBooleanForDashboardStateFunc)
+Dashboard.defaultSliderDashboardStateFunc = Utils.overwrittenFunction(Dashboard.defaultSliderDashboardStateFunc, DashboardLive.catchBooleanForDashboardStateFunc)
 
 -- Append schema definitions to registerDashboardXMLPath function 
 function DashboardLive.addDarkModeToRegisterDashboardXMLPaths(schema, basePath, availableValueTypes)
@@ -1756,9 +1756,10 @@ function DashboardLive.defaultAudioStateFunc(self, dashboard, newValue, minValue
 			dashboard.played = false
 		end
 	elseif dashboard.dblAudioOutside then
-		if newValue and not dashboard.played and not isSamplePlaying(dashboard.dblAudioSample) then
-			local playerX = g_currentMission.player.baseInformation.lastPositionX
-			local playerZ = g_currentMission.player.baseInformation.lastPositionZ
+		if newValue and not dashboard.played and g_localPlayer ~= nil and not isSamplePlaying(dashboard.dblAudioSample) then
+			local playerX, _, playerZ = localToWorld(g_localPlayer.capsuleController.rootNode, 0, 0, 0)
+			--local playerX = g_currentMission.player.baseInformation.lastPositionX
+			--local playerZ = g_currentMission.player.baseInformation.lastPositionZ
 			local vehicleX, _, vehicleZ = localToWorld(self.rootNode, 0, 0, 0)
 			local distance = math.sqrt((playerX-vehicleX)^2 + (playerZ-vehicleZ)^2)
 			if distance < dashboard.dblAudioDistance then
@@ -3186,16 +3187,20 @@ end
 function DashboardLive.getDashboardLiveGPSWidth(self, dashboard)
 	dbgprint("getDashboardLiveGPSWidth : dblOption: "..tostring(dashboard.dblOption), 4)
 	local spec = self.spec_DashboardLive
+	local specAI = self.spec_aiAutomaticSteering
 	local specGS = self.spec_globalPositioningSystem
 	local returnVaue = 0
 	local factor = dashboard.dblFactor or 1
-	if spec.modVCAFound and self:vcaGetState("snapDirection") ~= 0 then 
-		returnValue = self.spec_vca.snapDistance * factor
-	end
+	
 	if spec.modGuidanceSteeringFound and specGS ~= nil and specGS.guidanceData ~= nil and specGS.guidanceData.width ~= nil then
 		returnValue = specGS.guidanceData.width * factor
 	end
-	
+	if spec.modVCAFound and self:vcaGetState("snapDirection") ~= 0 then 
+		returnValue = self.spec_vca.snapDistance * factor
+	end
+	if specAI ~= nil and returnValue == 0 then
+		returnValue = self:getAttacherToolWorkingWidth() * factor
+	end
 	if dashboard.dblMin ~= nil and type(returnValue) == "number" then
 		returnValue = math.max(returnValue, dashboard.dblMin)
 	end
