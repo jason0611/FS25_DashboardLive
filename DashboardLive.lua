@@ -3186,16 +3186,20 @@ end
 function DashboardLive.getDashboardLiveGPSWidth(self, dashboard)
 	dbgprint("getDashboardLiveGPSWidth : dblOption: "..tostring(dashboard.dblOption), 4)
 	local spec = self.spec_DashboardLive
+	local specAI = self.spec_aiAutomaticSteering
 	local specGS = self.spec_globalPositioningSystem
 	local returnVaue = 0
 	local factor = dashboard.dblFactor or 1
-	if spec.modVCAFound and self:vcaGetState("snapDirection") ~= 0 then 
-		returnValue = self.spec_vca.snapDistance * factor
-	end
+	
 	if spec.modGuidanceSteeringFound and specGS ~= nil and specGS.guidanceData ~= nil and specGS.guidanceData.width ~= nil then
 		returnValue = specGS.guidanceData.width * factor
 	end
-	
+	if spec.modVCAFound and self:vcaGetState("snapDirection") ~= 0 then 
+		returnValue = self.spec_vca.snapDistance * factor
+	end
+	if specAI ~= nil and returnValue == 0 then
+		returnValue = self:getAttacherToolWorkingWidth() * factor
+	end
 	if dashboard.dblMin ~= nil and type(returnValue) == "number" then
 		returnValue = math.max(returnValue, dashboard.dblMin)
 	end
