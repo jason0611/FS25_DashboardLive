@@ -1538,7 +1538,10 @@ end
 -- Overwritten vanilla-functions to achieve a better tolerance to errors caused by wrong variable types
 function DashboardLive:catchBooleanForDashboardStateFunc(superfunc, dashboard, newValue, minValue, maxValue, isActive)
 	if type(newValue)=="boolean" then
-		newValue = newValue and 1 or 0
+		local min = minValue or 0
+		local max = maxValue or 1
+		--newValue = newValue and 1 or 0
+		newValue = newValue and max or min
 	end
 	return superfunc(self, dashboard, tonumber(newValue) or 0, minValue, maxValue, isActive)
 end
