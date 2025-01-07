@@ -1,7 +1,19 @@
 DashboardUtils = {}
 
 -- Vanilla Integration POC --
+function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, compound)
+	local fileName = xmlFile:getValue(key .. "#filename")
+	dbgprint("loadDashboardCompoundFromXML :: fileName = "..tostring(fileName), 2)
+	if fileName == "$data/vehicles/claas/shared/displays/displays.xml" then
+		local newFileName = "<replacement>"
+		--xmlFile:setValue(key .. "#filename", newFileName)
+		dbgprint("loadDashboardCompoundFromXML :: replaced with "..tostring(newFileName), 2)
+	end	
+	return superfunc(self, xmlFile, key, compound)
+end
+Dashboard.loadDashboardCompoundFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardCompoundFromXML, DashboardUtils.loadDashboardCompoundFromXML)
 
+--[[
 function DashboardUtils.createVanillaNodes(vehicle, xmlVanillaFile, xmlModFile)
 	local spec = vehicle.spec_DashboardLive
 	
@@ -149,3 +161,4 @@ function DashboardUtils.createEditorNode(vehicle, node, symbolIndex, createMinim
 	g_i3DManager:releaseSharedI3DFile(i3d, false)
 	delete(i3d)
 end
+--]]

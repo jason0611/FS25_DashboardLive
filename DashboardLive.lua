@@ -93,6 +93,7 @@ function DashboardLive.initSpecialization()
 	schema:register(XMLValueType.FLOAT, DashboardLive.DBL_XML_KEY .. "#volume", "sound volume")
 	schema:register(XMLValueType.BOOL, DashboardLive.DBL_XML_KEY .. "#outside", "hearable from outside?")
 	schema:register(XMLValueType.FLOAT, DashboardLive.DBL_XML_KEY .. "#distance", "hearable distance")
+	dbgprint("initSpecialization : DashboardLive element options registered", 2)
 	
 	local COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).dashboard(?)"
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#cmd", "DashboardLive command")
@@ -122,10 +123,9 @@ function DashboardLive.initSpecialization()
 	Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_XML_KEY .. "#volume", "sound volume")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.BOOL, COMPOUND_XML_KEY .. "#outside", "hearable from outside?")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_XML_KEY .. "#distance", "hearable distance")
+	dbgprint("initSpecialization : DashboardLive compound options registered", 2)
 	
-	
-	dbgprint("initSpecialization : DashboardLive element options registered", 2)
-	
+--[[
 	DashboardLive.vanillaSchema = XMLSchema.new("vanillaIntegration")
 	
 	Dashboard.registerDashboardXMLPaths(DashboardLive.vanillaSchema, "vanillaDashboards.vanillaDashboard(?).dashboardLive", "base vca gps")
@@ -152,6 +152,7 @@ function DashboardLive.initSpecialization()
 	DashboardLive.vanillaSchema:register(XMLValueType.INT, DashboardLive.DBL_Vanilla_XML_KEY .. "#loop", "repeat sound n times")
 	DashboardLive.vanillaSchema:register(XMLValueType.FLOAT, DashboardLive.DBL_Vanilla_XML_KEY .. "#volume", "sound volume")
 	dbgprint("initSpecialization : vanillaSchema element options registered", 2)
+--]]
 end
 
 function DashboardLive.registerEventListeners(vehicleType)
@@ -179,12 +180,11 @@ end
 
 function DashboardLive:onPreLoad(savegame)
 	self.spec_DashboardLive = self["spec_"..DashboardLive.MOD_NAME..".DashboardLive"]
-	local spec = self.spec_DashboardLive
-	
-	DashboardLive.vanillaIntegrationXML = DashboardLive.MOD_PATH.."xml/vanillaDashboards.xml"
+		
+	--DashboardLive.vanillaIntegrationXML = DashboardLive.MOD_PATH.."xml/vanillaDashboards.xml"
 	--DashboardLive.vanillaIntegrationXMLFile = XMLFile.loadIfExists("VanillaDashboards", DashboardLive.vanillaIntegrationXML, DashboardLive.vanillaSchema)
 
-	DashboardLive.modIntegrationXML = DashboardLive.MODSETTINGSDIR.."modDashboards.xml"
+	--DashboardLive.modIntegrationXML = DashboardLive.MODSETTINGSDIR.."modDashboards.xml"
 	--DashboardLive.modIntegrationXMLFile = XMLFile.loadIfExists("ModDashboards", DashboardLive.modIntegrationXML, DashboardLive.vanillaSchema)
 end
 
@@ -230,10 +230,12 @@ function DashboardLive:onLoad(savegame)
 	spec.lastDefUsage = 0
 	spec.lastAirUsage = 0
 	
+--[[
 	-- Integrate vanilla dashboards
 	if DashboardLive.vanillaIntegrationXMLFile ~= nil then
 		DashboardUtils.createVanillaNodes(self, DashboardLive.vanillaIntegrationXMLFile, DashboardLive.modIntegrationXMLFile)
 	end
+--]]
 end
 
 function DashboardLive:onRegisterDashboardValueTypes()
