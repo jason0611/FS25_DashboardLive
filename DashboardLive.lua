@@ -2073,7 +2073,7 @@ function DashboardLive.getDBLAttributesBase(self, xmlFile, key, dashboard)
     dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
 	dbgprint("getDBLAttributesBase : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
 
-	dashboard.dblState = xmlFile:getValue(key .. "#state") -- swath state, ridgemarker state, ...
+	dashboard.dblState = xmlFile:getValue(key .. "#state") -- swath state, ridgemarker state, crabsteering state...
 	dbgprint("getDBLAttributesBase : state: "..tostring(dashboard.dblState), 2)
 	
 	dashboard.dblStateText = xmlFile:getValue(key .. "#stateText") -- tipSide
@@ -2453,6 +2453,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		local specWM = self.spec_workMode
 		local specRM = self.spec_ridgeMarker
 		local specMO = self.spec_motorized
+		local specCS = self.spec_crabSteering
 		local cmds, j, s, o = dashboard.dblCommand, dashboard.dblAttacherJointIndices, dashboard.dblStateText or dashboard.dblState, dashboard.dblOption
 		local cmd = string.split(cmds, " ")
 		local returnValue = false
@@ -2517,12 +2518,6 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			elseif c == "coveropen" then
 				returnValue = returnValue or getAttachedStatus(self, dashboard, "coveropen")
 
-			-- elseif specWM ~= nil and c == "swath" then
-			-- 	if s == "" or tonumber(s) == nil then
-			-- 		Logging.xmlWarning(vehicle.xmlFile, "No swath state number given for DashboardLive swath command")
-			-- 		return false
-			-- 	end
-			-- 	returnValue = returnValue or specWM.state == tonumber(s)
 			end
 		end
 		
@@ -2545,6 +2540,16 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 				elseif s == "shallowmode" then
 					returnValue = not spec.isSubsoiler and not spec.useDeepMode
 				end
+			end
+		end
+		
+		-- crabSteering
+		if cmds == "crabsteering" and spec_CS ~= nil then
+			local state = dashboard.dblState
+			if dblState ~= nil and type(dblState) == "number" then
+				returnValue = specCS.state == dblState
+			else
+				Logging.xmlWarning(vehicle.xmlFile, "No steering mode number given for DashboardLive crabSteering command")
 			end
 		end
 		
