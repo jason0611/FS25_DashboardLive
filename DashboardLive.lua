@@ -2116,6 +2116,8 @@ function DashboardLive.getDBLAttributesMiniMap(self, xmlFile, key, dashboard)
 	dashboard.scale = xmlFile:getValue(key .. "#scale") or DashboardLive.scale
 	dashboard.node = xmlFile:getValue(key .. "#node", nil, self.components, self.i3dMappings)
 	dbgprint("getDBLAttributesMiniMap: node = "..tostring(dashboard.node).." / command = "..tostring(dashboard.dblCommand).." / scale = "..tostring(dashboard.scale), 2)
+	dbgprint("xmlFile", 2)
+	dbgprint_r(xmlFile, 2, 1)
 
 	local mapTexture = g_currentMission.mapImageFilename
 	local mapName = g_currentMission.missionInfo.map.title
