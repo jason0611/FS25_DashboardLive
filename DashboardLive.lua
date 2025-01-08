@@ -93,6 +93,7 @@ function DashboardLive.initSpecialization()
 	schema:register(XMLValueType.FLOAT, DashboardLive.DBL_XML_KEY .. "#volume", "sound volume")
 	schema:register(XMLValueType.BOOL, DashboardLive.DBL_XML_KEY .. "#outside", "hearable from outside?")
 	schema:register(XMLValueType.FLOAT, DashboardLive.DBL_XML_KEY .. "#distance", "hearable distance")
+	dbgprint("initSpecialization : DashboardLive element options registered", 2)
 	
 	local COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).dashboard(?)"
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#cmd", "DashboardLive command")
@@ -122,10 +123,9 @@ function DashboardLive.initSpecialization()
 	Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_XML_KEY .. "#volume", "sound volume")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.BOOL, COMPOUND_XML_KEY .. "#outside", "hearable from outside?")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_XML_KEY .. "#distance", "hearable distance")
+	dbgprint("initSpecialization : DashboardLive compound options registered", 2)
 	
-	
-	dbgprint("initSpecialization : DashboardLive element options registered", 2)
-	
+--[[
 	DashboardLive.vanillaSchema = XMLSchema.new("vanillaIntegration")
 	
 	Dashboard.registerDashboardXMLPaths(DashboardLive.vanillaSchema, "vanillaDashboards.vanillaDashboard(?).dashboardLive", "base vca gps")
@@ -152,6 +152,7 @@ function DashboardLive.initSpecialization()
 	DashboardLive.vanillaSchema:register(XMLValueType.INT, DashboardLive.DBL_Vanilla_XML_KEY .. "#loop", "repeat sound n times")
 	DashboardLive.vanillaSchema:register(XMLValueType.FLOAT, DashboardLive.DBL_Vanilla_XML_KEY .. "#volume", "sound volume")
 	dbgprint("initSpecialization : vanillaSchema element options registered", 2)
+--]]
 end
 
 function DashboardLive.registerEventListeners(vehicleType)
@@ -179,12 +180,11 @@ end
 
 function DashboardLive:onPreLoad(savegame)
 	self.spec_DashboardLive = self["spec_"..DashboardLive.MOD_NAME..".DashboardLive"]
-	local spec = self.spec_DashboardLive
-	
-	DashboardLive.vanillaIntegrationXML = DashboardLive.MOD_PATH.."xml/vanillaDashboards.xml"
+		
+	--DashboardLive.vanillaIntegrationXML = DashboardLive.MOD_PATH.."xml/vanillaDashboards.xml"
 	--DashboardLive.vanillaIntegrationXMLFile = XMLFile.loadIfExists("VanillaDashboards", DashboardLive.vanillaIntegrationXML, DashboardLive.vanillaSchema)
 
-	DashboardLive.modIntegrationXML = DashboardLive.MODSETTINGSDIR.."modDashboards.xml"
+	--DashboardLive.modIntegrationXML = DashboardLive.MODSETTINGSDIR.."modDashboards.xml"
 	--DashboardLive.modIntegrationXMLFile = XMLFile.loadIfExists("ModDashboards", DashboardLive.modIntegrationXML, DashboardLive.vanillaSchema)
 end
 
@@ -230,10 +230,12 @@ function DashboardLive:onLoad(savegame)
 	spec.lastDefUsage = 0
 	spec.lastAirUsage = 0
 	
+--[[
 	-- Integrate vanilla dashboards
 	if DashboardLive.vanillaIntegrationXMLFile ~= nil then
 		DashboardUtils.createVanillaNodes(self, DashboardLive.vanillaIntegrationXMLFile, DashboardLive.modIntegrationXMLFile)
 	end
+--]]
 end
 
 function DashboardLive:onRegisterDashboardValueTypes()
@@ -1536,7 +1538,10 @@ end
 -- Overwritten vanilla-functions to achieve a better tolerance to errors caused by wrong variable types
 function DashboardLive:catchBooleanForDashboardStateFunc(superfunc, dashboard, newValue, minValue, maxValue, isActive)
 	if type(newValue)=="boolean" then
-		newValue = newValue and 1 or 0
+		local min = minValue or 0
+		local max = maxValue or 1
+		--newValue = newValue and 1 or 0
+		newValue = newValue and max or min
 	end
 	return superfunc(self, dashboard, tonumber(newValue) or 0, minValue, maxValue, isActive)
 end
@@ -2041,7 +2046,7 @@ end
 
 -- readAttributes
 -- page
-function DashboardLive.getDBLAttributesPage(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesPage(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblPage = lower(xmlFile:getValue(key .. "#page"))
 	dbgprint("getDBLAttributesPage : page: "..tostring(dashboard.dblPage), 2)
 	
@@ -2052,7 +2057,7 @@ function DashboardLive.getDBLAttributesPage(self, xmlFile, key, dashboard)
 end
 
 -- base
-function DashboardLive.getDBLAttributesBase(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesBase(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 
 	local min = xmlFile:getValue(key .. "#min")
 	local max = xmlFile:getValue(key .. "#max")
@@ -2106,11 +2111,13 @@ function DashboardLive.getDBLAttributesBase(self, xmlFile, key, dashboard)
 end
 
 -- minimap
-function DashboardLive.getDBLAttributesMiniMap(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesMiniMap(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd")) or "map"
 	dashboard.scale = xmlFile:getValue(key .. "#scale") or DashboardLive.scale
-	dashboard.node = xmlFile:getValue(key .. "#node", nil, self.components, self.i3dMappings)
+	dashboard.node = xmlFile:getValue(key .. "#node", nil, components, i3dMappings, true)
 	dbgprint("getDBLAttributesMiniMap: node = "..tostring(dashboard.node).." / command = "..tostring(dashboard.dblCommand).." / scale = "..tostring(dashboard.scale), 2)
+	dbgprint("xmlFile", 2)
+	dbgprint_r(xmlFile, 2, 1)
 
 	local mapTexture = g_currentMission.mapImageFilename
 	local mapName = g_currentMission.missionInfo.map.title
@@ -2138,7 +2145,7 @@ function DashboardLive.getDBLAttributesMiniMap(self, xmlFile, key, dashboard)
 end
 
 -- combine
-function DashboardLive.getDBLAttributesCombine(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesCombine(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 
 	local min = xmlFile:getValue(key .. "#min")
 	local max = xmlFile:getValue(key .. "#max")
@@ -2163,7 +2170,7 @@ function DashboardLive.getDBLAttributesCombine(self, xmlFile, key, dashboard)
 end
 
 -- rda
-function DashboardLive.getDBLAttributesRDA(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesRDA(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd"))
     dbgprint("getDBLAttributesRDA : cmd: "..tostring(dashboard.dblCommand), 2)
     if dashboard.dblCommand == nil then 
@@ -2181,7 +2188,7 @@ function DashboardLive.getDBLAttributesRDA(self, xmlFile, key, dashboard)
 end
 
 -- vca
-function DashboardLive.getDBLAttributesVCA(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesVCA(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd"))
     dbgprint("getDBLAttributesVCA : cmd: "..tostring(dashboard.dblCommand), 2)
     
@@ -2197,7 +2204,7 @@ function DashboardLive.getDBLAttributesVCA(self, xmlFile, key, dashboard)
 end
 
 -- extendedCruiseControl / speedControl
-function DashboardLive.getDBLAttributesCC(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesCC(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd"))
     dbgprint("getDBLAttributesECC : cmd: "..tostring(dashboard.dblCommand), 2)
     
@@ -2213,7 +2220,7 @@ function DashboardLive.getDBLAttributesCC(self, xmlFile, key, dashboard)
 end
 
 -- hlm
-function DashboardLive.getDBLAttributesHLM(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesHLM(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblOption = lower(xmlFile:getValue(key .. "#option"))
     dbgprint("getDBLAttributesHLM : option: "..tostring(dashboard.dblOption), 2)
     
@@ -2224,7 +2231,7 @@ function DashboardLive.getDBLAttributesHLM(self, xmlFile, key, dashboard)
 end
 
 -- gps
-function DashboardLive.getDBLAttributesGPS(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesGPS(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 
 	local min = xmlFile:getValue(key .. "#min")
 	local max = xmlFile:getValue(key .. "#max")
@@ -2242,7 +2249,7 @@ function DashboardLive.getDBLAttributesGPS(self, xmlFile, key, dashboard)
 	return true
 end
 
-function DashboardLive.getDBLAttributesGPSNumbers(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesGPSNumbers(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	
 	local min = xmlFile:getValue(key .. "#min")
 	local max = xmlFile:getValue(key .. "#max")
@@ -2261,7 +2268,7 @@ function DashboardLive.getDBLAttributesGPSNumbers(self, xmlFile, key, dashboard)
 end
 
 -- ps
-function DashboardLive.getDBLAttributesPS(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesPS(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 
 	local min = xmlFile:getValue(key .. "#min")
 	local max = xmlFile:getValue(key .. "#max")
@@ -2278,7 +2285,7 @@ function DashboardLive.getDBLAttributesPS(self, xmlFile, key, dashboard)
 end
 
 -- selector
-function DashboardLive.getDBLAttributesSelection(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesSelection(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblSelection = xmlFile:getValue(key .. "#selection", nil, true)
 	dbgprint("getDBLAttributesSelection : selection: "..tostring(dashboard.dblSelection), 2)
 	
@@ -2298,7 +2305,7 @@ function DashboardLive.getDBLAttributesSelection(self, xmlFile, key, dashboard)
 end
 
 -- baler
-function DashboardLive.getDBLAttributesBaler(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesBaler(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd"))
     dbgprint("getDBLAttributesBase : command: "..tostring(dashboard.dblCommand), 2)
@@ -2312,7 +2319,7 @@ function DashboardLive.getDBLAttributesBaler(self, xmlFile, key, dashboard)
 end
 
 -- lock steering axles
-function DashboardLive.getDBLAttributesLSA(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesLSA(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd"))
 	dbgprint("getDBLAttributesLSA : command: "..tostring(dashboard.dblCommand), 2)
@@ -2327,7 +2334,7 @@ function DashboardLive.getDBLAttributesLSA(self, xmlFile, key, dashboard)
 end
 
 -- combineXP by yumi
-function DashboardLive.getDBLAttributesCXP(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesCXP(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd"))
 	dbgprint("getDBLAttributesCXP : command: "..tostring(dashboard.dblCommand), 2)
@@ -2339,7 +2346,7 @@ function DashboardLive.getDBLAttributesCXP(self, xmlFile, key, dashboard)
 end
 
 -- print
-function DashboardLive.getDBLAttributesPrint(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesPrint(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblOption = xmlFile:getValue(key .. "#option", "")
 	dbgprint("getDBLAttributePrint : option: "..tostring(dashboard.dblOption), 2)
 	
@@ -2347,7 +2354,7 @@ function DashboardLive.getDBLAttributesPrint(self, xmlFile, key, dashboard)
 end
 
 -- frontLoader
-function DashboardLive.getDBLAttributesFrontloader(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesFrontloader(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", "toolrotation")) -- rotation,  minmax
     dbgprint("getDBLAttributesFrontloader : command: "..tostring(dashboard.dblCommand), 2)
@@ -2373,7 +2380,7 @@ function DashboardLive.getDBLAttributesFrontloader(self, xmlFile, key, dashboard
 end
 
 -- precisionFarming
-function DashboardLive.getDBLAttributesPrecisionFarming(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesPrecisionFarming(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", "")) -- rotation,  minmax
     dbgprint("getDBLAttributesFrontloader : command: "..tostring(dashboard.dblCommand), 2)
     
@@ -2396,7 +2403,7 @@ function DashboardLive.getDBLAttributesPrecisionFarming(self, xmlFile, key, dash
 end
 
 -- CVTaddon
-function DashboardLive.getDBLAttributesCVT(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesCVT(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", ""))
     dbgprint("getDBLAttributesCVT : command: "..tostring(dashboard.dblCommand), 2)
     
@@ -2410,7 +2417,7 @@ function DashboardLive.getDBLAttributesCVT(self, xmlFile, key, dashboard)
 end
 
 -- Realistic Damage System
-function DashboardLive.getDBLAttributesRDS(self, xmlFile, key, dashboard)
+function DashboardLive.getDBLAttributesRDS(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", ""))
     dbgprint("getDBLAttributesCVT : command: "..tostring(dashboard.dblCommand), 2)
     
