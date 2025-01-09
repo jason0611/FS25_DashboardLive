@@ -515,7 +515,7 @@ function DashboardLive:onRegisterActionEvents(isActiveForInput)
 		_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM_PERM', self, DashboardLive.ZOOM, false, true, false, true)
 		
 --		_, hudActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_HUDVISIBILITY', self, DashboardLive.HUDVISIBILITY, false, true, false, true)	
-		
+
 		_, mapOrientationActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_MAPORIENTATION', self, DashboardLive.MAPORIENTATION, false, true, false, true)	
 		
 		if spec.darkModeExists then
@@ -621,14 +621,12 @@ function DashboardLive:ZOOM(actionName, keyStatus, arg3, arg4, arg5)
 end
 
 function DashboardLive:HUDVISIBILITY(actionName, keyStatus)
-	dbgprint("HUDVISIBILITY", 3)
+	dbgprint("HUDVISIBILITY", 2)
 	if actionName == "DBL_HUDVISIBILITY" then
 		g_currentMission.hud:consoleCommandToggleVisibility()
 	end
 end
-local success
-success, DashboardLive.actionEventId = g_inputBinding:registerActionEvent('DBL_HUDVISIBILITY', DashboardLive, DashboardLive.HUDVISIBILITY, false, true, false, true)
-dbgprint("registerActionEvent: DBL_HUDVISIBILITY registered: "..tostring(success), 1)
+
 
 function DashboardLive:DARKMODE(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("DARKMODE", 4)
@@ -3758,3 +3756,9 @@ function DashboardLive:onDraw()
 		dbgrenderTable(self.spec_globalPositioningSystem.guidanceData, 1, 3)
 	end
 end
+
+DashboardLiveKeepActive = {}
+function DashboardLiveKeepActive:update(dt)
+	g_inputBinding:registerActionEvent('DBL_HUDVISIBILITY', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
+end
+addModEventListener(DashboardLiveKeepActive)
