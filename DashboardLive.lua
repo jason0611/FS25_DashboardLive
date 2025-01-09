@@ -514,7 +514,7 @@ function DashboardLive:onRegisterActionEvents(isActiveForInput)
 		_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM', self, DashboardLive.ZOOM, false, true, true, true)	
 		_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM_PERM', self, DashboardLive.ZOOM, false, true, false, true)
 		
-		_, hudActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_HUDVISIBILITY', self, DashboardLive.HUDVISIBILITY, false, true, false, true)	
+--		_, hudActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_HUDVISIBILITY', self, DashboardLive.HUDVISIBILITY, false, true, false, true)	
 		
 		_, mapOrientationActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_MAPORIENTATION', self, DashboardLive.MAPORIENTATION, false, true, false, true)	
 		
@@ -626,6 +626,9 @@ function DashboardLive:HUDVISIBILITY(actionName, keyStatus)
 		g_currentMission.hud:consoleCommandToggleVisibility()
 	end
 end
+local success
+success, DashboardLive.actionEventId = g_inputBinding:registerActionEvent('DBL_HUDVISIBILITY', DashboardLive, DashboardLive.HUDVISIBILITY, false, true, false, true)
+dbgprint("registerActionEvent: DBL_HUDVISIBILITY registered: "..tostring(success), 1)
 
 function DashboardLive:DARKMODE(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("DARKMODE", 4)
