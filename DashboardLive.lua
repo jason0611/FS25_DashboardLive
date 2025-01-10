@@ -951,8 +951,10 @@ local function getChoosenFillLevelState(device, ftPartition, ftType)
 			--fillLevel.pct = fillLevel.pct + device:getFillUnitFillLevelPercentage(i)
 			fillLevel.abs = fillLevel.abs + device:getFillUnitFillLevel(i)
 			fillLevel.max = fillLevel.max + device:getFillUnitCapacity(i)
-			-- so lets calculate it on our own. (lua should not have a divide by zero problem...)
-			fillLevel.pct = fillLevel.abs / fillLevel.max
+			-- so lets calculate it on our own.
+			if fillLevel.max > 0 then
+				fillLevel.pct = fillLevel.abs / fillLevel.max
+			end
 			local fillTypeDesc = g_fillTypeManager:getFillTypeByIndex(ftIndex)
 			if fillTypeDesc ~= nil then
 				fillLevel.absKg = fillLevel.absKg + device:getFillUnitFillLevel(i) * fillTypeDesc.massPerLiter * 1000
