@@ -3204,7 +3204,7 @@ function DashboardLive.getDashboardLiveGPSWidth(self, dashboard)
 	local spec = self.spec_DashboardLive
 	local specAI = self.spec_aiAutomaticSteering
 	local specGS = self.spec_globalPositioningSystem
-	local returnVaue = 0
+	local returnValue = 0
 	local factor = dashboard.dblFactor or 1
 	
 	if spec.modGuidanceSteeringFound and specGS ~= nil and specGS.guidanceData ~= nil and specGS.guidanceData.width ~= nil then
@@ -3222,7 +3222,7 @@ function DashboardLive.getDashboardLiveGPSWidth(self, dashboard)
 	if dashboard.dblMax ~= nil and type(returnValue) == "number" then
 		returnValue = math.min(returnValue, dashboard.dblMax)
 	end
-	
+	dbgprint("getDashboardLiveGPSWidth : returnValue: "..tostring(returnValue), 4)
 	return returnValue
 end
 		
