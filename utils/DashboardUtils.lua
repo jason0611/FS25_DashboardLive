@@ -1,14 +1,32 @@
 DashboardUtils = {}
 
+DashboardUtils.MOD_PATH = g_currentModDirectory
+
 -- Vanilla Integration POC --
 function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, compound)
 	local fileName = xmlFile:getValue(key .. "#filename")
-	dbgprint("loadDashboardCompoundFromXML :: fileName = "..tostring(fileName), 2)
+	local fileNameNew = DashboardUtils.MOD_PATH..string.sub(fileName, 2) -- rip $ off the path
+	local dblReplacementExists = XMLFile.loadIfExists("DBL Replacement", fileNameNew, xmlFile.schema) ~= nil
+	
+	dbgprint("loadDashboardCompoundFromXML :: fileName    = "..tostring(fileName), 2)
+	dbgprint("loadDashboardCompoundFromXML :: fileNameNew = "..tostring(fileNameNew), 2)
+	dbgprint("loadDashboardCompoundFromXML :: dblReplacementExists = "..tostring(dblReplacementExists), 2)
+	if dblReplacementExists then
+		xmlFile:setValue(key .. "#filename", fileNameNew)
+		dbgprint("loadDashboardCompoundFromXML :: fileName replaced", 2)
+	end
+	
+	print("self:")
+	print_r(self, 0)
+	
+--[[
 	if fileName == "$data/vehicles/claas/shared/displays/displays.xml" then
 		local newFileName = "<replacement>"
 		--xmlFile:setValue(key .. "#filename", newFileName)
 		dbgprint("loadDashboardCompoundFromXML :: replaced with "..tostring(newFileName), 2)
 	end	
+--]]
+	
 	return superfunc(self, xmlFile, key, compound)
 end
 Dashboard.loadDashboardCompoundFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardCompoundFromXML, DashboardUtils.loadDashboardCompoundFromXML)
