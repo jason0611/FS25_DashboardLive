@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <dashboardCompounds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../shared/xml/schema/dashboardCompounds.xsd">
     <!-- TRACTORS -->
-    <dashboardCompound name="CEBIS_XERION12_MAINPAGE" filename="$data/vehicles/claas/shared/displays/displays.i3d" node="cebisXerion12">
+    <dashboardCompound name="CEBIS_XERION12_MAINPAGE" filename="data/vehicles/claas/shared/displays/displays.i3d" node="cebisXerion12">
         <!-- numbers -->
         <dashboard displayType="TEXT" valueType="enterable.time" node="cebisXerion12_numbersTime" textColor="0 0 0 0" emissiveScale="0.4" textSize="0.004" textMask="00:00" textAlignment="CENTER" font="GENERIC" groups="MOTOR_RUNNING"/>
         <dashboard displayType="TEXT" valueType="motorized.load" node="cebisXerion12_numbersLoad" textColor="0 0 0 0" emissiveScale="0.4" textSize="0.004" textMask="000" font="GENERIC" groups="MOTOR_RUNNING"/>
