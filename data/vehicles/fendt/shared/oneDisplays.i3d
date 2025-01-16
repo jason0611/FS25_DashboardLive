@@ -13,8 +13,8 @@
     <File fileId="1" filename="$data/vehicles/fendt/shared/fendtOneDisplayDecal_diffuse.png"/>
     <File fileId="11" filename="cursor.dds"/>
     <File fileId="7" filename="fendtOneDisplay_diffuse.dds"/>
-    <File fileId="10" filename="shader/minimap.xml"/>
-    <File fileId="8" filename="utils/DBL_MeshLibary/dashboardSymbols_diffuse.dds"/>
+    <File fileId="10" filename="../../../../shader/minimap.xml"/>
+    <File fileId="8" filename="../../../../utils/DBL_MeshLibary/dashboardSymbols_diffuse.dds"/>
   </Files>
 
 
