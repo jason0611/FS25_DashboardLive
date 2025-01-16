@@ -16,9 +16,6 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 		dbgprint("loadDashboardCompoundFromXML :: fileName replaced", 2)
 	end
 	
-	print("self:")
-	print_r(self, 0)
-	
 --[[
 	if fileName == "$data/vehicles/claas/shared/displays/displays.xml" then
 		local newFileName = "<replacement>"
