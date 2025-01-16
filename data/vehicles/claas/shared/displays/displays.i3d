@@ -6,7 +6,7 @@
     <File fileId="4" filename="$data/shaders/glowShader.xml" />
     <File fileId="2" filename="$data/shared/default_normal.png" />
     <File fileId="3" filename="$data/shared/default_vmask.png" />
-    <File fileId="1" filename="data/vehicles/claas/shared/displays/displays_diffuse.png" />
+    <File fileId="1" filename="displays_diffuse.png" />
   </Files>
 
   <Materials>
