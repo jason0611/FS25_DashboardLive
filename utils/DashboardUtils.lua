@@ -5,33 +5,24 @@ DashboardUtils.MOD_PATH = g_currentModDirectory
 -- Vanilla Integration POC --
 function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, compound)
 	local fileName = xmlFile:getValue(key .. "#filename")
---	local fileNameNew = DashboardUtils.MOD_PATH..string.sub(fileName, 2) -- rip $ off the path
 	local fileNameNew = string.sub(fileName, 2) -- rip $ off the path
-	local dblReplacementExists = XMLFile.loadIfExists("DBL Replacement", fileNameNew, xmlFile.schema) ~= nil
+	local dblReplacementExists = XMLFile.loadIfExists("DBL Replacement", DashboardLive.MOD_PATH..fileNameNew, xmlFile.schema) ~= nil
+	local baseDirectoryChanged = false
 	
 	dbgprint("loadDashboardCompoundFromXML :: fileName    = "..tostring(fileName), 2)
-	dbgprint("loadDashboardCompoundFromXML :: fileNameNew = "..tostring(fileNameNew), 2)
+	dbgprint("loadDashboardCompoundFromXML :: fileNameNew = "..DashboardLive.MOD_PATH..fileNameNew, 2)
 	dbgprint("loadDashboardCompoundFromXML :: dblReplacementExists = "..tostring(dblReplacementExists), 2)
 	if dblReplacementExists then
 		xmlFile:setValue(key .. "#filename", fileNameNew)
 		dbgprint("loadDashboardCompoundFromXML :: fileName replaced", 2)
-	end
-	local baseDirectoryChanged = false
-	if self.baseDirectory == "" then
-		self.baseDirectory = DashboardLive.MOD_PATH
-		baseDirectoryChanged = true
-		dbgprint("loadDashboardCompoundFromXML :: baseDirectory changed", 2)
-	end
-	dbgprint("self.baseDirectory: "..tostring(self.baseDirectory), 2)
-	
-	
---[[
-	if fileName == "$data/vehicles/claas/shared/displays/displays.xml" then
-		local newFileName = "<replacement>"
-		--xmlFile:setValue(key .. "#filename", newFileName)
-		dbgprint("loadDashboardCompoundFromXML :: replaced with "..tostring(newFileName), 2)
+		if self.baseDirectory == "" then
+			self.baseDirectory = DashboardLive.MOD_PATH
+			baseDirectoryChanged = true
+			dbgprint("loadDashboardCompoundFromXML :: baseDirectory changed", 2)
+		end
 	end	
---]]
+	dbgprint("loadDashboardCompoundFromXML :: self.baseDirectory: "..tostring(self.baseDirectory), 2)
+
 	local returnValue = superfunc(self, xmlFile, key, compound)
 	
 	if baseDirectoryChanged then
