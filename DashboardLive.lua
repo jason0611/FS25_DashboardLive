@@ -95,6 +95,21 @@ function DashboardLive.initSpecialization()
 	schema:register(XMLValueType.FLOAT, DashboardLive.DBL_XML_KEY .. "#distance", "hearable distance")
 	dbgprint("initSpecialization : DashboardLive element options registered", 2)
 	
+	local COMPOUND_GROUP_XML_KEY = "dashboardCompounds.group(?)"
+	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#name", "Dashboard group name")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dbl", "DashboardLive command")
+    Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#op", "DashboardLive operator")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_GROUP_XML_KEY .. "#page", "DashboardLive page")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_GROUP_XML_KEY .. "#group", "DashboardLive pages group")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.BOOL, COMPOUND_GROUP_XML_KEY .. "#dblActiveWithoutImplement", "return 'true' without implement")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.VECTOR_N, COMPOUND_GROUP_XML_KEY .. "#dblAttacherJointIndices")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.VECTOR_N, COMPOUND_GROUP_XML_KEY .. "#dblSelection")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.VECTOR_N, COMPOUND_GROUP_XML_KEY .. "#dblSelectionGroup")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dblRidgeMarker", "Ridgemarker state")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dblOption", "DBL Option")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dblTrailer", "DBL Trailer")
+	dbgprint("initSpecialization : DashboardLive group options registered", 2)
+	
 	local COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).dashboard(?)"
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#cmd", "DashboardLive command")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#joints")
@@ -116,7 +131,6 @@ function DashboardLive.initSpecialization()
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#baseColorDarkMode", "Base color for dark mode")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#emitColorDarkMode", "Emit color for dark mode")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_XML_KEY .. "#intensityDarkMode", "Intensity for dark mode")
-	
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#audioFile", "Path to audio file")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#audioName", "Unique name of sound sample")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_XML_KEY .. "#loop", "repeat sound n times")
@@ -202,6 +216,7 @@ function DashboardLive:onLoad(savegame)
 	spec.pageGroups[1].pages[1] = true
 	spec.pageGroups[1].actPage = 1
 	spec.updateTimer = 0
+	spec.compoundGroupsLoaded = false
 		
 	-- zoom data
 	spec.zoomed = false

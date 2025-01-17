@@ -4,6 +4,7 @@ DashboardUtils.MOD_PATH = g_currentModDirectory
 
 -- Vanilla Integration POC --
 function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, compound)
+	local spec = self.spec_dashboard
 	local fileName = xmlFile:getValue(key .. "#filename")
 	local fileNameNew = string.sub(fileName, 2) -- rip $ off the path
 	local dblReplacementExists = XMLFile.loadIfExists("DBL Replacement", DashboardLive.MOD_PATH..fileNameNew, xmlFile.schema) ~= nil
@@ -22,7 +23,7 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 		end
 	end	
 	dbgprint("loadDashboardCompoundFromXML :: self.baseDirectory: "..tostring(self.baseDirectory), 2)
-
+	
 	local returnValue = superfunc(self, xmlFile, key, compound)
 	
 	if baseDirectoryChanged then
@@ -32,6 +33,40 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 	return returnValue
 end
 Dashboard.loadDashboardCompoundFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardCompoundFromXML, DashboardUtils.loadDashboardCompoundFromXML)
+
+--[[ not working that simple way, there has much code to be overwritten to work as needed, because of schema initialization
+function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
+	local spec = self.spec_dashboard
+	if not spec.compoundGroupsLoaded then
+		local dashboardXMLFile = args.dashboardXMLFile
+		local compound = args.compound
+		local compoundKey = args.compoundKey
+        
+		local i = 0
+		while true do
+			local baseKey = string.format("%s.group(%d)", "dashboardCompounds", i)
+			dbgprint("onDashboardCompoundLoaded :: looking for key "..baseKey, 2)
+			if not dashboardXMLFile:hasProperty(baseKey) then
+				break
+			end
+	
+
+			local group = {}
+			if self:loadDashboardGroupFromXML(dashboardXMLFile, baseKey, group) then
+				spec.groups[group.name] = group
+				table.insert(spec.sortedGroups, group)
+				dbgprint("onDashboardCompoundLoaded :: group "..tostring(group.name).." added", 2)
+				spec.hasGroups = true
+				spec.compoundGroupsLoaded = true
+			end
+	
+			i = i + 1
+		end
+	end
+end
+	Dashboard.onDashboardCompoundLoaded = Utils.prependedFunction(Dashboard.onDashboardCompoundLoaded, DashboardUtils.onDashboardCompoundLoaded)
+--]]
+
 
 --[[
 function DashboardUtils.createVanillaNodes(vehicle, xmlVanillaFile, xmlModFile)
