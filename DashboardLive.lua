@@ -95,6 +95,7 @@ function DashboardLive.initSpecialization()
 	schema:register(XMLValueType.FLOAT, DashboardLive.DBL_XML_KEY .. "#distance", "hearable distance")
 	dbgprint("initSpecialization : DashboardLive element options registered", 2)
 	
+--![[	
 	local COMPOUND_GROUP_XML_KEY = "dashboardCompounds.group(?)"
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#name", "Dashboard group name")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dbl", "DashboardLive command")
@@ -109,6 +110,7 @@ function DashboardLive.initSpecialization()
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dblOption", "DBL Option")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dblTrailer", "DBL Trailer")
 	dbgprint("initSpecialization : DashboardLive group options registered", 2)
+--]]
 	
 	local COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).dashboard(?)"
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#cmd", "DashboardLive command")
