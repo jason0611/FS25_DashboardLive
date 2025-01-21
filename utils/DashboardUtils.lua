@@ -34,7 +34,6 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 end
 Dashboard.loadDashboardCompoundFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardCompoundFromXML, DashboardUtils.loadDashboardCompoundFromXML)
 
---[[ not working that simple way, there has much code to be overwritten to work as needed, because of schema initialization
 function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 	local spec = self.spec_dashboard
 	if not spec.compoundGroupsLoaded then
@@ -50,7 +49,6 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 				break
 			end
 	
-
 			local group = {}
 			if self:loadDashboardGroupFromXML(dashboardXMLFile, baseKey, group) then
 				spec.groups[group.name] = group
@@ -62,11 +60,11 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 	
 			i = i + 1
 		end
+		
+		DashboardLive.createDashboardPages(self)
 	end
 end
 	Dashboard.onDashboardCompoundLoaded = Utils.prependedFunction(Dashboard.onDashboardCompoundLoaded, DashboardUtils.onDashboardCompoundLoaded)
---]]
-
 
 --[[
 function DashboardUtils.createVanillaNodes(vehicle, xmlVanillaFile, xmlModFile)

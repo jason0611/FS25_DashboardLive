@@ -424,8 +424,14 @@ function DashboardLive:onPostLoad(savegame)
 	
 	--Check if Mod HeadlandManagement exists
 	spec.modHLMFound = self.spec_HeadlandManagement ~= nil
-	
+
+	DashboardLive.createDashboardPages(self)
+end
+
+function DashboardLive.createDashboardPages(self)
+	local spec = self.spec_DashboardLive
     local dashboard = self.spec_dashboard
+    
     for _, group in pairs(dashboard.groups) do
     	if group.dblPage ~= nil then
 			spec.maxPageGroup = math.max(spec.maxPageGroup, group.dblPageGroup)
@@ -440,15 +446,13 @@ function DashboardLive:onPostLoad(savegame)
     			spec.pageGroups[group.dblPageGroup].actPage = 1
     		end
     		spec.pageGroups[group.dblPageGroup].pages[group.dblPage] = true
-    		dbgprint("onPostLoad : maxPageGroup set to "..tostring(spec.maxPageGroup), 2)
-    		dbgprint("onPostLoad : maxPage set to "..tostring(spec.maxPage), 2)
+    		dbgprint("createDashboardPages : maxPageGroup set to "..tostring(spec.maxPageGroup), 2)
+    		dbgprint("createDashboardPages : maxPage set to "..tostring(spec.maxPage), 2)
     	else
-    		dbgprint("onPostLoad : no pages found in group "..group.name, 2)
+    		dbgprint("createDashboardPages : no pages found in group "..group.name, 2)
     	end
     end
-    
     --self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive")
-    
     dbgprint_r(spec.pageGroups, 4, 3)
 end
 
@@ -1831,15 +1835,27 @@ Dashboard.loadDashboardFromXML = Utils.overwrittenFunction(Dashboard.loadDashboa
 
 -- GROUPS
 
-function DashboardLive:loadDashboardGroupFromXML(superFunc, xmlFile, key, group)
-	if not superFunc(self, xmlFile, key, group) then
-        dbgprint("loadDashboardGroupFromXML : superfunc failed for group "..tostring(group.name), 2)
-        return false
+function DashboardLive:loadDashboardGroupFromXML(superFunc, xmlFile, key, group)	
+    dbgprint("loadDashboardGroupFromXML : "..self:getName()..": key: "..tostring(key), 2)
+    dbgprint("loadDashboardGroupFromXML : filename: "..tostring(xmlFile.filename), 2)
+
+	if string.sub(key, 1, 18) ~= "dashboardCompounds" then
+--  *******
+		dbgprint("loadDashboardGroupFromXML : superFunc...", 2)
+		if not superFunc(self, xmlFile, key, group) then
+			dbgprint("loadDashboardGroupFromXML : superfunc failed for group "..tostring(group.name), 2)
+			return false
+		end
+    
+--	*******
+	end
+	
+    dbgprint("loadDashboardGroupFromXML : overwritten part...", 2)
+    if group.name == nil then
+    	group.name = xmlFile:getValue(key .. "#name")
     end
-    dbgprint("loadDashboardGroupFromXML : "..self:getName()..": group: "..tostring(group.name), 2)
     
     group.dblCommand = lower(xmlFile:getValue(key .. "#dbl"))
-
     if group.dblCommand ~= nil then
 		dbgprint("loadDashboardGroupFromXML : dblCommand: "..tostring(group.dblCommand), 2)
 		
