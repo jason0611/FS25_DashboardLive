@@ -34,7 +34,7 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 end
 Dashboard.loadDashboardCompoundFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardCompoundFromXML, DashboardUtils.loadDashboardCompoundFromXML)
 
---[[ not working that simple way, there has much code to be overwritten to work as needed, because of schema initialization
+--![[ not working that simple way, there has much code to be overwritten to work as needed, because of schema initialization
 function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 	local spec = self.spec_dashboard
 	if not spec.compoundGroupsLoaded then
