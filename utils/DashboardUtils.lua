@@ -1,22 +1,84 @@
 DashboardUtils = {}
 
+DashboardUtils.MOD_NAME = g_currentModName
 DashboardUtils.MOD_PATH = g_currentModDirectory
 
 -- Vanilla Integration POC --
-function DashboardUtils:loadVehicle(vehicleLoadingData)
+function DashboardUtils:loadVehicleFromXML(superfunc, xmlFile, key, defaultItemsToSPFarm, resetVehicles, keepPosition)
+	print("VehicleSystem:loadVehicleFromXML:")
+	print("key: "..tostring(key))
+	
+	local filename = xmlFile:getValue(key.."#filename")
+	print("filename: "..tostring(filename))
+	print("filename decoded: "..NetworkUtil.convertFromNetworkFilename(filename))
+		
+	if filename == "data/vehicles/claas/xerion12/xerion12.xml" then
+		filename = DashboardLive.MOD_PATH.."data/vehicles/claas/xerion12/xerion12.xml"
+		xmlFile:setValue(key.."#filename", filename)
+		print("filename replaced: "..tostring(filename))
+	end
+	return superfunc(self, xmlFile, key, defaultItemsToSPFarm, resetVehicles, keepPosition)
+end
+VehicleSystem.loadVehicleFromXML = Utils.overwrittenFunction(VehicleSystem.loadVehicleFromXML, DashboardUtils.loadVehicleFromXML)
+
+function DashboardUtils:saveVehicleToXML(superfunc, vehicle, xmlFile, index, i, usedModNames)
+	print("DashboardUtils:saveVehicleToXML:")
+	print("environment: "..tostring(vehicle.customEnvironment))
+	
+	if vehicle.customEnvironment == DashboardUtils.MOD_NAME then
+		vehicle.customEnvironment = nil
+	end
+
+	local fileName = HTMLUtil.encodeToHTML(NetworkUtil.convertToNetworkFilename(vehicle.configFileName))
+	print("fileName: "..fileName)
+	print("found? "..tostring(string.find(fileName, "$moddir$"..DashboardUtils.MOD_NAME)))
+	if string.find(fileName, "$moddir$"..DashboardUtils.MOD_NAME) then
+		print("vehicle.configFileName 1 :"..tostring(vehicle.configFileName))
+		vehicle.configFileName = string.sub(fileName, string.len("$moddir$"..DashboardUtils.MOD_NAME)+2)
+		print("vehicle.configFileName 2 :"..tostring(vehicle.configFileName))
+	end
+
+	print("configFileName: "..tostring(vehicle.configFileName))
+	return superfunc(self, vehicle, xmlFile, index, i, usedModNames)
+end
+VehicleSystem.saveVehicleToXML = Utils.overwrittenFunction(VehicleSystem.saveVehicleToXML, DashboardUtils.saveVehicleToXML)
+
+function DashboardUtils:loadVehicle(superfunc, vehicleLoadingData)
 	print("Vehicle:load ****")
 	print(self.configFileName)
+	
 	if self.configFileName == "data/vehicles/claas/xerion12/xerion12.xml" then
-		self.configFileName = DashboardLive.MOD_PATH.."data/vehicles/claas/xerion12/xerion12.xml"
+		local item = g_storeManager:getItemByXMLFilename(self.configFileName)
+		
+		local lowerConfigName = string.lower(self.configFileName)
+		--g_storeManager.xmlFilenameToItem[lowerConfigName] = nil
+		
+		self.configFileName = DashboardLive.MOD_PATH..self.configFileName
+
+		vehicleLoadingData.xmlFilenameLower = string.lower(self.configFileName)
+		vehicleLoadingData.rawXMLFilename = self.configFileName
+		vehicleLoadingData.xmlFilename = self.configFileName
+
+		item.xmlFilenameLower = string.lower(self.configFileName)
+		item.rawXMLFilename = self.configFileName
+		item.xmlFilename = self.configFileName
+		
+		g_storeManager.xmlFilenameToItem[vehicleLoadingData.xmlFilenameLower] = item
+		
 		print("replaced!")
 	end
+	return superfunc(self, vehicleLoadingData)
 end
---Vehicle.load = Utils.prependedFunction(Vehicle.load, DashboardUtils.loadVehicle)
+Vehicle.load = Utils.overwrittenFunction(Vehicle.load, DashboardUtils.loadVehicle)
+
+
+
+
 
 function DashboardUtils:loadDashboardsFromXML(superfunc, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
 	return superfunc(self, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
 end
-Dashboard.loadDashboardsFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardsFromXML, DashboardUtils.loadDashboardsFromXML)
+--Dashboard.loadDashboardsFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardsFromXML, DashboardUtils.loadDashboardsFromXML)
 
 function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, compound)
 	local spec = self.spec_dashboard
