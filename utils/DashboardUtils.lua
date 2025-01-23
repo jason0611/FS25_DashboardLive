@@ -3,6 +3,21 @@ DashboardUtils = {}
 DashboardUtils.MOD_PATH = g_currentModDirectory
 
 -- Vanilla Integration POC --
+function DashboardUtils:loadVehicle(vehicleLoadingData)
+	print("Vehicle:load ****")
+	print(self.configFileName)
+	if self.configFileName == "data/vehicles/claas/xerion12/xerion12.xml" then
+		self.configFileName = DashboardLive.MOD_PATH.."data/vehicles/claas/xerion12/xerion12.xml"
+		print("replaced!")
+	end
+end
+--Vehicle.load = Utils.prependedFunction(Vehicle.load, DashboardUtils.loadVehicle)
+
+function DashboardUtils:loadDashboardsFromXML(superfunc, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
+	return superfunc(self, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
+end
+Dashboard.loadDashboardsFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardsFromXML, DashboardUtils.loadDashboardsFromXML)
+
 function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, compound)
 	local spec = self.spec_dashboard
 	local fileName = xmlFile:getValue(key .. "#filename")

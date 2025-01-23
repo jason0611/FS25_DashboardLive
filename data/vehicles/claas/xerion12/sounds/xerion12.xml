@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<sounds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../shared/xml/schema/vehicle_sounds.xsd">
+    <motorized>
+        <sounds>
+            <motor template="engineLarge" file="$data/vehicles/claas/xerion12/sounds/xerion12Engine_loop.gls" volumeScale="3" linkNodeOffset="0 1.5 2" loopSynthesisRPMRatio="0.80"/>
+            <motor template="engineLarge" file="$data/vehicles/claas/xerion12/sounds/xerion12Exhaust_loop.gls" volumeScale="2" linkNodeOffset="0 1.5 2" loopSynthesisRPMRatio="0.80" innerRadius="1">
+                <volume indoor="1.3" outdoor="1.3">
+                    <modifier type="MOTOR_RPM_REAL" value="800"  modifiedValue="0.8"/>
+                    <modifier type="MOTOR_RPM_REAL" value="1100" modifiedValue="1.2"/>
+                    <modifier type="MOTOR_RPM_REAL" value="1500" modifiedValue="1.1"/>
+                    <modifier type="MOTOR_RPM_REAL" value="1700" modifiedValue="1.2"/>
+                    <modifier type="MOTOR_RPM_REAL" value="1900" modifiedValue="1.3"/>
+                </volume>
+            </motor>
+            <motor template="transmissionModern_08" pitchScale="1.1" volumeScale="7" linkNode="crawlerBackLeft"/>
+            <motor template="transmissionModern_08"  pitchScale="1.2" volumeScale="7" linkNode="crawlerBackRight"/>
+            <motor template="cabinTractor_02" linkNodeOffset="0.6 3.5 -0.7"  volumeScale="1.2" pitchScale="1.1"/>
+            <motor template="cabinTractor_02" linkNodeOffset="-0.6 3.5 -0.7" volumeScale="1.2" pitchScale="1.0"/>
+            <motor template="fanModern_02" linkNodeOffset="0 1.5 2.5" volumeScale="2.5" pitchScale="0.8" />
+            <motor template="indoorCabinRumble" linkNodeOffset="0.6 2.7 0" />
+            <motor template="indoorCabinRumble" linkNodeOffset="-0.6 2.7 0" />
+            <compressedAir template="compressedAir" volumeScale="1.5"/>
+            <airCompressorRun template="brakeCompressorLarge" volumeScale="2" linkNodeOffset="0.5 2 2.0"/>
+            <airCompressorStop template="compressedAir"/>
+        </sounds>
+    </motorized>
+
+    <enterable>
+        <sounds>
+            <rain template="rainInVehicle" linkNodeOffset="0 3.5 -0.7">
+                <loopSynthesisRpm>
+                    <modifier type="SPEED" value="0.0" modifiedValue="0.0" />
+                    <modifier type="SPEED" value="53.0" modifiedValue="1" />
+                </loopSynthesisRpm>
+                <volume>
+                    <modifier type="SPEED" value="0" modifiedValue="1" />
+                    <modifier type="SPEED" value="35" modifiedValue="1" />
+                    <modifier type="SPEED" value="53" modifiedValue="1.2" />
+                </volume>
+
+                <pitch>
+                    <modifier type="SPEED" value="0" modifiedValue="1" />
+                    <modifier type="SPEED" value="35" modifiedValue="1" />
+                    <modifier type="SPEED" value="53" modifiedValue="1.0" />
+                </pitch>
+            </rain>
+            <hail template="hailInVehicle" linkNodeOffset="0 3.5 -0.7" volumeScale="1.5">
+                <loopSynthesisRpm>
+                    <modifier type="SPEED" value="0.0" modifiedValue="0.0" />
+                    <modifier type="SPEED" value="60.0" modifiedValue="1" />
+                </loopSynthesisRpm>
+                <volume>
+                    <modifier type="SPEED" value="0" modifiedValue="1" />
+                    <modifier type="SPEED" value="25" modifiedValue="1" />
+                    <modifier type="SPEED" value="60" modifiedValue="1.2" />
+                </volume>
+
+                <pitch>
+                    <modifier type="SPEED" value="0" modifiedValue="1" />
+                    <modifier type="SPEED" value="25" modifiedValue="1" />
+                    <modifier type="SPEED" value="60" modifiedValue="1.0" />
+                </pitch>
+            </hail>
+        </sounds>
+    </enterable>
+
+    <lights>
+        <sounds>
+            <toggleLights template="switch01" volumeScale="1.5"/>
+            <turnLight template="switchTurnlight" volumeScale="1.5"/>
+        </sounds>
+    </lights>
+
+    <attacherJoints>
+        <sounds>
+            <attach template="attach01" linkNode="0>" />
+            <hydraulic template="hydraulicOpen02" linkNode="0>" pitchScale="1.3" />
+        </sounds>
+    </attacherJoints>
+
+    <drivable>
+        <sounds>
+            <waterSplash template="waterSplash01" />
+        </sounds>
+    </drivable>
+
+    <ai>
+        <automaticSteering>
+            <sounds>
+                <engage template="gpsEngageDefault"/>
+                <disengage template="gpsDisengageDefault"/>
+                <lineEnd template="gpsLineEndDefault"/>
+            </sounds>
+        </automaticSteering>
+    </ai>
+
+    <honk>
+        <sound template="honkClaasXerion" linkNodeOffset="0 2 1.2" volumeScale="2.5" />
+    </honk>
+</sounds>
