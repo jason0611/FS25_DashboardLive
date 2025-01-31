@@ -19,7 +19,7 @@ function DashboardUtils:loadVehicleFromXML(superfunc, xmlFile, key, defaultItems
 	end
 	return superfunc(self, xmlFile, key, defaultItemsToSPFarm, resetVehicles, keepPosition)
 end
-VehicleSystem.loadVehicleFromXML = Utils.overwrittenFunction(VehicleSystem.loadVehicleFromXML, DashboardUtils.loadVehicleFromXML)
+--VehicleSystem.loadVehicleFromXML = Utils.overwrittenFunction(VehicleSystem.loadVehicleFromXML, DashboardUtils.loadVehicleFromXML)
 
 function DashboardUtils:saveVehicleToXML(superfunc, vehicle, xmlFile, index, i, usedModNames)
 	print("DashboardUtils:saveVehicleToXML:")
@@ -41,7 +41,7 @@ function DashboardUtils:saveVehicleToXML(superfunc, vehicle, xmlFile, index, i, 
 	print("configFileName: "..tostring(vehicle.configFileName))
 	return superfunc(self, vehicle, xmlFile, index, i, usedModNames)
 end
-VehicleSystem.saveVehicleToXML = Utils.overwrittenFunction(VehicleSystem.saveVehicleToXML, DashboardUtils.saveVehicleToXML)
+--VehicleSystem.saveVehicleToXML = Utils.overwrittenFunction(VehicleSystem.saveVehicleToXML, DashboardUtils.saveVehicleToXML)
 
 function DashboardUtils:loadVehicle(superfunc, vehicleLoadingData)
 	print("Vehicle:load ****")
@@ -69,24 +69,51 @@ function DashboardUtils:loadVehicle(superfunc, vehicleLoadingData)
 	end
 	return superfunc(self, vehicleLoadingData)
 end
-Vehicle.load = Utils.overwrittenFunction(Vehicle.load, DashboardUtils.loadVehicle)
+--Vehicle.load = Utils.overwrittenFunction(Vehicle.load, DashboardUtils.loadVehicle)
 
--- ***
+-- ** Vehicle Dashboards **
 
 function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
-	
-
-
-
-
+	local filenameDBL = DashboardLive.MOD_PATH..filename
+	if fileExists(filenameDBL) then
+		dbgprint("loadSharedI3DFileAsync: replaced i3d-file: "..tostring(filenameDBL), 2)
+		return superfunc(self, filenameDBL, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
+	else
+		dbgprint("loadSharedI3DFileAsync: used i3d-file: "..tostring(filename), 4)
+		return superfunc(self, filename, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
+	end
 end
+I3DManager.loadSharedI3DFileAsync = Utils.overwrittenFunction(I3DManager.loadSharedI3DFileAsync, DashboardUtils.loadSharedI3DFileAsync)
 
--- ***
+--I3DUtil.loadI3DMapping(self.xmlFile, "vehicle", self.rootLevelNodes, self.i3dMappings, realNumComponents)
+function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLevelNodes, i3dMappings, realNumComponents)
+	local filename = xmlFile.filename
+	local filenameDBL = DashboardLive.MOD_PATH..filename
+	if vehicleType == "vehicle" and fileExists(filenameDBL) then
+		local xmlFileDBL = XMLFile.load("DBL Replacement", filenameDBL, xmlFile.schema)
+		dbgprint("loadI3DMapping: replaced xml-file: "..tostring(filenameDBL), 2)
+		return superfunc(xmlFileDBL, vehicleType, rootLevelNodes, i3dMappings, realNumComponents, a, b, c)
+	else
+		dbgprint("loadI3DMapping: used xml-file: "..tostring(filename), 2)
+		return superfunc(xmlFile, vehicleType, rootLevelNodes, i3dMappings, realNumComponents)
+	end
+end
+I3DUtil.loadI3DMapping = Utils.overwrittenFunction(I3DUtil.loadI3DMapping, DashboardUtils.loadI3DMapping)
 
 function DashboardUtils:loadDashboardsFromXML(superfunc, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
-	return superfunc(self, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
+	local filename = xmlFile.filename
+	local filenameDBL = DashboardLive.MOD_PATH..filename
+	local returnValue = superfunc(self, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
+	if returnValue and fileExists(filenameDBL) then
+		local xmlFileDBL = XMLFile.load("DBL Replacement", filenameDBL, xmlFile.schema)
+		dbgprint("loadDashboardsFromXML: added xml-file: "..tostring(filenameDBL), 2)
+		returnValue = superfunc(self, xmlFileDBL, key, dashboardValueType, components, i3dMappings, parentNode)
+	end
+	return returnValue
 end
---Dashboard.loadDashboardsFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardsFromXML, DashboardUtils.loadDashboardsFromXML)
+Dashboard.loadDashboardsFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardsFromXML, DashboardUtils.loadDashboardsFromXML)
+
+-- ** Dashboard Compounds **
 
 function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, compound)
 	local spec = self.spec_dashboard
