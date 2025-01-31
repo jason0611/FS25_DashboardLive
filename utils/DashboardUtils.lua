@@ -71,9 +71,17 @@ function DashboardUtils:loadVehicle(superfunc, vehicleLoadingData)
 end
 Vehicle.load = Utils.overwrittenFunction(Vehicle.load, DashboardUtils.loadVehicle)
 
+-- ***
+
+function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
+	
 
 
 
+
+end
+
+-- ***
 
 function DashboardUtils:loadDashboardsFromXML(superfunc, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
 	return superfunc(self, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
@@ -141,7 +149,7 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 		DashboardLive.createDashboardPages(self)
 	end
 end
-	Dashboard.onDashboardCompoundLoaded = Utils.prependedFunction(Dashboard.onDashboardCompoundLoaded, DashboardUtils.onDashboardCompoundLoaded)
+Dashboard.onDashboardCompoundLoaded = Utils.prependedFunction(Dashboard.onDashboardCompoundLoaded, DashboardUtils.onDashboardCompoundLoaded)
 
 --[[
 function DashboardUtils.createVanillaNodes(vehicle, xmlVanillaFile, xmlModFile)
