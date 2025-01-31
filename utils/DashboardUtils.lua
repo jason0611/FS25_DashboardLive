@@ -94,7 +94,7 @@ function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLeve
 		dbgprint("loadI3DMapping: replaced xml-file: "..tostring(filenameDBL), 2)
 		return superfunc(xmlFileDBL, vehicleType, rootLevelNodes, i3dMappings, realNumComponents, a, b, c)
 	else
-		dbgprint("loadI3DMapping: used xml-file: "..tostring(filename), 2)
+		dbgprint("loadI3DMapping: used xml-file: "..tostring(filename), 4)
 		return superfunc(xmlFile, vehicleType, rootLevelNodes, i3dMappings, realNumComponents)
 	end
 end
