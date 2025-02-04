@@ -35,7 +35,7 @@
         <dashboard displayType="VISIBILITY" valueType="motorized.directionForward" node="cebisXerion12_iconArrowBackward_decal" hideInactive="true" groups="MOTOR_RUNNING"/>
         <dashboard displayType="VISIBILITY" valueType="motorized.directionBackward" node="cebisXerion12_iconArrowBackwardActive_decal" hideInactive="true" groups="MOTOR_RUNNING"/>
         <dashboard displayType="VISIBILITY" valueType="motorized.directionBackward" node="cebisXerion12_iconArrowForward_decal" hideInactive="true" groups="MOTOR_RUNNING"/>
-        <dashboard displayType="EMITTER" valueType="drivable.cruiseControl" node="cebisXerion12_iconCruiseControl_decal" intensity="0.3" baseColor="0.001 0.001 0.001" emitColor="0.4098 0.5074 0.0247" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="EMITTER" valueType="drivable.cruiseControlActive" node="cebisXerion12_iconCruiseControl_decal" intensity="0.3" baseColor="0.001 0.001 0.001" emitColor="0.4098 0.5074 0.0247" groups="MOTOR_RUNNING"/>
 
         <!-- displays -->
         <dashboard displayType="VISIBILITY" node="cebisXerion12_startScreen_decal" idleValue="0" groups="MOTOR_STARTING"/>
