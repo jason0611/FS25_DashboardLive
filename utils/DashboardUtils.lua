@@ -119,7 +119,7 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 	local spec = self.spec_dashboard
 	local fileName = xmlFile:getValue(key .. "#filename")
 	local fileNameNew = string.sub(fileName, 2) -- rip $ off the path
-	local dblReplacementExists = XMLFile.loadIfExists("DBL Replacement", DashboardLive.MOD_PATH..fileNameNew, xmlFile.schema) ~= nil
+	local dblReplacementExists = XMLFile.loadIfExists("DBL Replacement", DashboardLive.MOD_PATH..fileNameNew, xmlFile.schema) ~= nil and self.baseDirectory == ""
 	local baseDirectoryChanged = false
 	
 	dbgprint("loadDashboardCompoundFromXML :: fileName    = "..tostring(fileName), 2)
