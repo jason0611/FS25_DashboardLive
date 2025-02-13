@@ -75,7 +75,7 @@ end
 
 function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	local filenameDBL = DashboardLive.MOD_PATH..filename
-	if fileExists(filenameDBL) then
+	if fileExists(filenameDBL) and self.baseDirectory == "" then
 		dbgprint("loadSharedI3DFileAsync: replaced i3d-file: "..tostring(filenameDBL), 2)
 		return superfunc(self, filenameDBL, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	else
@@ -89,7 +89,7 @@ I3DManager.loadSharedI3DFileAsync = Utils.overwrittenFunction(I3DManager.loadSha
 function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLevelNodes, i3dMappings, realNumComponents)
 	local filename = xmlFile.filename
 	local filenameDBL = DashboardLive.MOD_PATH..filename
-	if vehicleType == "vehicle" and fileExists(filenameDBL) then
+	if vehicleType == "vehicle" and fileExists(filenameDBL) and self.baseDirectory == "" then
 		local xmlFileDBL = XMLFile.load("DBL Replacement", filenameDBL, xmlFile.schema)
 		dbgprint("loadI3DMapping: replaced xml-file: "..tostring(filenameDBL), 2)
 		return superfunc(xmlFileDBL, vehicleType, rootLevelNodes, i3dMappings, realNumComponents, a, b, c)
@@ -104,7 +104,7 @@ function DashboardUtils:loadDashboardsFromXML(superfunc, xmlFile, key, dashboard
 	local filename = xmlFile.filename
 	local filenameDBL = DashboardLive.MOD_PATH..filename
 	local returnValue = superfunc(self, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
-	if returnValue and fileExists(filenameDBL) then
+	if returnValue and fileExists(filenameDBL) and self.baseDirectory == "" then
 		local xmlFileDBL = XMLFile.load("DBL Replacement", filenameDBL, xmlFile.schema)
 		dbgprint("loadDashboardsFromXML: added xml-file: "..tostring(filenameDBL), 2)
 		returnValue = superfunc(self, xmlFileDBL, key, dashboardValueType, components, i3dMappings, parentNode)
