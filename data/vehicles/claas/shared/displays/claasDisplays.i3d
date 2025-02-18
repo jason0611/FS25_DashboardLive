@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="claasDisplays.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.3"/>
+  </Asset>
+
+  <Files>
+    <File fileId="7" filename="textures/cebisXerion12BasicDM_diffuse.png"/>
+    <File fileId="6" filename="textures/cebisXerion12Basic_diffuse.dds"/>
+    <File fileId="16" filename="textures/cemisXerion12GPSDM_decal.png"/>
+    <File fileId="15" filename="textures/cemisXerion12GPSDM_diffuse.png"/>
+    <File fileId="14" filename="textures/cemisXerion12GPS_decal.png"/>
+    <File fileId="13" filename="textures/cemisXerion12GPS_diffuse.png"/>
+    <File fileId="12" filename="textures/claasXerion12Navi_decal.dds"/>
+    <File fileId="11" filename="../../../../../shader/minimap.xml"/>
+    <File fileId="5" filename="../../../../../shared/dblSliderLine_diffuse.png"/>
+    <File fileId="4" filename="$data/shaders/glowShader.xml"/>
+    <File fileId="8" filename="$data/shared/assets/dashboardSymbols_diffuse.dds"/>
+    <File fileId="2" filename="$data/shared/default_normal.dds"/>
+    <File fileId="9" filename="$data/shared/default_specular.dds"/>
+    <File fileId="3" filename="$data/shared/default_vmask.dds"/>
+    <File fileId="1" filename="$data/vehicles/claas/shared/displays/displays_diffuse.dds"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="dblNaviMap_mat" materialId="99" diffuseColor="0.501961 0.501961 0.501961 1" customShaderId="11">
+    </Material>
+    <Material name="dblSliderLine_mat" materialId="5" customShaderId="4">
+      <Texture fileId="5"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+    </Material>
+    <Material name="dblSliderLine_mat" materialId="6" customShaderId="4" customShaderVariation="slider">
+      <Texture fileId="5"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+    </Material>
+    <Material name="displays_04_mat" materialId="7" customShaderId="4" customShaderVariation="slider">
+      <Texture fileId="1"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+      <CustomParameter name="sliderPos" value="0 0.2"/>
+    </Material>
+    <Material name="mat_16x16_emitter" materialId="114" customShaderId="4" customShaderVariation="staticLight">
+      <Texture fileId="8"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="9"/>
+    </Material>
+    <Material name="miniMap_marker" materialId="105" customShaderId="4">
+      <Texture fileId="12"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+    </Material>
+    <Material name="xerion12Display_mat" materialId="108" customShaderId="4">
+      <Texture fileId="6"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+    </Material>
+    <Material name="xerion12Display_mat" materialId="8" customShaderId="4" customShaderVariation="staticLight">
+      <Texture fileId="6"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+    </Material>
+    <Material name="xerion12Display_mat" materialId="9" customShaderId="4" customShaderVariation="staticLight">
+      <Texture fileId="7"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+    </Material>
+    <Material name="xerion12Display_mat" materialId="10" alphaBlending="true" customShaderId="4" customShaderVariation="staticLight">
+      <Texture fileId="14"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+    </Material>
+    <Material name="xerion12Display_mat" materialId="11" customShaderId="4" customShaderVariation="staticLight">
+      <Texture fileId="13"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+    </Material>
+    <Material name="xerion12Display_mat" materialId="12" alphaBlending="true" customShaderId="4" customShaderVariation="staticLight">
+      <Texture fileId="16"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+    </Material>
+    <Material name="xerion12Display_mat" materialId="13" customShaderId="4" customShaderVariation="staticLight">
+      <Texture fileId="15"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+    </Material>
+    <Material name="xerion12Display_mat" materialId="14" customShaderId="4" customShaderVariation="staticLight">
+      <Texture fileId="1"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="claasDisplays.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <TransformGroup name="cebisXerion12" clipDistance="50" nodeId="41">
+      <TransformGroup name="cebisXerion12_basicScreen" clipDistance="50" nodeId="42">
+        <TransformGroup name="startScreen" clipDistance="50" nodeId="43">
+          <Shape name="cebisXerion12_startScreen_decal" translation="0 0.001 0" shapeId="1" visibility="false" clipDistance="50" nodeId="44" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="14">
+            <Shape name="loadingBar01" translation="0.000115 0 -0.05101" shapeId="2" clipDistance="10" nodeId="45" castsShadows="false" receiveShadows="true" decalLayer="3" materialIds="7"/>
+            <Shape name="loadingBar02" shapeId="3" clipDistance="10" nodeId="46" castsShadows="false" receiveShadows="true" decalLayer="3" materialIds="14"/>
+            <Shape name="cemisDecal" shapeId="4" clipDistance="10" nodeId="47" castsShadows="false" receiveShadows="true" decalLayer="3" materialIds="14"/>
+          </Shape>
+        </TransformGroup>
+        <TransformGroup name="basicIcon" clipDistance="50" nodeId="48">
+          <Shape name="cebisXerion12_dblSpeedSliderP1_SC" shapeId="5" clipDistance="50" nodeId="49" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="6"/>
+          <Shape name="cemosXerion12_dblCruiseControlArrow00P1_SC" translation="-0.063172 0.002 -0.033919" rotation="0 -26.5 0" shapeId="6" clipDistance="50" nodeId="50" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="8"/>
+          <Shape name="cebisXerion12_dblBackAttacherSliderP1_SC" shapeId="7" clipDistance="50" nodeId="51" castsShadows="true" receiveShadows="true" decalLayer="1" materialIds="5"/>
+          <Shape name="cebisXerion12_dblAdBlueDecalP1_SC" shapeId="8" clipDistance="50" nodeId="52" castsShadows="true" receiveShadows="true" decalLayer="1" materialIds="8"/>
+          <Shape name="cebisXerion12_dblFuelDecalP1_SC" shapeId="9" clipDistance="50" nodeId="53" castsShadows="true" receiveShadows="true" decalLayer="1" materialIds="8"/>
+          <Shape name="cebisXerion12_dblSteeringWheelP1_SC" translation="0.055476 0.0001 0.0444" shapeId="10" nodeId="112" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="108"/>
+          <Shape name="cebisXerion12_dblBackPTOP1_SC" shapeId="11" clipDistance="50" nodeId="55" castsShadows="true" receiveShadows="true" decalLayer="1" materialIds="8"/>
+          <Shape name="cemosXerion12_dblArrowForward00P1_SC" translation="-0.062703 0 -0.001428" shapeId="12" clipDistance="50" nodeId="56" castsShadows="false" receiveShadows="true" terrainDecal="true" decalLayer="1" materialIds="8"/>
+          <Shape name="cebisXerion12_dblArrowForward01P1_SC" translation="0.006641 0.0001 -0.074953" shapeId="13" clipDistance="50" nodeId="57" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="8"/>
+          <Shape name="cemosXerion12_dblArrowBackward00P1_SC" translation="-0.062706 0 -0.010576" shapeId="14" clipDistance="50" nodeId="58" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="8"/>
+          <Shape name="cebisXerion12_dblArrowBackward01P1_SC" translation="-0.017438 0.0001 -0.074953" shapeId="15" clipDistance="50" nodeId="59" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="8"/>
+          <Shape name="cebisXerion12_dblParkbreakP1_SC" shapeId="16" visibility="false" clipDistance="50" nodeId="60" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="8"/>
+          <Shape name="cebisXerion12_dblNeutralP1_SC" shapeId="17" clipDistance="50" nodeId="61" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="8"/>
+          <Shape name="cebisXerion12_dblGearGroup1P1_SC" shapeId="18" visibility="false" clipDistance="50" nodeId="62" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="8"/>
+          <Shape name="cebisXerion12_dblGearGroup2P1_SC" shapeId="19" visibility="false" clipDistance="50" nodeId="63" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="8"/>
+          <Shape name="cebisXerion12_dblGearGroup3P1_SC" shapeId="20" visibility="false" clipDistance="50" nodeId="64" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="8"/>
+          <Shape name="cemosXerion12_dblBackDiffP1_SC" translation="-0.01119 0.001 -0.074946" shapeId="21" clipDistance="50" nodeId="65" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="8"/>
+          <Shape name="cemosXerion12_dblFrontDiffP1_SC" translation="-0.001077 0.001 -0.074946" shapeId="22" clipDistance="50" nodeId="66" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="8"/>
+          <TransformGroup name="cebisXerion12_dblTimeNumbersP1_SC" translation="0.118391 0 -0.0805199" rotation="-90 180 0" clipDistance="50" nodeId="67"/>
+          <TransformGroup name="cebisXerion12_dblAdBlueNumbersP1_SC" translation="-0.06 1.58901e-08 0.037" rotation="-90 180 0" clipDistance="50" nodeId="68"/>
+          <TransformGroup name="cebisXerion12_dblFuelNumbersP1_SC" translation="-0.06 1.58901e-08 0.049" rotation="-90 180 0" clipDistance="50" nodeId="69"/>
+          <TransformGroup name="cebisXerion12_dblFuelConsumNumbersP1_SC" translation="-0.06 1.58901e-08 0.062" rotation="-90 180 0" clipDistance="50" nodeId="70"/>
+          <TransformGroup name="cebisXerion12_dblOperatingHoursNumbersP1_SC" translation="-0.06 1.58901e-08 0.073" rotation="-90 180 0" clipDistance="50" nodeId="71"/>
+          <TransformGroup name="cebisXerion12_dblCruiseControlNumbers00P1_SC" translation="-0.0625949 2.27085e-08 -0.005" rotation="-90 180 0" clipDistance="50" nodeId="72"/>
+          <TransformGroup name="cebisXerion12_dblRpmNumbersP1_SC" translation="-0.06 2.28469e-08 -0.029" rotation="-90 180 0" clipDistance="50" nodeId="73"/>
+          <TransformGroup name="cebisXerion12_dblPtoNumbersP1_SC" translation="-0.06 2.28469e-08 -0.041" rotation="-90 180 0" clipDistance="50" nodeId="74"/>
+        </TransformGroup>
+        <TransformGroup name="basicScreen" clipDistance="50" nodeId="75">
+          <Shape name="cebisXerion12_basicScreenP1_SC" translation="0 0.001 0" shapeId="23" clipDistance="50" nodeId="76" castsShadows="false" receiveShadows="true" materialIds="8"/>
+          <Shape name="cebisXerion12_basicScreenDMP1_SC" translation="0 0.001 0" shapeId="23" clipDistance="50" nodeId="77" castsShadows="false" receiveShadows="true" materialIds="9"/>
+          <Shape name="cebisXerion12_backAttacherDecal" translation="0 0.001 0" shapeId="24" clipDistance="50" nodeId="78" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="8"/>
+        </TransformGroup>
+      </TransformGroup>
+    </TransformGroup>
+    <TransformGroup name="cemisXerion12" translation="-0.4 0 0" nodeId="79">
+      <TransformGroup name="cemisXerion12_gpsScreen" nodeId="80">
+        <TransformGroup name="startScreen" nodeId="81">
+          <Shape name="cemisXerion12_startScreenDecal" translation="0 0.003 0" shapeId="1" visibility="false" clipDistance="50" nodeId="82" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="14">
+            <Shape name="loadingBar01" translation="0.000115 0 -0.05101" shapeId="2" clipDistance="10" nodeId="83" castsShadows="false" receiveShadows="true" decalLayer="3" materialIds="7"/>
+            <Shape name="loadingBar02" shapeId="3" clipDistance="10" nodeId="84" castsShadows="false" receiveShadows="true" decalLayer="3" materialIds="14"/>
+            <Shape name="cemisDecal" shapeId="4" clipDistance="10" nodeId="85" castsShadows="false" receiveShadows="true" decalLayer="3" materialIds="14"/>
+          </Shape>
+        </TransformGroup>
+        <TransformGroup name="gpsIcon" nodeId="86">
+          <TransformGroup name="cemisXerion12_dblPlayerNameP1_CC" translation="-0.0669405 0.000999984 0.0681869" rotation="90 -5.00896e-06 180" clipDistance="50" nodeId="106"/>
+          <TransformGroup name="cemisXerion12_dblFieldNumbersP1_CC" translation="-0.11 0.000999984 -0.062" rotation="90 -5.00896e-06 -180" clipDistance="50" nodeId="124"/>
+          <TransformGroup name="cemisXerion12_dblCompassP1_CC" translation="0 0.000999984 0.075" rotation="90 -5.00896e-06 -180" clipDistance="50" nodeId="122"/>
+          <TransformGroup name="cemisXerion12_dblCompassNumbersP1_CC" translation="0 0.000999984 0.068" rotation="90 -5.00896e-06 -180" clipDistance="50" nodeId="123"/>
+          <Shape name="cemisXerion12_dblSteeringWheelP1_CC" translation="0.0826386 0.0001 0.0748397" shapeId="10" nodeId="113" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="108"/>
+          <Shape name="cemisXerion12_dblHlmOnOffP1_CC" translation="0.09 5.2e-05 -0.046" shapeId="25" clipDistance="20" nodeId="119" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="114"/>
+          <Shape name="cemisXerion12_dblHlmFieldP1_CC" translation="0.09 7.27244e-18 -0.046" scale="1.9 1 1.9" shapeId="26" clipDistance="20" nodeId="120" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="114"/>
+          <Shape name="cemisXerion12_dblHlmHeadlandP1_CC" translation="0.09 0 -0.046" scale="1.9 1 1.9" shapeId="27" clipDistance="20" nodeId="121" castsShadows="false" receiveShadows="true" decalLayer="3" materialIds="114"/>
+        </TransformGroup>
+        <TransformGroup name="gpsNaviMap" nodeId="94">
+          <Shape name="cemisXerion12_dblNaviMapP1_CC" translation="0 0.001 8.3e-05" rotation="0 180 0" shapeId="28" clipDistance="50" nodeId="98" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="99">
+            <Shape name="cemisXerion12_dblNaviPositionP1_CC" translation="0 -0.002 -8.3e-05" rotation="4.26887e-07 0 1.8783e-05" scale="2 1 2" shapeId="29" nodeId="103" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="105"/>
+          </Shape>
+        </TransformGroup>
+        <TransformGroup name="gpsScreen" nodeId="87">
+          <Shape name="cemisXerion12_gpsScreenP1_CC" translation="0 0.001 0" shapeId="30" clipDistance="50" nodeId="88" castsShadows="false" receiveShadows="true" materialIds="11"/>
+          <Shape name="cemisXerion12_gpsDecalP1_CC" translation="0 0.001 0" shapeId="30" clipDistance="50" nodeId="89" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="10"/>
+          <Shape name="cemisXerion12_gpsScreenDMP1_CC" translation="0 0.001 0" shapeId="30" clipDistance="50" nodeId="90" castsShadows="false" receiveShadows="true" materialIds="13"/>
+          <Shape name="cemisXerion12_gpsDecalDMP1_CC" translation="0 0.001 0" shapeId="30" clipDistance="50" nodeId="91" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="12"/>
+        </TransformGroup>
+      </TransformGroup>
+    </TransformGroup>
+  </Scene>
+
+  <UserAttributes>
+    <UserAttribute nodeId="119">
+      <Attribute name="MaxHandle" type="integer" value="94"/>
+    </UserAttribute>
+    <UserAttribute nodeId="120">
+      <Attribute name="MaxHandle" type="integer" value="95"/>
+    </UserAttribute>
+    <UserAttribute nodeId="121">
+      <Attribute name="MaxHandle" type="integer" value="95"/>
+    </UserAttribute>
+  </UserAttributes>
+
+</i3D>
