@@ -95,6 +95,23 @@ function DashboardLive.initSpecialization()
 	schema:register(XMLValueType.FLOAT, DashboardLive.DBL_XML_KEY .. "#distance", "hearable distance")
 	dbgprint("initSpecialization : DashboardLive element options registered", 2)
 	
+--![[	
+	local COMPOUND_GROUP_XML_KEY = "dashboardCompounds.group(?)"
+	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#name", "Dashboard group name")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dbl", "DashboardLive command")
+    Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#op", "DashboardLive operator")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_GROUP_XML_KEY .. "#page", "DashboardLive page")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_GROUP_XML_KEY .. "#group", "DashboardLive pages group")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.BOOL, COMPOUND_GROUP_XML_KEY .. "#dblActiveWithoutImplement", "return 'true' without implement")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.VECTOR_N, COMPOUND_GROUP_XML_KEY .. "#dblAttacherJointIndices")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.VECTOR_N, COMPOUND_GROUP_XML_KEY .. "#dblSelection")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.VECTOR_N, COMPOUND_GROUP_XML_KEY .. "#dblSelectionGroup")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dblRidgeMarker", "Ridgemarker state")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dblOption", "DBL Option")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dblTrailer", "DBL Trailer")
+	dbgprint("initSpecialization : DashboardLive group options registered", 2)
+--]]
+	
 	local COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).dashboard(?)"
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#cmd", "DashboardLive command")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#joints")
@@ -116,7 +133,6 @@ function DashboardLive.initSpecialization()
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#baseColorDarkMode", "Base color for dark mode")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#emitColorDarkMode", "Emit color for dark mode")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_XML_KEY .. "#intensityDarkMode", "Intensity for dark mode")
-	
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#audioFile", "Path to audio file")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#audioName", "Unique name of sound sample")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_XML_KEY .. "#loop", "repeat sound n times")
@@ -202,6 +218,7 @@ function DashboardLive:onLoad(savegame)
 	spec.pageGroups[1].pages[1] = true
 	spec.pageGroups[1].actPage = 1
 	spec.updateTimer = 0
+	spec.compoundGroupsLoaded = false
 		
 	-- zoom data
 	spec.zoomed = false
@@ -407,8 +424,14 @@ function DashboardLive:onPostLoad(savegame)
 	
 	--Check if Mod HeadlandManagement exists
 	spec.modHLMFound = self.spec_HeadlandManagement ~= nil
-	
+
+	DashboardLive.createDashboardPages(self)
+end
+
+function DashboardLive.createDashboardPages(self)
+	local spec = self.spec_DashboardLive
     local dashboard = self.spec_dashboard
+    
     for _, group in pairs(dashboard.groups) do
     	if group.dblPage ~= nil then
 			spec.maxPageGroup = math.max(spec.maxPageGroup, group.dblPageGroup)
@@ -423,15 +446,13 @@ function DashboardLive:onPostLoad(savegame)
     			spec.pageGroups[group.dblPageGroup].actPage = 1
     		end
     		spec.pageGroups[group.dblPageGroup].pages[group.dblPage] = true
-    		dbgprint("onPostLoad : maxPageGroup set to "..tostring(spec.maxPageGroup), 2)
-    		dbgprint("onPostLoad : maxPage set to "..tostring(spec.maxPage), 2)
+    		dbgprint("createDashboardPages : maxPageGroup set to "..tostring(spec.maxPageGroup), 2)
+    		dbgprint("createDashboardPages : maxPage set to "..tostring(spec.maxPage), 2)
     	else
-    		dbgprint("onPostLoad : no pages found in group "..group.name, 2)
+    		dbgprint("createDashboardPages : no pages found in group "..group.name, 2)
     	end
     end
-    
     --self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive")
-    
     dbgprint_r(spec.pageGroups, 4, 3)
 end
 
@@ -1814,15 +1835,27 @@ Dashboard.loadDashboardFromXML = Utils.overwrittenFunction(Dashboard.loadDashboa
 
 -- GROUPS
 
-function DashboardLive:loadDashboardGroupFromXML(superFunc, xmlFile, key, group)
-	if not superFunc(self, xmlFile, key, group) then
-        dbgprint("loadDashboardGroupFromXML : superfunc failed for group "..tostring(group.name), 2)
-        return false
+function DashboardLive:loadDashboardGroupFromXML(superFunc, xmlFile, key, group)	
+    dbgprint("loadDashboardGroupFromXML : "..self:getName()..": key: "..tostring(key), 2)
+    dbgprint("loadDashboardGroupFromXML : filename: "..tostring(xmlFile.filename), 2)
+
+	if string.sub(key, 1, 18) ~= "dashboardCompounds" then
+--  *******
+		dbgprint("loadDashboardGroupFromXML : superFunc...", 2)
+		if not superFunc(self, xmlFile, key, group) then
+			dbgprint("loadDashboardGroupFromXML : superfunc failed for group "..tostring(group.name), 2)
+			return false
+		end
+    
+--	*******
+	end
+	
+    dbgprint("loadDashboardGroupFromXML : overwritten part...", 2)
+    if group.name == nil then
+    	group.name = xmlFile:getValue(key .. "#name")
     end
-    dbgprint("loadDashboardGroupFromXML : "..self:getName()..": group: "..tostring(group.name), 2)
     
     group.dblCommand = lower(xmlFile:getValue(key .. "#dbl"))
-
     if group.dblCommand ~= nil then
 		dbgprint("loadDashboardGroupFromXML : dblCommand: "..tostring(group.dblCommand), 2)
 		

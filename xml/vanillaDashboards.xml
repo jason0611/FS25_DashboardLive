@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<vanillaDashboards>
+<dblCompounds>
 	<!-- Vanilla -->
-	<vanillaDashboard name="SKE50electric" fileName="data/vehicles/rigitrac/ske50/ske50.xml">
+	<dblCompound name="Claas" fileName="$data/vehicles/claas/shared/displays/displays.xml" replacement="claas/shared/displays/displays.xml">
+		
 		<nodes>
 			<node name="vcaPark" node="0>0|9|6|8" symbol="0|1" moveTo="-0.0001 0.009 -0.0044" rotate="-129 0 180" scale="2 2 2"/>
 			<node name="pto1" node="0>0|9|6|8" symbol="0|125" moveTo="0.0688 0.003 -0.0085" rotate="-61 0 0" scale="2.514 2.514 2.514"/>

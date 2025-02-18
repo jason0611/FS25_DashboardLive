@@ -1,17 +1,70 @@
 DashboardUtils = {}
 
+DashboardUtils.MOD_PATH = g_currentModDirectory
+
 -- Vanilla Integration POC --
 function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, compound)
+	local spec = self.spec_dashboard
 	local fileName = xmlFile:getValue(key .. "#filename")
-	dbgprint("loadDashboardCompoundFromXML :: fileName = "..tostring(fileName), 2)
-	if fileName == "$data/vehicles/claas/shared/displays/displays.xml" then
-		local newFileName = "<replacement>"
-		--xmlFile:setValue(key .. "#filename", newFileName)
-		dbgprint("loadDashboardCompoundFromXML :: replaced with "..tostring(newFileName), 2)
+	local fileNameNew = string.sub(fileName, 2) -- rip $ off the path
+	local dblReplacementExists = XMLFile.loadIfExists("DBL Replacement", DashboardLive.MOD_PATH..fileNameNew, xmlFile.schema) ~= nil
+	local baseDirectoryChanged = false
+	
+	dbgprint("loadDashboardCompoundFromXML :: fileName    = "..tostring(fileName), 2)
+	dbgprint("loadDashboardCompoundFromXML :: fileNameNew = "..DashboardLive.MOD_PATH..fileNameNew, 2)
+	dbgprint("loadDashboardCompoundFromXML :: dblReplacementExists = "..tostring(dblReplacementExists), 2)
+	if dblReplacementExists then
+		xmlFile:setValue(key .. "#filename", fileNameNew)
+		dbgprint("loadDashboardCompoundFromXML :: fileName replaced", 2)
+		if self.baseDirectory == "" then
+			self.baseDirectory = DashboardLive.MOD_PATH
+			baseDirectoryChanged = true
+			dbgprint("loadDashboardCompoundFromXML :: baseDirectory changed", 2)
+		end
 	end	
-	return superfunc(self, xmlFile, key, compound)
+	dbgprint("loadDashboardCompoundFromXML :: self.baseDirectory: "..tostring(self.baseDirectory), 2)
+	
+	local returnValue = superfunc(self, xmlFile, key, compound)
+	
+	if baseDirectoryChanged then
+		self.baseDirectory = ""
+	end
+		
+	return returnValue
 end
 Dashboard.loadDashboardCompoundFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardCompoundFromXML, DashboardUtils.loadDashboardCompoundFromXML)
+
+function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
+	local spec = self.spec_dashboard
+	if not spec.compoundGroupsLoaded then
+		local dashboardXMLFile = args.dashboardXMLFile
+		local compound = args.compound
+		local compoundKey = args.compoundKey
+        
+		local i = 0
+		while true do
+			local baseKey = string.format("%s.group(%d)", "dashboardCompounds", i)
+			dbgprint("onDashboardCompoundLoaded :: looking for key "..baseKey, 2)
+			if not dashboardXMLFile:hasProperty(baseKey) then
+				break
+			end
+	
+			local group = {}
+			if self:loadDashboardGroupFromXML(dashboardXMLFile, baseKey, group) then
+				spec.groups[group.name] = group
+				table.insert(spec.sortedGroups, group)
+				dbgprint("onDashboardCompoundLoaded :: group "..tostring(group.name).." added", 2)
+				spec.hasGroups = true
+				spec.compoundGroupsLoaded = true
+			end
+	
+			i = i + 1
+		end
+		
+		DashboardLive.createDashboardPages(self)
+	end
+end
+	Dashboard.onDashboardCompoundLoaded = Utils.prependedFunction(Dashboard.onDashboardCompoundLoaded, DashboardUtils.onDashboardCompoundLoaded)
 
 --[[
 function DashboardUtils.createVanillaNodes(vehicle, xmlVanillaFile, xmlModFile)
