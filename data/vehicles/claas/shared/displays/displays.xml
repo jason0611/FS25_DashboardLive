@@ -19,7 +19,6 @@
         <dashboard displayType="VISIBILITY" node="cebisXerion12_dblNeutralP1_SC" idleValue="0" groups="MOTOR_ACTIVE"/>
         <dashboard displayType="VISIBILITY" node="cebisXerion12_dblArrowBackward01P1_SC" idleValue="0" groups="MOTOR_ACTIVE"/>
 		
-		
         <dashboard displayType="VISIBILITY" node="cebisXerion12_dblFrontDiffP1_SC" idleValue="0" groups="MOTOR_ACTIVE"/>
         <dashboard displayType="VISIBILITY" node="cebisXerion12_dblBackDiffP1_SC" idleValue="0" groups="MOTOR_ACTIVE"/>
 		<!-- displays -->
@@ -59,8 +58,6 @@
 			<state value="1" visibility="false"/>
 		</dashboard>
 		
-		<!-- <dashboard displayType="VISIBILITY" valueType="motorized.directionForward" node="cebisXerion12_dblArrowForward01P1_SC" hideInactive="true" groups="MOTOR_ACTIVE"/>
-        <dashboard displayType="VISIBILITY" valueType="motorized.directionBackward" node="cebisXerion12_dblArrowBackward01P1_SC" hideInactive="true" groups="MOTOR_ACTIVE"/> -->
 		<dashboard displayType="EMITTER" valueType="motorized.directionForward" node="cemosXerion12_dblArrowForward00P1_SC" baseColor="BERGMANN_GREY02" baseColorDarkMode="1 1 1 1" emitColor="CLAAS_GREEN1" intensity="1" groups="MOTOR_ACTIVE"/>
         <dashboard displayType="EMITTER" valueType="motorized.directionBackward" node="cemosXerion12_dblArrowBackward00P1_SC" baseColor="BERGMANN_GREY02" baseColorDarkMode="1 1 1 1" emitColor="CLAAS_GREEN1" intensity="1" groups="MOTOR_ACTIVE"/>
 		
@@ -86,8 +83,6 @@
 		<dashboard valueType="dbl.vca" cmd="park" displayType="AUDIO" outside="true" distance="50.0" audioName="Brake" loop="1" volume="0.5" audioFile="$data/sounds/vehicles/brake/brake_big.ogg" groups="MOTOR_ACTIVE" />
 		<dashboard valueType="dbl.vca" cmd="diff_front" displayType="EMITTER" node="cebisXerion12_dblFrontDiffP1_SC" baseColor="BERGMANN_GREY02" emitColor="AMAZONE_ORANGE1" intensity="0.8" groups="MOTOR_ACTIVE"/>
 		<dashboard valueType="dbl.vca" cmd="diff_back" displayType="EMITTER" node="cebisXerion12_dblBackDiffP1_SC" baseColor="BERGMANN_GREY02" emitColor="AMAZONE_ORANGE1" intensity="0.8" groups="MOTOR_ACTIVE"/>
-		
-		
     </dashboardCompound>
 
     <dashboardCompound name="CEMIS_XERION12_GPSPAGE" filename="data/vehicles/claas/shared/displays/claasDisplays.i3d" node="cemisXerion12">
@@ -123,26 +118,240 @@
 		<!-- MiniMap -->
 		<dashboard valueType="dbl.miniMap" cmd="map" displayType="VISIBILITY" node="cemisXerion12_dblNaviMapP1_CC" groups="MOTOR_ACTIVE"/>
 		<dashboard valueType="dbl.miniMap" cmd="posMarker" displayType="VISIBILITY" node="cemisXerion12_dblNaviPositionP1_CC" groups="MOTOR_ACTIVE"/>
-		
     </dashboardCompound>
 
-    <!-- <dashboardCompound name="CEBIS_JAGUAR_MAINPAGE" filename="$data/vehicles/claas/shared/displays/displays.i3d" node="cebisJaguar">
-        
-    </dashboardCompound> -->
+    <dashboardCompound name="CEBIS_JAGUAR_MAINPAGE" filename="data/vehicles/claas/shared/displays/claasDisplays.i3d" node="cebisJaguar">
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_speedoDecal" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_dblAdBlueP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_dblFuelP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_dblForwardArrowP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_dblNeutralGearP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_dblBackwardArrowP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_dblCruiseControl00P1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_dblCruiseControl01P1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_dblCruiseControlArrowP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_dblSilageAdditivesTankP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_dblHeaderP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_dblGPSAvtiveP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_dblGPSSatellitP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_dblFrontDiffP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_dblBackDiffP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		
+		<dashboard displayType="EMITTER" node="cebisJaguar_dblSilageAdditivesTankP1_SC" baseColor="BLACK" baseColorDarkMode="1 1 1 1" intensity="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="EMITTER" node="cebisJaguar_dblGPSSatellitP1_SC" baseColor="1 1 1 1" baseColorDarkMode="1 1 1 1" intensity="0.3" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="EMITTER" node="cebisJaguar_dblFrontDiffP1_SC" baseColor="1 1 1 1" baseColorDarkMode="1 1 1 1" intensity="0.3" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="EMITTER" node="cebisJaguar_dblBackDiffP1_SC" baseColor="1 1 1 1" baseColorDarkMode="1 1 1 1" intensity="0.3" groups="MOTOR_RUNNING"/>
+		
+		<!-- displays -->
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_startScreen_decal" idleValue="0" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="cebisJaguar_startScreen_decal" intensity="0.3" groups="MOTOR_STARTING"/>
+		
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_basicScreenP1_SC" groups="MOTOR_ACTIVE LIGHTMODE"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_basicScreenDMP1_SC" groups="MOTOR_ACTIVE DARKMODE"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_vehicleIcon" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_vehicleIconDM" groups="MOTOR_RUNNING DARKMODE"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_vehicleInfoLines" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="VISIBILITY" node="cebisJaguar_vehicleInfoLinesDM" groups="MOTOR_RUNNING DARKMODE"/>
+		<dashboard displayType="EMITTER" node="cebisJaguar_basicScreenP1_SC" intensity="0.3" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="EMITTER" node="cebisJaguar_basicScreenDMP1_SC" intensity="0.3" groups="MOTOR_RUNNING DARKMODE"/>
+		<dashboard displayType="EMITTER" node="cebisJaguar_vehicleIcon" intensity="0.3" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="EMITTER" node="cebisJaguar_vehicleIconDM" intensity="0.3" groups="MOTOR_RUNNING DARKMODE"/>
+		<dashboard displayType="EMITTER" node="cebisJaguar_vehicleInfoLines" intensity="0.3" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="EMITTER" node="cebisJaguar_vehicleInfoLinesDM" intensity="0.3" groups="MOTOR_RUNNING DARKMODE"/>
+		
+		<dashboard displayType="SLIDER" valueType="motorized.speed" node="cebisJaguar_dblSpeedSliderP1_SC" minValueSlider="0" maxValueSlider="50" intensity="0.4" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="SLIDER" valueType="motorized.rpm" node="cebisJaguar_dblRpmSliderP1_SC" minValueSlider="500" maxValueSlider="2200" intensity="0.4" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="SLIDER" valueType="motorized.load" node="cebisJaguar_dblLoadSlider01P1_SC" minValueSlider="0" maxValueSlider="100" intensity="0.4" groups="MOTOR_RUNNING"/>
+		
+		<dashboard displayType="TEXT" valueType="motorized.load" option="percent" node="cebisJaguar_dblLoadNumbersP1_SC" textColor="1 1 1 1" textColorDarkMode="1 1 1 1" emissiveScale="0.4" textSize="0.004" textMask="000" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="motorized.rpm" node="cebisJaguar_dblRpmNumbersP1_SC" textColor="0.027 0.027 0.027 1" textColorDarkMode="1 1 1 1" emissiveScale="0.4" textSize="0.004" textMask="0000" font="GENERIC" groups="MOTOR_RUNNING"/>
+		
+		<dashboard displayType="EMITTER" valueType="drivable.cruiseControlActive" node="cebisJaguar_dblCruiseControl00P1_SC" intensity="0.5" baseColor="1 1 1 1" baseColorDarkMode="1 1 1 1" emissiveScale="0.5" emitColor="CLAAS_GREEN1" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="EMITTER" valueType="drivable.cruiseControlActive" node="cebisJaguar_dblCruiseControl01P1_SC" intensity="0.5" baseColor="1 1 1 1" baseColorDarkMode="1 1 1 1" emissiveScale="0.5" emitColor="CLAAS_GREEN1" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="ROT" valueType="drivable.cruiseControl" node="cebisJaguar_dblCruiseControlArrowP1_SC" rotAxis="2" minRot="120" maxRot="-75" minValueRot="0" maxValueRot="41" intensity="0.3" groups="MOTOR_RUNNING"/>
+
+		<dashboard displayType="TEXT" valueType="drivable.cruiseControl" node="cebisJaguar_dblCruiseControlNumbers00P1_SC" baseColor="1 1 1 1" baseColorDarkMode="1 1 1 1" emitColor="GREEN" textSize="0.004" textAlignment="RIGHT" font="GENERIC" intensity="1" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="drivable.cruiseControl" node="cebisJaguar_dblCruiseControlNumbers01P1_SC" baseColor="0.027 0.027 0.027 1" baseColorDarkMode="1 1 1 1" emitColor="GREEN" textSize="0.004" textAlignment="CENTER" font="GENERIC" intensity="1" groups="MOTOR_RUNNING"/>
+		
+		<dashboard displayType="MULTI_STATE" valueType="drivable.movingDirection" node="cebisJaguar_dblForwardArrowP1_SC" doInterpolation="true" groups="MOTOR_ACTIVE">
+			<state value="-1" visibility="false"/>
+			<state value="0" visibility="false"/>
+			<state value="1" visibility="true"/>
+		</dashboard>
+		<dashboard displayType="MULTI_STATE" valueType="drivable.movingDirection" node="cebisJaguar_dblNeutralGearP1_SC" doInterpolation="true" groups="MOTOR_ACTIVE">
+			<state value="-1" visibility="false"/>
+			<state value="0" visibility="true"/>
+			<state value="1" visibility="false"/>
+		</dashboard>
+		<dashboard displayType="MULTI_STATE" valueType="drivable.movingDirection" node="cebisJaguar_dblBackwardArrowP1_SC" doInterpolation="true" groups="MOTOR_ACTIVE">
+			<state value="-1" visibility="true"/>
+			<state value="0" visibility="false"/>
+			<state value="1" visibility="false"/>
+		</dashboard>
+		
+		<dashboard displayType="TEXT" valueType="enterable.time" node="cebisJaguar_dblTimeNumbersP1_SC" textColor="0.027 0.027 0.027 1" textColorDarkMode="1 1 1 1" emissiveScale="0.4" textSize="0.004" textMask="00:00" textAlignment="CENTER" font="GENERIC" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="enterable.operatingTime" node="cebisJaguar_dblWorkTimeNumbersP1_SC" textColor="0.027 0.027 0.027 1" textColorDarkMode="1 1 1 1" emissiveScale="0.4" textSize="0.004" textMask="0000,0" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_RUNNING"/>
+		
+		<dashboard displayType="EMITTER" valueType="fillLevelWarning" fillType="DEF" node="cebisJaguar_dblAdBlueP1_SC" baseColor="0.027 0.027 0.027 1" baseColorDarkMode="1 1 1 1" emitColor="ALPEGO_BLUE" intensity="1" warningThresholdMax="10" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="EMITTER" valueType="fillLevelWarning" fillType="DIESEL" node="cebisJaguar_dblFuelP1_SC" baseColor="0.027 0.027 0.027 1" baseColorDarkMode="1 1 1 1" emitColor="AMAZONE_ORANGE1" intensity="1" warningThresholdMax="100" groups="MOTOR_RUNNING"/>
+		<!-- <dashboard displayType="EMITTER" valueType="fillLevelWarning" fillType="SILAGE_ADDITIVE" node="cebisJaguar_dblSilageAdditivesNumbersP1_SC" baseColor="0 0 0 1" baseColorDarkMode="1 1 1 1" emitColor="AMAZONE_ORANGE1" intensity="1" warningThresholdMax="5" groups="MOTOR_RUNNING"/> -->
+		<dashboard displayType="TEXT" valueType="fillLevelPct" fillType="DEF" node="cebisJaguar_dblAdBlueNumbersP1_SC" textColor="0 0 0 0" textColorDarkMode="1 1 1 1" textSize="0.004" textMask="000" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="fillLevelPct" fillType="DIESEL" node="cebisJaguar_dblFuelNumbersP1_SC" textColor="0 0 0 0" textColorDarkMode="1 1 1 1" textSize="0.004" textMask="000" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="fillLevel" fillType="SILAGE_ADDITIVE" node="cebisJaguar_dblSilageAdditivesNumbersP1_SC" textColor="0.027 0.027 0.027 1" textColorDarkMode="1 1 1 1" textSize="0.004" textMask="000" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING"/>
+		
+		<dashboard displayType="TEXT" valueType="combine.workedHectars" node="cebisJaguar_dblHectaresPerHourNumbersP1_SC" textColor="0.238 0.238 0.238 0" textSize="0.004" textMask="0000" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_RUNNING"/>
+		<!-- GPS -->
+		<dashboard displayType="EMITTER" valueType="ai.automaticSteering.steeringEngaged" node="cebisJaguar_dblGPSAvtiveP1_SC" baseColor="1 1 1 1" baseColorDarkMode="1 1 1 1" emissiveScale="0.5" emitColor="CLAAS_GREEN1" intensity="1" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="fieldNumber" node="cebisJaguar_dblFieldNumbersP1_SC" textColor="0.027 0.027 0.027 1" textColorDarkMode="1 1 1 1" textSize="0.004" textMask="000" font="GENERIC" textAlignment="LEFT" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="headingText2" node="cebisJaguar_dblCompassP1_SC" textColor="1 1 1 1" textColorDarkMode="1 1 1 1" emissiveScale="0.5" textSize="0.004" textMask="00" font="GENERIC" textAlignment="CENTER" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="heading" node="cebisJaguar_dblCompassNumbersP1_SC" textColor="1 1 1 1" textColorDarkMode="1 1 1 1" emissiveScale="0.5" textSize="0.004" textMask="000.0" font="GENERIC" textAlignment="CENTER" groups="MOTOR_RUNNING"/>
+		<!-- Pipe -->
+		<dashboard displayType="VISIBILITY" valueType="combine" cmd="pipeFolding" node="cebisJaguar_dblVehicleDecal00P1_SC" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="VISIBILITY" valueType="combine" cmd="pipeState" state="1" node="cebisJaguar_dblVehicleDecal00P1_SC" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="VISIBILITY" valueType="combine" cmd="pipeFolding" node="cebisJaguar_dblVehicleDecal01P1_SC" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="VISIBILITY" valueType="combine" cmd="pipeState" state="2" node="cebisJaguar_dblVehicleDecal01P1_SC" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="VISIBILITY" valueType="combine" cmd="pipeFolding" node="cebisJaguar_dblVehicleDecal00DMP1_SC" groups="MOTOR_RUNNING DARKMODE"/>
+		<dashboard displayType="VISIBILITY" valueType="combine" cmd="pipeState" state="1" node="cebisJaguar_dblVehicleDecal00DMP1_SC" groups="MOTOR_RUNNING DARKMODE"/>
+		<dashboard displayType="VISIBILITY" valueType="combine" cmd="pipeFolding" node="cebisJaguar_dblVehicleDecal01DMP1_SC" groups="MOTOR_RUNNING DARKMODE"/>
+		<dashboard displayType="VISIBILITY" valueType="combine" cmd="pipeState" state="2" node="cebisJaguar_dblVehicleDecal01DMP1_SC" groups="MOTOR_RUNNING DARKMODE"/>
+		<dashboard displayType="VISIBILITY" valueType="combine" cmd="overloading" state="1"  node="cebisJaguar_dblChaffSliderP1_SC" groups="MOTOR_RUNNING"/>
+		<!-- PTO -->
+		<dashboard displayType="EMITTER" valueType="dbl.base" cmd="pto" joints="1" node="cebisJaguar_dblHeaderP1_SC" baseColor="0.027 0.027 0.027 1" baseColorDarkMode="1 1 1 1" emitColor="CLAAS_GREEN1" intensity="1" groups="MOTOR_RUNNING"/>
+    </dashboardCompound>
 
     
-    <!-- <dashboardCompound name="CEBIS_LEXION_MAINPAGE" filename="$data/vehicles/claas/shared/displays/displays.i3d" node="cebisLexion">
+    <dashboardCompound name="CEBIS_LEXION_MAINPAGE" filename="data/vehicles/claas/shared/displays/claasDisplays.i3d" node="cebisLexion">
+		<dashboard displayType="VISIBILITY" node="cebisLexion_speed_decal" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisLexion_rpm_decal" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisLexion_dblCruiseControlArrow00P1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisLexion_dblCruiseControl00P1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisLexion_dblNeutralGearP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisLexion_dblGPSSatellitP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisLexion_dblGPSAvtiveP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisLexion_dblFrontDiffP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisLexion_dblBackDiffP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisLexion_dblArrowForwardP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisLexion_dblArrowBackwardP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisLexion_dblAdBlueP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisLexion_dblFuelP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" node="cebisLexion_dblSwathOutputP1_SC" idleValue="0" groups="MOTOR_RUNNING"/>
+		
+		<dashboard displayType="EMITTER" node="cebisLexion_dblNeutralGearP1_SC" emitColor="0.027 0.027 0.027 1" emitColorDarkMode="1 1 1 1" intensity="0.5" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="EMITTER" node="cebisLexion_dblGPSSatellitP1_SC" emitColor="0.027 0.027 0.027 1" emitColorDarkMode="1 1 1 1" intensity="0.5" groups="MOTOR_ACTIVE"/>
+		
+		<!-- displays -->
+		<dashboard displayType="VISIBILITY" node="cebisLexion_startScreen_decal" idleValue="0" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="cebisLexion_startScreen_decal" intensity="0.3" groups="MOTOR_STARTING"/>
+		
+		<dashboard displayType="VISIBILITY" node="cebisLexion_basicScreenP1_SC" groups="MOTOR_ACTIVE LIGHTMODE"/>
+		<dashboard displayType="VISIBILITY" node="cebisLexion_basicScreenDMP1_SC" groups="MOTOR_ACTIVE DARKMODE"/>
+		<dashboard displayType="EMITTER" node="cebisLexion_basicScreenP1_SC" intensity="0.3" groups="MOTOR_ACTIVE LIGHTMODE"/>
+		<dashboard displayType="EMITTER" node="cebisLexion_basicScreenDMP1_SC" intensity="0.3" groups="MOTOR_ACTIVE DARKMODE"/>
+		
+		<dashboard displayType="EMITTER" valueType="drivable.cruiseControlActive" node="cebisLexion_dblCruiseControl00P1_SC" intensity="0.5" baseColor="0.4 0.4 0.4 1" baseColorDarkMode="1 1 1 1" emitColor="CLAAS_GREEN1" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="ROT" valueType="drivable.cruiseControl" node="cebisLexion_dblCruiseControlArrow00P1_SC" rotAxis="2" minRot="120" maxRot="-120" minValueRot="0" maxValueRot="40" intensity="0.3" groups="MOTOR_RUNNING"/>
+		
+		<dashboard displayType="TEXT" valueType="drivable.cruiseControl" node="cebisLexion_dblCruiseControlNumbers00P1_SC" baseColor="1 1 1 1" baseColorDarkMode="1 1 1 1" emitColor="GREEN" textSize="0.004" textAlignment="RIGHT" font="GENERIC" intensity="1" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="drivable.cruiseControl" node="cebisLexion_dblCruiseControlNumbers01P1_SC" baseColor="0.027 0.027 0.027 1" baseColorDarkMode="1 1 1 1" emitColor="GREEN" textSize="0.004" textAlignment="CENTER" font="GENERIC" intensity="1" groups="MOTOR_RUNNING"/>
+		
+		<dashboard displayType="SLIDER" valueType="motorized.speed" node="cebisLexion_dblSpeedSliderP1_SC" minValueSlider="0" maxValueSlider="40" intensity="0.4" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="SLIDER" valueType="motorized.load" node="cebisLexion_dblLoadSliderP1_SC1" minValueSlider="30" maxValueSlider="135" intensity="0.3" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="SLIDER" valueType="motorized.load" node="cebisLexion_dblYieldUtilizationSliderP1_SC" minValueSlider="20" maxValueSlider="100" intensity="0.3" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="motorized.load" option="percent" node="cebisLexion_dblLoadNumbers01P1_SC" textColor="1 1 1 1" textColorDarkMode="1 1 1 1" emissiveScale="0.4" textSize="0.004" textMask="000" textAlignment="CENTER" font="GENERIC" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="motorized.rpm" node="cebisLexion_dblRpmNumbersP1_SC" textColor="0.027 0.027 0.027 1" textColorDarkMode="1 1 1 1" emissiveScale="0.4" textSize="0.004" textMask="0000" font="GENERIC" groups="MOTOR_RUNNING"/>
         
-    </dashboardCompound> -->
+		<dashboard displayType="MULTI_STATE" valueType="drivable.movingDirection" node="cebisLexion_dblForwardArrowP1_SC" doInterpolation="true" groups="MOTOR_RUNNING">
+			<state value="-1" visibility="false"/>
+			<state value="0" visibility="false"/>
+			<state value="1" visibility="true"/>
+		</dashboard>
+		<dashboard displayType="MULTI_STATE" valueType="drivable.movingDirection" node="cebisLexion_dblNeutralGearP1_SC" doInterpolation="true" groups="MOTOR_RUNNING">
+			<state value="-1" visibility="false"/>
+			<state value="0" visibility="true"/>
+			<state value="1" visibility="false"/>
+		</dashboard>
+		<dashboard displayType="MULTI_STATE" valueType="drivable.movingDirection" node="cebisLexion_dblBackwardArrowP1_SC" doInterpolation="true" groups="MOTOR_RUNNING">
+			<state value="-1" visibility="true"/>
+			<state value="0" visibility="false"/>
+			<state value="1" visibility="false"/>
+		</dashboard>
+		
+		<dashboard displayType="EMITTER" valueType="fillLevelWarning" fillType="DEF" node="cebisLexion_dblAdBlueP1_SC" baseColor="0.027 0.027 0.027 1" baseColorDarkMode="1 1 1 1" emitColor="ALPEGO_BLUE" intensity="1" warningThresholdMax="10" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="EMITTER" valueType="fillLevelWarning" fillType="DIESEL" node="cebisLexion_dblFuelP1_SC" baseColor="0.027 0.027 0.027 1" baseColorDarkMode="1 1 1 1" emitColor="AMAZONE_ORANGE1" intensity="1" warningThresholdMax="100" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="fillLevelPct" fillType="DEF" node="cebisLexion_dblAdBluePercentP1_SC" textColor="0 0 0 0" textColorDarkMode="1 1 1 1" textSize="0.004" textMask="000" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="fillLevelPct" fillType="DIESEL" node="cebisLexion_dblFuelPercentP1_SC" textColor="0 0 0 0" textColorDarkMode="1 1 1 1" textSize="0.004" textMask="000" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING"/>
+		
+		<dashboard displayType="TEXT" valueType="enterable.time" node="cebisLexion_dblTimeNumbersP1_SC" textColor="0.027 0.027 0.027 1" textColorDarkMode="1 1 1 1" emissiveScale="0.4" textSize="0.004" textMask="00:00" textAlignment="CENTER" font="GENERIC" groups="MOTOR_RUNNING"/>
+		
+		<!-- FillLevel -->
+		<dashboard displayType="SLIDER" valueType="fillUnit.fillLevel" node="cebisLexion_dblGrainFillLevelSliderP1_SC" fillUnitIndex="1" intensity="0.3" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="filltype" option="name" joints="0" partition="1" node="cebisLexion_dblGrainFilltypeP1_SC" intensity="0.3" textColor="0.027 0.027 0.027 1" textColorDarkMode="1 1 1 1" textSize="0.004" textMask="ssssss" font="GENERIC" textAlignment="LEFT" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.base" cmd="filltype" option="icon" joints="0" partition="1" node="cebisLexion_dblGrainFilltypeIconP1_SC" intensity="0.75" groups="MOTOR_RUNNING"/>
+		
+		<dashboard displayType="TEXT" valueType="fillUnit.fillLevel" node="cebisLexion_dblGainFillLevelNumbersP1_SC" fillUnitIndex="1" intensity="0.3" textColor="0.027 0.027 0.027 1" textColorDarkMode="1 1 1 1" textSize="0.004" textMask="00000" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="fillLevel" option="percent" factor="100" joints="0" partition="1" node="cebisLexion_dblGainFillLevelPercentP1_SC" textColor="0.027 0.027 0.027 1" textColorDarkMode="1 1 1 1" textSize="0.004" textMask="000" intensity="1" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="combine.workedHectars" node="cebisLexion_dblHectaresPerHourNumbersP1_SC" textColor="0.238 0.238 0.238 0" textSize="0.004" textMask="0000" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_RUNNING"/>
+		
+		<!-- GPS -->
+		<dashboard displayType="EMITTER" valueType="ai.automaticSteering.steeringEngaged" node="cebisLexion_dblGPSAvtiveP1_SC" baseColor="0.027 0.027 0.027 1" baseColorDarkMode="1 1 1 1" emitColor="CLAAS_GREEN1" intensity="1" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="fieldNumber" node="cebisLexion_dblFieldNumbersP1_SC" textColor="0.027 0.027 0.027 1" textColorDarkMode="1 1 1 1" textSize="0.004" textMask="000" font="GENERIC" textAlignment="LEFT" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="headingText2" node="cebisLexion_dblCompassP1_SC" textColor="0.027 0.027 0.027 1" textColorDarkMode="1 1 1 1" textSize="0.004" textMask="00" font="GENERIC" textAlignment="CENTER" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="heading" node="cebisLexion_dblCompassNumbersP1_SC" textColor="0.027 0.027 0.027 1" textColorDarkMode="1 1 1 1" textSize="0.004" textMask="000.0" font="GENERIC" textAlignment="CENTER" groups="MOTOR_RUNNING"/>
+		<!--Swath-->
+		<dashboard valueType="combine" cmd="swath" stateText="enabled" displayType="EMITTER" node="cebisLexion_dblSwathOutputP1_SC" baseColor="0.027 0.027 0.027 1" emitColor="CLAAS_GREEN1" intensity="0.5" groups="MOTOR_RUNNING"/> 	
+		<!-- VCA -->
+		<dashboard displayType="EMITTER" valueType="dbl.base" cmd="" node="cebisLexion_dblParkbreakP1_SC" baseColor="0.027 0.027 0.027 1" baseColorDarkMode="1 1 1 1" emitColor="RED" intensity="0.8" idleValue="-1" groups="MOTOR_RUNNING DBL_PARK"/>
+		<dashboard displayType="AUDIO" valueType="dbl.vca" cmd="park" outside="true" distance="50.0" audioName="Brake" loop="1" volume="0.5" audioFile="$data/sounds/vehicles/brake/brake_big.ogg" groups="MOTOR_RUNNING" />
+		<dashboard displayType="EMITTER" valueType="dbl.vca" cmd="diff_front" node="cebisLexion_dblFrontDiffP1_SC" baseColor="BERGMANN_GREY02" emitColor="AMAZONE_ORANGE1" intensity="0.8" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="EMITTER" valueType="dbl.vca" cmd="diff_back" node="cebisLexion_dblBackDiffP1_SC" baseColor="BERGMANN_GREY02" emitColor="AMAZONE_ORANGE1" intensity="0.8" groups="MOTOR_RUNNING"/>
+		
+		<!-- <configuration id="HEADER_1380m">
+            <dashboard displayType="EMITTER" node="cebisLexion_dblHeader1380mP1_SC" emitColor="BRIRI_BLACK1" intensity="1" groups="MOTOR_RUNNING"/>
 
-    <!-- <dashboardCompound name="CEMIS_LEXION_GPSPAGE" filename="$data/vehicles/claas/shared/displays/displays.i3d" node="cemisLexion">
-        
-    </dashboardCompound> -->
+            <objectChange node="cebisLexion_dblHeader1380mP1_SC" visibilityActive="true" visibilityInactive="false"/>
+        </configuration>
+        <configuration id="HEADER_1080m">
+            <dashboard displayType="EMITTER" node="cebisLexion_dblHeader1080mP1_SC" emitColor="BRIRI_BLACK1" intensity="1" groups="MOTOR_RUNNING"/>
+
+            <objectChange node="cebisLexion_dblHeader1080mP1_SC" visibilityActive="true" visibilityInactive="false"/>
+        </configuration>
+        <configuration id="HEADER_620m">
+            <dashboard displayType="EMITTER" node="cebisLexion_dblHeader620mP1_SC" emitColor="BRIRI_BLACK1" intensity="1" groups="MOTOR_RUNNING"/>
+
+            <objectChange node="cebisLexion_dblHeader620mP1_SC" visibilityActive="true" visibilityInactive="false"/>
+        </configuration> -->
+    </dashboardCompound>
+
+    <dashboardCompound name="CEMIS_LEXION_GPSPAGE" filename="data/vehicles/claas/shared/displays/claasDisplays.i3d" node="cemisLexion">
+		<!-- displays -->
+		<dashboard displayType="VISIBILITY" node="cemisLexion_startScreen_decal" idleValue="0" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="cemisLexion_startScreen_decal" intensity="0.3" groups="MOTOR_STARTING"/>
+		
+		<dashboard displayType="VISIBILITY" node="cemisLexion_gpsScreenP1_CC" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="VISIBILITY" node="cemisLexion_gpsDecal00" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="VISIBILITY" node="cemisLexion_gpsDecal01" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="VISIBILITY" node="cemisLexion_gpsDecal02" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="VISIBILITY" node="cemisLexion_gpsScreenDMP1_CC" groups="MOTOR_RUNNING DARKMODE"/>
+		<dashboard displayType="VISIBILITY" node="cemisLexion_gpsDecalDM00" groups="MOTOR_RUNNING DARKMODE"/>
+		<dashboard displayType="VISIBILITY" node="cemisLexion_gpsDecalDM01" groups="MOTOR_RUNNING DARKMODE"/>
+		<dashboard displayType="VISIBILITY" node="cemisLexion_gpsDecalDM02" groups="MOTOR_RUNNING DARKMODE"/>
+		<dashboard displayType="EMITTER" node="cemisLexion_gpsScreenP1_CC" intensity="0.3" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="EMITTER" node="cemisLexion_gpsDecal00" intensity="0.3" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="EMITTER" node="cemisLexion_gpsDecal01" intensity="0.3" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="EMITTER" node="cemisLexion_gpsDecal02" intensity="0.3" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="EMITTER" node="cemisLexion_gpsScreenDMP1_CC" intensity="0.3" groups="MOTOR_RUNNING DARKMODE"/>
+		<dashboard displayType="EMITTER" node="cemisLexion_gpsDecalDM00" intensity="0.3" groups="MOTOR_RUNNING DARKMODE"/>
+		<dashboard displayType="EMITTER" node="cemisLexion_gpsDecalDM01" intensity="0.3" groups="MOTOR_RUNNING DARKMODE"/>
+		<dashboard displayType="EMITTER" node="cemisLexion_gpsDecalDM02" intensity="0.3" groups="MOTOR_RUNNING DARKMODE"/>
+		
+        <!-- MiniMap -->
+		<dashboard valueType="dbl.miniMap" cmd="map" displayType="VISIBILITY" node="cemisLexion_dblNaviMapP1_CC" groups="MOTOR_RUNNING"/>
+		<dashboard valueType="dbl.miniMap" cmd="posMarker" displayType="VISIBILITY" node="cemisLexion_dblNaviPositionP1_CC" groups="MOTOR_RUNNING"/>
+    </dashboardCompound>
 
     <i3dMappings>
 		<i3dMapping id="cebisXerion12" node="0>"/>
         <i3dMapping id="cebisXerion12_startScreen_decal" node="0>0|0|0"/>
-		
 		<i3dMapping id="cebisXerion12_dblSpeedSliderP1_SC" node="0>0|1|0"/>
 		<i3dMapping id="cebisXerion12_dblCruiseControlArrow00P1_SC" node="0>0|1|1"/>
 		<i3dMapping id="cebisXerion12_dblBackAttacherSliderP1_SC" node="0>0|1|2"/> <!-- not active -->
@@ -154,7 +363,7 @@
 		<i3dMapping id="cebisXerion12_dblArrowForward01P1_SC" node="0>0|1|8"/>
 		<i3dMapping id="cemosXerion12_dblArrowBackward00P1_SC" node="0>0|1|9"/>
 		<i3dMapping id="cebisXerion12_dblArrowBackward01P1_SC" node="0>0|1|10"/>
-		<i3dMapping id="cebisXerion12_dblParkbreakP1_SC" node="0>0|1|11"/>
+		<i3dMapping id="cebisXerion12_dblParkbreakP1_SC" node="0>0|1|11"/> <!-- not active VCA -->
 		<i3dMapping id="cebisXerion12_dblNeutralP1_SC" node="0>0|1|12"/>
 		<i3dMapping id="cebisXerion12_dblGearGroup1P1_SC" node="0>0|1|13"/> <!-- not active CVT -->
 		<i3dMapping id="cebisXerion12_dblGearGroup2P1_SC" node="0>0|1|14"/> <!-- not active CVT -->
@@ -169,31 +378,132 @@
 		<i3dMapping id="cebisXerion12_dblCruiseControlNumbers00P1_SC" node="0>0|1|23"/>
 		<i3dMapping id="cebisXerion12_dblRpmNumbersP1_SC" node="0>0|1|24"/>
 		<i3dMapping id="cebisXerion12_dblPtoNumbersP1_SC" node="0>0|1|25"/>
-
 		<i3dMapping id="cebisXerion12_basicScreenP1_SC" node="0>0|2|0"/>
 		<i3dMapping id="cebisXerion12_basicScreenDMP1_SC" node="0>0|2|1"/>
 		<i3dMapping id="cebisXerion12_backAttacherDecal" node="0>0|2|2"/>
-		
-		
-		
 		<i3dMapping id="cemisXerion12" node="1>"/>
 		<i3dMapping id="cemisXerion12_startScreenDecal" node="1>0|0|0"/>
-		
 		<i3dMapping id="cemisXerion12_dblPlayerNameP1_CC" node="1>0|1|0"/>
 		<i3dMapping id="cemisXerion12_dblFieldNumbersP1_CC" node="1>0|1|1"/>
 		<i3dMapping id="cemisXerion12_dblCompassP1_CC" node="1>0|1|2"/>
 		<i3dMapping id="cemisXerion12_dblCompassNumbersP1_CC" node="1>0|1|3"/>
-		<i3dMapping id="cemisXerion12_dblSteeringWheelP1_CC" node="1>0|1|4"/>
+		<i3dMapping id="cemisXerion12_dblSteeringWheelP1_CC" node="1>0|1|4"/> <!-- basic GPS -->
 		<i3dMapping id="cemisXerion12_dblHlmOnOffP1_CC" node="1>0|1|5"/>
 		<i3dMapping id="cemisXerion12_dblHlmFieldP1_CC" node="1>0|1|6"/>
 		<i3dMapping id="cemisXerion12_dblHlmHeadlandP1_CC" node="1>0|1|7"/>
-		
 		<i3dMapping id="cemisXerion12_dblNaviMapP1_CC" node="1>0|2|0"/>
 		<i3dMapping id="cemisXerion12_dblNaviPositionP1_CC" node="1>0|2|0|0"/>
-		
 		<i3dMapping id="cemisXerion12_gpsScreenP1_CC" node="1>0|3|0"/>
 		<i3dMapping id="cemisXerion12_gpsDecalP1_CC" node="1>0|3|1"/>
 		<i3dMapping id="cemisXerion12_gpsScreenDMP1_CC" node="1>0|3|2"/>
 		<i3dMapping id="cemisXerion12_gpsDecalDMP1_CC" node="1>0|3|3"/>
+		
+		<i3dMapping id="cebisJaguar" node="2>"/>
+		<i3dMapping id="cebisJaguar_startScreen_decal" node="2>0|0|0"/>
+		<i3dMapping id="cebisJaguar_dblSpeedSliderP1_SC" node="2>0|1|0"/>
+		<i3dMapping id="cebisJaguar_dblRpmSliderP1_SC" node="2>0|1|1"/>
+		<i3dMapping id="cebisJaguar_dblLoadSlider01P1_SC" node="2>0|1|2"/>
+		<i3dMapping id="cebisJaguar_dblLoadSlider00P1_SC" node="2>0|1|3"/>
+		<i3dMapping id="cebisJaguar_dblForwardArrowP1_SC" node="2>0|1|4"/>
+		<i3dMapping id="cebisJaguar_dblBackwardArrowP1_SC" node="2>0|1|5"/>
+		<i3dMapping id="cebisJaguar_dblParkbreakP1_SC" node="2>0|1|6"/> <!-- not active VCA -->
+		<i3dMapping id="cebisJaguar_dblNeutralGearP1_SC" node="2>0|1|7"/>
+		<i3dMapping id="cebisJaguar_dblGroup1P1_SC" node="2>0|1|8"/> <!-- not active CVT -->
+		<i3dMapping id="cebisJaguar_dblGroup2P1_SC" node="2>0|1|9"/> <!-- not active CVT -->
+		<i3dMapping id="cebisJaguar_dblGroup3P1_SC" node="2>0|1|10"/> <!-- not active CVT -->
+		<i3dMapping id="cebisJaguar_dblYieldArrowP1_SC" node="2>0|1|11"/>
+		<i3dMapping id="cebisJaguar_dblCruiseControl00P1_SC" node="2>0|1|12"/>
+		<i3dMapping id="cebisJaguar_dblCruiseControl01P1_SC" node="2>0|1|13"/>
+		<i3dMapping id="cebisJaguar_dblCruiseControlArrowP1_SC" node="2>0|1|14"/>
+		<i3dMapping id="cebisJaguar_dblFuelP1_SC" node="2>0|1|15"/>
+		<i3dMapping id="cebisJaguar_dblAdBlueP1_SC" node="2>0|1|16"/>
+		<i3dMapping id="cebisJaguar_dblSilageAdditivesTankP1_SC" node="2>0|1|17"/>
+		<i3dMapping id="cebisJaguar_dblHeaderP1_SC" node="2>0|1|18"/>
+		<i3dMapping id="cebisJaguar_dblChaffSliderP1_SC" node="2>0|1|19"/>
+		<i3dMapping id="cebisJaguar_dblVehicleDecal00P1_SC" node="2>0|1|20"/>
+		<i3dMapping id="cebisJaguar_dblVehicleDecal01P1_SC" node="2>0|1|21"/>
+		<i3dMapping id="cebisJaguar_dblVehicleDecal00DMP1_SC" node="2>0|1|22"/>
+		<i3dMapping id="cebisJaguar_dblVehicleDecal01DMP1_SC" node="2>0|1|23"/>
+		<i3dMapping id="cebisJaguar_dblGPSAvtiveP1_SC" node="2>0|1|24"/>
+		<i3dMapping id="cebisJaguar_dblGPSSatellitP1_SC" node="2>0|1|25"/>
+		<i3dMapping id="cebisJaguar_dblFrontDiffP1_SC" node="2>0|1|26"/>
+		<i3dMapping id="cebisJaguar_dblBackDiffP1_SC" node="2>0|1|27"/>
+		<i3dMapping id="cebisJaguar_dblTimeNumbersP1_SC" node="2>0|1|28"/>
+		<i3dMapping id="cebisJaguar_dblCruiseControlNumbers00P1_SC" node="2>0|1|29"/>
+		<i3dMapping id="cebisJaguar_dblCruiseControlNumbers01P1_SC" node="2>0|1|30"/>
+		<i3dMapping id="cebisJaguar_dblLoadNumbersP1_SC" node="2>0|1|31"/>
+		<i3dMapping id="cebisJaguar_dblRpmNumbersP1_SC" node="2>0|1|32"/>
+		<i3dMapping id="cebisJaguar_dblWorkTimeNumbersP1_SC" node="2>0|1|33"/>
+		<i3dMapping id="cebisJaguar_dblFuelNumbersP1_SC" node="2>0|1|34"/>
+		<i3dMapping id="cebisJaguar_dblAdBlueNumbersP1_SC" node="2>0|1|35"/>
+		<i3dMapping id="cebisJaguar_dblHectaresPerHourNumbersP1_SC" node="2>0|1|36"/>
+		<i3dMapping id="cebisJaguar_dblSilageAdditivesNumbersP1_SC" node="2>0|1|37"/>
+		<i3dMapping id="cebisJaguar_dblFieldNumbersP1_SC" node="2>0|1|38"/>
+		<i3dMapping id="cebisJaguar_dblCompassP1_SC" node="2>0|1|39"/>
+		<i3dMapping id="cebisJaguar_dblCompassNumbersP1_SC" node="2>0|1|40"/>
+		<i3dMapping id="cebisJaguar_basicScreenP1_SC" node="2>0|2|0"/>
+		<i3dMapping id="cebisJaguar_basicScreenDMP1_SC" node="2>0|2|1"/>
+		<i3dMapping id="cebisJaguar_vehicleIcon" node="2>0|2|2"/>
+		<i3dMapping id="cebisJaguar_vehicleIconDM" node="2>0|2|3"/>
+		<i3dMapping id="cebisJaguar_vehicleInfoLines" node="2>0|2|4"/>
+		<i3dMapping id="cebisJaguar_vehicleInfoLinesDM" node="2>0|2|5"/>
+		<i3dMapping id="cebisJaguar_speedoDecal" node="2>0|2|6"/>
+		
+		<i3dMapping id="cebisLexion" node="3>"/>
+		<i3dMapping id="cebisLexion_startScreen_decal" node="3>0|0|0"/>
+		<i3dMapping id="cebisLexion_dblCruiseControlArrow00P1_SC" node="3>0|1|0"/>
+		<i3dMapping id="cebisLexion_dblCruiseControl00P1_SC" node="3>0|1|1"/>
+		<i3dMapping id="cebisLexion_dblSpeedSliderP1_SC" node="3>0|1|2"/>
+		<i3dMapping id="cebisLexion_dblLoadSliderP1_SC1" node="3>0|1|3"/>
+		<i3dMapping id="cebisLexion_dblYieldUtilizationSliderP1_SC" node="3>0|1|4"/>
+		<i3dMapping id="cebisLexion_dblGrainFillLevelSliderP1_SC" node="3>0|1|5"/>
+		<i3dMapping id="cebisLexion_dblSwathOutputP1_SC" node="3>0|1|6"/>
+		<i3dMapping id="cebisLexion_dblNeutralGearP1_SC" node="3>0|1|7"/>
+		<i3dMapping id="cebisLexion_dblParkbreakP1_SC" node="3>0|1|8"/> <!-- not active VCA -->
+		<i3dMapping id="cebisLexion_dblGroup1P1_SC" node="3>0|1|9"/> <!-- not active CVT -->
+		<i3dMapping id="cebisLexion_dblGroup2P1_SC" node="3>0|1|10"/> <!-- not active CVT -->
+		<i3dMapping id="cebisLexion_dblGroup3P1_SC" node="3>0|1|11"/> <!-- not active CVT -->
+		<i3dMapping id="cebisLexion_dblFrontDiffP1_SC" node="3>0|1|12"/>
+		<i3dMapping id="cebisLexion_dblBackDiffP1_SC" node="3>0|1|13"/>
+		<i3dMapping id="cebisLexion_dblArrowForwardP1_SC" node="3>0|1|14"/>
+		<i3dMapping id="cebisLexion_dblArrowBackwardP1_SC" node="3>0|1|15"/>
+		<i3dMapping id="cebisLexion_dblAdBlueP1_SC" node="3>0|1|16"/>
+		<i3dMapping id="cebisLexion_dblFuelP1_SC" node="3>0|1|17"/>
+		<i3dMapping id="cebisLexion_dblGPSSatellitP1_SC" node="3>0|1|18"/> <!-- not active Wopster GPS -->
+		<i3dMapping id="cebisLexion_dblGPSAvtiveP1_SC" node="3>0|1|19"/> <!-- basic GPS -->
+		<i3dMapping id="cebisLexion_dblTimeNumbersP1_SC" node="3>0|1|20"/>
+		<i3dMapping id="cebisLexion_dblCruiseControlNumbers00P1_SC" node="3>0|1|21"/>
+		<i3dMapping id="cebisLexion_dblCruiseControlNumbers01P1_SC" node="3>0|1|22"/>
+		<i3dMapping id="cebisLexion_dblGrainFilltypeP1_SC" node="3>0|1|23"/>
+		<i3dMapping id="cebisLexion_dblGrainFilltypeIconP1_SC" node="3>0|1|24"/>
+		<i3dMapping id="cebisLexion_dblGainFillLevelNumbersP1_SC" node="3>0|1|25"/>
+		<i3dMapping id="cebisLexion_dblGainFillLevelPercentP1_SC" node="3>0|1|26"/>
+		<i3dMapping id="cebisLexion_dblRpmNumbersP1_SC" node="3>0|1|27"/>
+		<i3dMapping id="cebisLexion_dblFuelPercentP1_SC" node="3>0|1|28"/>
+		<i3dMapping id="cebisLexion_dblAdBluePercentP1_SC" node="3>0|1|29"/>
+		<i3dMapping id="cebisLexion_dblFieldNumbersP1_SC" node="3>0|1|30"/>
+		<i3dMapping id="cebisLexion_dblHectaresPerHourNumbersP1_SC" node="3>0|1|31"/>
+		<i3dMapping id="cebisLexion_dblCompassP1_SC" node="3>0|1|32"/>
+		<i3dMapping id="cebisLexion_dblCompassNumbersP1_SC" node="3>0|1|33"/>
+		<i3dMapping id="cebisLexion_dblLoadNumbers01P1_SC" node="3>0|1|34"/>
+		<i3dMapping id="cebisLexion_dblHeader1380mP1_SC" node="3>0|2|0"/>
+		<i3dMapping id="cebisLexion_dblHeader1080mP1_SC" node="3>0|2|1"/>
+		<i3dMapping id="cebisLexion_dblHeader620mP1_SC" node="3>0|2|2"/>
+		<i3dMapping id="cebisLexion_basicScreenP1_SC" node="3>0|3|0"/>
+		<i3dMapping id="cebisLexion_basicScreenDMP1_SC" node="3>0|3|1"/>
+		<i3dMapping id="cebisLexion_speed_decal" node="3>0|3|2"/>
+		<i3dMapping id="cebisLexion_rpm_decal" node="3>0|3|3"/>
+		<i3dMapping id="cemisLexion" node="4>"/>
+		<i3dMapping id="cemisLexion_startScreen_decal" node="4>0|0|0"/>
+		<i3dMapping id="cemisLexion_dblNaviMapP1_CC" node="4>0|2|0"/>
+		<i3dMapping id="cemisLexion_dblNaviPositionP1_CC" node="4>0|2|0|0"/>
+		<i3dMapping id="cemisLexion_gpsScreenP1_CC" node="4>0|3|0"/>
+		<i3dMapping id="cemisLexion_gpsDecal00" node="4>0|3|1"/>
+		<i3dMapping id="cemisLexion_gpsDecal01" node="4>0|3|2"/>
+		<i3dMapping id="cemisLexion_gpsDecal02" node="4>0|3|3"/>
+		<i3dMapping id="cemisLexion_gpsScreenDMP1_CC" node="4>0|3|4"/>
+		<i3dMapping id="cemisLexion_gpsDecalDM00" node="4>0|3|5"/>
+		<i3dMapping id="cemisLexion_gpsDecalDM01" node="4>0|3|6"/>
+		<i3dMapping id="cemisLexion_gpsDecalDM02" node="4>0|3|7"/>
     </i3dMappings>
 </dashboardCompounds>
