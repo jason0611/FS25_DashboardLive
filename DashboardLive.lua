@@ -1686,7 +1686,6 @@ function DashboardLive:addDarkModeToDefaultEmitterDashboardStateFunc(dashboard, 
 	end
 end
 Dashboard.TYPE_DATA[Dashboard.TYPES.EMITTER].updateFunc = Utils.prependedFunction(Dashboard.TYPE_DATA[Dashboard.TYPES.EMITTER].updateFunc, DashboardLive.addDarkModeToDefaultEmitterDashboardStateFunc)
---Dashboard.defaultEmitterDashboardStateFunc = Utils.prependedFunction(Dashboard.defaultEmitterDashboardStateFunc, DashboardLive.addDarkModeToDefaultEmitterDashboardStateFunc)
 
 -- Prepended function defaultTextDashboardStateFunc to enable dark mode
 function DashboardLive:addDarkModeToDefaultTextDashboardStateFunc(dashboard, newValue, minValue, maxValue, isActive)
@@ -1702,14 +1701,11 @@ function DashboardLive:addDarkModeToDefaultTextDashboardStateFunc(dashboard, new
 			if dashboard.hiddenColorLM ~= nil then dashboard.hiddenColor = dashboard.hiddenColorLM end
 		end
 		if dashboard.textColor ~= nil then
-			for _, char in pairs(dashboard.characterLine.characters) do
---				dashboard.fontMaterial:setFontCharacterColor(char, dashboard.textColor[1], dashboard.textColor[2], dashboard.textColor[3], dashboard.textColor[4], dashboard.characterLine.textEmissiveScale)
-			end
+			dashboard.characterLine:setColor(dashboard.textColor, dashboard.hiddenColor, dashboard.emissiveScale)
 		end
 	end
 end
 Dashboard.TYPE_DATA[Dashboard.TYPES.TEXT].updateFunc = Utils.prependedFunction(Dashboard.TYPE_DATA[Dashboard.TYPES.TEXT].updateFunc, DashboardLive.addDarkModeToDefaultTextDashboardStateFunc)
---Dashboard.defaultTextDashboardStateFunc = Utils.prependedFunction(Dashboard.defaultTextDashboardStateFunc, DashboardLive.addDarkModeToDefaultTextDashboardStateFunc)
 
 -- Prepended function defaultNumberDashboardStateFunc to enable dark mode
 function DashboardLive:addDarkModeToDefaultNumberDashboardStateFunc(dashboard, newValue, minValue, maxValue, isActive)
@@ -1724,13 +1720,12 @@ function DashboardLive:addDarkModeToDefaultNumberDashboardStateFunc(dashboard, n
 		end
 		if dashboard.numberColor ~= nil then
 			for _, numberNode in pairs(dashboard.numberNodes) do
---				dashboard.fontMaterial:setFontCharacterColor(numberNode, dashboard.numberColor[1], dashboard.numberColor[2], dashboard.numberColor[3], 1, dashboard.emissiveScale)
+				dashboard.fontMaterial:setFontCharacterColor(numberNode, dashboard.numberColor[1], dashboard.numberColor[2], dashboard.numberColor[3], 1, dashboard.emissiveScale)
             end
         end
 	end
 end
 Dashboard.TYPE_DATA[Dashboard.TYPES.NUMBER].updateFunc = Utils.prependedFunction(Dashboard.TYPE_DATA[Dashboard.TYPES.NUMBER].updateFunc, DashboardLive.addDarkModeToDefaultNumberDashboardStateFunc)
---Dashboard.defaultNumberDashboardStateFunc = Utils.prependedFunction(Dashboard.defaultNumberDashboardStateFunc, DashboardLive.addDarkModeToDefaultNumberDashboardStateFunc)
 
 -- displayType="AUDIO"
 function DashboardLive.initAudioDashboardSchema(...)
