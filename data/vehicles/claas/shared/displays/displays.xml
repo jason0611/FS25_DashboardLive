@@ -79,7 +79,7 @@
 		<dashboard valueType="dbl.base" cmd="pto" joints="2 3 4" displayType="EMITTER" node="cebisXerion12_dblBackPTOP1_SC" baseColor="0.027 0.027 0.027 1" baseColorDarkMode="1 1 1 1" emitColor="AMAZONE_ORANGE1" intensity="1" groups="MOTOR_ACTIVE"/>
 		<dashboard valueType="dbl.base" cmd="ptoRpm" joints="2 3 4" displayType="TEXT" node="cebisXerion12_dblPtoNumbersP1_SC" options="any" max="1000" doInterpolation="true" interpolationSpeed="0.5" textColor="0 0 0 0" textColorDarkMode="1 1 1 1" textMask="0000" textSize="0.004" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_RUNNING"/>
 		<!-- VCA -->
-		<dashboard valueType="dbl.base" cmd="" displayType="EMITTER" node="cebisXerion12_dblParkbreakP1_SC" baseColor="0.027 0.027 0.027 1" baseColorDarkMode="1 1 1 1" emitColor="RED" intensity="0.8" idleValue="-1" groups="MOTOR_ACTIVE DBL_PARK"/>
+		<dashboard valueType="dbl.vca" cmd="park" displayType="EMITTER" node="cebisXerion12_dblParkbreakP1_SC" baseColor="0.027 0.027 0.027 1" baseColorDarkMode="1 1 1 1" emitColor="RED" intensity="0.8" idleValue="-1" groups="MOTOR_ACTIVE"/>
 		<dashboard valueType="dbl.vca" cmd="park" displayType="AUDIO" outside="true" distance="50.0" audioName="Brake" loop="1" volume="0.5" audioFile="$data/sounds/vehicles/brake/brake_big.ogg" groups="MOTOR_ACTIVE" />
 		<dashboard valueType="dbl.vca" cmd="diff_front" displayType="EMITTER" node="cebisXerion12_dblFrontDiffP1_SC" baseColor="BERGMANN_GREY02" emitColor="AMAZONE_ORANGE1" intensity="0.8" groups="MOTOR_ACTIVE"/>
 		<dashboard valueType="dbl.vca" cmd="diff_back" displayType="EMITTER" node="cebisXerion12_dblBackDiffP1_SC" baseColor="BERGMANN_GREY02" emitColor="AMAZONE_ORANGE1" intensity="0.8" groups="MOTOR_ACTIVE"/>

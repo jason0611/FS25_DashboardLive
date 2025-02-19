@@ -159,7 +159,7 @@
 		<dashboard valueType="dbl.cvt" cmd="brakeRamp" state="17" displayType="VISIBILITY" node="dbl_brakeRamp4P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
 		<dashboard valueType="dbl.cvt" cmd="brakeRamp" state="17" displayType="EMITTER" node="dbl_brakeRamp4P1_SW" emitColor="RED" intensity="1" groups="MOTOR_ACTIVE"/>
 		<!-- VCA -->
-		<dashboard valueType="dbl.vca" cmd="park" displayType="EMITTER" node="dbl_parkbrakeAO_SW" baseColor="AGCO_GREY2" emitColor="RED" emitColorDarkMode="SHARED_WHITE2" intensity="0.8" idleValue="-1" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.vca" cmd="park" displayType="EMITTER" node="dbl_parkbrakeAO_SW" baseColor="AGCO_GREY2" emitColor="RED" intensity="0.8" idleValue="-1" groups="MOTOR_ACTIVE"/>
 		<dashboard valueType="dbl.vca" cmd="park" displayType="AUDIO" outside="true" distance="50.0" audioName="Brake" loop="1" volume="0.5" audioFile="$data/sounds/vehicles/brake/brake_big.ogg" groups="MOTOR_ACTIVE" />
 		<dashboard valueType="dbl.vca" cmd="diff_awd" displayType="EMITTER" node="dbl_awdAO_SW" baseColor="AGCO_GREY2" emitColor="APV_YELLOW1" intensity="0.8" idleValue="-1" groups="MOTOR_ACTIVE DBL_AWD"/>
 		<dashboard valueType="dbl.vca" cmd="diff_front" displayType="EMITTER" node="dbl_diffLockAO_SW" baseColor="AGCO_GREY2" emitColor="APV_YELLOW1" intensity="0.8" idleValue="-1" groups="MOTOR_ACTIVE"/>
