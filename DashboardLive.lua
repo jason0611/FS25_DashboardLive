@@ -189,9 +189,9 @@ end
 function DashboardLive.registerOverwrittenFunctions(vehicleType)
 	SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadDashboardGroupFromXML", DashboardLive.loadDashboardGroupFromXML)
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "getIsDashboardGroupActive", DashboardLive.getIsDashboardGroupActive)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadEmitterDashboardFromXML", DashboardLive.addDarkModeToLoadEmitterDashboardFromXML)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadTextDashboardFromXML", DashboardLive.addDarkModeToLoadTextDashboardFromXML)
-    SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadNumberDashboardFromXML", DashboardLive.addDarkModeToLoadNumberDashboardFromXML)
+    --SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadEmitterDashboardFromXML", DashboardLive.addDarkModeToLoadEmitterDashboardFromXML)
+    --SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadTextDashboardFromXML", DashboardLive.addDarkModeToLoadTextDashboardFromXML)
+    --SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadNumberDashboardFromXML", DashboardLive.addDarkModeToLoadNumberDashboardFromXML)
 end
 
 function DashboardLive:onPreLoad(savegame)
@@ -1574,7 +1574,7 @@ Dashboard.defaultSliderDashboardStateFunc = Utils.overwrittenFunction(Dashboard.
 
 -- Append schema definitions to registerDashboardXMLPath function 
 function DashboardLive.addDarkModeToRegisterDashboardXMLPaths(schema, basePath, availableValueTypes)
-	dbgprint("addDarkModeToLoadEmitterDashboardFromXML : registerDashboardXMLPaths appended to "..basePath, 2)
+	dbgprint("addDarkModeToRegisterDashboardXMLPaths : registerDashboardXMLPaths appended to "..basePath, 2)
 	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#baseColorDarkMode", "Base color for dark mode")
 	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#emitColorDarkMode", "Emit color for dark mode")
 	schema:register(XMLValueType.FLOAT, basePath .. ".dashboard(?)#intensityDarkMode", "Intensity for dark mode")
@@ -1585,29 +1585,36 @@ end
 Dashboard.registerDashboardXMLPaths = Utils.appendedFunction(Dashboard.registerDashboardXMLPaths, DashboardLive.addDarkModeToRegisterDashboardXMLPaths)
 
 -- Overwritten function loadEmitterDashboardFromXML to enable dark mode setting
-function DashboardLive:addDarkModeToLoadEmitterDashboardFromXML(superfunc, xmlFile, key, dashboard)
-	local returnValue = superfunc(self, xmlFile, key, dashboard)
-	local spec = self.spec_DashboardLive
+function DashboardLive.addDarkModeToLoadEmitterDashboardFromXML(self, superfunc, xmlFile, key, dashboard, ...)
+	local returnValue = superfunc(self, xmlFile, key, dashboard, ...)
+	local specDBL = self.spec_DashboardLive
+	local spec = self.spec_dashboard
 
 	-- Back up light mode values
 	dashboard.baseColorLM = dashboard.baseColor
 	dashboard.emitColorLM = dashboard.emitColor
 	dashboard.intensityLM = dashboard.intensity
 	-- Read dark mode values
-	dashboard.baseColorDM = self:getDashboardColor(xmlFile, xmlFile:getValue(key .. "#baseColorDarkMode"))
-	dashboard.emitColorDM = self:getDashboardColor(xmlFile, xmlFile:getValue(key .. "#emitColorDarkMode"))
+	dashboard.baseColorDM = Dashboard.getDashboardColor(xmlFile, xmlFile:getValue(key .. "#baseColorDarkMode"))
+	dashboard.emitColorDM = Dashboard.getDashboardColor(xmlFile, xmlFile:getValue(key .. "#emitColorDarkMode"))
 	dashboard.intensityDM = xmlFile:getValue(key .. "#intensityDarkMode")
 
 	if dashboard.baseColorDM ~= nil or dashboard.emitColorDM ~= nil or dashboard.intensityDM ~= nil then
 		dbgprint("loadEmitterDashboardFromXML : Setting dark mode for "..self:getName(), 2)
-		spec.darkModeExists = "true"
+		dbgprint("loadEmitterDashboardFromXML : key = "..tostring(key), 2)
+		dbgprint("loadEmitterDashboardFromXML : dashboard = "..tostring(dashboard), 2)
+		dbgprint_r(dashboard.baseColorDM, 2, 0)
+		dbgprint_r(dashboard.emitColorDM, 2, 0)
+		dbgprint_r(dashboard.intensityDM, 2, 0)
+		specDBL.darkModeExists = "true"
 	end	
 	return returnValue
 end
+Dashboard.TYPE_DATA[Dashboard.TYPES.EMITTER].loadFunc = Utils.overwrittenFunction(Dashboard.TYPE_DATA[Dashboard.TYPES.EMITTER].loadFunc, DashboardLive.addDarkModeToLoadEmitterDashboardFromXML)
 
 -- Overwritten function loadTextDashboardFromXML to enable dark mode setting
-function DashboardLive:addDarkModeToLoadTextDashboardFromXML(superfunc, xmlFile, key, dashboard)
-	local returnValue = superfunc(self, xmlFile, key, dashboard)
+function DashboardLive:addDarkModeToLoadTextDashboardFromXML(superfunc, xmlFile, key, dashboard, ...)
+	local returnValue = superfunc(self, xmlFile, key, dashboard, ...)
 	local spec = self.spec_DashboardLive
 
 	-- solve mod conflict with realdashboard mod
@@ -1617,8 +1624,8 @@ function DashboardLive:addDarkModeToLoadTextDashboardFromXML(superfunc, xmlFile,
 		dashboard.textColorLM = dashboard.textColor
 		dashboard.hiddenColorDM = dashboard.hiddenColor
 		-- Read dark mode values
-		dashboard.textColorDM = self:getDashboardColor(xmlFile, xmlFile:getValue(key .. "#textColorDarkMode"))
-		dashboard.hiddenColorDM = self:getDashboardColor(xmlFile, xmlFile:getValue(key .. "#hiddenColorDarkMode"))
+		dashboard.textColorDM = Dashboard.getDashboardColor(xmlFile, xmlFile:getValue(key .. "#textColorDarkMode"))
+		dashboard.hiddenColorDM = Dashboard.getDashboardColor(xmlFile, xmlFile:getValue(key .. "#hiddenColorDarkMode"))
 	
 		if dashboard.textColorDM ~= nil or dashboard.hiddenColorDM ~= nil then
 			dbgprint("loadTextDashboardFromXML : Setting dark mode for "..self:getName(), 2)
@@ -1628,16 +1635,16 @@ function DashboardLive:addDarkModeToLoadTextDashboardFromXML(superfunc, xmlFile,
 			dbgprint_r(dashboard.textColorDM, 2, 3)
 			dbgprint("loadTextDashboardFromXML : hiddenColorDM:", 2)
 			dbgprint_r(dashboard.hiddenColorDM, 2, 3)
-
 		end
 	end
 	
 	return returnValue
 end
+Dashboard.TYPE_DATA[Dashboard.TYPES.TEXT].loadFunc = Utils.overwrittenFunction(Dashboard.TYPE_DATA[Dashboard.TYPES.TEXT].loadFunc, DashboardLive.addDarkModeToLoadTextDashboardFromXML)
 
 -- Overwritten function loadNumberDashboardFromXML to enable dark mode setting
-function DashboardLive:addDarkModeToLoadNumberDashboardFromXML(superfunc, xmlFile, key, dashboard)
-	local returnValue = superfunc(self, xmlFile, key, dashboard)
+function DashboardLive:addDarkModeToLoadNumberDashboardFromXML(superfunc, xmlFile, key, dashboard, ...)
+	local returnValue = superfunc(self, xmlFile, key, dashboard, ...)
 	local spec = self.spec_DashboardLive
 	
 	-- Back up light mode values
@@ -1652,6 +1659,7 @@ function DashboardLive:addDarkModeToLoadNumberDashboardFromXML(superfunc, xmlFil
 	
 	return returnValue
 end
+Dashboard.TYPE_DATA[Dashboard.TYPES.NUMBER].loadFunc = Utils.overwrittenFunction(Dashboard.TYPE_DATA[Dashboard.TYPES.NUMBER].loadFunc, DashboardLive.addDarkModeToLoadNumberDashboardFromXML)
 
 -- Prepended function defaultEmitterDashboardStateFunc to enable dark mode
 function DashboardLive:addDarkModeToDefaultEmitterDashboardStateFunc(dashboard, newValue, minValue, maxValue, isActive)
@@ -1677,7 +1685,7 @@ function DashboardLive:addDarkModeToDefaultEmitterDashboardStateFunc(dashboard, 
 		end
 	end
 end
---Dashboard.defaultEmitterDashboardStateFunc = Utils.prependedFunction(Dashboard.defaultEmitterDashboardStateFunc, DashboardLive.addDarkModeToDefaultEmitterDashboardStateFunc)
+Dashboard.TYPE_DATA[Dashboard.TYPES.EMITTER].updateFunc = Utils.prependedFunction(Dashboard.TYPE_DATA[Dashboard.TYPES.EMITTER].updateFunc, DashboardLive.addDarkModeToDefaultEmitterDashboardStateFunc)
 
 -- Prepended function defaultTextDashboardStateFunc to enable dark mode
 function DashboardLive:addDarkModeToDefaultTextDashboardStateFunc(dashboard, newValue, minValue, maxValue, isActive)
@@ -1693,13 +1701,11 @@ function DashboardLive:addDarkModeToDefaultTextDashboardStateFunc(dashboard, new
 			if dashboard.hiddenColorLM ~= nil then dashboard.hiddenColor = dashboard.hiddenColorLM end
 		end
 		if dashboard.textColor ~= nil then
-			for _, char in pairs(dashboard.characterLine.characters) do
-				dashboard.fontMaterial:setFontCharacterColor(char, dashboard.textColor[1], dashboard.textColor[2], dashboard.textColor[3], dashboard.textColor[4], dashboard.characterLine.textEmissiveScale)
-			end
+			dashboard.characterLine:setColor(dashboard.textColor, dashboard.hiddenColor, dashboard.emissiveScale)
 		end
 	end
 end
---Dashboard.defaultTextDashboardStateFunc = Utils.prependedFunction(Dashboard.defaultTextDashboardStateFunc, DashboardLive.addDarkModeToDefaultTextDashboardStateFunc)
+Dashboard.TYPE_DATA[Dashboard.TYPES.TEXT].updateFunc = Utils.prependedFunction(Dashboard.TYPE_DATA[Dashboard.TYPES.TEXT].updateFunc, DashboardLive.addDarkModeToDefaultTextDashboardStateFunc)
 
 -- Prepended function defaultNumberDashboardStateFunc to enable dark mode
 function DashboardLive:addDarkModeToDefaultNumberDashboardStateFunc(dashboard, newValue, minValue, maxValue, isActive)
@@ -1719,7 +1725,7 @@ function DashboardLive:addDarkModeToDefaultNumberDashboardStateFunc(dashboard, n
         end
 	end
 end
---Dashboard.defaultNumberDashboardStateFunc = Utils.prependedFunction(Dashboard.defaultNumberDashboardStateFunc, DashboardLive.addDarkModeToDefaultNumberDashboardStateFunc)
+Dashboard.TYPE_DATA[Dashboard.TYPES.NUMBER].updateFunc = Utils.prependedFunction(Dashboard.TYPE_DATA[Dashboard.TYPES.NUMBER].updateFunc, DashboardLive.addDarkModeToDefaultNumberDashboardStateFunc)
 
 -- displayType="AUDIO"
 function DashboardLive.initAudioDashboardSchema(...)
