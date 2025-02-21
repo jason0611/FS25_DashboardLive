@@ -75,7 +75,10 @@ end
 
 function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	local filenameDBL = DashboardLive.MOD_PATH..filename
-	if fileExists(filenameDBL) and self.baseDirectory == "" then
+	
+	print(string.find(filename, "/mods/"))
+	
+	if fileExists(filenameDBL) and not string.find(filename, "/mods/") then
 		dbgprint("loadSharedI3DFileAsync: replaced i3d-file: "..tostring(filenameDBL), 2)
 		return superfunc(self, filenameDBL, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	else
@@ -89,12 +92,15 @@ I3DManager.loadSharedI3DFileAsync = Utils.overwrittenFunction(I3DManager.loadSha
 function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLevelNodes, i3dMappings, realNumComponents)
 	local filename = xmlFile.filename
 	local filenameDBL = DashboardLive.MOD_PATH..filename
-	if vehicleType == "vehicle" and fileExists(filenameDBL) and self.baseDirectory == "" then
+	
+	print(string.find(filename, "/mods/"))
+	
+	if vehicleType == "vehicle" and fileExists(filenameDBL) then
 		local xmlFileDBL = XMLFile.load("DBL Replacement", filenameDBL, xmlFile.schema)
 		dbgprint("loadI3DMapping: replaced xml-file: "..tostring(filenameDBL), 2)
 		return superfunc(xmlFileDBL, vehicleType, rootLevelNodes, i3dMappings, realNumComponents, a, b, c)
 	else
-		dbgprint("loadI3DMapping: used xml-file: "..tostring(filename), 4)
+		dbgprint("loadI3DMapping: used xml-file: "..tostring(filename), 3)
 		return superfunc(xmlFile, vehicleType, rootLevelNodes, i3dMappings, realNumComponents)
 	end
 end
@@ -122,6 +128,7 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 	local dblReplacementExists = XMLFile.loadIfExists("DBL Replacement", DashboardLive.MOD_PATH..fileNameNew, xmlFile.schema) ~= nil and self.baseDirectory == ""
 	local baseDirectoryChanged = false
 	
+	dbgprint("loadDashboardCompoundFromXML :: self.baseDirectory: "..tostring(self.baseDirectory), 2)
 	dbgprint("loadDashboardCompoundFromXML :: fileName    = "..tostring(fileName), 2)
 	dbgprint("loadDashboardCompoundFromXML :: fileNameNew = "..DashboardLive.MOD_PATH..fileNameNew, 2)
 	dbgprint("loadDashboardCompoundFromXML :: dblReplacementExists = "..tostring(dblReplacementExists), 2)
@@ -134,7 +141,6 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 			dbgprint("loadDashboardCompoundFromXML :: baseDirectory changed", 2)
 		end
 	end	
-	dbgprint("loadDashboardCompoundFromXML :: self.baseDirectory: "..tostring(self.baseDirectory), 2)
 	
 	local returnValue = superfunc(self, xmlFile, key, compound)
 	

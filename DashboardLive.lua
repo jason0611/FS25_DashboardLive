@@ -1603,9 +1603,6 @@ function DashboardLive.addDarkModeToLoadEmitterDashboardFromXML(self, superfunc,
 		dbgprint("loadEmitterDashboardFromXML : Setting dark mode for "..self:getName(), 2)
 		dbgprint("loadEmitterDashboardFromXML : key = "..tostring(key), 2)
 		dbgprint("loadEmitterDashboardFromXML : dashboard = "..tostring(dashboard), 2)
-		dbgprint_r(dashboard.baseColorDM, 2, 0)
-		dbgprint_r(dashboard.emitColorDM, 2, 0)
-		dbgprint_r(dashboard.intensityDM, 2, 0)
 		specDBL.darkModeExists = "true"
 	end	
 	return returnValue
@@ -1630,11 +1627,6 @@ function DashboardLive:addDarkModeToLoadTextDashboardFromXML(superfunc, xmlFile,
 		if dashboard.textColorDM ~= nil or dashboard.hiddenColorDM ~= nil then
 			dbgprint("loadTextDashboardFromXML : Setting dark mode for "..self:getName(), 2)
 			spec.darkModeExists = "true"
-			
-			dbgprint("loadTextDashboardFromXML : textColorDM:", 2)
-			dbgprint_r(dashboard.textColorDM, 2, 3)
-			dbgprint("loadTextDashboardFromXML : hiddenColorDM:", 2)
-			dbgprint_r(dashboard.hiddenColorDM, 2, 3)
 		end
 	end
 	
