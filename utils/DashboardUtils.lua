@@ -76,7 +76,7 @@ end
 function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	local filenameDBL = DashboardLive.MOD_PATH..filename
 	
-	print(string.find(filename, "/mods/"))
+	dbgprint("filename: "..tostring(filename).." / find: "..tostring(string.find(filename, "/mods/")), 2)
 	
 	if fileExists(filenameDBL) and not string.find(filename, "/mods/") then
 		dbgprint("loadSharedI3DFileAsync: replaced i3d-file: "..tostring(filenameDBL), 2)
@@ -88,12 +88,11 @@ function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate
 end
 I3DManager.loadSharedI3DFileAsync = Utils.overwrittenFunction(I3DManager.loadSharedI3DFileAsync, DashboardUtils.loadSharedI3DFileAsync)
 
---I3DUtil.loadI3DMapping(self.xmlFile, "vehicle", self.rootLevelNodes, self.i3dMappings, realNumComponents)
 function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLevelNodes, i3dMappings, realNumComponents)
 	local filename = xmlFile.filename
 	local filenameDBL = DashboardLive.MOD_PATH..filename
 	
-	print(string.find(filename, "/mods/"))
+	dbgprint("filename: "..tostring(filename).." / find: "..tostring(string.find(filename, "/mods/")), 2)
 	
 	if vehicleType == "vehicle" and fileExists(filenameDBL) then
 		local xmlFileDBL = XMLFile.load("DBL Replacement", filenameDBL, xmlFile.schema)
