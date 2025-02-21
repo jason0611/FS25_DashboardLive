@@ -73,19 +73,25 @@ end
 
 -- ** Vehicle Dashboards **
 
+-- Wird immer geladen, wenn eine i3d geöffnet wird. Die Rahmenparameter sind nicht auswertbar (Mod/Vanilla)
+-- Todo: Austausch des aus der XML geladenen Pfads zur i3d-Datei
 function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	local filenameDBL = DashboardLive.MOD_PATH..filename
 	local isMod = string.find(filename, "/mods/") ~= nil
 	
 	if fileExists(filenameDBL) and not isMod then
 		dbgprint("loadSharedI3DFileAsync: replaced i3d-file: "..tostring(filenameDBL), 2)
+		if DashboardUtils.check == nil then
+			print_r(self, 2)
+			DashboardUtils.check = true
+		end
 		return superfunc(self, filenameDBL, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	else
 		dbgprint("loadSharedI3DFileAsync: used i3d-file: "..tostring(filename), 4)
 		return superfunc(self, filename, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	end
 end
-I3DManager.loadSharedI3DFileAsync = Utils.overwrittenFunction(I3DManager.loadSharedI3DFileAsync, DashboardUtils.loadSharedI3DFileAsync)
+--I3DManager.loadSharedI3DFileAsync = Utils.overwrittenFunction(I3DManager.loadSharedI3DFileAsync, DashboardUtils.loadSharedI3DFileAsync)
 
 function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLevelNodes, i3dMappings, realNumComponents)
 	local filename = xmlFile.filename
