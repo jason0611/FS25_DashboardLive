@@ -91,7 +91,7 @@ function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate
 		return superfunc(self, filename, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	end
 end
---I3DManager.loadSharedI3DFileAsync = Utils.overwrittenFunction(I3DManager.loadSharedI3DFileAsync, DashboardUtils.loadSharedI3DFileAsync)
+I3DManager.loadSharedI3DFileAsync = Utils.overwrittenFunction(I3DManager.loadSharedI3DFileAsync, DashboardUtils.loadSharedI3DFileAsync)
 
 function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLevelNodes, i3dMappings, realNumComponents)
 	local filename = xmlFile.filename
@@ -112,8 +112,11 @@ I3DUtil.loadI3DMapping = Utils.overwrittenFunction(I3DUtil.loadI3DMapping, Dashb
 function DashboardUtils:loadDashboardsFromXML(superfunc, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
 	local filename = xmlFile.filename
 	local filenameDBL = DashboardLive.MOD_PATH..filename
+	local isMod = self.baseDirectory ~= ""
+	
 	local returnValue = superfunc(self, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
-	if returnValue and fileExists(filenameDBL) and self.baseDirectory == "" then
+	
+	if returnValue and fileExists(filenameDBL) and not isMod then
 		local xmlFileDBL = XMLFile.load("DBL Replacement", filenameDBL, xmlFile.schema)
 		dbgprint("loadDashboardsFromXML: added xml-file: "..tostring(filenameDBL), 2)
 		returnValue = superfunc(self, xmlFileDBL, key, dashboardValueType, components, i3dMappings, parentNode)
@@ -122,33 +125,52 @@ function DashboardUtils:loadDashboardsFromXML(superfunc, xmlFile, key, dashboard
 end
 Dashboard.loadDashboardsFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardsFromXML, DashboardUtils.loadDashboardsFromXML)
 
+function DashboardUtils:loadAnimations(superfunc, savegame)	
+	local filename = self.xmlFile.filename
+	local filenameDBL = DashboardLive.MOD_PATH..filename
+	local isMod = self.baseDirectory ~= ""
+	
+	-- load animations from vanilla xml
+	superfunc(self, savegame)
+	
+	if not isMod and fileExists(filenameDBL) then	
+		local filenameBackup = filename
+		self.xmlFile.filename = filenameDBL
+		dbgprint("loadAnimations: added xml-file: "..tostring(filenameDBL), 2)
+		superfunc(self, savegame)
+		self.xmlFile.filename = filenameBackup
+	end
+end
+AnimatedVehicle.onLoad = Utils.overwrittenFunction(AnimatedVehicle.onLoad, DashboardUtils.loadAnimations)
+
 -- ** Dashboard Compounds **
 
 function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, compound)
 	local spec = self.spec_dashboard
 	local fileName = xmlFile:getValue(key .. "#filename")
 	local fileNameNew = string.sub(fileName, 2) -- rip $ off the path
-	local dblReplacementExists = XMLFile.loadIfExists("DBL Replacement", DashboardLive.MOD_PATH..fileNameNew, xmlFile.schema) ~= nil and self.baseDirectory == ""
+	local dblReplacementExists = XMLFile.loadIfExists("DBL Replacement", DashboardLive.MOD_PATH..fileNameNew, xmlFile.schema) ~= nil --and self.baseDirectory == ""
 	local baseDirectoryChanged = false
 	
 	dbgprint("loadDashboardCompoundFromXML :: self.baseDirectory: "..tostring(self.baseDirectory), 2)
 	dbgprint("loadDashboardCompoundFromXML :: fileName    = "..tostring(fileName), 2)
 	dbgprint("loadDashboardCompoundFromXML :: fileNameNew = "..DashboardLive.MOD_PATH..fileNameNew, 2)
 	dbgprint("loadDashboardCompoundFromXML :: dblReplacementExists = "..tostring(dblReplacementExists), 2)
+	
 	if dblReplacementExists then
 		xmlFile:setValue(key .. "#filename", fileNameNew)
 		dbgprint("loadDashboardCompoundFromXML :: fileName replaced", 2)
-		if self.baseDirectory == "" then
-			self.baseDirectory = DashboardLive.MOD_PATH
-			baseDirectoryChanged = true
-			dbgprint("loadDashboardCompoundFromXML :: baseDirectory changed", 2)
-		end
+		self.baseDirectoryBackup = self.baseDirectory
+		self.baseDirectory = DashboardLive.MOD_PATH
+		baseDirectoryChanged = true
+		dbgprint("loadDashboardCompoundFromXML :: baseDirectory changed", 2)
 	end	
 	
 	local returnValue = superfunc(self, xmlFile, key, compound)
 	
 	if baseDirectoryChanged then
-		self.baseDirectory = ""
+		self.baseDirectory = self.baseDirectoryBackup
+		self.baseDirectoryBackup = nil
 	end
 		
 	return returnValue
