@@ -75,10 +75,9 @@ end
 
 function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	local filenameDBL = DashboardLive.MOD_PATH..filename
+	local isMod = string.find(filename, "/mods/") ~= nil
 	
-	dbgprint("filename: "..tostring(filename).." / find: "..tostring(string.find(filename, "/mods/")), 2)
-	
-	if fileExists(filenameDBL) and not string.find(filename, "/mods/") then
+	if fileExists(filenameDBL) and not isMod then
 		dbgprint("loadSharedI3DFileAsync: replaced i3d-file: "..tostring(filenameDBL), 2)
 		return superfunc(self, filenameDBL, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	else
@@ -91,10 +90,9 @@ I3DManager.loadSharedI3DFileAsync = Utils.overwrittenFunction(I3DManager.loadSha
 function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLevelNodes, i3dMappings, realNumComponents)
 	local filename = xmlFile.filename
 	local filenameDBL = DashboardLive.MOD_PATH..filename
+	local isMod = string.find(filename, "/mods/") ~= nil
 	
-	dbgprint("filename: "..tostring(filename).." / find: "..tostring(string.find(filename, "/mods/")), 2)
-	
-	if vehicleType == "vehicle" and fileExists(filenameDBL) then
+	if vehicleType == "vehicle" and fileExists(filenameDBL) and not isMod then
 		local xmlFileDBL = XMLFile.load("DBL Replacement", filenameDBL, xmlFile.schema)
 		dbgprint("loadI3DMapping: replaced xml-file: "..tostring(filenameDBL), 2)
 		return superfunc(xmlFileDBL, vehicleType, rootLevelNodes, i3dMappings, realNumComponents, a, b, c)
