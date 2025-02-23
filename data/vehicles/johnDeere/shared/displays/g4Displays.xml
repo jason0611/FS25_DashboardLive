@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<dashboardCompounds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../shared/xml/schema/dashboardCompounds.xsd">
+    
+	<group name="DARKMODE" dbl="darkmode"/>
+	<group name="LIGHTMODE" dbl="lightmode"/>
+	<group name="PAGEGPS1" dbl="page" group="1" page="1"/>
+	<group name="PAGEGPS2" dbl="page" group="1" page="2"/>
+
+<!-- aPillar -->
+	<dashboardCompound name="JOHNDEERE_G4_APILLAR_DISPLAY" filename="data/vehicles/johnDeere/shared/displays/g4Displays.i3d" node="g4Display_aPillarDisplay">
+        <!-- numbers -->
+        <dashboard displayType="TEXT" valueType="motorized.rpm" node="aPillarDisplay_numbersRPM" textColor="0.680 0.716 1.000 1" textSize="0.015" textMask="0000" emissiveScale="0.5" textScaleY="1.2" font="DIGIT" groups="MOTOR_ACTIVE LIGHTMODE"/>
+        <dashboard displayType="TEXT" valueType="motorized.rpm" node="aPillarDisplay_numbersRPM" textColor="0.680 0.716 1.000 1" textSize="0.015" textMask="0000" emissiveScale="0.1" textScaleY="1.2" font="DIGIT" groups="MOTOR_ACTIVE DARKMODE"/>
+        <dashboard displayType="TEXT" valueType="motorized.speed" node="aPillarDisplay_numbersSpeed01" textColor="0.680 0.716 1.000 1" textSize="0.015" textMask="0.00" textAlignment="RIGHT" emissiveScale="0.5" textScaleY="1.2" font="DIGIT" groups="MOTOR_RUNNING LIGHTMODE" maxActiveValue="9.99"/>
+        <dashboard displayType="TEXT" valueType="motorized.speed" node="aPillarDisplay_numbersSpeed01" textColor="0.680 0.716 1.000 1" textSize="0.015" textMask="0.00" textAlignment="RIGHT" emissiveScale="0.3" textScaleY="1.2" font="DIGIT" groups="MOTOR_RUNNING DARKMODE" maxActiveValue="9.99"/>
+        <dashboard displayType="TEXT" valueType="motorized.speed" node="aPillarDisplay_numbersSpeed01" textColor="0.680 0.716 1.000 1" textSize="0.015" textMask="00.0"  textAlignment="RIGHT" emissiveScale="0.5" textScaleY="1.2" font="DIGIT" groups="MOTOR_RUNNING LIGHTMODE" minActiveValue="10"/>
+        <dashboard displayType="TEXT" valueType="motorized.speed" node="aPillarDisplay_numbersSpeed01" textColor="0.680 0.716 1.000 1" textSize="0.015" textMask="00.0"  textAlignment="RIGHT" emissiveScale="0.3" textScaleY="1.2" font="DIGIT" groups="MOTOR_RUNNING DARKMODE" minActiveValue="10"/>
+        <dashboard displayType="TEXT" valueType="drivable.cruiseControl" node="aPillarDisplay_numbersCruiseControl" textColor="JOHNDEERE_ORANGE1" textSize="0.012" textMask="0.00" intensity="0.5" emissiveScale="0.5" textAlignment="RIGHT" textScaleY="1.2" font="DIGIT" groups="MOTOR_RUNNING LIGHTMODE" maxActiveValue="9.99"/>
+        <dashboard displayType="TEXT" valueType="drivable.cruiseControl" node="aPillarDisplay_numbersCruiseControl" textColor="JOHNDEERE_ORANGE1" textSize="0.012" textMask="0.00" intensity="0.5" emissiveScale="0.2" textAlignment="RIGHT" textScaleY="1.2" font="DIGIT" groups="MOTOR_RUNNING DARKMODE" maxActiveValue="9.99"/>
+        <dashboard displayType="TEXT" valueType="drivable.cruiseControl" node="aPillarDisplay_numbersCruiseControl" textColor="JOHNDEERE_ORANGE1" textSize="0.012" textMask="00.0" intensity="0.5" emissiveScale="0.5" textAlignment="RIGHT" textScaleY="1.2" font="DIGIT" groups="MOTOR_RUNNING LIGHTMODE" minActiveValue="10"/>
+        <dashboard displayType="TEXT" valueType="drivable.cruiseControl" node="aPillarDisplay_numbersCruiseControl" textColor="JOHNDEERE_ORANGE1" textSize="0.012" textMask="00.0" intensity="0.5" emissiveScale="0.2" textAlignment="RIGHT" textScaleY="1.2" font="DIGIT" groups="MOTOR_RUNNING DARKMODE" minActiveValue="10"/>
+
+        <!-- icons -->
+        <dashboard displayType="EMITTER" valueType="lights.turnLightLeft" node="aPillarDisplay_iconTurnLightLeft_decal" baseColor="0 0 0" hideInactive="true" intensity="0.5" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="EMITTER" valueType="lights.turnLightRight" node="aPillarDisplay_iconTurnLightRight_decal" baseColor="0 0 0" hideInactive="true" intensity="0.5" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="EMITTER" valueType="lights.turnLightAny" node="aPillarDisplay_iconTurnLightTrailer_decal" baseColor="0 0 0" intensity="0.5" groups="MOTOR_RUNNING BACK_ATTACHMENT"/>
+        <dashboard displayType="EMITTER" valueType="lights.lightState" node="aPillarDisplay_iconHighBeamLight_decal" baseColor="0 0 0" hideInactive="true" intensity="0.5" intensityDarkMode="0.4" lightTypes="3" groups="MOTOR_RUNNING"/>
+
+		<dashboard displayType="VISIBILITY" valueType="ai.automaticSteering.steeringState" node="aPillarDisplay_iconGPSActive_decal" idleValue="-1" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="EMITTER" valueType="ai.automaticSteering.steeringEngaged" node="aPillarDisplay_iconGPSActive_decal" baseColor="2 0.25 0.20 1" emitColor="GREEN" intensity="1.0" intensityDarkMode="0.6" groups="MOTOR_RUNNING"/>
+
+        <dashboard displayType="EMITTER" node="aPillarDisplay_iconStarting01_decals" baseColor="0 0 0" emitColor="0.680 0.716 1.000 1" intensity="0.5" intensityDarkMode="0.4" hideInactive="true" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="aPillarDisplay_iconStarting02_decals" baseColor="0 0 0" emitColor="JOHNDEERE_ORANGE1" intensity="0.5" intensityDarkMode="0.4" hideInactive="true" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="aPillarDisplay_iconStarting03_decals" intensity="0.3" intensityDarkMode="0.2" hideInactive="true" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="aPillarDisplay_iconAlwaysActive01_decals" baseColor="0 0 0" emitColor="0.680 0.716 1.000 1" intensity="0.5" intensityDarkMode="0.3" hideInactive="true" groups="MOTOR_ACTIVE"/>
+        <dashboard displayType="EMITTER" node="aPillarDisplay_iconAlwaysActive02_decals" valueType="drivable.cruiseControlActive" emitColor="GREEN" baseColor="2 0.5 0.15 1" intensity="0.8" hideInactive="true" intensityDarkMode="0.5" groups="MOTOR_ACTIVE"/>
+        <dashboard displayType="EMITTER" node="aPillarDisplay_iconAlwaysActive03_decals" baseColor="0 0 0" intensity="0.5" hideInactive="true" intensityDarkMode="0.3" groups="MOTOR_ACTIVE"/>
+
+        <dashboard displayType="EMITTER" node="aPillarDisplay_iconForwardStanding_decal" baseColor="0 0 0" emitColor="JOHNDEERE_ORANGE1" intensity="0.5" intensityDarkMode="0.3" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="EMITTER" node="aPillarDisplay_iconForward_decal" baseColor="0 0 0" emitColor="JOHNDEERE_ORANGE1" intensity="0.5" intensityDarkMode="0.3" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="EMITTER" node="aPillarDisplay_iconBackwardStanding_decal" baseColor="0 0 0" emitColor="JOHNDEERE_ORANGE1" intensity="0.5" intensityDarkMode="0.3" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="EMITTER" node="aPillarDisplay_iconBackward_decal" baseColor="0 0 0" emitColor="JOHNDEERE_ORANGE1" intensity="0.5" intensityDarkMode="0.3" groups="MOTOR_RUNNING"/>
+		
+		<dashboard valueType="dbl.vca" cmd="park" displayType="EMITTER" node="aPillarDisplay_iconPark_decal" baseColor="AGCO_GREY2" emitColor="RED" intensity="0.8" idleValue="-1" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.vca" cmd="park" displayType="AUDIO" outside="true" distance="50.0" audioName="Brake" loop="1" volume="0.5" audioFile="$data/sounds/vehicles/brake/brake_big.ogg" groups="MOTOR_ACTIVE" />
+
+        <dashboard displayType="VISIBILITY" valueType="motorized.directionForwardExclusive" node="aPillarDisplay_iconForwardStanding_decal" groups="MOTOR_RUNNING" />
+        <dashboard displayType="VISIBILITY" valueType="motorized.directionForwardExclusive" node="aPillarDisplay_iconForward_decal" groups="MOTOR_RUNNING" />
+        <dashboard displayType="VISIBILITY" valueType="motorized.directionBackward" node="aPillarDisplay_iconBackwardStanding_decal" groups="MOTOR_RUNNING" />
+        <dashboard displayType="VISIBILITY" valueType="motorized.directionBackward" node="aPillarDisplay_iconBackward_decal" groups="MOTOR_RUNNING" />
+
+        <dashboard displayType="MULTI_STATE" valueType="drivable.movingDirection" node="iconsStanding" groups="MOTOR_ACTIVE">
+            <state value="-1" visibility="false"/>
+            <state value="0" visibility="true"/>
+            <state value="1" visibility="false"/>
+        </dashboard>
+        <dashboard displayType="MULTI_STATE" valueType="drivable.movingDirection" node="iconsDriving" groups="MOTOR_ACTIVE">
+            <state value="-1" visibility="true"/>
+            <state value="0" visibility="false"/>
+            <state value="1" visibility="true"/>
+        </dashboard>
+
+        <!-- sliders -->
+        <dashboard displayType="SLIDER" valueType="motorized.motorTemperature" node="aPillarDisplay_sliderTemperature_decal" minValueSlider="0" maxValueSlider="150" intensity="0.5" intensityDarkMode="0.2" hideInactive="true" groups="MOTOR_ACTIVE"/>
+        <dashboard displayType="SLIDER" valueType="fillLevel" fillType="DIESEL" node="aPillarDisplay_sliderFuel_decal" intensity="0.5" intensityDarkMode="0.2" groups="MOTOR_ACTIVE"/>
+        <dashboard displayType="SLIDER" valueType="fillLevel" fillType="DEF" node="aPillarDisplay_sliderDef_decal" intensity="0.5" intensityDarkMode="0.1" groups="MOTOR_ACTIVE"/>
+        <dashboard displayType="SLIDER" valueType="fillLevel" fillType="AIR" node="aPillarDisplay_sliderAir_decal" intensity="0.5" intensityDarkMode="0.1" groups="MOTOR_ACTIVE"/>
+        <dashboard displayType="VISIBILITY" node="aPillarDisplay_sliderTemperature_decal" groups="MOTOR_ACTIVE" />
+
+        <!-- display -->
+        <dashboard displayType="EMITTER" node="g4Display_aPillarDisplay_decal" idleValue="-1" intensity="0.5" intensityDarkMode="0.2" groups="MOTOR_ACTIVE" />
+
+        <configuration id="GEARBOX_POWERSHIFT">
+            <dashboard displayType="TEXT" valueType="motorized.gear" node="aPillarDisplay_numbersGears" textColor="JOHNDEERE_ORANGE1" textSize="0.0125" textMask="00" emissiveScale="0.5" textAlignment="RIGHT" textScaleY="1.2" font="DIGIT" groups="MOTOR_RUNNING"/>
+        </configuration>
+
+        <configuration id="PTO_FRONT_BACK"> <!-- function not useabel -->
+            <dashboard displayType="EMITTER" valueType="powerTakeOffs.state" node="aPillarDisplay_iconPTOFront_decal" baseColor="0 0 0" emitColor="SHARED_YELLOW2" intensity="0.5" intensityDarkMode="0.4" powerTakeOffIndex="2" groups="MOTOR_ACTIVE"/>
+            <dashboard displayType="EMITTER" valueType="powerTakeOffs.state" node="aPillarDisplay_iconPTOBack_decal" baseColor="0 0 0" emitColor="SHARED_YELLOW2" intensity="0.5" intensityDarkMode="0.4" powerTakeOffIndex="1" groups="MOTOR_ACTIVE"/>
+
+            <objectChange node="aPillarDisplay_iconPTOFront_decal" visibilityActive="true" visibilityInactive="false"/>
+       </configuration>
+        <configuration id="PTO_BACK_ONLY">
+            <dashboard displayType="EMITTER" valueType="powerTakeOffs.state" node="aPillarDisplay_iconPTOBack_decal" baseColor="0 0 0" emitColor="SHARED_YELLOW2" intensity="0.5" intensityDarkMode="0.4" powerTakeOffIndex="1" groups="MOTOR_ACTIVE"/>
+        </configuration>
+    </dashboardCompound>
+
+<!-- MAIN -->
+    <dashboardCompound name="JOHNDEERE_G4_MAINPAGE" filename="data/vehicles/johnDeere/shared/displays/g4Displays.i3d" node="g4BasicScreen">
+		
+	   <!-- Displays -->
+		<dashboard displayType="VISIBILITY" node="g4Display_startScreen_decal" idleValue="0" groups="MOTOR_STARTING"/>
+		<dashboard displayType="VISIBILITY" node="g4Display_basicScreen" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="VISIBILITY" node="g4Display_dblWheelSlipIconP1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="VISIBILITY" node="g4Display_dblMotorTempIconP1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="VISIBILITY" node="g4Display_dblFuelIconP1_SC" groups="MOTOR_ACTIVE"/>
+		<!-- <dashboard displayType="VISIBILITY" node="g4Display_dblFuelIconP1_SC" groups="MOTOR_ACTIVE"/> -->
+		
+		<dashboard displayType="EMITTER" node="g4Display_basicScreen" intensity="0.2" intensityDarkMode="0.05" groups="MOTOR_RUNNING"/>
+		
+		<!-- <dashboard valueType="dbl.base" cmd="liftState" joints="8" displayType="SLIDER" minValueSlider="0" maxValueSlider="100" groups="MOTOR_ACTIVE" /> -->
+		<!-- <dashboard valueType="dbl.base" cmd="liftState" joints="2" displayType="SLIDER" factor="1" minValueSlider="0" maxValueSlider="100" groups="MOTOR_ACTIVE" /> -->
+		<dashboard valueType="dbl.base" cmd="liftState" joints="8" option="percent" displayType="TEXT" node="g4Display_dblFrontHitchPercentNumbersP1_SC" factor="100" default="0" textColor="0.005 0.005 0.004 1" textSize="0.0055" textMask="000" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="liftState" joints="2" option="percent" displayType="TEXT" node="g4Display_dblRearHitchPercentNumbersP1_SC" factor="100" default="0" textColor="0.005 0.005 0.004 1" textSize="0.0055" textMask="000" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="VISIBILITY" valueType="ai.automaticSteering.steeringEngaged" node="g4Display_dblGPSActive00P1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="EMITTER" valueType="ai.automaticSteering.steeringEngaged" node="g4Display_dblGPSActive00P1_SC" baseColor="0 0 0" intensity="0.6" intensityDarkMode="0.3" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="VISIBILITY" valueType="ai.automaticSteering.steeringEngaged" node="g4Display_dblGPSActiveIconP1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="EMITTER" valueType="ai.automaticSteering.steeringEngaged" node="g4Display_dblGPSActiveIconP1_SC" baseColor="0 0 0" emitColor="0.9 0.9 0.9 1" emitColorDarkMode="0.005 0.7 0.004 1" intensity="1.0" intensityDarkMode="0.5" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="VISIBILITY" node="g4Display_dblGPSActiveSatelliteP1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="EMITTER" valueType="ai.automaticSteering.steeringState" node="g4Display_dblGPSActiveSatelliteP1_SC" baseColor="0 0.3 0 1" emitColor="0.9 0.9 0.9 1" intensity="1.0" intensityDarkMode="0.5" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="pto" joints="2 3 4 5 6 7" displayType="VISIBILITY" node="g4Display_dblRearPTO_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="pto" joints="2 3 4 5 6 7" displayType="EMITTER" node="g4Display_dblRearPTO_SC" emitColor="JOHNDEERE_ORANGE1" intensity="1" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.vca" cmd="park" displayType="VISIBILITY" node="g4Display_dblParkIconP1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.vca" cmd="park" displayType="EMITTER" node="g4Display_dblParkIconP1_SC" emitColor="RED" intensity="0.8" idleValue="-1" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="ptoRpm" joints="2 3 4 5 6 7" displayType="TEXT" node="g4Display_dblRearPtoRpmNumbersP1_SC" options="any" max="1002" doInterpolation="true" interpolationSpeed="0.25" textColor="0.07 0.07 0.04 1" textSize="0.006" textMask="0000" fontThickness="1.2" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_ACTIVE"/>
+		
+		<!-- static icons -->
+		<dashboard displayType="EMITTER" node="g4Display_dblWheelSlipIconP1_SC" emitColor="0.07 0.07 0.04 1" intensity="0.2" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="EMITTER" node="g4Display_dblMotorTempIconP1_SC" emitColor="0.07 0.07 0.04 1" intensity="0.2" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="EMITTER" node="g4Display_dblFuelIconP1_SC" emitColor="0.07 0.07 0.04 1" intensity="0.2" groups="MOTOR_ACTIVE"/>
+		
+		<!-- groups -->
+		<dashboard displayType="VISIBILITY" node="g4Display_dblGroupTractorP1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="connected" joints="1 8 9" option="any" displayType="VISIBILITY" node="g4Display_dblGroupFront1P1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="connected" joints="1 8 9" option="any" displayType="VISIBILITY" node="g4Display_dblGroupFront2P1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="connected" joints="2 3 4 5 6 7" option="any" displayType="VISIBILITY" node="g4Display_dblGroupRear1P1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="connected" joints="2 3 4 5 6 7" option="any" displayType="VISIBILITY" node="g4Display_dblGroupRear2P1_SC" groups="MOTOR_ACTIVE"/>
+		
+		<dashboard valueType="dbl.selection" selection="0"  displayType="EMITTER" node="g4Display_dblGroupTractorP1_SC" baseColor="0.2 0.6 0.2 1" emitColor="0.7 0.8 0.7 1" intensity="0.8" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.selection" selection="1"  displayType="EMITTER" node="g4Display_dblGroupFront1P1_SC"  baseColor="0.2 0.6 0.2 1" emitColor="0.7 0.8 0.7 1" intensity="0.8" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.selection" selection="2"  displayType="EMITTER" node="g4Display_dblGroupFront2P1_SC"  baseColor="0.2 0.6 0.2 1" emitColor="0.7 0.8 0.7 1" intensity="0.8" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.selection" selection="-1" displayType="EMITTER" node="g4Display_dblGroupRear1P1_SC"   baseColor="0.2 0.6 0.2 1" emitColor="0.7 0.8 0.7 1" intensity="0.8" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.selection" selection="-2" displayType="EMITTER" node="g4Display_dblGroupRear2P1_SC"   baseColor="0.2 0.6 0.2 1" emitColor="0.7 0.8 0.7 1" intensity="0.8" groups="MOTOR_ACTIVE"/>
+
+		<!-- folding back -->
+		<dashboard valueType="dbl.base" cmd="folded" joints="2 3 4 5 6 7" option="any" displayType="VISIBILITY" node="g4Display_dblFoldingStateLockedP1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" displayType="VISIBILITY" node="g4Display_dblRearHitchSliderP1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" displayType="SLIDER" node="g4Display_dblRearHitchSliderP1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" displayType="VISIBILITY" node="g4Display_dblFoldingSliderP1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="folding unfolding" joints="2 3 4 5 6 7" option="any" displayType="VISIBILITY" node="g4Display_dblFoldingStateClosingP1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="folded" joints="2 3 4 5 6 7" option="any" displayType="VISIBILITY" node="g4Display_dblFoldingStateClosedP1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="folded" joints="2 3 4 5 6 7" option="any" displayType="EMITTER" node="g4Display_dblFoldingStateClosedP1_SC" emitColor="0.07 0.07 0.04 1" intensity="0.4" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="folding unfolding" joints="2 3 4 5 6 7" option="any" displayType="EMITTER" node="g4Display_dblFoldingStateClosingP1_SC" emitColor="0.07 0.07 0.04 1" intensity="1" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="unfoldingState" joints="2 3 4 5 6 7" option="any" displayType="TEXT" node="g4Display_dblRearFoldPercentNumbersP1_SC" factor="100" textColor="0.4 0.4 0.2 1" textSize="0.0035" textMask="000%" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_ACTIVE"/>
+		
+		<!-- for lifting slider etc. - function not useable -->
+		<!-- folding front -->
+		<dashboard valueType="dbl.base" cmd="connected" joints="1 8 9" option="any" displayType="VISIBILITY" node="g4Display_tileHydraulicControlXIV_decal" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="VISIBILITY" node="g4Display_tileFrontHitch_decal" groups="MOTOR_ACTIVE"/>
+		<!-- <dashboard valueType="dbl.base" cmd="connected" joints="1 8 9" option="any" displayType="VISIBILITY" node="g4Display_tileHydraulicControlXV_decal" groups="MOTOR_ACTIVE"/> -->
+		<dashboard valueType="dbl.base" cmd="connected" joints="1 8 9" option="any" displayType="VISIBILITY" node="g4Display_tileFrontPTO_decal" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="connected" joints="1 8 9" option="any" displayType="VISIBILITY" node="g4Display_dblFrontHitchPercentNumbersP1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="connected" joints="1 8 9" option="any" displayType="VISIBILITY" node="g4Display_dblFrontHitchSliderP1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="connected" joints="1 8 9" option="any" displayType="EMITTER" node="g4Display_tileHydraulicControlXIV_decal" intensity="0.2" intensityDarkMode="0.05" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="connected" joints="1 8 9" option="any" displayType="EMITTER" node="g4Display_tileFrontHitch_decal" intensity="0.2" intensityDarkMode="0.05" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="VISIBILITY" node="g4Display_tileTransmission_decal" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="EMITTER" node="g4Display_tileTransmission_decal" intensity="0.2" intensityDarkMode="0.05" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="connected" joints="1 8 9" option="any" displayType="EMITTER" node="g4Display_tileFrontPTO_decal" intensity="0.2" intensityDarkMode="0.05" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="connected" joints="1 8 9" option="any" displayType="EMITTER" node="g4Display_dblFrontHitchPercentNumbersP1_SC" intensity="0.2" intensityDarkMode="0.05" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="connected" joints="1 8 9" option="any" displayType="EMITTER" node="g4Display_dblFrontHitchSliderP1_SC" intensity="0.2" intensityDarkMode="0.05" groups="MOTOR_ACTIVE"/>
+		
+		<dashboard valueType="dbl.base" cmd="folding unfolding" joints="1 8 9" option="any" displayType="VISIBILITY" node="g4Display_dblFoldingStateFrontClosingP1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="folded" joints="1 8 9" option="any" displayType="VISIBILITY" node="g4Display_dblFoldingStateFrontClosedP1_SC" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="folded" joints="1 8 9" option="any" displayType="EMITTER" node="g4Display_dblFoldingStateFrontClosedP1_SC" emitColor="0.07 0.07 0.04 1" intensity="0.4" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="folding unfolding" joints="1 8 9" option="any" displayType="EMITTER" node="g4Display_dblFoldingStateFrontClosingP1_SC" emitColor="0.07 0.07 0.04 1" intensity="1" groups="MOTOR_ACTIVE"/>
+		
+		<dashboard displayType="TEXT" valueType="outsideTemperature" node="g4Display_dblOutsideTempNumbersP1_SC" textColor="0.9 0.9 0.9 1" textSize="0.003" textMask="00 C" font="GENERIC" textAlignment="RIGHT" emissiveScale="0.5" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="TEXT" node="g4Display_dblOutsideTempOP1_SC" textColor="0.9 0.9 0.9 1" textSize="0.002" textMask="o" font="GENERIC" textAlignment="RIGHT" emissiveScale="0.5" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="TEXT" valueType="time" node="g4Display_dblDayTimeNumbersP1_SC" textColor="0.9 0.9 0.9 1" textSize="0.004" textMask="00:00" font="GENERIC_BOLD" textAlignment="RIGHT" emissiveScale="0.5" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="playerName" node="g4Display_dblUserNameNumbersP1_SC" textColor="0.9 0.9 0.9 1" textSize="0.003" textMask="ssssssssssssssssssssss" font="GENERIC" textAlignment="LEFT" emissiveScale="0.5" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.base" cmd="unfoldingState" joints="1 8 9" option="any" displayType="TEXT" node="g4Display_dblFrontFoldPercentNumbersP1_SC" factor="100" textColor="0.4 0.4 0.2 1" textSize="0.0035" textMask="000%" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_ACTIVE"/>
+		
+		
+		<dashboard displayType="SLIDER" valueType="motorized.load" node="g4Display_dblSliderEngineLoadP1_SC" intensity="0.3" intensityDarkMode="0.1" doInterpolation="true" interpolationSpeed="0.06" groups="MOTOR_RUNNING"/>
+		
+		<dashboard displayType="TEXT" valueType="motorized.load" node="g4Display_dblEngineLoadPercentNumbersP1_SC" textColor="0.005 0.005 0.004 1" doInterpolation="true" interpolationSpeed="0.35" textSize="0.004" textMask="000%" textAlignment="RIGHT" emissiveScale="0.5" textScaleY="1.2" font="GENERIC" groups="MOTOR_RUNNING" maxActiveValue="79.99"/>
+        <dashboard displayType="TEXT" valueType="motorized.load" node="g4Display_dblEngineLoadPercentNumbersP1_SC" textColor="JOHNDEERE_ORANGE1" doInterpolation="true" interpolationSpeed="0.15" textSize="0.004" textMask="000%" textAlignment="RIGHT" emissiveScale="0.5" textScaleY="1.2" font="GENERIC" groups="MOTOR_RUNNING" minActiveValue="80" maxActiveValue="94.99"/>
+        <dashboard displayType="TEXT" valueType="motorized.load" node="g4Display_dblEngineLoadPercentNumbersP1_SC" textColor="0.8 0.00 0.00 1" doInterpolation="true" interpolationSpeed="0.15" textSize="0.004" textMask="000%" textAlignment="RIGHT" emissiveScale="0.5" textScaleY="1.2" font="GENERIC" groups="MOTOR_RUNNING" minActiveValue="95"/>
+        <dashboard displayType="TEXT" valueType="motorized.battery" node="g4Display_dblBatteryPowerNumbersP1_SC" textColor="0.005 0.005 0.004 1" textSize="0.003" textMask="00.0v" textAlignment="RIGHT" emissiveScale="0.5" textScaleY="1.2" font="GENERIC" groups="MOTOR_RUNNING"/>
+		
+		<!-- CVT not usable, lg sbsh -->
+		<!-- <dashboard displayType="TEXT" valueType="dblcvt" cmd="ipmactive" node="g4Display_dblCvtIpmActiveP1_SC" textColor="0.005 0.005 0.004 1" textSize="0.003" textMask="0" textAlignment="RIGHT" emissiveScale="0.5" textScaleY="1.2" font="GENERIC" groups="MOTOR_ACTIVE"/> -->
+		<!-- <dashboard displayType="EMITTER" valueType="dblcvt" cmd="preglowing" node="g4Display_dblCvtPreglowActiveP1_SC" emitColor="0.05 0.03 0.004 1" groups="MOTOR_ACTIVE"/> -->
+		
+		<dashboard displayType="TEXT" valueType="enterable.operatingTime" node="g4Display_dblOperatingTimeNumbersP1_SC" textColor="0.07 0.07 0.04 1" textSize="0.004" textMask="00000.0" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="motorized.speedDir" node="g4Display_dblSpeedNumbersP1_SC" textColor="0.07 0.07 0.04 1" textSize="0.007" doInterpolation="true" interpolationSpeed="0.25" textMask="00000.0" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING"/>
+		<!-- slip don't work with EV, base game has it but not as dashboard -->
+		<dashboard displayType="TEXT" valueType="dbl.vca" cmd="slip" node="g4Display_dblWheelSlipPercentNumbersP1_SC" factor="100" textColor="0.07 0.07 0.04 1" textSize="0.0055" doInterpolation="true" interpolationSpeed="0.15" textMask="000%" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="motorized.motorTemperature" node="g4Display_dblMotorTempNumbersP1_SC" textColor="0.07 0.07 0.04 1" textSize="0.004" textMask="00" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="motorized.fuelUsage" node="g4Display_dblFuelUsageNumbersP1_SC" textColor="0.07 0.07 0.04 1" textSize="0.0055" textMask="000.00" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="fillLevel" fillType="DIESEL" node="g4Display_dblFuelPercentNumbersP1_SC" textColor="0.07 0.07 0.04 1" textSize="0.004" textMask="0000.00L" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING"/>
+		
+		<dashboard displayType="TEXT" valueType="dbl.cc" cmd="speed" state="1" node="g4Display_dblCruiseControlSpeed1NumbersP1_SC" textColor="0.07 0.07 0.04 1" textSize="0.004" textMask="00.0" emissiveScale="0.5" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.cc" cmd="active" state="1" node="g4Display_dblCruiseControlSpeed1IconP1_SC" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="EMITTER" valueType="dbl.cc" cmd="active" state="1" node="g4Display_dblCruiseControlSpeed1IconP1_SC" emitColor="0.07 0.17 0.04 1" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="dbl.cc" cmd="speed" state="2" node="g4Display_dblCruiseControlSpeed2NumbersP1_SC" textColor="0.07 0.07 0.04 1" textSize="0.004" textMask="00.0" emissiveScale="0.5" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.cc" cmd="active" state="2" node="g4Display_dblCruiseControlSpeed2IconP1_SC" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="EMITTER" valueType="dbl.cc" cmd="active" state="2" node="g4Display_dblCruiseControlSpeed2IconP1_SC" emitColor="0.07 0.17 0.04 1" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="dbl.cc" cmd="speed" state="3" node="g4Display_dblCruiseControlSpeed3NumbersP1_SC" textColor="0.07 0.07 0.04 1" textSize="0.004" textMask="00.0" emissiveScale="0.5" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.cc" cmd="active" state="3" node="g4Display_dblCruiseControlSpeed3IconP1_SC" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="EMITTER" valueType="dbl.cc" cmd="active" state="3" node="g4Display_dblCruiseControlSpeed3IconP1_SC" emitColor="0.07 0.17 0.04 1" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="VISIBILITY" valueType="drivable.cruiseControlActive" node="g4Display_dblCruiseControlActiveP1_SC" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="EMITTER" valueType="drivable.cruiseControlActive" node="g4Display_dblCruiseControlActiveP1_SC" emitColor="0.005 0.005 0.04 1" intensity="0.7" groups="MOTOR_RUNNING"/>
+		
+		
+    </dashboardCompound>
+
+<!-- GPS -->
+    <dashboardCompound name="JOHNDEERE_G4_GPSPAGE" filename="data/vehicles/johnDeere/shared/displays/g4Displays.i3d" node="g4GPSScreen">
+       <!-- numbers -->
+        <dashboard displayType="TEXT" valueType="enterable.time" node="gpsPage_numbersTime" textColor="1 1 1 1" textSize="0.0032" textMask="00:00" textAlignment="CENTER" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="TEXT" valueType="motorized.battery" node="gpsPage_numbersVoltage" textColor="0 0 0 0" textSize="0.006" textMask="00.0" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="TEXT" valueType="motorized.speed" node="gpsPage_numbersSpeed" textColor="0 0 0 0" textSize="0.006" textMask="00.0" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+
+        <!-- icons -->
+        <dashboard displayType="VISIBILITY" valueType="ai.automaticSteering.steeringEngaged" node="gpsPage_GPSActive_decal" idleValue="-1" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="EMITTER" valueType="ai.automaticSteering.steeringEngaged" node="gpsPage_GPSActive_decal" intensity="0.3" groups="MOTOR_RUNNING"/>
+
+        <!-- displays -->
+        <dashboard displayType="VISIBILITY" node="gpsPage_startScreen_decal" idleValue="0" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="gpsPage_startScreen_decal" intensity="0.3" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="g4Display_gpsPage_decal" idleValue="-1" intensity="0.3" intensityDarkMode="0.05" groups="MOTOR_RUNNING"/>
+
+		<!-- MiniMap -->
+			<!-- P1 -->
+		<dashboard valueType="dbl.miniMap" cmd="map" displayType="VISIBILITY" node="g4Display_dblNaviMapP1_GPS" groups="MOTOR_RUNNING PAGEGPS1"/>
+		<dashboard valueType="dbl.miniMap" cmd="posMarker" displayType="VISIBILITY" node="g4Display_dblNaviMapPosP1_GPS" groups="MOTOR_RUNNING PAGEGPS1"/>
+		<dashboard valueType="dbl.miniMap" cmd="map" displayType="EMITTER" node="g4Display_dblNaviMapP1_GPS" intensity="0.5" intensityDarkMode="0.2" groups="MOTOR_ACTIVE PAGEGPS1"/>
+		<dashboard valueType="dbl.miniMap" cmd="posMarker" idleValue="-1" displayType="EMITTER" node="g4Display_dblNaviMapPosP1_GPS" emitColor="ORANGE" intensity="0.5" groups="MOTOR_ACTIVE PAGEGPS1"/>
+			<!-- P2 -->
+		<dashboard valueType="dbl.miniMap" cmd="map" displayType="VISIBILITY" node="g4Display_dblNaviMapP2_GPS" groups="MOTOR_RUNNING PAGEGPS2"/>
+		<dashboard valueType="dbl.miniMap" cmd="posMarker" displayType="VISIBILITY" node="g4Display_dblNaviMapPosP2_GPS" groups="MOTOR_RUNNING PAGEGPS2"/>
+		<dashboard valueType="dbl.miniMap" cmd="map" displayType="EMITTER" node="g4Display_dblNaviMapP2_GPS" intensity="0.5" intensityDarkMode="0.2" groups="MOTOR_ACTIVE PAGEGPS2"/>
+		<dashboard valueType="dbl.miniMap" cmd="posMarker" idleValue="-1" displayType="EMITTER" node="g4Display_dblNaviMapPosP2_GPS" emitColor="ORANGE" intensity="0.5" groups="MOTOR_ACTIVE PAGEGPS2"/>
+		
+		<!-- gps -->
+		<dashboard displayType="VISIBILITY" valueType="ai.automaticSteering.steeringEngaged" node="g4Display_dblGPSActiveP12_GPS" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="EMITTER" valueType="ai.automaticSteering.steeringEngaged" node="g4Display_dblGPSActiveP12_GPS" baseColor="0 0 0" emitColor="0.9 0.9 0.9 1" emitColorDarkMode="0.005 0.7 0.004 1" intensity="1.0" intensityDarkMode="0.5" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="VISIBILITY" node="g4Display_dblGPSSatellitP12_GPS" groups="MOTOR_ACTIVE"/>
+		<dashboard displayType="EMITTER" valueType="ai.automaticSteering.steeringState" node="g4Display_dblGPSSatellitP12_GPS" baseColor="0 0.1 0 1" emitColor="0.9 0.9 0.9 1" intensity="1.0" intensityDarkMode="0.5" groups="MOTOR_ACTIVE"/>
+		
+		<!-- Camera -->
+		
+    </dashboardCompound>
+
+<!-- RADIO -->
+    <dashboardCompound name="JOHNDEERE_RADIODISPLAY" filename="data/vehicles/johnDeere/shared/displays/g4Displays.i3d" node="g4RadioScreen">
+        <!-- display -->
+        <dashboard displayType="VISIBILITY" node="radioDisplay_startScreen_decal" idleValue="0" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="radioDisplay_startScreen_decal" intensity="0.3" intensityDarkMode="0.1" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="radioDisplay_decal" idleValue="-1" intensity="0.3" intensityDarkMode="0.1" groups="MOTOR_RUNNING"/>
+    </dashboardCompound>
+
+    <i3dMappings>
+	<!-- aPillar -->
+		<i3dMapping id="g4Display_aPillarDisplay" node="0>0"/>
+		<i3dMapping id="aPillarDisplay_iconTurnLightLeft_decal" node="0>0|0|0"/>
+		<i3dMapping id="aPillarDisplay_iconTurnLightRight_decal" node="0>0|0|1"/>
+		<i3dMapping id="aPillarDisplay_iconTurnLightTrailer_decal" node="0>0|0|2"/>
+		<i3dMapping id="aPillarDisplay_iconHighBeamLight_decal" node="0>0|0|3"/>
+		<i3dMapping id="aPillarDisplay_iconAlwaysActive01_decals" node="0>0|0|4"/>
+		<i3dMapping id="aPillarDisplay_iconAlwaysActive02_decals" node="0>0|0|5"/>
+		<i3dMapping id="aPillarDisplay_iconAlwaysActive03_decals" node="0>0|0|6"/>
+		<i3dMapping id="aPillarDisplay_iconPTOFront_decal" node="0>0|0|7"/>
+		<i3dMapping id="aPillarDisplay_iconPTOBack_decal" node="0>0|0|8"/>
+		<i3dMapping id="aPillarDisplay_iconStarting01_decals" node="0>0|0|9"/>
+		<i3dMapping id="aPillarDisplay_iconStarting02_decals" node="0>0|0|10"/>
+		<i3dMapping id="aPillarDisplay_iconStarting03_decals" node="0>0|0|11"/>
+		<i3dMapping id="aPillarDisplay_iconGPSActive_decal" node="0>0|0|12"/>
+		<i3dMapping id="iconsStanding" node="0>0|0|13"/>
+		<i3dMapping id="iconsDriving" node="0>0|0|14"/>
+		<i3dMapping id="aPillarDisplay_iconBackwardStanding_decal" node="0>0|0|13|0"/>
+		<i3dMapping id="aPillarDisplay_iconForwardStanding_decal" node="0>0|0|13|1"/>
+		<i3dMapping id="aPillarDisplay_iconBackward_decal" node="0>0|0|14|0"/>
+		<i3dMapping id="aPillarDisplay_iconForward_decal" node="0>0|0|14|1"/>
+		<i3dMapping id="aPillarDisplay_numbersRPM" node="0>0|0|15"/>
+		<i3dMapping id="aPillarDisplay_numbersSpeed01" node="0>0|0|16"/>
+		<i3dMapping id="aPillarDisplay_numbersCruiseControl" node="0>0|0|17"/>
+		<i3dMapping id="aPillarDisplay_numbersGears" node="0>0|0|18"/>
+		<i3dMapping id="aPillarDisplay_sliderAir_decal" node="0>0|0|19"/>
+		<i3dMapping id="aPillarDisplay_sliderTemperature_decal" node="0>0|0|20"/>
+		<i3dMapping id="aPillarDisplay_sliderFuel_decal" node="0>0|0|21"/>
+		<i3dMapping id="aPillarDisplay_sliderDef_decal" node="0>0|0|22"/>
+		<i3dMapping id="aPillarDisplay_iconPark_decal" node="0>0|0|23"/>
+		<i3dMapping id="g4Display_aPillarDisplay_decal" node="0>0|1|0"/>
+		
+	<!-- RADIO SCREEN -->
+		<i3dMapping id="g4RadioScreen" node="0>3"/>
+		<i3dMapping id="radioDisplay_decal" node="0>3|0"/>
+		<i3dMapping id="radioDisplay_startScreen_decal" node="0>3|0|0"/>
+	<!-- BASIC -->
+		<i3dMapping id="g4BasicScreen" node="0>1"/>
+		<i3dMapping id="g4Display_basicScreen" node="0>1|3|0"/>
+		<i3dMapping id="g4Display_startScreen_decal" node="0>1|0|0"/>
+		
+		<i3dMapping id="g4Display_dblRearHitchSliderP1_SC" node="0>1|1|0"/>
+		<i3dMapping id="g4Display_dblFoldingSliderP1_SC" node="0>1|1|1"/>
+		<i3dMapping id="g4Display_dblFoldingStateClosedP1_SC" node="0>1|1|10"/>
+		<i3dMapping id="g4Display_dblFoldingStateClosingP1_SC" node="0>1|1|11"/>
+		<i3dMapping id="g4Display_dblFoldingStateFrontOpenP1_SC" node="0>1|1|12"/>
+		<i3dMapping id="g4Display_dblFoldingStateFrontOpeningP1_SC" node="0>1|1|13"/>
+		<!-- <i3dMapping id="g4Display_dblFoldingStateFrontLockedP1_SC" node="0>1|1|14"/> -->
+		<i3dMapping id="g4Display_dblFoldingStateFrontClosingP1_SC" node="0>1|1|15"/>
+		<i3dMapping id="g4Display_dblParkIconP1_SC" node="0>1|1|16"/>
+		<i3dMapping id="g4Display_dblFuelIconP1_SC" node="0>1|1|17"/>
+		<i3dMapping id="g4Display_dblMotorTempIconP1_SC" node="0>1|1|18"/>
+		<i3dMapping id="g4Display_dblWheelSlipIconP1_SC" node="0>1|1|19"/>
+		<i3dMapping id="g4Display_dblFrontHitchSliderP1_SC" node="0>1|1|2"/>
+		<i3dMapping id="g4Display_dblRearHitchPercentNumbersP1_SC" node="0>1|1|20|0"/>
+		<i3dMapping id="g4Display_dblFrontHitchPercentNumbersP1_SC" node="0>1|1|20|1"/>
+		<i3dMapping id="g4Display_dblRearFoldPercentNumbersP1_SC" node="0>1|1|20|19"/>
+		<i3dMapping id="g4Display_dblFrontFoldPercentNumbersP1_SC" node="0>1|1|20|20"/>
+		<i3dMapping id="g4Display_dblOutsideTempO_P1_SC" node="0>1|1|20|10"/>
+		<i3dMapping id="g4Display_dblFuelUsageNumbersP1_SC" node="0>1|1|20|11"/>
+		<i3dMapping id="g4Display_dblFuelPercentNumbersP1_SC" node="0>1|1|20|12"/>
+		
+		<i3dMapping id="g4Display_dblCruiseControlSpeed1NumbersP1_SC" node="0>1|1|20|13"/>
+		<i3dMapping id="g4Display_dblCruiseControlSpeed2NumbersP1_SC" node="0>1|1|20|14"/>
+		<i3dMapping id="g4Display_dblCruiseControlSpeed3NumbersP1_SC" node="0>1|1|20|18"/>
+		<i3dMapping id="g4Display_dblCruiseControlSpeed1IconP1_SC" node="0>1|1|21"/>
+		<i3dMapping id="g4Display_dblCruiseControlSpeed2IconP1_SC" node="0>1|1|22"/>
+		<i3dMapping id="g4Display_dblCruiseControlSpeed3IconP1_SC" node="0>1|1|23"/>
+		<i3dMapping id="g4Display_dblCruiseControlActiveP1_SC" node="0>1|1|24"/>
+
+		<i3dMapping id="g4Display_dblSpeedNumbersP1_SC" node="0>1|1|20|15"/>
+		<i3dMapping id="g4Display_dblWheelSlipPercentNumbersP1_SC" node="0>1|1|20|16"/>
+		<i3dMapping id="g4Display_dblMotorTempNumbersP1_SC" node="0>1|1|20|17"/>
+		<i3dMapping id="g4Display_dblEngineLoadPercentNumbersP1_SC" node="0>1|1|20|2"/>
+		<i3dMapping id="g4Display_dblBatteryPowerNumbersP1_SC" node="0>1|1|20|3"/>
+		<i3dMapping id="g4Display_dblCvtIpmActiveP1_SC" node="0>1|1|20|4"/>
+		<i3dMapping id="g4Display_dblOperatingTimeNumbersP1_SC" node="0>1|1|20|5"/>
+		<i3dMapping id="g4Display_dblRearPtoRpmNumbersP1_SC" node="0>1|1|20|6"/>
+		<i3dMapping id="g4Display_dblDayTimeNumbersP1_SC" node="0>1|1|20|7"/>
+		<i3dMapping id="g4Display_dblOutsideTempNumbersP1_SC" node="0>1|1|20|8"/>
+		<i3dMapping id="g4Display_dblUserNameNumbersP1_SC" node="0>1|1|20|9"/>
+		<i3dMapping id="g4Display_dblOutsideTempOP1_SC" node="0>1|1|20|10"/>
+		
+		<i3dMapping id="g4Display_dblSliderEngineLoadP1_SC" node="0>1|1|3"/>
+		<i3dMapping id="g4Display_dblGPSActive00P1_SC" node="0>1|1|4"/>
+		<i3dMapping id="g4Display_dblGPSActiveIconP1_SC" node="0>1|1|5"/>
+		<i3dMapping id="g4Display_dblRearPTO_SC" node="0>1|1|6"/>
+		<i3dMapping id="g4Display_dblGPSActiveSatelliteP1_SC" node="0>1|1|7"/>
+		<i3dMapping id="g4Display_dblFoldingStateFrontClosingP1_SC" node="0>1|1|8"/>
+		<i3dMapping id="g4Display_dblFoldingStateFrontClosedP1_SC" node="0>1|1|9"/>
+		
+		<i3dMapping id="g4Display_dblGroupFront2P1_SC" node="0>1|1|25"/>
+		<i3dMapping id="g4Display_dblGroupFront1P1_SC" node="0>1|1|26"/>
+		<i3dMapping id="g4Display_dblGroupTractorP1_SC" node="0>1|1|27"/>
+		<i3dMapping id="g4Display_dblGroupRear1P1_SC" node="0>1|1|28"/>
+		<i3dMapping id="g4Display_dblGroupRear2P1_SC" node="0>1|1|29"/>
+	
+		<!-- configs -->
+		<i3dMapping id="g4Display_tileHydraulicControlXIV_decal" node="0>1|2|0"/>
+		<i3dMapping id="g4Display_tileFrontHitch_decal" node="0>1|2|1"/>
+		<i3dMapping id="g4Display_tileCountersA_decal" node="0>1|2|2"/>
+		<i3dMapping id="g4Display_tileHydraulicControlXV_decal" node="0>1|2|3"/>
+		<i3dMapping id="g4Display_tileTransmission_decal" node="0>1|2|4"/>
+		<i3dMapping id="g4Display_tileFrontPTO_decal" node="0>1|2|5"/>
+		<i3dMapping id="g4Display_tilePTOGear_decal" node="0>1|2|6"/>
+		
+	<!-- GPS SCREEN -->
+		<i3dMapping id="g4GPSScreen" node="0>2"/>
+		<i3dMapping id="gpsPage_startScreen_decal" node="0>2|0|0"/>
+		<i3dMapping id="g4Display_dblGPSSatellitP12_GPS" node="0>2|1|0"/>
+		<i3dMapping id="g4Display_dblGPSActiveP12_GPS" node="0>2|1|1"/>
+		<i3dMapping id="g4Display_dblNaviMapP1_GPS" node="0>2|2|0"/>
+		<i3dMapping id="g4Display_dblNaviMapPosP1_GPS" node="0>2|2|1"/>
+		<i3dMapping id="g4Display_gpsPage_decal" node="0>2|3|0"/>
+		
+		<i3dMapping id="g4Display_dblNaviMapP2_GPS" node="0>2|4|0"/>
+		<i3dMapping id="g4Display_dblNaviMapPosP2_GPS" node="0>2|4|1"/>
+    </i3dMappings>
+</dashboardCompounds>

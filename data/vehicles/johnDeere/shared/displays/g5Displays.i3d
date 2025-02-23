@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="g5Displays" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+
+  <Files>
+    <File fileId="3" filename="$data/shaders/glowShader.xml" />
+    <File fileId="2" filename="$data/shared/default_normal.png" />
+    <File fileId="1" filename="$data/vehicles/johnDeere/shared/displays/g5Displays_diffuse.png" />
+  </Files>
+
+  <Materials>
+    <Material name="g5Displays_01_mat" materialId="1" specularColor="0.5 0.5 0.5" customShaderId="3" customShaderVariation="staticLight">
+      <Texture fileId="1"/>
+      <Normalmap fileId="2"/>
+    </Material>
+    <Material name="g5Displays_02_mat" materialId="2" specularColor="0.5 0.5 0.5" customShaderId="3" customShaderVariation="slider">
+      <Texture fileId="1"/>
+      <Normalmap fileId="2"/>
+    </Material>
+    <Material name="g5Displays_02_mat1" materialId="3" specularColor="0.5 0.5 0.5" customShaderId="3" customShaderVariation="loadingCircle">
+      <CustomParameter name="uvCenterSize" value="0.7845 0.9375 1.0 1.0"/>
+      <Texture fileId="1"/>
+      <Normalmap fileId="2"/>
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="g5Displays.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <TransformGroup name="g5Displays" nodeId="1">
+      <TransformGroup name="tractorDisplays" nodeId="2">
+        <Shape name="g5Display_aPillarTractor_decal" shapeId="1" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="1" clipDistance="100" nodeId="3">
+          <TransformGroup name="icons_toDo" nodeId="4">
+            <Shape name="g5Display_aPillarHarvester_iconTurnLightLeft_decal" translation="0.039991 0.000117 0.07234" shapeId="2" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="20" nodeId="5"/>
+            <Shape name="g5Display_aPillarHarvester_iconTurnLightRight_decal" translation="-0.040009 0.000117 0.067983" shapeId="3" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="20" nodeId="6"/>
+            <Shape name="g5Display_aPillarHarvester_iconTurnLightTrailer_decal" translation="-0.020009 0.000117 0.07234" shapeId="4" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="20" nodeId="7"/>
+            <Shape name="g5Display_aPillarHarvester_iconHighBeamLight_decal" translation="-0.030009 0.000117 0.074022" shapeId="5" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="20" nodeId="8"/>
+            <Shape name="g5Display_aPillarHarvester_iconDefaultLight_decal" translation="-0.030009 0.000117 0.07234" shapeId="6" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="20" nodeId="9"/>
+            <Shape name="g5Display_aPillarHarvester_iconGPSActive_decal" translation="0.009991 0.000117 0.07234" shapeId="7" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="20" nodeId="10"/>
+            <Shape name="g5Display_aPillarHarvester_iconStarting_decals" translation="-0.010009 0.000117 0.062592" shapeId="8" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="20" nodeId="11"/>
+          </TransformGroup>
+          <TransformGroup name="sliders" nodeId="12">
+            <Shape name="g5Display_aPillarTractor_sliderFuel_decal" translation="-0.030342 0.000166 -0.05839" shapeId="9" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="2" clipDistance="30" nodeId="13"/>
+            <Shape name="g5Display_aPillarTractor_sliderDef_decal" translation="-0.010134 0.000166 -0.058255" shapeId="10" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="2" clipDistance="30" nodeId="14"/>
+            <Shape name="g5Display_aPillarTractor_loadBarAir_decal" translation="0.030322 0.000118 -0.079777" shapeId="11" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="1" clipDistance="30" nodeId="15"/>
+            <Shape name="g5Display_aPillarTractor_loadBarTemperature_decal" translation="0.009924 0.000118 -0.079777" shapeId="12" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="1" clipDistance="30" nodeId="16"/>
+          </TransformGroup>
+        </Shape>
+        <Shape name="g5Display_defaultPageTractor_decal" translation="1 0 0" shapeId="13" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="1" clipDistance="160" nodeId="17">
+          <TransformGroup name="numbers" nodeId="18">
+            <TransformGroup name="g5Display_defaultPageTractor_numbersTime" translation="-0.051808 0 0.073444" rotation="90 0 -180" nodeId="19"/>
+            <TransformGroup name="g5Display_defaultPageTractor_numbersLoad" translation="0.092622 0 0.010174" rotation="90 0 -180" nodeId="20"/>
+            <TransformGroup name="g5Display_defaultPageTractor_numbersFuelPct" translation="-0.122973 0 -0.045637" rotation="90 0 -180" nodeId="21"/>
+            <TransformGroup name="g5Display_defaultPageTractor_numbersFuelUsage" translation="0.052453 0 -0.045637" rotation="90 0 -180" nodeId="22"/>
+            <TransformGroup name="g5Display_defaultPageTractor_numbersCruiseControl01" translation="-0.001171 0 -0.033068" rotation="90 0 -180" nodeId="23"/>
+            <TransformGroup name="g5Display_defaultPageTractor_numbersCruiseControl02" translation="-0.087729 0 -0.079938" rotation="90 0 -180" nodeId="24"/>
+            <TransformGroup name="g5Display_defaultPageTractor_numbersOperatingHours" translation="-0.03882 0 -0.038116" rotation="90 0 -180" nodeId="25"/>
+          </TransformGroup>
+          <TransformGroup name="sliders" nodeId="26">
+            <Shape name="g5Display_defaultPageTractor_sliderEngineLoad_decal" translation="-0.032788 0.001 -0.012391" shapeId="14" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="2" nodeId="27"/>
+          </TransformGroup>
+          <TransformGroup name="icons" translation="1 0 0" nodeId="28">
+            <Shape name="g5Display_defaultPageTractor_iconGPSActive_decal" translation="-0.934358 0 -0.080548" shapeId="15" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="20" nodeId="29"/>
+          </TransformGroup>
+          <Shape name="g5Display_defaultPageTractor_startScreen_decal" shapeId="16" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="160" nodeId="30">
+            <Shape name="g5Display_defaultPageTractor_startScreenLoadingCircle_decal" translation="-0.00007 0 -0.010462" shapeId="17" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="3" clipDistance="160" nodeId="31"/>
+          </Shape>
+        </Shape>
+        <Shape name="g5Display_gpsPageTractor_decal" translation="2 0 0" shapeId="18" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="1" clipDistance="160" nodeId="32">
+          <TransformGroup name="numbers" nodeId="33">
+            <TransformGroup name="g5Display_gpsPageTractor_numbersTime" translation="-0.051808 0 0.073444" rotation="90 0 -180" nodeId="34"/>
+            <TransformGroup name="g5Display_gpsPageTractor_numbersCruiseControl02" translation="-0.087729 0 -0.079938" rotation="90 0 -180" nodeId="35"/>
+          </TransformGroup>
+          <TransformGroup name="icons" translation="1 0 0" nodeId="36">
+            <Shape name="g5Display_gpsPageTractor_iconGPSActive_decal" translation="-0.934358 0 -0.080548" shapeId="19" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="20" nodeId="37"/>
+          </TransformGroup>
+          <Shape name="g5Display_gpsPageTractor_startScreen_decal" shapeId="20" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="160" nodeId="38">
+            <Shape name="g5Display_gpsPageTractor_startScreenLoadingCircle_decal" translation="-0.00007 0 -0.010462" shapeId="21" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="3" clipDistance="160" nodeId="39"/>
+          </Shape>
+        </Shape>
+      </TransformGroup>
+      <TransformGroup name="combineHarvesterDisplays" nodeId="40">
+        <Shape name="g5Display_aPillarHarvester_decal" translation="0 0 1" shapeId="22" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="1" clipDistance="100" nodeId="41">
+          <TransformGroup name="icons" nodeId="42">
+            <Shape name="g5Display_aPillarHarvester_iconTurnLightLeft_decal" translation="0.039991 0.000117 0.07234" shapeId="23" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="20" nodeId="43"/>
+            <Shape name="g5Display_aPillarHarvester_iconTurnLightRight_decal" translation="-0.040009 0.000117 0.067983" shapeId="24" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="20" nodeId="44"/>
+            <Shape name="g5Display_aPillarHarvester_iconTurnLightTrailer_decal" translation="-0.020009 0.000117 0.07234" shapeId="25" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="20" nodeId="45"/>
+            <Shape name="g5Display_aPillarHarvester_iconHighBeamLight_decal" translation="-0.030009 0.000117 0.074022" shapeId="26" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="20" nodeId="46"/>
+            <Shape name="g5Display_aPillarHarvester_iconDefaultLight_decal" translation="-0.030009 0.000117 0.07234" shapeId="27" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="20" nodeId="47"/>
+            <Shape name="g5Display_aPillarHarvester_iconGPSActive_decal" translation="0.009991 0.000117 0.07234" shapeId="28" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="20" nodeId="48"/>
+            <Shape name="g5Display_aPillarHarvester_iconStarting_decals" translation="-0.010009 0.000117 0.062592" shapeId="29" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="20" nodeId="49"/>
+          </TransformGroup>
+          <TransformGroup name="numbers" nodeId="50">
+            <TransformGroup name="g5Display_aPillarHarvester_numbersOperatingTime" translation="0.018742 0 0.083246" rotation="90 0 -180" nodeId="51"/>
+            <TransformGroup name="g5Display_aPillarHarvester_numbersSpeed" translation="0.049991 0 0.039" rotation="90 0 -180" nodeId="52"/>
+            <TransformGroup name="g5Display_aPillarHarvester_numbersLoad" translation="-0.006844 0 0.033713" rotation="90 0 -180" nodeId="53"/>
+            <TransformGroup name="g5Display_aPillarHarvester_numbersRPM" translation="0.049991 0 0.055" rotation="90 0 -180" nodeId="54"/>
+          </TransformGroup>
+          <TransformGroup name="sliders" nodeId="55">
+            <Shape name="g5Display_aPillarHarvester_sliderFuel_decal" translation="-0.046999 0.000166 0.036571" shapeId="30" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="2" clipDistance="30" nodeId="56"/>
+            <Shape name="g5Display_aPillarHarvester_sliderDef_decal" translation="-0.035158 0.000166 0.036553" shapeId="31" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="2" clipDistance="30" nodeId="57"/>
+            <TransformGroup name="g5Display_aPillarHarvester_loadBarLoad_decalRot" translation="-0.010852 0.000118 0.01947" nodeId="58">
+              <Shape name="g5Display_aPillarHarvester_loadBarLoad_decal" translation="0.000262 0 0" shapeId="32" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="1" clipDistance="30" nodeId="59"/>
+            </TransformGroup>
+            <TransformGroup name="g5Display_aPillarHarvester_loadBarTemperature_decalRot" translation="-0.022415 0.000118 0.01947" nodeId="60">
+              <Shape name="g5Display_aPillarHarvester_loadBarTemperature_decal" translation="-0.000168 0 0" shapeId="33" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="1" clipDistance="30" nodeId="61"/>
+            </TransformGroup>
+          </TransformGroup>
+        </Shape>
+        <Shape name="g5Display_harvestingPage_decal" translation="1 0 1" shapeId="34" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="1" clipDistance="160" nodeId="62">
+          <TransformGroup name="icons" translation="1 0 0" nodeId="63">
+            <Shape name="g5Display_harvestingPage_iconGPSActive_decal" translation="-0.912505 0 -0.080548" shapeId="35" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="20" nodeId="64"/>
+          </TransformGroup>
+          <TransformGroup name="numbers" nodeId="65">
+            <TransformGroup name="g5Display_harvestingPage_numbersTime" translation="-0.044213 0 0.073815" rotation="90 0 -180" nodeId="66"/>
+            <TransformGroup name="g5Display_harvestingPage_numbersHaCounter" translation="0.124773 0 -0.037695" rotation="90 0 -180" nodeId="67"/>
+            <TransformGroup name="g5Display_harvestingPage_numbersFillLevelPct" translation="0.01569 0 -0.018318" rotation="90 0 -180" nodeId="68"/>
+          </TransformGroup>
+          <Shape name="g5Display_harvestingPage_startScreen_decal" shapeId="36" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="160" nodeId="69">
+            <Shape name="g5Display_harvestingPage_startScreenLoadingCircle_decal" translation="-0.00007 0 -0.010462" shapeId="37" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="3" clipDistance="160" nodeId="70"/>
+          </Shape>
+        </Shape>
+        <Shape name="g5Display_harvestAutomationPage_decal" translation="2 0 1" shapeId="38" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="1" clipDistance="160" nodeId="71">
+          <TransformGroup name="icons" translation="1 0 0" nodeId="72">
+            <Shape name="g5Display_harvestAutomationPage_iconGPSActive_decal" translation="-0.912505 0 -0.080548" shapeId="39" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="20" nodeId="73"/>
+          </TransformGroup>
+          <TransformGroup name="numbers" nodeId="74">
+            <TransformGroup name="g5Display_harvestAutomationPage_numbersTime" translation="-0.044213 0 0.073815" rotation="90 0 -180" nodeId="75"/>
+            <TransformGroup name="g5Display_harvestAutomationPage_numbersFillLevelPct" translation="-0.13893 0 -0.059193" rotation="90 0 -180" nodeId="76"/>
+          </TransformGroup>
+          <Shape name="g5Display_harvestAutomationPage_startScreen_decal" shapeId="40" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="1" clipDistance="160" nodeId="77">
+            <Shape name="g5Display_harvestAutomationPage_startScreenLoadingCircle_decal" translation="-0.00007 0 -0.010462" shapeId="41" castsShadows="false" receiveShadows="true" decalLayer="2" materialIds="3" clipDistance="160" nodeId="78"/>
+          </Shape>
+        </Shape>
+      </TransformGroup>
+    </TransformGroup>
+  </Scene>
+
+  <UserAttributes>
+  </UserAttributes>
+</i3D>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<dashboardCompounds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../shared/xml/schema/dashboardCompounds.xsd">
+    <!-- tractors -->
+    <dashboardCompound name="JOHNDEERE_G5_MAINPAGE" filename="$data/vehicles/johnDeere/shared/displays/g5Displays.i3d" node="g5Display_defaultPageTractor_decal">
+        <!-- numbers -->
+        <dashboard displayType="TEXT" valueType="enterable.time" node="g5Display_defaultPageTractor_numbersTime" textColor="1 1 1 0" textSize="0.004" textMask="00:00" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="TEXT" valueType="motorized.load" node="g5Display_defaultPageTractor_numbersLoad" textColor="0 0 0 0" textSize="0.005" textMask="00.0" textAlignment="CENTER" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="TEXT" valueType="motorized.fuelUsage" node="g5Display_defaultPageTractor_numbersFuelUsage" textColor="0 0 0 0" textSize="0.006" textMask="00.0" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="TEXT" valueType="drivable.cruiseControl" node="g5Display_defaultPageTractor_numbersCruiseControl01" textColor="0 0 0 0" textSize="0.0045" textMask="00.0" textAlignment="CENTER" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="TEXT" valueType="drivable.cruiseControl" node="g5Display_defaultPageTractor_numbersCruiseControl02" textColor="0 0 0 0" textSize="0.0045" textMask="00.0" textScaleX="0.8" fontThickness="2" textAlignment="CENTER" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="TEXT" valueType="enterable.operatingTime" node="g5Display_defaultPageTractor_numbersOperatingHours" textColor="0 0 0 0" textSize="0.005" textMask="00000.0" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="TEXT" valueType="fillLevelPct" node="g5Display_defaultPageTractor_numbersFuelPct" fillType="DIESEL" textColor="0 0 0 0" textSize="0.006" textMask="000" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+
+        <!-- sliders -->
+        <dashboard displayType="SLIDER" valueType="motorized.load" node="g5Display_defaultPageTractor_sliderEngineLoad_decal" intensity="0.3" groups="MOTOR_RUNNING"/>
+
+        <!-- icons -->
+        <dashboard displayType="VISIBILITY" valueType="ai.automaticSteering.steeringEngaged" node="g5Display_defaultPageTractor_iconGPSActive_decal" idleValue="-1" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="EMITTER" valueType="ai.automaticSteering.steeringEngaged" node="g5Display_defaultPageTractor_iconGPSActive_decal" intensity="0.3" groups="MOTOR_RUNNING"/>
+
+        <!-- displays -->
+        <dashboard displayType="VISIBILITY" node="g5Display_defaultPageTractor_startScreen_decal" idleValue="0" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="g5Display_defaultPageTractor_startScreen_decal" intensity="0.3" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="g5Display_defaultPageTractor_iconGPSActive_decal" intensity="0.3" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="g5Display_defaultPageTractor_decal" idleValue="-1" intensity="0.3" groups="MOTOR_RUNNING"/>
+    </dashboardCompound>
+
+    <dashboardCompound name="JOHNDEERE_G5_GPSPAGE" filename="$data/vehicles/johnDeere/shared/displays/g5Displays.i3d" node="g5Display_gpsPageTractor_decal">
+        <!-- numbers -->
+        <dashboard displayType="TEXT" valueType="enterable.time" node="g5Display_gpsPageTractor_numbersTime" textColor="1 1 1 0" textSize="0.004" textMask="00:00" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="TEXT" valueType="drivable.cruiseControl" node="g5Display_gpsPageTractor_numbersCruiseControl02" textColor="0 0 0 0" textSize="0.0045" textMask="00.0" textScaleX="0.8" fontThickness="2" textAlignment="CENTER" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+
+        <!-- icons -->
+        <dashboard displayType="VISIBILITY" valueType="ai.automaticSteering.steeringEngaged" node="g5Display_gpsPageTractor_iconGPSActive_decal" idleValue="-1" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="EMITTER" valueType="ai.automaticSteering.steeringEngaged" node="g5Display_gpsPageTractor_iconGPSActive_decal" intensity="0.3" groups="MOTOR_RUNNING"/>
+
+        <!-- displays -->
+        <dashboard displayType="VISIBILITY" node="g5Display_gpsPageTractor_startScreen_decal" idleValue="0" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="g5Display_gpsPageTractor_startScreen_decal" intensity="0.3" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="g5Display_gpsPageTractor_iconGPSActive_decal" intensity="0.3" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="g5Display_gpsPageTractor_decal" idleValue="-1" intensity="0.3" groups="MOTOR_RUNNING"/>
+    </dashboardCompound>
+
+    <!-- combine -->
+    <dashboardCompound name="JOHNDEERE_G5_APILLAR_COMBINE_DISPLAY" filename="$data/vehicles/johnDeere/shared/displays/g5Displays.i3d" node="g5Display_aPillarHarvester_decal">
+        <!-- numbers -->
+        <dashboard displayType="TEXT" valueType="motorized.rpm" node="g5Display_aPillarHarvester_numbersRPM" textColor="1 1 1 1" textSize="0.009" textMask="0000" textAlignment="LEFT" emissiveScale="0.5" font="GENERIC" groups="MOTOR_ACTIVE"/>
+        <dashboard displayType="TEXT" valueType="motorized.speed" node="g5Display_aPillarHarvester_numbersSpeed" textColor="1 1 1 1" textSize="0.009" textMask="0.00" textAlignment="LEFT" emissiveScale="0.5" font="GENERIC" groups="MOTOR_ACTIVE" maxActiveValue="9.99"/>
+        <dashboard displayType="TEXT" valueType="motorized.speed" node="g5Display_aPillarHarvester_numbersSpeed" textColor="1 1 1 1" textSize="0.009" textMask="00.0" textAlignment="LEFT" emissiveScale="0.5" font="GENERIC" groups="MOTOR_ACTIVE" minActiveValue="10"/>
+        <dashboard displayType="TEXT" valueType="enterable.operatingTime" node="g5Display_aPillarHarvester_numbersOperatingTime" textColor="1 1 1 1" textSize="0.004" textMask="000.0 h" font="GENERIC" groups="MOTOR_ACTIVE"/>
+        <dashboard displayType="TEXT" valueType="motorized.load" node="g5Display_aPillarHarvester_numbersLoad" textColor="1 1 1 1" textSize="0.0035" textMask="000%" textAlignment="RIGHT" emissiveScale="0.5" font="GENERIC" groups="MOTOR_ACTIVE"/>
+
+        <!-- icons -->
+        <dashboard displayType="EMITTER" valueType="lights.turnLightLeft" node="g5Display_aPillarHarvester_iconTurnLightLeft_decal" baseColor="0 0 0" emitColor="GREEN" hideInactive="true" intensity="0.3" groups="MOTOR_ACTIVE"/>
+        <dashboard displayType="EMITTER" valueType="lights.turnLightRight" node="g5Display_aPillarHarvester_iconTurnLightRight_decal" baseColor="0 0 0" emitColor="GREEN" hideInactive="true" intensity="0.3" groups="MOTOR_ACTIVE"/>
+        <dashboard displayType="EMITTER" valueType="lights.turnLightAny" node="g5Display_aPillarHarvester_iconTurnLightTrailer_decal" baseColor="0 0 0" emitColor="GREEN" hideInactive="true" intensity="0.3" groups="MOTOR_ACTIVE BACK_ATTACHMENT"/>
+        <dashboard displayType="EMITTER" valueType="lights.lightState" node="g5Display_aPillarHarvester_iconHighBeamLight_decal" baseColor="0 0 0" emitColor="BLUE" hideInactive="true" intensity="0.3" lightTypes="3" groups="MOTOR_ACTIVE"/>
+        <dashboard displayType="EMITTER" valueType="lights.lightState" node="g5Display_aPillarHarvester_iconDefaultLight_decal" baseColor="0 0 0" emitColor="GREEN" hideInactive="true" intensity="0.3" lightTypes="0" groups="MOTOR_ACTIVE"/>
+        <dashboard displayType="EMITTER" valueType="ai.automaticSteering.steeringEngaged" node="g5Display_aPillarHarvester_iconGPSActive_decal" baseColor="0 0 0" emitColor="1 1 1" hideInactive="true" intensity="0.3" groups="MOTOR_ACTIVE"/>
+
+        <dashboard displayType="EMITTER" node="g5Display_aPillarHarvester_iconStarting_decals" intensity="0.3" hideInactive="true" groups="MOTOR_STARTING"/>
+
+        <!-- sliders -->
+        <dashboard displayType="SLIDER" valueType="fillLevel" fillType="DIESEL" node="g5Display_aPillarHarvester_sliderFuel_decal" intensity="0.2" groups="MOTOR_ACTIVE"/>
+        <dashboard displayType="SLIDER" valueType="fillLevel" fillType="DEF" node="g5Display_aPillarHarvester_sliderDef_decal" intensity="0.2" groups="MOTOR_ACTIVE"/>
+
+        <dashboard displayType="TRANS" valueType="motorized.motorTemperature" node="g5Display_aPillarHarvester_loadBarTemperature_decal" minTrans="0 0 0" maxTrans="0 0 0.035" groups="MOTOR_ACTIVE"/>
+        <dashboard displayType="TRANS" valueType="motorized.load" node="g5Display_aPillarHarvester_loadBarLoad_decal" minTrans="0 0 0" maxTrans="0 0 0.035" interpolationSpeed="0.003" groups="MOTOR_ACTIVE"/>
+
+        <!-- display -->
+        <dashboard displayType="EMITTER" node="g5Display_aPillarHarvester_decal" idleValue="-1" hideInactiveChildren="true" intensity="0.3" groups="MOTOR_ACTIVE" />
+    </dashboardCompound>
+
+    <dashboardCompound name="JOHNDEERE_G5_HARVESTINGPAGE" filename="$data/vehicles/johnDeere/shared/displays/g5Displays.i3d" node="g5Display_harvestingPage_decal">
+        <!-- numbers -->
+        <dashboard displayType="TEXT" valueType="enterable.time" node="g5Display_harvestingPage_numbersTime" textColor="1 1 1 1" textSize="0.0035" textMask="00:00" textScaleX="0.8" textAlignment="CENTER" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="TEXT" valueType="combine.workedHectars" node="g5Display_harvestingPage_numbersHaCounter" textColor="0 0 0 0" textSize="0.007" textMask="000.0" textScaleX="0.8" textAlignment="CENTER" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="TEXT" valueType="fillUnit.fillLevelPct" node="g5Display_harvestingPage_numbersFillLevelPct" fillUnitIndex="1" textColor="0 0 0 0" textSize="0.005" textMask="000%" textScaleX="0.8" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+
+        <!-- icons -->
+        <dashboard displayType="VISIBILITY" valueType="ai.automaticSteering.steeringEngaged" node="g5Display_harvestingPage_iconGPSActive_decal" idleValue="-1" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="EMITTER" valueType="ai.automaticSteering.steeringEngaged" node="g5Display_harvestingPage_iconGPSActive_decal" intensity="0.3" groups="MOTOR_RUNNING"/>
+
+        <!-- displays -->
+        <dashboard displayType="VISIBILITY" node="g5Display_harvestingPage_startScreen_decal" idleValue="0" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="g5Display_harvestingPage_startScreen_decal" intensity="0.3" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="g5Display_harvestingPage_decal" idleValue="-1" intensity="0.3" groups="MOTOR_RUNNING"/>
+    </dashboardCompound>
+
+    <dashboardCompound name="JOHNDEERE_G5_HARVESTAUTOMATIONPAGE" filename="$data/vehicles/johnDeere/shared/displays/g5Displays.i3d" node="g5Display_harvestAutomationPage_decal">
+        <!-- numbers -->
+        <dashboard displayType="TEXT" valueType="enterable.time" node="g5Display_harvestAutomationPage_numbersTime" textColor="1 1 1 1" textSize="0.0035" textMask="00:00" textScaleX="0.8" textAlignment="CENTER" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="TEXT" valueType="fillUnit.fillLevelPct" node="g5Display_harvestAutomationPage_numbersFillLevelPct" fillUnitIndex="1" textColor="0 0 0 0" textSize="0.005" textMask="000" textScaleX="0.8" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+
+        <!-- icons -->
+        <dashboard displayType="VISIBILITY" valueType="ai.automaticSteering.steeringEngaged" node="g5Display_harvestAutomationPage_iconGPSActive_decal" idleValue="-1" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="EMITTER" valueType="ai.automaticSteering.steeringEngaged" node="g5Display_harvestAutomationPage_iconGPSActive_decal" intensity="0.3" groups="MOTOR_RUNNING"/>
+
+        <!-- displays -->
+        <dashboard displayType="VISIBILITY" node="g5Display_harvestAutomationPage_startScreen_decal" idleValue="0" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="g5Display_harvestAutomationPage_startScreen_decal" intensity="0.3" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="g5Display_harvestAutomationPage_decal" idleValue="-1" intensity="0.3" groups="MOTOR_RUNNING"/>
+    </dashboardCompound>
+
+    <i3dMappings>
+        <i3dMapping id="g5Display_aPillarTractor_decal" node="0>0|0" />
+        <i3dMapping id="g5Display_aPillarTractor_sliderFuel_decal" node="0>0|0|1|0" />
+        <i3dMapping id="g5Display_aPillarTractor_sliderDef_decal" node="0>0|0|1|1" />
+        <i3dMapping id="g5Display_aPillarTractor_loadBarAir_decal" node="0>0|0|1|2" />
+        <i3dMapping id="g5Display_aPillarTractor_loadBarTemperature_decal" node="0>0|0|1|3" />
+        <i3dMapping id="g5Display_defaultPageTractor_decal" node="0>0|1" />
+        <i3dMapping id="g5Display_defaultPageTractor_numbersTime" node="0>0|1|0|0" />
+        <i3dMapping id="g5Display_defaultPageTractor_numbersLoad" node="0>0|1|0|1" />
+        <i3dMapping id="g5Display_defaultPageTractor_numbersFuelPct" node="0>0|1|0|2" />
+        <i3dMapping id="g5Display_defaultPageTractor_numbersFuelUsage" node="0>0|1|0|3" />
+        <i3dMapping id="g5Display_defaultPageTractor_numbersCruiseControl01" node="0>0|1|0|4" />
+        <i3dMapping id="g5Display_defaultPageTractor_numbersCruiseControl02" node="0>0|1|0|5" />
+        <i3dMapping id="g5Display_defaultPageTractor_numbersOperatingHours" node="0>0|1|0|6" />
+        <i3dMapping id="g5Display_defaultPageTractor_sliderEngineLoad_decal" node="0>0|1|1|0" />
+        <i3dMapping id="g5Display_defaultPageTractor_iconGPSActive_decal" node="0>0|1|2|0" />
+        <i3dMapping id="g5Display_defaultPageTractor_startScreen_decal" node="0>0|1|3" />
+        <i3dMapping id="g5Display_defaultPageTractor_startScreenLoadingCircle_decal" node="0>0|1|3|0" />
+        <i3dMapping id="g5Display_gpsPageTractor_decal" node="0>0|2" />
+        <i3dMapping id="g5Display_gpsPageTractor_numbersTime" node="0>0|2|0|0" />
+        <i3dMapping id="g5Display_gpsPageTractor_numbersCruiseControl02" node="0>0|2|0|1" />
+        <i3dMapping id="g5Display_gpsPageTractor_iconGPSActive_decal" node="0>0|2|1|0" />
+        <i3dMapping id="g5Display_gpsPageTractor_startScreen_decal" node="0>0|2|2" />
+        <i3dMapping id="g5Display_gpsPageTractor_startScreenLoadingCircle_decal" node="0>0|2|2|0" />
+        <i3dMapping id="g5Display_aPillarHarvester_decal" node="0>1|0" />
+        <i3dMapping id="g5Display_aPillarHarvester_iconTurnLightLeft_decal" node="0>1|0|0|0" />
+        <i3dMapping id="g5Display_aPillarHarvester_iconTurnLightRight_decal" node="0>1|0|0|1" />
+        <i3dMapping id="g5Display_aPillarHarvester_iconTurnLightTrailer_decal" node="0>1|0|0|2" />
+        <i3dMapping id="g5Display_aPillarHarvester_iconHighBeamLight_decal" node="0>1|0|0|3" />
+        <i3dMapping id="g5Display_aPillarHarvester_iconDefaultLight_decal" node="0>1|0|0|4" />
+        <i3dMapping id="g5Display_aPillarHarvester_iconGPSActive_decal" node="0>1|0|0|5" />
+        <i3dMapping id="g5Display_aPillarHarvester_iconStarting_decals" node="0>1|0|0|6" />
+        <i3dMapping id="g5Display_aPillarHarvester_numbersOperatingTime" node="0>1|0|1|0" />
+        <i3dMapping id="g5Display_aPillarHarvester_numbersSpeed" node="0>1|0|1|1" />
+        <i3dMapping id="g5Display_aPillarHarvester_numbersLoad" node="0>1|0|1|2" />
+        <i3dMapping id="g5Display_aPillarHarvester_numbersRPM" node="0>1|0|1|3" />
+        <i3dMapping id="g5Display_aPillarHarvester_sliderFuel_decal" node="0>1|0|2|0" />
+        <i3dMapping id="g5Display_aPillarHarvester_sliderDef_decal" node="0>1|0|2|1" />
+        <i3dMapping id="g5Display_aPillarHarvester_loadBarLoad_decal" node="0>1|0|2|2|0" />
+        <i3dMapping id="g5Display_aPillarHarvester_loadBarTemperature_decal" node="0>1|0|2|3|0" />
+        <i3dMapping id="g5Display_harvestingPage_decal" node="0>1|1" />
+        <i3dMapping id="g5Display_harvestingPage_iconGPSActive_decal" node="0>1|1|0|0" />
+        <i3dMapping id="g5Display_harvestingPage_numbersTime" node="0>1|1|1|0" />
+        <i3dMapping id="g5Display_harvestingPage_numbersHaCounter" node="0>1|1|1|1" />
+        <i3dMapping id="g5Display_harvestingPage_numbersFillLevelPct" node="0>1|1|1|2" />
+        <i3dMapping id="g5Display_harvestingPage_startScreen_decal" node="0>1|1|2" />
+        <i3dMapping id="g5Display_mainPage_startScreenLoadingCircle_decal" node="0>1|1|2|0" />
+        <i3dMapping id="g5Display_harvestAutomationPage_decal" node="0>1|2" />
+        <i3dMapping id="g5Display_harvestAutomationPage_iconGPSActive_decal" node="0>1|2|0|0" />
+        <i3dMapping id="g5Display_harvestAutomationPage_numbersTime" node="0>1|2|1|0" />
+        <i3dMapping id="g5Display_harvestAutomationPage_numbersFillLevelPct" node="0>1|2|1|1" />
+        <i3dMapping id="g5Display_harvestAutomationPage_startScreen_decal" node="0>1|2|2" />
+        <i3dMapping id="g5Display_harvestAutomationPage_startScreenLoadingCircle_decal" node="0>1|2|2|0" />
+    </i3dMappings>
+</dashboardCompounds>
