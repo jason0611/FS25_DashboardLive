@@ -73,8 +73,6 @@ end
 
 -- ** Vehicle Dashboards **
 
--- Wird immer geladen, wenn eine i3d geöffnet wird. Die Rahmenparameter sind nicht auswertbar (Mod/Vanilla)
--- Todo: Austausch des aus der XML geladenen Pfads zur i3d-Datei
 function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	local filenameDBL = DashboardLive.MOD_PATH..filename
 	local isMod = string.find(filename, "/mods/") ~= nil
@@ -82,7 +80,6 @@ function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate
 	if fileExists(filenameDBL) and not isMod then
 		dbgprint("loadSharedI3DFileAsync: replaced i3d-file: "..tostring(filenameDBL), 2)
 		if DashboardUtils.check == nil then
-			print_r(self, 2)
 			DashboardUtils.check = true
 		end
 		return superfunc(self, filenameDBL, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
@@ -97,13 +94,22 @@ function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLeve
 	local filename = xmlFile.filename
 	local filenameDBL = DashboardLive.MOD_PATH..filename
 	local isMod = string.find(filename, "/mods/") ~= nil
-	
+	local replaceI3dMappings = false
+	local returnValue
+	local xmlFileDBL
 	if vehicleType == "vehicle" and fileExists(filenameDBL) and not isMod then
-		local xmlFileDBL = XMLFile.load("DBL Replacement", filenameDBL, xmlFile.schema)
+		xmlFileDBL = XMLFile.load("DBL Replacement", filenameDBL, xmlFile.schema)
+		if xmlFileDBL:hasProperty("vehicle.i3dMappings") then 
+			replaceI3dMappings = true
+		else
+			xmlFileDBL:delete()
+		end
+	end
+	if replaceI3dMappings then	
 		dbgprint("loadI3DMapping: replaced xml-file: "..tostring(filenameDBL), 2)
-		return superfunc(xmlFileDBL, vehicleType, rootLevelNodes, i3dMappings, realNumComponents, a, b, c)
+		return superfunc(xmlFileDBL, vehicleType, rootLevelNodes, i3dMappings, realNumComponents)
 	else
-		dbgprint("loadI3DMapping: used xml-file: "..tostring(filename), 3)
+		dbgprint("loadI3DMapping: used xml-file: "..tostring(filename), 2)
 		return superfunc(xmlFile, vehicleType, rootLevelNodes, i3dMappings, realNumComponents)
 	end
 end
@@ -133,12 +139,24 @@ function DashboardUtils:loadAnimations(superfunc, savegame)
 	-- load animations from vanilla xml
 	superfunc(self, savegame)
 	
-	if not isMod and fileExists(filenameDBL) then	
-		local filenameBackup = filename
-		self.xmlFile.filename = filenameDBL
+	local specAnim = self.spec_animatedVehicle
+	if specAnim ~= nil and not isMod and fileExists(filenameDBL) then
+		
+		local animBackup = specAnim.animations
+		local xmlFileBackup = self.xmlFile
+		local xmlFile = XMLFile.load("DBL Anim Replacement", filenameDBL, self.xmlFile.schema)
+	
 		dbgprint("loadAnimations: added xml-file: "..tostring(filenameDBL), 2)
+		self.xmlFile = xmlFile
+		
 		superfunc(self, savegame)
-		self.xmlFile.filename = filenameBackup
+		
+		self.xmlFile = xmlFileBackup
+		xmlFile:delete()
+		
+		for _name, _anim in pairs(animBackup) do
+			specAnim.animations[_name] = _anim
+		end
 	end
 end
 AnimatedVehicle.onLoad = Utils.overwrittenFunction(AnimatedVehicle.onLoad, DashboardUtils.loadAnimations)
@@ -179,15 +197,18 @@ Dashboard.loadDashboardCompoundFromXML = Utils.overwrittenFunction(Dashboard.loa
 
 function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 	local spec = self.spec_dashboard
+	local dashboardXMLFile = args.dashboardXMLFile
+	local compound = args.compound
+	local compoundKey = args.compoundKey
+	
+	dbgprint("onDashboardCompoundLoaded :: dashboardXMLFile: "..tostring(dashboardXMLFile.filename), 2)
+	
+-- compound extension: dashboard groups
 	if not spec.compoundGroupsLoaded then
-		local dashboardXMLFile = args.dashboardXMLFile
-		local compound = args.compound
-		local compoundKey = args.compoundKey
-        
 		local i = 0
 		while true do
 			local baseKey = string.format("%s.group(%d)", "dashboardCompounds", i)
-			dbgprint("onDashboardCompoundLoaded :: looking for key "..baseKey, 2)
+			dbgprint("onDashboardCompoundLoaded :: groups :: looking for key "..baseKey, 2)
 			if not dashboardXMLFile:hasProperty(baseKey) then
 				break
 			end
@@ -203,11 +224,99 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 	
 			i = i + 1
 		end
-		
 		DashboardLive.createDashboardPages(self)
+	end
+	
+-- compound extension: dashboard animations
+
+-- temporary build i3dMappings
+	if not spec.compoundi3DMappingsLoaded then
+		if i3dNode ~= 0 then
+			dbgprint("onDashboardCompoundLoaded :: temporary building i3dMappings", 2)
+			
+			dbgprint("onDashboardCompoundLoaded :: i3dMappings before: ", 2)
+			dbgprint_r(compound.i3dMappings, 2, 3)
+			
+			local components = {}
+			for i=1, getNumOfChildren(i3dNode) do
+				print("adding node "..tostring(i))
+				table.insert(components, {node=getChildAt(i3dNode, i - 1)})
+			end
+			dbgprint_r(components, 2, 1)
+			if compound.i3dMappings == nil then
+				compound.i3dMappings = {}
+			end
+			I3DUtil.loadI3DMapping(dashboardXMLFile, "dashboardCompounds", components, compound.i3dMappings, nil)
+			dbgprint("onDashboardCompoundLoaded :: i3dMappings after: ", 2)
+			dbgprint_r(compound.i3dMappings, 2, 3)
+			spec.compoundi3DMappings = compound.i3dMappings
+			spec.compoundi3DMappingsLoaded = true
+		end
+	end
+	
+	if not spec.compoundAnimationsLoaded then
+		local specAnim = self.spec_animatedVehicle
+		local i = 0
+		while specAnim ~= nil do
+			local key = string.format("%s.animation(%d)", "dashboardCompounds", i)
+			
+			dbgprint("onDashboardCompoundLoaded :: animations :: looking for key "..key, 2)
+			if not dashboardXMLFile:hasProperty(key) then
+				break
+			end
+	
+			local animation = {}
+            if self:loadAnimation(dashboardXMLFile, key, animation, compound.i3dMappings) then
+                specAnim.animations[animation.name] = animation
+                specAnim.compoundAnimationsLoaded = true
+            end
+	
+			i = i + 1
+		end
 	end
 end
 Dashboard.onDashboardCompoundLoaded = Utils.prependedFunction(Dashboard.onDashboardCompoundLoaded, DashboardUtils.onDashboardCompoundLoaded)
+
+local function deepcopy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in next, orig, nil do
+            copy[deepcopy(orig_key)] = deepcopy(orig_value)
+        end
+        setmetatable(copy, deepcopy(getmetatable(orig)))
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
+function DashboardUtils:loadAnimationPart(superfunc, xmlFile, partKey, part, animation, components)
+	local spec = self.spec_dashboard
+	if string.find(partKey, "dashboardCompounds") ~= nil then
+		local i3dMappingsBackup = deepcopy(self.i3dMappings)
+		self.i3dMappings = spec.compoundi3DMappings
+		print_r(self.i3dMappings, 2)
+		superfunc(self, xmlFile, partKey, part, animation, components)
+		self.i3dMappings = i3dMappingsBackup
+	else
+		superfunc(self, xmlFile, partKey, part, animation, components)
+	end
+end
+--AnimatedVehicle.loadAnimationPart = Utils.overwrittenFunction(AnimatedVehicle.loadAnimationPart, DashboardUtils.loadAnimationPart)
+
+
+
+
+
+
+
+
+
+
+
+
 
 --[[
 function DashboardUtils.createVanillaNodes(vehicle, xmlVanillaFile, xmlModFile)
