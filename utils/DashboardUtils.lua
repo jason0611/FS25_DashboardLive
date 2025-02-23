@@ -226,6 +226,12 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 		end
 		DashboardLive.createDashboardPages(self)
 	end
+end
+Dashboard.onDashboardCompoundLoaded = Utils.prependedFunction(Dashboard.onDashboardCompoundLoaded, DashboardUtils.onDashboardCompoundLoaded)
+
+-- TODO: Ermittlung, wann genau die Animationen geladen werden. Z.B. mit einer Überschreibung und print
+
+function DashboardUtils:loadAnimations(disfunktional)
 	
 -- compound extension: dashboard animations
 
@@ -239,16 +245,16 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 			
 			local components = {}
 			for i=1, getNumOfChildren(i3dNode) do
-				print("adding node "..tostring(i))
 				table.insert(components, {node=getChildAt(i3dNode, i - 1)})
 			end
-			dbgprint_r(components, 2, 1)
 			if compound.i3dMappings == nil then
 				compound.i3dMappings = {}
 			end
 			I3DUtil.loadI3DMapping(dashboardXMLFile, "dashboardCompounds", components, compound.i3dMappings, nil)
 			dbgprint("onDashboardCompoundLoaded :: i3dMappings after: ", 2)
 			dbgprint_r(compound.i3dMappings, 2, 3)
+			
+			spec.compoundComponents = components
 			spec.compoundi3DMappings = compound.i3dMappings
 			spec.compoundi3DMappingsLoaded = true
 		end
@@ -256,6 +262,10 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 	
 	if not spec.compoundAnimationsLoaded then
 		local specAnim = self.spec_animatedVehicle
+		
+		local i3dMappingsBackup = self.i3dMappings
+		self.i3dMappings = spec.compoundi3DMappings
+			
 		local i = 0
 		while specAnim ~= nil do
 			local key = string.format("%s.animation(%d)", "dashboardCompounds", i)
@@ -266,56 +276,17 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 			end
 	
 			local animation = {}
-            if self:loadAnimation(dashboardXMLFile, key, animation, compound.i3dMappings) then
+            if self:loadAnimation(dashboardXMLFile, key, animation, spec.compoundComponents) then
                 specAnim.animations[animation.name] = animation
                 specAnim.compoundAnimationsLoaded = true
             end
 	
 			i = i + 1
 		end
-	end
-end
-Dashboard.onDashboardCompoundLoaded = Utils.prependedFunction(Dashboard.onDashboardCompoundLoaded, DashboardUtils.onDashboardCompoundLoaded)
-
-local function deepcopy(orig)
-    local orig_type = type(orig)
-    local copy
-    if orig_type == 'table' then
-        copy = {}
-        for orig_key, orig_value in next, orig, nil do
-            copy[deepcopy(orig_key)] = deepcopy(orig_value)
-        end
-        setmetatable(copy, deepcopy(getmetatable(orig)))
-    else -- number, string, boolean, etc
-        copy = orig
-    end
-    return copy
-end
-
-function DashboardUtils:loadAnimationPart(superfunc, xmlFile, partKey, part, animation, components)
-	local spec = self.spec_dashboard
-	if string.find(partKey, "dashboardCompounds") ~= nil then
-		local i3dMappingsBackup = deepcopy(self.i3dMappings)
-		self.i3dMappings = spec.compoundi3DMappings
-		print_r(self.i3dMappings, 2)
-		superfunc(self, xmlFile, partKey, part, animation, components)
+		
 		self.i3dMappings = i3dMappingsBackup
-	else
-		superfunc(self, xmlFile, partKey, part, animation, components)
 	end
 end
---AnimatedVehicle.loadAnimationPart = Utils.overwrittenFunction(AnimatedVehicle.loadAnimationPart, DashboardUtils.loadAnimationPart)
-
-
-
-
-
-
-
-
-
-
-
 
 
 --[[
