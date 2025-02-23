@@ -3,6 +3,7 @@ DashboardUtils = {}
 DashboardUtils.MOD_NAME = g_currentModName
 DashboardUtils.MOD_PATH = g_currentModDirectory
 
+--[[
 -- Vanilla Integration POC --
 function DashboardUtils:loadVehicleFromXML(superfunc, xmlFile, key, defaultItemsToSPFarm, resetVehicles, keepPosition)
 	print("VehicleSystem:loadVehicleFromXML:")
@@ -70,18 +71,15 @@ function DashboardUtils:loadVehicle(superfunc, vehicleLoadingData)
 	return superfunc(self, vehicleLoadingData)
 end
 --Vehicle.load = Utils.overwrittenFunction(Vehicle.load, DashboardUtils.loadVehicle)
+--]]
 
 -- ** Vehicle Dashboards **
-
 function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	local filenameDBL = DashboardLive.MOD_PATH..filename
 	local isMod = string.find(filename, "/mods/") ~= nil
 	
 	if fileExists(filenameDBL) and not isMod then
 		dbgprint("loadSharedI3DFileAsync: replaced i3d-file: "..tostring(filenameDBL), 2)
-		if DashboardUtils.check == nil then
-			DashboardUtils.check = true
-		end
 		return superfunc(self, filenameDBL, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	else
 		dbgprint("loadSharedI3DFileAsync: used i3d-file: "..tostring(filename), 4)
@@ -231,7 +229,7 @@ Dashboard.onDashboardCompoundLoaded = Utils.prependedFunction(Dashboard.onDashbo
 
 -- TODO: Ermittlung, wann genau die Animationen geladen werden. Z.B. mit einer Überschreibung und print
 
-function DashboardUtils:loadAnimations(disfunktional)
+function DashboardUtils:loadAnimations_disfunktional()
 	
 -- compound extension: dashboard animations
 

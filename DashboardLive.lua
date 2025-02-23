@@ -198,7 +198,6 @@ function DashboardLive.registerEventListeners(vehicleType)
 	SpecializationUtil.registerEventListener(vehicleType, "onUpdate", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onDraw", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onPostAttachImplement", DashboardLive)
-	--SpecializationUtil.registerEventListener(vehicleType, "onRegisterAnimationValueTypes", DashboardUtils)
 end
 
 function DashboardLive.registerOverwrittenFunctions(vehicleType)
