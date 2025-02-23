@@ -193,7 +193,7 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 end
 Dashboard.loadDashboardCompoundFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardCompoundFromXML, DashboardUtils.loadDashboardCompoundFromXML)
 
-function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
+function DashboardUtils:onDashboardCompoundLoaded(superfunc, i3dNode, failedReason, args)
 	local spec = self.spec_dashboard
 	local dashboardXMLFile = args.dashboardXMLFile
 	local compound = args.compound
@@ -224,45 +224,24 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 		end
 		DashboardLive.createDashboardPages(self)
 	end
-end
-Dashboard.onDashboardCompoundLoaded = Utils.prependedFunction(Dashboard.onDashboardCompoundLoaded, DashboardUtils.onDashboardCompoundLoaded)
 
--- TODO: Ermittlung, wann genau die Animationen geladen werden. Z.B. mit einer Überschreibung und print
-
-function DashboardUtils:loadAnimations_disfunktional()
+	-- backup filename, because file will be closed in superfunc and has to be reopened
+	local xmlFilename = dashboardXMLFile.filename
+	local xmlFileSchema = dashboardXMLFile.schema
+	superfunc(self, i3dNode, failedReason, args)
 	
--- compound extension: dashboard animations
-
--- temporary build i3dMappings
-	if not spec.compoundi3DMappingsLoaded then
-		if i3dNode ~= 0 then
-			dbgprint("onDashboardCompoundLoaded :: temporary building i3dMappings", 2)
-			
-			dbgprint("onDashboardCompoundLoaded :: i3dMappings before: ", 2)
-			dbgprint_r(compound.i3dMappings, 2, 3)
-			
-			local components = {}
-			for i=1, getNumOfChildren(i3dNode) do
-				table.insert(components, {node=getChildAt(i3dNode, i - 1)})
-			end
-			if compound.i3dMappings == nil then
-				compound.i3dMappings = {}
-			end
-			I3DUtil.loadI3DMapping(dashboardXMLFile, "dashboardCompounds", components, compound.i3dMappings, nil)
-			dbgprint("onDashboardCompoundLoaded :: i3dMappings after: ", 2)
-			dbgprint_r(compound.i3dMappings, 2, 3)
-			
-			spec.compoundComponents = components
-			spec.compoundi3DMappings = compound.i3dMappings
-			spec.compoundi3DMappingsLoaded = true
-		end
-	end
-	
+-- compound extension: dashboard animations	
 	if not spec.compoundAnimationsLoaded then
+		dbgprint("onDashboardCompoundLoaded : loading animations", 1)
+		dbgprint("onDashboardCompoundLoaded : i3dMappings:", 2)
+		dbgprint_r(args.compound.i3dMappings, 2, 2)
+		
+		dashboardXMLFile = XMLFile.load("DBL replacement", xmlFilename, xmlFileSchema)
+		
 		local specAnim = self.spec_animatedVehicle
 		
-		local i3dMappingsBackup = self.i3dMappings
-		self.i3dMappings = spec.compoundi3DMappings
+		--local i3dMappingsBackup = self.i3dMappings
+		--self.i3dMappings = args.compound.i3dMappings
 			
 		local i = 0
 		while specAnim ~= nil do
@@ -274,7 +253,7 @@ function DashboardUtils:loadAnimations_disfunktional()
 			end
 	
 			local animation = {}
-            if self:loadAnimation(dashboardXMLFile, key, animation, spec.compoundComponents) then
+            if self:loadAnimation(dashboardXMLFile, key, animation) then
                 specAnim.animations[animation.name] = animation
                 specAnim.compoundAnimationsLoaded = true
             end
@@ -282,10 +261,10 @@ function DashboardUtils:loadAnimations_disfunktional()
 			i = i + 1
 		end
 		
-		self.i3dMappings = i3dMappingsBackup
+		--self.i3dMappings = i3dMappingsBackup
 	end
 end
-
+Dashboard.onDashboardCompoundLoaded = Utils.overwrittenFunction(Dashboard.onDashboardCompoundLoaded, DashboardUtils.onDashboardCompoundLoaded)
 
 --[[
 function DashboardUtils.createVanillaNodes(vehicle, xmlVanillaFile, xmlModFile)
