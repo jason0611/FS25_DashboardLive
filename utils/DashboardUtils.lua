@@ -74,6 +74,8 @@ end
 --]]
 
 -- ** Vehicle Dashboards **
+
+-- look for alternative i3d-file for vehicle and load it if existing
 function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	local filenameDBL = DashboardLive.MOD_PATH..filename
 	local isMod = string.find(filename, "/mods/") ~= nil
@@ -88,6 +90,7 @@ function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate
 end
 I3DManager.loadSharedI3DFileAsync = Utils.overwrittenFunction(I3DManager.loadSharedI3DFileAsync, DashboardUtils.loadSharedI3DFileAsync)
 
+-- look for alternative xml-file for vehicle and use it for loading i3dMappings 
 function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLevelNodes, i3dMappings, realNumComponents)
 	local filename = xmlFile.filename
 	local filenameDBL = DashboardLive.MOD_PATH..filename
@@ -113,6 +116,7 @@ function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLeve
 end
 I3DUtil.loadI3DMapping = Utils.overwrittenFunction(I3DUtil.loadI3DMapping, DashboardUtils.loadI3DMapping)
 
+-- look for alternative xml-file for vehicle and use it for loading additional dashboard entries
 function DashboardUtils:loadDashboardsFromXML(superfunc, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
 	local filename = xmlFile.filename
 	local filenameDBL = DashboardLive.MOD_PATH..filename
@@ -129,6 +133,7 @@ function DashboardUtils:loadDashboardsFromXML(superfunc, xmlFile, key, dashboard
 end
 Dashboard.loadDashboardsFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardsFromXML, DashboardUtils.loadDashboardsFromXML)
 
+-- look for alternative xml-file for vehicle and use it for loading additional animations 
 function DashboardUtils:loadAnimations(superfunc, savegame)	
 	local filename = self.xmlFile.filename
 	local filenameDBL = DashboardLive.MOD_PATH..filename
@@ -161,6 +166,7 @@ AnimatedVehicle.onLoad = Utils.overwrittenFunction(AnimatedVehicle.onLoad, Dashb
 
 -- ** Dashboard Compounds **
 
+-- look for alternative compound dashboard xml-file and use it for loading instead of original file
 function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, compound)
 	local spec = self.spec_dashboard
 	local fileName = xmlFile:getValue(key .. "#filename")
@@ -193,7 +199,8 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 end
 Dashboard.loadDashboardCompoundFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardCompoundFromXML, DashboardUtils.loadDashboardCompoundFromXML)
 
-function DashboardUtils:onDashboardCompoundLoaded(superfunc, i3dNode, failedReason, args)
+-- load groups and animations out of alternative compound xml file
+function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 	local spec = self.spec_dashboard
 	local dashboardXMLFile = args.dashboardXMLFile
 	local compound = args.compound
@@ -224,44 +231,29 @@ function DashboardUtils:onDashboardCompoundLoaded(superfunc, i3dNode, failedReas
 		end
 		DashboardLive.createDashboardPages(self)
 	end
---[[
-	-- backup filename, because file will be closed in superfunc and has to be reopened
-	local xmlFilename = dashboardXMLFile.filename
-	local xmlFileSchema = dashboardXMLFile.schema
 	
-	-- backup i3dNode, because it will be deleted by superfunc
-	local i3dNodeBackup = i3dNode
-
-	superfunc(self, i3dNode, failedReason, args)
-
-	-- restore i3dNode
-	i3dNode = i3dNodeBackup
-
---]]	
 -- compound extension: dashboard animations	
 	if not spec.compoundAnimationsLoaded then
 		local specAnim = self.spec_animatedVehicle
 
 		dbgprint("onDashboardCompoundLoaded : loading animations", 1)
-		dbgprint("onDashboardCompoundLoaded : i3dMappings:", 2)
-		dbgprint_r(args.compound.i3dMappings, 2, 2)
 		
-		-- rebuild components		
-		local components = {}
-        for i=1, getNumOfChildren(i3dNode) do
-            table.insert(components, {node=getChildAt(i3dNode, i - 1)})
-        end
-        
+		-- prebuild components		
+		compound.components = {}
+		for i=1, getNumOfChildren(i3dNode) do
+			table.insert(compound.components, {node=getChildAt(i3dNode, i - 1)})
+		end
+		
+        -- preload i3dmappings
         compound.i3dMappings = {}
-        I3DUtil.loadI3DMapping(dashboardXMLFile, "dashboardCompounds", components, compound.i3dMappings, nil)
+        I3DUtil.loadI3DMapping(dashboardXMLFile, "dashboardCompounds", compound.components, compound.i3dMappings, nil)
+        dbgprint("onDashboardCompoundLoaded : i3dMappings:", 3)
+		dbgprint_r(args.compound.i3dMappings, 3, 2)
       
-        -- save i3dMappings
+        -- save i3dMappings and temporarily switch i3dmappings to compound's i3dmappings
 		local i3dMappingsBackup = self.i3dMappings
 		self.i3dMappings = compound.i3dMappings
---[[		
-		-- reopen xmlFile (closed in superfunc)
-		dashboardXMLFile = XMLFile.load("DBL replacement", xmlFilename, xmlFileSchema)	
---]]		
+	
 		-- load animations
 		local i = 0
 		while specAnim ~= nil do
@@ -273,7 +265,7 @@ function DashboardUtils:onDashboardCompoundLoaded(superfunc, i3dNode, failedReas
 			end
 	
 			local animation = {}
-            if self:loadAnimation(dashboardXMLFile, key, animation, components) then
+            if self:loadAnimation(dashboardXMLFile, key, animation, compound.components) then
                 specAnim.animations[animation.name] = animation
                 specAnim.compoundAnimationsLoaded = true
                 dbgprint("onDashboardCompoundLoaded :: animation `"..tostring(animation.name).."` loaded", 2)
@@ -284,15 +276,9 @@ function DashboardUtils:onDashboardCompoundLoaded(superfunc, i3dNode, failedReas
 		
 		-- restore i3dMappings
 		self.i3dMappings = i3dMappingsBackup
-		
-		superfunc(self, i3dNode, failedReason, args)		
---[[		
-		-- close xmlFile
-		dashboardXMLFile:delete()
---]]
 	end
 end
-Dashboard.onDashboardCompoundLoaded = Utils.overwrittenFunction(Dashboard.onDashboardCompoundLoaded, DashboardUtils.onDashboardCompoundLoaded)
+Dashboard.onDashboardCompoundLoaded = Utils.prependedFunction(Dashboard.onDashboardCompoundLoaded, DashboardUtils.onDashboardCompoundLoaded)
 
 --[[
 function DashboardUtils.createVanillaNodes(vehicle, xmlVanillaFile, xmlModFile)

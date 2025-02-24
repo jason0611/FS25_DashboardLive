@@ -46,7 +46,8 @@
 	<group name="DBL_HLM_ON" op="and" dbl="hlm_on"/>
 	<group name="DBL_HLM_FIELD" op="and" dbl="hlm_active_field"/>
 	<group name="DBL_HLM_HEADLAND" op="and" dbl="hlm_active_headland"/>
-	
+
+<!--	
 	<animation name="frontPLifterSliderAnimP1_SC">
 		<part node="dbl_frontPLifterSliderP1_SC" startTime="0.0" endTime="1.0" shaderParameter="sliderPos" shaderStartValues="0 0 0 0" shaderEndValues="1 0 0 0" />
 	</animation>
@@ -59,6 +60,7 @@
 	<animation name="backPLifterSliderAnimP3_SC">
 		<part node="dbl_backPLifterSliderP3_SC" startTime="0.0" endTime="1.0" shaderParameter="sliderPos" shaderStartValues="0 0 0 0" shaderEndValues="1 0 0 0" />
 	</animation>
+-->
 	
 	<dashboardCompound name="FENDT_ONE_DASHBOARD" filename="data/vehicles/fendt/shared/oneDisplays.i3d" node="fendtOneDisplayFront">
 <!-- SteeringWheel always on -->
