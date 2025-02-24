@@ -305,7 +305,7 @@
 		<dashboard displayType="EMITTER" valueType="dbl.vca" cmd="diff_front" node="cebisLexion_dblFrontDiffP1_SC" baseColor="BERGMANN_GREY02" emitColor="AMAZONE_ORANGE1" intensity="0.8" groups="MOTOR_RUNNING"/>
 		<dashboard displayType="EMITTER" valueType="dbl.vca" cmd="diff_back" node="cebisLexion_dblBackDiffP1_SC" baseColor="BERGMANN_GREY02" emitColor="AMAZONE_ORANGE1" intensity="0.8" groups="MOTOR_RUNNING"/>
 		
-		<!-- <configuration id="HEADER_1380m">
+		<configuration id="HEADER_1380m">
             <dashboard displayType="EMITTER" node="cebisLexion_dblHeader1380mP1_SC" emitColor="BRIRI_BLACK1" intensity="1" groups="MOTOR_RUNNING"/>
 
             <objectChange node="cebisLexion_dblHeader1380mP1_SC" visibilityActive="true" visibilityInactive="false"/>
@@ -319,7 +319,7 @@
             <dashboard displayType="EMITTER" node="cebisLexion_dblHeader620mP1_SC" emitColor="BRIRI_BLACK1" intensity="1" groups="MOTOR_RUNNING"/>
 
             <objectChange node="cebisLexion_dblHeader620mP1_SC" visibilityActive="true" visibilityInactive="false"/>
-        </configuration> -->
+        </configuration>
     </dashboardCompound>
 
     <dashboardCompound name="CEMIS_LEXION_GPSPAGE" filename="data/vehicles/claas/shared/displays/claasDisplays.i3d" node="cemisLexion">

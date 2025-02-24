@@ -95,7 +95,6 @@ function DashboardLive.initSpecialization()
 	schema:register(XMLValueType.FLOAT, DashboardLive.DBL_XML_KEY .. "#distance", "hearable distance")
 	dbgprint("initSpecialization : DashboardLive element options registered", 2)
 	
---![[	
 	local COMPOUND_GROUP_XML_KEY = "dashboardCompounds.group(?)"
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#name", "Dashboard group name")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dbl", "DashboardLive command")
@@ -110,7 +109,22 @@ function DashboardLive.initSpecialization()
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dblOption", "DBL Option")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dblTrailer", "DBL Trailer")
 	dbgprint("initSpecialization : DashboardLive group options registered", 2)
---]]
+
+	local COMPOUND_ANIMATION_XML_KEY = "dashboardCompounds.animation(?)"
+	AnimatedVehicle.registerAnimationXMLPaths(Dashboard.compoundsXMLSchema, COMPOUND_ANIMATION_XML_KEY)
+	Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_ANIMATION_XML_KEY .. ".part(?)#slopeCompensationNodeIndex", "Index in the XML of the slope compensation node")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_ANIMATION_XML_KEY .. ".part(?)#startSlopeCompensationLevel", "Start slope compensation level")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_ANIMATION_XML_KEY .. ".part(?)#endSlopeCompensationLevel", "End slope compensation level")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_ANIMATION_XML_KEY .. ".part(?)#wheelIndex", "Wheel index [1..n]")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.ANGLE, COMPOUND_ANIMATION_XML_KEY .. ".part(?)#startSteeringAngle", "Start steering angle")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.ANGLE, COMPOUND_ANIMATION_XML_KEY .. ".part(?)#endSteeringAngle", "End steering angle")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_ANIMATION_XML_KEY .. ".part(?)#startBrakeFactor", "Start brake force factor")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_ANIMATION_XML_KEY .. ".part(?)#endBrakeFactor", "End brake force factor")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_ANIMATION_XML_KEY .. ".part(?)#startTorqueDirection", "Start torque direction")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_ANIMATION_XML_KEY .. ".part(?)#endTorqueDirection", "End torque direction")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.NODE_INDEX, COMPOUND_ANIMATION_XML_KEY .. ".part(?)#startReferencePoint", "Start reference point")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.NODE_INDEX, COMPOUND_ANIMATION_XML_KEY .. ".part(?)#endReferencePoint", "End reference point")
+	dbgprint("initSpecialization : DashboardLive animation options registered", 2)
 	
 	local COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).dashboard(?)"
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#cmd", "DashboardLive command")
@@ -1603,9 +1617,6 @@ function DashboardLive.addDarkModeToLoadEmitterDashboardFromXML(self, superfunc,
 		dbgprint("loadEmitterDashboardFromXML : Setting dark mode for "..self:getName(), 2)
 		dbgprint("loadEmitterDashboardFromXML : key = "..tostring(key), 2)
 		dbgprint("loadEmitterDashboardFromXML : dashboard = "..tostring(dashboard), 2)
-		dbgprint_r(dashboard.baseColorDM, 2, 0)
-		dbgprint_r(dashboard.emitColorDM, 2, 0)
-		dbgprint_r(dashboard.intensityDM, 2, 0)
 		specDBL.darkModeExists = "true"
 	end	
 	return returnValue
@@ -1630,11 +1641,6 @@ function DashboardLive:addDarkModeToLoadTextDashboardFromXML(superfunc, xmlFile,
 		if dashboard.textColorDM ~= nil or dashboard.hiddenColorDM ~= nil then
 			dbgprint("loadTextDashboardFromXML : Setting dark mode for "..self:getName(), 2)
 			spec.darkModeExists = "true"
-			
-			dbgprint("loadTextDashboardFromXML : textColorDM:", 2)
-			dbgprint_r(dashboard.textColorDM, 2, 3)
-			dbgprint("loadTextDashboardFromXML : hiddenColorDM:", 2)
-			dbgprint_r(dashboard.hiddenColorDM, 2, 3)
 		end
 	end
 	
@@ -1650,7 +1656,7 @@ function DashboardLive:addDarkModeToLoadNumberDashboardFromXML(superfunc, xmlFil
 	-- Back up light mode values
 	dashboard.numberColorLM = dashboard.numberColor
 	-- Read dark mode values
-	dashboard.numberColorDM = self:getDashboardColor(xmlFile, xmlFile:getValue(key .. "#numberColorDarkMode"))
+	dashboard.numberColorDM = Dashboard.getDashboardColor(xmlFile, xmlFile:getValue(key .. "#numberColorDarkMode"))
 	
 	if dashboard.numberColorDM ~= nil then
 		dbgprint("loadNumberDashboardFromXML : Setting dark mode for "..self:getName(), 2)
@@ -2159,7 +2165,7 @@ function DashboardLive.getDBLAttributesMiniMap(self, xmlFile, key, dashboard, co
 	dashboard.node = xmlFile:getValue(key .. "#node", nil, components, i3dMappings, true)
 	dbgprint("getDBLAttributesMiniMap: node = "..tostring(dashboard.node).." / command = "..tostring(dashboard.dblCommand).." / scale = "..tostring(dashboard.scale), 2)
 	dbgprint("xmlFile", 2)
-	dbgprint_r(xmlFile, 2, 1)
+	dbgprint_r(xmlFile, 4, 1)
 
 	local mapTexture = g_currentMission.mapImageFilename
 	local mapName = g_currentMission.missionInfo.map.title
@@ -2674,7 +2680,8 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 				local attacherJoint = self.spec_attacherJoints.attacherJoints[tonumber(dashboard.dblAttacherJointIndices)]
 				if attacherJoint ~= nil and attacherJoint.moveAlpha ~= nil then
 					returnValue = 1 - attacherJoint.moveAlpha
-					dbgrenderTable(attacherJoint, 3, 3)
+					dbgprint("liftstate: "..tostring(returnValue), 4)
+					dbgrender("liftstate: "..tostring(returnValue), 1, 3)
 				else
 					returnValue = 0
 				end

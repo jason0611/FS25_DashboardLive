@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<vehicle type="tractor" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/vehicle.xsd">
+	<animations>	
+		<animation name="frontPLifterSliderAnimP1_SC">
+		<part node="dbl_frontPLifterSliderP1_SC" startTime="0.0" endTime="1.0" shaderParameter="sliderPos" shaderStartValues="0 0 0 0" shaderEndValues="1 0 0 0" />
+		</animation>
+		<animation name="backPLifterSliderAnimP1_SC">
+			<part node="dbl_backPLifterSliderP1_SC" startTime="0.0" endTime="1.0" shaderParameter="sliderPos" shaderStartValues="0 0 0 0" shaderEndValues="1 0 0 0" />
+		</animation>
+		<animation name="frontPLifterSliderAnimP3_SC">
+			<part node="dbl_frontPLifterSliderP3_SC" startTime="0.0" endTime="1.0" shaderParameter="sliderPos" shaderStartValues="0 0 0 0" shaderEndValues="1 0 0 0" />
+		</animation>
+		<animation name="backPLifterSliderAnimP3_SC">
+			<part node="dbl_backPLifterSliderP3_SC" startTime="0.0" endTime="1.0" shaderParameter="sliderPos" shaderStartValues="0 0 0 0" shaderEndValues="1 0 0 0" />
+		</animation>	
+	</animations>
+</vehicle>
