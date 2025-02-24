@@ -157,14 +157,14 @@
 		<dashboard valueType="dbl.cvt" cmd="drivingLevel" state="1" displayType="EMITTER" node="dbl_groupLevel1P1_SW" emitColor="AMAZONE_ORANGE1" emitColorDarkMode="1 1 1 1" intensity="1" groups="MOTOR_ACTIVE"/>
 		<dashboard valueType="dbl.cvt" cmd="drivingLevel" state="2" displayType="EMITTER" node="dbl_groupNumber2P1_SW" emitColor="AMAZONE_ORANGE1" emitColorDarkMode="1 1 1 1" intensity="1" groups="MOTOR_ACTIVE"/>
 		<dashboard valueType="dbl.cvt" cmd="drivingLevel" state="2" displayType="EMITTER" node="dbl_groupLevel2P1_SW" emitColor="AMAZONE_ORANGE1" emitColorDarkMode="1 1 1 1" intensity="1" groups="MOTOR_ACTIVE"/>
-		<dashboard valueType="dbl.cvt" cmd="accRamp" state="1 2 3 4" displayType="VISIBILITY" node="dbl_accRamp1P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
-		<dashboard valueType="dbl.cvt" cmd="accRamp" state="1 2 3 4" displayType="EMITTER" node="dbl_accRamp1P1_SW" emitColor="AMAZONE_ORANGE1" intensity="1" groups="MOTOR_ACTIVE"/>
-		<dashboard valueType="dbl.cvt" cmd="accRamp" state="2 3 4" displayType="VISIBILITY" node="dbl_accRamp2P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
-		<dashboard valueType="dbl.cvt" cmd="accRamp" state="2 3 4" displayType="EMITTER" node="dbl_accRamp2P1_SW" emitColor="AMAZONE_ORANGE1" intensity="1" groups="MOTOR_ACTIVE"/>
-		<dashboard valueType="dbl.cvt" cmd="accRamp" state="3 4" displayType="VISIBILITY" node="dbl_accRamp3P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
-		<dashboard valueType="dbl.cvt" cmd="accRamp" state="3 4" displayType="EMITTER" node="dbl_accRamp3P1_SW" emitColor="AMAZONE_ORANGE1" intensity="1" groups="MOTOR_ACTIVE"/>
-		<dashboard valueType="dbl.cvt" cmd="accRamp" state="4" displayType="VISIBILITY" node="dbl_accRamp4P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
-		<dashboard valueType="dbl.cvt" cmd="accRamp" state="4" displayType="EMITTER" node="dbl_accRamp4P1_SW" emitColor="AMAZONE_ORANGE1" intensity="1" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.cvt" cmd="accramp" state="1 2 3 4" displayType="VISIBILITY" node="dbl_accRamp1P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
+		<dashboard valueType="dbl.cvt" cmd="accramp" state="1 2 3 4" displayType="EMITTER" node="dbl_accRamp1P1_SW" emitColor="AMAZONE_ORANGE1" intensity="1" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.cvt" cmd="accramp" state="2 3 4" displayType="VISIBILITY" node="dbl_accRamp2P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
+		<dashboard valueType="dbl.cvt" cmd="accramp" state="2 3 4" displayType="EMITTER" node="dbl_accRamp2P1_SW" emitColor="AMAZONE_ORANGE1" intensity="1" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.cvt" cmd="accramp" state="3 4" displayType="VISIBILITY" node="dbl_accRamp3P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
+		<dashboard valueType="dbl.cvt" cmd="accramp" state="3 4" displayType="EMITTER" node="dbl_accRamp3P1_SW" emitColor="AMAZONE_ORANGE1" intensity="1" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.cvt" cmd="accramp" state="4" displayType="VISIBILITY" node="dbl_accRamp4P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
+		<dashboard valueType="dbl.cvt" cmd="accramp" state="4" displayType="EMITTER" node="dbl_accRamp4P1_SW" emitColor="AMAZONE_ORANGE1" intensity="1" groups="MOTOR_ACTIVE"/>
 		<dashboard valueType="dbl.cvt" cmd="brakeRamp" state="4 8 15 17" displayType="VISIBILITY" node="dbl_brakeRamp1P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
 		<dashboard valueType="dbl.cvt" cmd="brakeRamp" state="4 8 15 17" displayType="EMITTER" node="dbl_brakeRamp1P1_SW" emitColor="RED" intensity="1" groups="MOTOR_ACTIVE"/>
 		<dashboard valueType="dbl.cvt" cmd="brakeRamp" state="8 15 17" displayType="VISIBILITY" node="dbl_brakeRamp2P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
