@@ -231,7 +231,7 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 		end
 		DashboardLive.createDashboardPages(self)
 	end
-	
+--[[ Deactivated because of engine restrictions:
 -- compound extension: dashboard animations	
 	if not spec.compoundAnimationsLoaded then
 		local specAnim = self.spec_animatedVehicle
@@ -277,6 +277,7 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 		-- restore i3dMappings
 		self.i3dMappings = i3dMappingsBackup
 	end
+--]]
 end
 Dashboard.onDashboardCompoundLoaded = Utils.prependedFunction(Dashboard.onDashboardCompoundLoaded, DashboardUtils.onDashboardCompoundLoaded)
 
