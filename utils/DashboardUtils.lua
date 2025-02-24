@@ -224,25 +224,45 @@ function DashboardUtils:onDashboardCompoundLoaded(superfunc, i3dNode, failedReas
 		end
 		DashboardLive.createDashboardPages(self)
 	end
-
+--[[
 	-- backup filename, because file will be closed in superfunc and has to be reopened
 	local xmlFilename = dashboardXMLFile.filename
 	local xmlFileSchema = dashboardXMLFile.schema
-	superfunc(self, i3dNode, failedReason, args)
 	
+	-- backup i3dNode, because it will be deleted by superfunc
+	local i3dNodeBackup = i3dNode
+
+	superfunc(self, i3dNode, failedReason, args)
+
+	-- restore i3dNode
+	i3dNode = i3dNodeBackup
+
+--]]	
 -- compound extension: dashboard animations	
 	if not spec.compoundAnimationsLoaded then
+		local specAnim = self.spec_animatedVehicle
+
 		dbgprint("onDashboardCompoundLoaded : loading animations", 1)
 		dbgprint("onDashboardCompoundLoaded : i3dMappings:", 2)
 		dbgprint_r(args.compound.i3dMappings, 2, 2)
 		
-		dashboardXMLFile = XMLFile.load("DBL replacement", xmlFilename, xmlFileSchema)
-		
-		local specAnim = self.spec_animatedVehicle
-		
-		--local i3dMappingsBackup = self.i3dMappings
-		--self.i3dMappings = args.compound.i3dMappings
-			
+		-- rebuild components		
+		local components = {}
+        for i=1, getNumOfChildren(i3dNode) do
+            table.insert(components, {node=getChildAt(i3dNode, i - 1)})
+        end
+        
+        compound.i3dMappings = {}
+        I3DUtil.loadI3DMapping(dashboardXMLFile, "dashboardCompounds", components, compound.i3dMappings, nil)
+      
+        -- save i3dMappings
+		local i3dMappingsBackup = self.i3dMappings
+		self.i3dMappings = compound.i3dMappings
+--[[		
+		-- reopen xmlFile (closed in superfunc)
+		dashboardXMLFile = XMLFile.load("DBL replacement", xmlFilename, xmlFileSchema)	
+--]]		
+		-- load animations
 		local i = 0
 		while specAnim ~= nil do
 			local key = string.format("%s.animation(%d)", "dashboardCompounds", i)
@@ -253,15 +273,23 @@ function DashboardUtils:onDashboardCompoundLoaded(superfunc, i3dNode, failedReas
 			end
 	
 			local animation = {}
-            if self:loadAnimation(dashboardXMLFile, key, animation) then
+            if self:loadAnimation(dashboardXMLFile, key, animation, components) then
                 specAnim.animations[animation.name] = animation
                 specAnim.compoundAnimationsLoaded = true
+                dbgprint("onDashboardCompoundLoaded :: animation `"..tostring(animation.name).."` loaded", 2)
             end
 	
 			i = i + 1
 		end
 		
-		--self.i3dMappings = i3dMappingsBackup
+		-- restore i3dMappings
+		self.i3dMappings = i3dMappingsBackup
+		
+		superfunc(self, i3dNode, failedReason, args)		
+--[[		
+		-- close xmlFile
+		dashboardXMLFile:delete()
+--]]
 	end
 end
 Dashboard.onDashboardCompoundLoaded = Utils.overwrittenFunction(Dashboard.onDashboardCompoundLoaded, DashboardUtils.onDashboardCompoundLoaded)

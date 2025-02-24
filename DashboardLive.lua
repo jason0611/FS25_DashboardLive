@@ -2680,7 +2680,8 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 				local attacherJoint = self.spec_attacherJoints.attacherJoints[tonumber(dashboard.dblAttacherJointIndices)]
 				if attacherJoint ~= nil and attacherJoint.moveAlpha ~= nil then
 					returnValue = 1 - attacherJoint.moveAlpha
-					dbgrenderTable(attacherJoint, 3, 3)
+					dbgprint("liftstate: "..tostring(returnValue), 4)
+					dbgrender("liftstate: "..tostring(returnValue), 1, 3)
 				else
 					returnValue = 0
 				end

@@ -525,8 +525,8 @@
 		<dashboard valueType="dbl.base" cmd="folding unfolding" joints="1 3 4" option="any" displayType="EMITTER" node="dbl_backFoldingStateP3_SC" emitColor="GREEN" intensity="1" groups="MOTOR_ACTIVE"/>
 		<dashboard valueType="dbl.base" cmd="unfoldingState" joints="1 3 4" option="any" displayType="TEXT" node="dbl_backFoldingStatePercP3_SC" factor="100" textColor="0.4 0.4 0.4 1" textColorDarkMode="1 1 1 1" textSize="0.004" fontThickness="1.5" textMask="000%" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_ACTIVE DBL_3P_B_FOLDABLE PAGESC3"/>
 		<!-- Lifter State -->
-		<dashboard valueType="dbl.base" cmd="liftState" joints="2" dblFactor="100" displayType="ANIMATION" animName="frontPLifterSliderAnimP3_SC" groups="MOTOR_ACTIVE PAGESC3" />
-		<dashboard valueType="dbl.base" cmd="liftState" joints="1" dblFactor="100" displayType="ANIMATION" animName="backPLifterSliderAnimP3_SC" groups="MOTOR_ACTIVE PAGESC3" />
+		<dashboard valueType="dbl.base" cmd="liftState" joints="2" factor="100" default="0" displayType="ANIMATION" animName="frontPLifterSliderAnimP3_SC" groups="MOTOR_ACTIVE PAGESC3" />
+		<dashboard valueType="dbl.base" cmd="liftState" joints="1" factor="100" default="0" displayType="ANIMATION" animName="backPLifterSliderAnimP3_SC" groups="MOTOR_ACTIVE PAGESC3" />
 		<dashboard valueType="dbl.base" cmd="liftState" joints="2" option="percent" displayType="TEXT" node="dbl_frontPLifterPercP3_SC" factor="100" default="0" textColor="0.4 0.4 0.4 1" textColorDarkMode="1 1 1 1" textSize="0.004" textMask="000%" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_ACTIVE PAGESC3"/>
 		<dashboard valueType="dbl.base" cmd="liftState" joints="1" option="percent" displayType="TEXT" node="dbl_backPLifterPercP3_SC" factor="100" default="0" textColor="0.4 0.4 0.4 1" textColorDarkMode="1 1 1 1" textSize="0.004" textMask="000%" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_ACTIVE PAGESC3"/>
     </dashboardCompound>
