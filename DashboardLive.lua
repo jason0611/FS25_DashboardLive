@@ -404,6 +404,7 @@ function DashboardLive:onRegisterDashboardValueTypes()
 	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
 	dblValueType:setFunction("value", self, DashboardLive.getDashboardLiveCVT)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesCVT)
+	self:registerDashboardValueType(dblValueType)
 	
 	-- Realistic Damage System (RDS)
 	dblValueType = DashboardValueType.new("dbl", "rds")
@@ -2467,10 +2468,10 @@ end
 -- Realistic Damage System
 function DashboardLive.getDBLAttributesRDS(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", ""))
-    dbgprint("getDBLAttributesCVT : command: "..tostring(dashboard.dblCommand), 2)
+    dbgprint("getDBLAttributesRDS : command: "..tostring(dashboard.dblCommand), 2)
     
     dashboard.dblState = xmlFile:getValue(key .. "#state")
-	dbgprint("getDBLAttributesCVT : state: "..tostring(dashboard.dblState), 2)
+	dbgprint("getDBLAttributesRDS : state: "..tostring(dashboard.dblState), 2)
 	
 	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
 	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
@@ -3625,8 +3626,8 @@ function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
 end
 
 function DashboardLive.getDashboardLiveCVT(self, dashboard)
-	dbgprint("getDashboardLiveCVT : dblCommand: "..tostring(dashboard.dblCommand), 4)
-	dbgprint("getDashboardLiveCVT : dblState: "..tostring(dashboard.dblState), 4)
+	dbgprint("getDashboardLiveCVT : dblCommand: "..tostring(dashboard.dblCommand), 3)
+	dbgprint("getDashboardLiveCVT : dblState: "..tostring(dashboard.dblState), 3)
 	local c = dashboard.dblCommand
 	local s = dashboard.dblState
 	local returnValue = false
@@ -3635,6 +3636,7 @@ function DashboardLive.getDashboardLiveCVT(self, dashboard)
 	if spec ~= nil and type(c)=="string" then
 		local cvtValueFunc = "forDBL_"..c
 		local cvtValue = spec[cvtValueFunc]
+		dbgprint("cvtValue = "..tostring(cvtValue), 3)
 		if s ~= nil then
 			if tonumber(s) ~= nil then
 				returnValue = tostring(cvtValue) == tostring(s)
@@ -3672,7 +3674,7 @@ function DashboardLive.getDashboardLiveCVT(self, dashboard)
 		end
 	end
 	
-	dbgprint("getDashboardLiveCVT : returnValue: "..tostring(returnValue), 4)
+	dbgprint("getDashboardLiveCVT : returnValue: "..tostring(returnValue), 3)
 	return returnValue
 end
 

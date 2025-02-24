@@ -199,7 +199,7 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 end
 Dashboard.loadDashboardCompoundFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardCompoundFromXML, DashboardUtils.loadDashboardCompoundFromXML)
 
--- load groups and animations out of alternative compound xml file
+-- load groups [and animations] out of alternative compound xml file
 function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 	local spec = self.spec_dashboard
 	local dashboardXMLFile = args.dashboardXMLFile
@@ -231,7 +231,7 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 		end
 		DashboardLive.createDashboardPages(self)
 	end
-	
+--[[ Deactivated because of engine restrictions:
 -- compound extension: dashboard animations	
 	if not spec.compoundAnimationsLoaded then
 		local specAnim = self.spec_animatedVehicle
@@ -277,6 +277,7 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 		-- restore i3dMappings
 		self.i3dMappings = i3dMappingsBackup
 	end
+--]]
 end
 Dashboard.onDashboardCompoundLoaded = Utils.prependedFunction(Dashboard.onDashboardCompoundLoaded, DashboardUtils.onDashboardCompoundLoaded)
 
