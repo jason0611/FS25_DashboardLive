@@ -1548,6 +1548,7 @@ local function getAttachedStatus(vehicle, element, mode, default)
 				resultValue = coverSpec ~= nil and coverSpec.state > 0 or false
 			
             elseif mode == "connected" then
+            	dbgprint("AttacherJoint #"..tostring(jointIndex).." connected", 4)
             	resultValue = true
             	
             elseif mode == "disconnected" then
