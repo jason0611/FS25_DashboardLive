@@ -2264,6 +2264,13 @@ function DashboardLive.getDBLAttributesVCA(self, xmlFile, key, dashboard, compon
     
     dashboard.dblCond = xmlFile:getValue(key .. "#cond")
 	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+	
+	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
+	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
+		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		return false
+	end
 
 	return true
 end
@@ -2279,7 +2286,7 @@ function DashboardLive.getDBLAttributesCC(self, xmlFile, key, dashboard, compone
     end
     
     dashboard.dblState = xmlFile:getValue(key .. "#state")
-    dbgprint("getDBLAttributesECC : state: "..tostring(dashboard.dblCond), 2)
+    dbgprint("getDBLAttributesECC : state: "..tostring(dashboard.dblState), 2)
 
 	return true
 end
@@ -2291,6 +2298,12 @@ function DashboardLive.getDBLAttributesHLM(self, xmlFile, key, dashboard, compon
     
 	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
 	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
+	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
+		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		return false
+	end
     
 	return true
 end
@@ -2310,6 +2323,12 @@ function DashboardLive.getDBLAttributesGPS(self, xmlFile, key, dashboard, compon
 	
 	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
 	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
+	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
+		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		return false
+	end
 
 	return true
 end
@@ -2477,6 +2496,12 @@ function DashboardLive.getDBLAttributesCVT(self, xmlFile, key, dashboard, compon
 	
 	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
 	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
+	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
+		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		return false
+	end
 	
 	return true
 end
