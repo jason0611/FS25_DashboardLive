@@ -528,7 +528,8 @@ function DashboardLive:onRegisterActionEvents(isActiveForInput)
 	if self.isClient then
 		local spec = self.spec_DashboardLive
 		DashboardLive.actionEvents = {} 
-		if self:getIsActiveForInput(true) and spec ~= nil then 
+--		if self:getIsActiveForInput(true) and spec ~= nil then 
+		if spec ~= nil then
 			local actionEventId
 			local sp = spec.maxPage > 1
 			local sg = spec.maxPageGroup > 1
