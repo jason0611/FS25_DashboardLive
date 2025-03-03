@@ -12,6 +12,7 @@
 GMSDebug = {}
 GMSDebug.modName = "Unknown Mod"
 GMSDebug.state = false
+GMSDebug.filter = nil
 GMSDebug.consoleCommands = false
 
 function GMSDebug:init(modName, dbg, dbgLevel)
@@ -34,6 +35,7 @@ end
 function GMSDebug:print(text, prio)
 	if prio == nil then prio = 1; end
 	if not GMSDebug.state or prio > GMSDebug.level then return; end
+	if GMSDebug.filter ~= nil and string.find(text, filter) == nil then return; end
 	print(GMSDebug.modName.." :: Prio "..tostring(prio).." :: "..tostring(text))
 end
 
@@ -66,14 +68,16 @@ function GMSDebug:renderTable(data, pos, prio)
 	end
 end
 
-function GMSDebug:toggleDebug(prio)
+function GMSDebug:toggleDebug(prio, filter)
 	local level = tonumber(prio)
-	if level == nil or level == GMSDebug.level then
+	if filter ~= nil then GMSDebug.filter = filter else GMSDebug.filter = nil end
+	if level == nil then
 		GMSDebug.state = not GMSDebug.state
 	else
 		GMSDebug.level = level
+		GMSDebug.state = true
 	end
-	print("GMSDebug: New state is "..tostring(GMSDebug.state).." / Prio-Level is "..tostring(GMSDebug.level))
+	print("GMSDebug: Debug state is "..tostring(GMSDebug.state).." / Prio-Level is "..tostring(GMSDebug.level).." / Filter set to "..tostring(GMSDebug.filter))
 end
 
 
