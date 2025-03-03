@@ -35,7 +35,7 @@ end
 function GMSDebug:print(text, prio)
 	if prio == nil then prio = 1; end
 	if not GMSDebug.state or prio > GMSDebug.level then return; end
-	if GMSDebug.filter ~= nil and string.find(text, filter) == nil then return; end
+	if GMSDebug.filter ~= nil and string.find(text, GMSDebug.filter) == nil then return; end
 	print(GMSDebug.modName.." :: Prio "..tostring(prio).." :: "..tostring(text))
 end
 
