@@ -70,7 +70,7 @@ end
 
 function GMSDebug:toggleDebug(prio, filter)
 	local level = tonumber(prio)
-	if filter ~= nil then GMSDebug.filter = filter else GMSDebug.filter = nil end
+	if filter ~= nil then GMSDebug.filter = tostring(filter) else GMSDebug.filter = nil end
 	if level == nil then
 		GMSDebug.state = not GMSDebug.state
 	else
