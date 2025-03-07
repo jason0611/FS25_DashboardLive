@@ -3781,14 +3781,24 @@ function DashboardLive:onUpdate(dt)
 	end
 		
 	-- zoom
-	local spec = self.spec_DashboardLive
 	if (spec.zoomPressed or spec.zoomPerm) and not spec.zoomed then
 		dbgprint("Zooming in", 4)
+		if spec.fovBackup == nil then
+			local cam = self.spec_enterable.activeCamera
+			spec.fovBackup = math.deg(getFovY(cam))
+		end
 		g_cameraManager:consoleCommandSetFOV("20")
 		spec.zoomed = true
 	elseif (not spec.zoomPressed and not spec.zoomPerm) and spec.zoomed then
 		dbgprint("Zoomig out", 4)
-		g_cameraManager:consoleCommandSetFOV("-1")
+		local fov
+		if spec.fovBackup ~= nil then
+			fov = spec.fovBackup
+			spec.fovBackup = nil
+		else
+			fov = -1
+		end
+		g_cameraManager:consoleCommandSetFOV(tostring(fov))
 		spec.zoomed = false
 	end
 	spec.zoomPressed = false
