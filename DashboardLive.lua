@@ -57,6 +57,8 @@ function DashboardLive.initSpecialization()
 	schema:register(XMLValueType.INT, Dashboard.GROUP_XML_KEY .. "#group", "DashboardLive pages group")
 	schema:register(XMLValueType.BOOL, Dashboard.GROUP_XML_KEY .. "#dblActiveWithoutImplement", "return 'true' without implement")
 	schema:register(XMLValueType.VECTOR_N, Dashboard.GROUP_XML_KEY .. "#dblAttacherJointIndices")
+	schema:register(XMLValueType.STRING, Dashboard.GROUP_XML_KEY .. "#dblJointSide", "joint filter: front or back")
+	schema:register(XMLValueType.STRING, Dashboard.GROUP_XML_KEY .. "#dblJointType", "joint filter: jointType")
 	schema:register(XMLValueType.VECTOR_N, Dashboard.GROUP_XML_KEY .. "#dblSelection")
 	schema:register(XMLValueType.VECTOR_N, Dashboard.GROUP_XML_KEY .. "#dblSelectionGroup")
 	schema:register(XMLValueType.STRING, Dashboard.GROUP_XML_KEY .. "#dblRidgeMarker", "Ridgemarker state")
@@ -68,6 +70,8 @@ function DashboardLive.initSpecialization()
 	DashboardLive.DBL_XML_KEY = "vehicle.dashboard.dashboardLive.dashboard(?)"
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#cmd", "DashboardLive command")
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#joints")
+	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#jointSide", "joint filter: front or back")
+	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#jointType", "joint filter: jointType")
 	schema:register(XMLValueType.VECTOR_N, DashboardLive.DBL_XML_KEY .. "#selection")
 	schema:register(XMLValueType.VECTOR_N, DashboardLive.DBL_XML_KEY .. "#selectionGroup")
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#state", "state")
@@ -103,6 +107,8 @@ function DashboardLive.initSpecialization()
 	Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_GROUP_XML_KEY .. "#group", "DashboardLive pages group")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.BOOL, COMPOUND_GROUP_XML_KEY .. "#dblActiveWithoutImplement", "return 'true' without implement")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.VECTOR_N, COMPOUND_GROUP_XML_KEY .. "#dblAttacherJointIndices")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dblJointSide", "joint filter: front or back")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dblJointType", "joint filter: jointType")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.VECTOR_N, COMPOUND_GROUP_XML_KEY .. "#dblSelection")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.VECTOR_N, COMPOUND_GROUP_XML_KEY .. "#dblSelectionGroup")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dblRidgeMarker", "Ridgemarker state")
@@ -129,6 +135,8 @@ function DashboardLive.initSpecialization()
 	local COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).dashboard(?)"
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#cmd", "DashboardLive command")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#joints")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#jointSide", "joint filter: front or back")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#jointType", "joint filter: jointType")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.VECTOR_N, COMPOUND_XML_KEY .. "#selection")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.VECTOR_N, COMPOUND_XML_KEY .. "#selectionGroup")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#state", "state")
@@ -1857,6 +1865,46 @@ end
 Dashboard.loadDashboardFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardFromXML, DashboardLive.overWrittenLoadDashboardFromXML)
 --]]
 
+-- identify joints with mapping options
+local function jointMapping(vehicle, jointIndices, jointSide, jointType)
+	dbgprint("jointMapping : jointSide = "..tostring(jointSide).." / jointType = "..tostring(jointType), 2)
+	dbgprint("jointMapping : jointIndices before: "..tostring(jointIndices), 2)
+	local jointSpec = vehicle.spec_attacherJoints
+	local sideOk
+	local typeOk
+	
+	if jointSpec ~= nil and (jointSide ~= nil or jointType ~= nil) then
+		for index, attacherJoint in pairs(jointSpec.attacherJoints) do
+			sideOk = nil
+			typeOk = nil
+			if jointSide ~= nil then
+				local wx, wy, wz = getWorldTranslation(attacherJoint.jointTransform)
+				local _, _, lz = worldToLocal(vehicle.steeringAxleNode, wx, wy, wz)
+				sideOk = (lz > 0 and string.lower(jointSide) == "front") or (lz < 0 and string.lower(jointSide) == "back")
+			end
+			
+			if jointType ~= nil then
+				typeOk = attacherJoint.jointType == AttacherJoints.jointTypeNameToInt[string.lower(jointType)]
+			end
+			
+			if (sideOk == nil or sideOk == true) and (typeOk == nil or typeOk == true) then				
+				if jointIndices == nil then 
+					jointIndices = tostring(index)
+				elseif type(jointIndices) == "table" then 
+					table.insert(jointIndices, index)
+				else
+					jointIndices = jointIndices.." "..tostring(index)
+				end
+			end
+		end
+	end
+	dbgprint("jointMapping : jointIndices after: "..tostring(jointIndices), 2)
+	if type(jointIndices) == "table" then
+		dbgprint_r(jointIndices, 2, 1)
+	end
+	return jointIndices
+end
+
 -- GROUPS
 
 function DashboardLive:loadDashboardGroupFromXML(superFunc, xmlFile, key, group)	
@@ -1907,6 +1955,11 @@ function DashboardLive:loadDashboardGroupFromXML(superFunc, xmlFile, key, group)
 		dbgprint("loadDashboardGroupFromXML : dblActiveWithoutImplement: "..tostring(group.dblActiveWithoutImplement), 2)
 		
 		group.dblAttacherJointIndices = xmlFile:getValue(key .. "#dblAttacherJointIndices", nil, true)
+		local jointSide = xmlFile:getValue(key .. "#dblJointSide")
+		dbgprint("loadDashboardGroupFromXML : dblJointSide: "..tostring(jointSide), 2)
+		local jointType = xmlFile:getValue(key .. "#dblJointType")
+		dbgprint("loadDashboardGroupFromXML : dblJointType: "..tostring(jointType), 2)
+		group.dblAttacherJointIndices = jointMapping(self, group.dblAttacherJointIndices, jointSide, jointType)
 		dbgprint("loadDashboardGroupFromXML : dblAttacherJointIndices: "..tostring(group.dblAttacherJointIndices), 2)
 		
 		group.dblSelection = xmlFile:getValue(key .. "#dblSelection", nil, true)
@@ -2136,6 +2189,11 @@ function DashboardLive.getDBLAttributesBase(self, xmlFile, key, dashboard, compo
     end
 	
     dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
+	local jointSide = xmlFile:getValue(key .. "#jointSide")
+	dbgprint("getDBLAttributesBase : jointSide: "..tostring(jointSide), 2)
+	local jointType = xmlFile:getValue(key .. "#jointType")
+	dbgprint("getDBLAttributesBase : jointType: "..tostring(jointType), 2)
+	dashboard.dblAttacherJointIndices = jointMapping(self, dashboard.dblAttacherJointIndices, jointSide, jointType)
 	dbgprint("getDBLAttributesBase : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
 
 	dashboard.dblState = xmlFile:getValue(key .. "#state") -- swath state, ridgemarker state, crabsteering state...
@@ -2387,10 +2445,16 @@ end
 function DashboardLive.getDBLAttributesBaler(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd"))
-    dbgprint("getDBLAttributesBase : command: "..tostring(dashboard.dblCommand), 2)
+    dbgprint("getDBLAttributesBaler : command: "..tostring(dashboard.dblCommand), 2)
     
 	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
+	local jointSide = xmlFile:getValue(key .. "#jointSide")
+	dbgprint("getDBLAttributesBaler : jointSide: "..tostring(jointSide), 2)
+	local jointType = xmlFile:getValue(key .. "#jointType")
+	dbgprint("getDBLAttributesBaler : jointType: "..tostring(jointType), 2)
+	dashboard.dblAttacherJointIndices = jointMapping(self, dashboard.dblAttacherJointIndices, jointSide, jointType)
 	dbgprint("getDBLAttributesBaler : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
+	
 	
 	dashboard.dblOption = lower(xmlFile:getValue(key .. "#option", "selected")) -- 'selected' or 'current'
 	
@@ -2404,7 +2468,12 @@ function DashboardLive.getDBLAttributesLSA(self, xmlFile, key, dashboard, compon
 	dbgprint("getDBLAttributesLSA : command: "..tostring(dashboard.dblCommand), 2)
 	
 	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
-	dbgprint("getDBLAttributesBase : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
+	local jointSide = xmlFile:getValue(key .. "#jointSide")
+	dbgprint("getDBLAttributesLSA : jointSide: "..tostring(jointSide), 2)
+	local jointType = xmlFile:getValue(key .. "#jointType")
+	dbgprint("getDBLAttributesLSA : jointType: "..tostring(jointType), 2)
+	dashboard.dblAttacherJointIndices = jointMapping(self, dashboard.dblAttacherJointIndices, jointSide, jointType)
+	dbgprint("getDBLAttributesLSA : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
 	
 	dashboard.dblTrailer = xmlFile:getValue(key .. "#trailer")
 	dbgprint("getDBLAttributesBase : trailer: "..tostring(dashboard.dblTrailer), 2)
@@ -2439,6 +2508,11 @@ function DashboardLive.getDBLAttributesFrontloader(self, xmlFile, key, dashboard
     dbgprint("getDBLAttributesFrontloader : command: "..tostring(dashboard.dblCommand), 2)
     
 	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
+	local jointSide = xmlFile:getValue(key .. "#jointSide")
+	dbgprint("getDBLAttributesFrontloader : jointSide: "..tostring(jointSide), 2)
+	local jointType = xmlFile:getValue(key .. "#jointType")
+	dbgprint("getDBLAttributesFrontloader : jointType: "..tostring(jointType), 2)
+	dashboard.dblAttacherJointIndices = jointMapping(self, dashboard.dblAttacherJointIndices, jointSide, jointType)
 	dbgprint("getDBLAttributesFrontloader : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
 
 	dashboard.dblOption = xmlFile:getValue(key .. "#option", "1") -- number of tool
@@ -2461,10 +2535,15 @@ end
 -- precisionFarming
 function DashboardLive.getDBLAttributesPrecisionFarming(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", "")) -- rotation,  minmax
-    dbgprint("getDBLAttributesFrontloader : command: "..tostring(dashboard.dblCommand), 2)
+    dbgprint("getDBLAttributesPrecisionFarming : command: "..tostring(dashboard.dblCommand), 2)
     
 	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
-	dbgprint("getDBLAttributesFrontloader : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
+	local jointSide = xmlFile:getValue(key .. "#jointSide")
+	dbgprint("getDBLAttributesPrecisionFarming : jointSide: "..tostring(jointSide), 2)
+	local jointType = xmlFile:getValue(key .. "#jointType")
+	dbgprint("getDBLAttributesPrecisionFarming : jointType: "..tostring(jointType), 2)
+	dashboard.dblAttacherJointIndices = jointMapping(self, dashboard.dblAttacherJointIndices, jointSide, jointType)
+	dbgprint("getDBLAttributesPrecisionFarming : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
 
 	dashboard.dblOption = lower(xmlFile:getValue(key .. "#option"))
 	
