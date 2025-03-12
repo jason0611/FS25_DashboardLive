@@ -185,7 +185,7 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 		self.baseDirectoryBackup = self.baseDirectory
 		self.baseDirectory = DashboardLive.MOD_PATH
 		baseDirectoryChanged = true
-		dbgprint("loadDashboardCompoundFromXML :: baseDirectory changed", 2)
+		dbgprint("loadDashboardCompoundFromXML :: baseDirectory temporarily changed", 2)
 	end	
 	
 	local returnValue = superfunc(self, xmlFile, key, compound)
