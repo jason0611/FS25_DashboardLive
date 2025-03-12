@@ -1141,6 +1141,19 @@ local function getFillTypeSourceVehicle(sprayer)
     return sprayer, sprayer:getSprayerFillUnitIndex()
 end
 
+local function jointsToTable(jointsRaw)
+	local joints 
+	if type(jointsRaw) == "number" then
+		joints = {}
+		joints[1] = jointsRaw
+	elseif type(jointsRaw) == "table" then
+		joints = jointsRaw
+	elseif type(jointsRaw) == "string" then
+		joints = string.split(jointsRaw, " ")
+	end
+	return joints
+end
+
 -- handle nearly all about attachers and attached vehicles
 local function getAttachedStatus(vehicle, element, mode, default)
 	if element.dblAttacherJointIndices == nil then
@@ -2791,18 +2804,24 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			returnValue = getAttachedStatus(self, dashboard, "unfoldingstate", 0)
 		
 		-- lowering state
-		elseif cmds == "liftstate" and self.spec_attacherJoints ~= nil then 
-			if tonumber(dashboard.dblAttacherJointIndices) ~= nil then
-				local attacherJoint = self.spec_attacherJoints.attacherJoints[tonumber(dashboard.dblAttacherJointIndices)]
-				if attacherJoint ~= nil and attacherJoint.moveAlpha ~= nil then
-					returnValue = 1 - attacherJoint.moveAlpha
-					dbgprint("liftstate: "..tostring(returnValue), 4)
-					dbgrender("liftstate: "..tostring(returnValue), 1, 3)
-				else
-					returnValue = 0
+		elseif cmds == "liftstate" and self.spec_attacherJoints ~= nil then
+			local joints = jointsToTable(dashboard.dblAttacherJointIndices)
+			if joints ~= nil then
+				if #joints > 1 then
+					Logging.xmlWarning(self.xmlFile, "command `liftstate` to show state of 3P-Joint should apply to only one attacherJoint, please enshure that this condition is met")
+				end
+				for _, jointIndex in ipairs(joints) do
+					local attacherJoint = self.spec_attacherJoints.attacherJoints[jointIndex]
+					if attacherJoint ~= nil and attacherJoint.moveAlpha ~= nil then
+						returnValue = 1 - attacherJoint.moveAlpha
+						dbgprint("liftstate: "..tostring(returnValue), 4)
+						dbgrender("liftstate: "..tostring(returnValue), 1, 3)
+					else
+						returnValue = 0
+					end
 				end
 			else
-				Logging.xmlWarning(self.xmlFile, "command `liftstate` to show state of 3P-Joint must apply to only one attacherJoint")
+				Logging.xmlError(self.xmlFile, "command `liftstate` without given attacherJoint")
 				returnValue = 0
 			end
 			
