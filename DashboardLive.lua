@@ -1384,7 +1384,7 @@ local function getAttachedStatus(vehicle, element, mode, default)
             	local o, p = lower(element.dblOption), element.dblPartition
 				local maxValue, pctValue, absValue, maxKGValue,absKGValue, pctKGValue
 				local fillLevel = getFillLevelTable(implement.object, t, p)
-				dbgprint_r(fillLevel, 4, 2)
+				--dbgprint_r(fillLevel, 4, 2)
 				
 				if fillLevel.abs == nil then 
 					maxValue, absValue, pctValue, absKGValue = 0, 0, 0, 0
@@ -1913,7 +1913,7 @@ local function jointMapping(vehicle, jointIndices, jointSide, jointType)
 	end
 	dbgprint("jointMapping : jointIndices after: "..tostring(jointIndices), 2)
 	if type(jointIndices) == "table" then
-		dbgprint_r(jointIndices, 2, 1)
+		--dbgprint_r(jointIndices, 2, 1)
 	end
 	return jointIndices
 end
@@ -2208,7 +2208,7 @@ function DashboardLive.getDBLAttributesBase(self, xmlFile, key, dashboard, compo
 	dbgprint("getDBLAttributesBase : jointType: "..tostring(jointType), 2)
 	dashboard.dblAttacherJointIndices = jointMapping(self, dashboard.dblAttacherJointIndices, jointSide, jointType)
 	dbgprint("getDBLAttributesBase : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
-
+	
 	dashboard.dblState = xmlFile:getValue(key .. "#state") -- swath state, ridgemarker state, crabsteering state...
 	dbgprint("getDBLAttributesBase : state: "..tostring(dashboard.dblState), 2)
 	
@@ -2238,6 +2238,18 @@ function DashboardLive.getDBLAttributesBase(self, xmlFile, key, dashboard, compo
     	dashboard.dblMax = dashboard.dblMax or 100
 	end
 	
+	-- warnings or infos to special constellations
+	if dashboard.dblCommand == "liftstate" then
+		if dashboard.dblAttacherJointIndices ~= nil then 
+			local joints = jointsToTable(dashboard.dblAttacherJointIndices)
+			if #joints > 1 then
+				Logging.xmlWarning(self.xmlFile, "command `liftstate` to show state of 3P-Joint should apply to only one attacherJoint at a time, please ensure that this condition is met")
+			end
+		else
+			Logging.xmlError(self.xmlFile, "command `liftstate` without given attacherJoint")
+			return false
+		end
+	end
 	return true
 end
 
@@ -2247,8 +2259,6 @@ function DashboardLive.getDBLAttributesMiniMap(self, xmlFile, key, dashboard, co
 	dashboard.scale = xmlFile:getValue(key .. "#scale") or DashboardLive.scale
 	dashboard.node = xmlFile:getValue(key .. "#node", nil, components, i3dMappings, true)
 	dbgprint("getDBLAttributesMiniMap: node = "..tostring(dashboard.node).." / command = "..tostring(dashboard.dblCommand).." / scale = "..tostring(dashboard.scale), 2)
-	dbgprint("xmlFile", 2)
-	dbgprint_r(xmlFile, 4, 1)
 
 	local mapTexture = g_currentMission.mapImageFilename
 	local mapName = g_currentMission.missionInfo.map.title
@@ -2805,24 +2815,17 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		
 		-- lowering state
 		elseif cmds == "liftstate" and self.spec_attacherJoints ~= nil then
-			local joints = jointsToTable(dashboard.dblAttacherJointIndices)
-			if joints ~= nil then
-				if #joints > 1 then
-					Logging.xmlWarning(self.xmlFile, "command `liftstate` to show state of 3P-Joint should apply to only one attacherJoint, please enshure that this condition is met")
+			dbgprint("liftstate called", 2)
+			local joints = jointsToTable(j)
+			returnValue = 0
+			for i, jointIndex in ipairs(joints) do
+				local attacherJoint = self.spec_attacherJoints.attacherJoints[tonumber(jointIndex)]
+				print_r(attacherJoint, 0)
+				if attacherJoint ~= nil and attacherJoint.moveAlpha ~= nil then
+					returnValue = math.max(returnValue, 1 - attacherJoint.moveAlpha)
+					dbgprint("liftstate "..tostring(i)..": "..tostring(returnValue), 4)
+					dbgrender("liftstate: "..tostring(returnValue), 1+2*i, 3)
 				end
-				for _, jointIndex in ipairs(joints) do
-					local attacherJoint = self.spec_attacherJoints.attacherJoints[jointIndex]
-					if attacherJoint ~= nil and attacherJoint.moveAlpha ~= nil then
-						returnValue = 1 - attacherJoint.moveAlpha
-						dbgprint("liftstate: "..tostring(returnValue), 4)
-						dbgrender("liftstate: "..tostring(returnValue), 1, 3)
-					else
-						returnValue = 0
-					end
-				end
-			else
-				Logging.xmlError(self.xmlFile, "command `liftstate` without given attacherJoint")
-				returnValue = 0
 			end
 			
 		-- tipSide / tipSideText
@@ -3760,8 +3763,8 @@ function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
 end
 
 function DashboardLive.getDashboardLiveCVT(self, dashboard)
-	dbgprint("getDashboardLiveCVT : dblCommand: "..tostring(dashboard.dblCommand), 3)
-	dbgprint("getDashboardLiveCVT : dblState: "..tostring(dashboard.dblState), 3)
+	dbgprint("getDashboardLiveCVT : dblCommand: "..tostring(dashboard.dblCommand), 4)
+	dbgprint("getDashboardLiveCVT : dblState: "..tostring(dashboard.dblState), 4)
 	local c = dashboard.dblCommand
 	local s = dashboard.dblState
 	local returnValue = false
@@ -3770,7 +3773,7 @@ function DashboardLive.getDashboardLiveCVT(self, dashboard)
 	if spec ~= nil and type(c)=="string" then
 		local cvtValueFunc = "forDBL_"..c
 		local cvtValue = spec[cvtValueFunc]
-		dbgprint("cvtValue = "..tostring(cvtValue), 3)
+		dbgprint("cvtValue = "..tostring(cvtValue), 4)
 		if s ~= nil then
 			if tonumber(s) ~= nil then
 				returnValue = tostring(cvtValue) == tostring(s)
@@ -3808,7 +3811,7 @@ function DashboardLive.getDashboardLiveCVT(self, dashboard)
 		end
 	end
 	
-	dbgprint("getDashboardLiveCVT : returnValue: "..tostring(returnValue), 3)
+	dbgprint("getDashboardLiveCVT : returnValue: "..tostring(returnValue), 4)
 	return returnValue
 end
 
