@@ -2820,7 +2820,6 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			returnValue = 0
 			for i, jointIndex in ipairs(joints) do
 				local attacherJoint = self.spec_attacherJoints.attacherJoints[tonumber(jointIndex)]
-				print_r(attacherJoint, 0)
 				if attacherJoint ~= nil and attacherJoint.moveAlpha ~= nil then
 					returnValue = math.max(returnValue, 1 - attacherJoint.moveAlpha)
 					dbgprint("liftstate "..tostring(i)..": "..tostring(returnValue), 4)
