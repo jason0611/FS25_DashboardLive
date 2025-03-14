@@ -2815,7 +2815,6 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		
 		-- lowering state
 		elseif cmds == "liftstate" and self.spec_attacherJoints ~= nil then
-			dbgprint("liftstate called", 2)
 			local joints = jointsToTable(j)
 			returnValue = 0
 			for i, jointIndex in ipairs(joints) do
