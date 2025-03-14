@@ -563,7 +563,8 @@ function DashboardLive:onRegisterActionEvents(isActiveForInput, isActiveForInput
 			self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM', self, DashboardLive.ZOOM, false, true, true, true)	
 		end
 		self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM_PERM', self, DashboardLive.ZOOM, false, true, false, true)
-		self:addActionEvent(DashboardLive.actionEvents, 'DBL_HUDVISIBILITY', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
+		self:addActionEvent(DashboardLive.actionEvents, 'DBL_HUDVISIBILITY_FULL', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
+		self:addActionEvent(DashboardLive.actionEvents, 'DBL_HUDVISIBILITY_PART', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
 		self:addActionEvent(DashboardLive.actionEvents, 'DBL_MAPORIENTATION', self, DashboardLive.MAPORIENTATION, false, true, false, true)	
 		if spec.darkModeExists then
 			self:addActionEvent(DashboardLive.actionEvents, 'DBL_DARKMODE', self, DashboardLive.DARKMODE, false, true, false, true)		
@@ -677,10 +678,26 @@ end
 
 function DashboardLive:HUDVISIBILITY(actionName, keyStatus)
 	dbgprint("HUDVISIBILITY", 2)
-	if actionName == "DBL_HUDVISIBILITY" then
+	if actionName == "DBL_HUDVISIBILITY_PART" then
+		g_currentMission.hud:setIsVisible(not g_currentMission.hud:getIsVisible())
+	elseif actionName == "DBL_HUDVISIBILITY_FULL" then
 		g_currentMission.hud:consoleCommandToggleVisibility()
 	end
 end
+
+function DashboardLive:consoleCommandToggleVisibility(superfunc)
+	self:setIsVisible(not self:getIsVisible())
+	if self:getIsVisible() then
+		g_noHudModeEnabled = false
+		--print("HUD (new) is now visible")
+		return "HUD (new) is now visible"
+	else
+		g_noHudModeEnabled = true
+		--print("Warning: HUD (new) is now disabled. Use \'gsHudVisibility\' to enable again")
+		return "Warning: HUD (new) is now disabled. Use \'gsHudVisibility\' to enable again"
+	end
+end
+--HUD.consoleCommandToggleVisibility = Utils.overwrittenFunction(HUD.consoleCommandToggleVisibility, DashboardLive.consoleCommandToggleVisibility)
 
 function DashboardLive:DARKMODE(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("DARKMODE", 4)
@@ -2815,7 +2832,6 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		
 		-- lowering state
 		elseif cmds == "liftstate" and self.spec_attacherJoints ~= nil then
-			dbgprint("liftstate called", 2)
 			local joints = jointsToTable(j)
 			returnValue = 0
 			for i, jointIndex in ipairs(joints) do
@@ -3960,6 +3976,7 @@ end
 
 DashboardLiveKeepActive = {}
 function DashboardLiveKeepActive:update(dt)
-	g_inputBinding:registerActionEvent('DBL_HUDVISIBILITY', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
+	g_inputBinding:registerActionEvent('DBL_HUDVISIBILITY_FULL', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
+	g_inputBinding:registerActionEvent('DBL_HUDVISIBILITY_PART', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
 end
 addModEventListener(DashboardLiveKeepActive)
