@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="96">
 	<author>Glowins Modschmiede</author>
-	<version>1.9.8.5</version>
+	<version>1.9.8.6</version>
 	<contributors>AgrarPlay und LUWZ, Farming Duds, Myiamoto86, HiPhi77, NickiJF15</contributors>
 	<title>
 		<en>Dashboard Live</en>
@@ -404,7 +404,8 @@ Mais ideias ou solicitações são bem-vindas em <a href="https://github.com/jas
 		<action name="DBL_ZOOM_PERM"	category="VEHICLE" ignoreComboMask="false" />
 		<action name="DBL_MAPORIENTATION" category="VEHICLE" ignoreComboMask="false" />
 		<action name="DBL_DARKMODE"		category="VEHICLE"	ignoreComboMask="false" />
-		<action name="DBL_HUDVISIBILITY" category="VEHICLE"	ignoreComboMask="false" />
+		<action name="DBL_HUDVISIBILITY_FULL" category="VEHICLE"	ignoreComboMask="false" />
+		<action name="DBL_HUDVISIBILITY_PART" category="VEHICLE"	ignoreComboMask="false" />
 		
 		<!-- Editor Mode only
 		<action name="DBL_XUP" 			category="VEHICLE" ignoreComboMask="false" />
@@ -449,7 +450,10 @@ Mais ideias ou solicitações são bem-vindas em <a href="https://github.com/jas
 		<actionBinding action="DBL_ZOOM_PERM">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lshift KEY_rshift KEY_space" neutralInput="0" index="1" />
 		</actionBinding>
-		<actionBinding action="DBL_HUDVISIBILITY">
+		<actionBinding action="DBL_HUDVISIBILITY_FULL">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_ ralt KEY_space" neutralInput="0" index="1" />
+		</actionBinding>
+		<actionBinding action="DBL_HUDVISIBILITY_PART">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_space" neutralInput="0" index="1" />
 		</actionBinding>
 		<actionBinding action="DBL_MAPORIENTATION">
@@ -509,7 +513,11 @@ Mais ideias ou solicitações são bem-vindas em <a href="https://github.com/jas
             <br>MiniMap: Modo de exibição</br>
             <ru>МиниКарта: Режим отображения</ru>
         </text>
-        <text name="input_DBL_HUDVISIBILITY">
+        <text name="input_DBL_HUDVISIBILITY_FULL">
+            <en>Switch full HUD visibility</en>
+            <de>HUD sichtbar an/aus (vollständig)</de>
+        </text>
+        <text name="input_DBL_HUDVISIBILITY_PART">
             <en>Switch HUD visibility</en>
             <de>HUD sichtbar an/aus</de>
         </text>
