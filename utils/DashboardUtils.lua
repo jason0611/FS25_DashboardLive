@@ -116,6 +116,8 @@ function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLeve
 end
 I3DUtil.loadI3DMapping = Utils.overwrittenFunction(I3DUtil.loadI3DMapping, DashboardUtils.loadI3DMapping)
 
+-- TODO: Groups are still loaded from original xml file instead of the replacement
+
 -- look for alternative xml-file for vehicle and use it for loading additional dashboard entries
 function DashboardUtils:loadDashboardsFromXML(superfunc, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
 	local filename = xmlFile.filename
