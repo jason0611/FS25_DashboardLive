@@ -116,7 +116,35 @@ function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLeve
 end
 I3DUtil.loadI3DMapping = Utils.overwrittenFunction(I3DUtil.loadI3DMapping, DashboardUtils.loadI3DMapping)
 
--- TODO: Groups are still loaded from original xml file instead of the replacement
+function DashboardUtils:loadDashboardGroupsFromXML(savegame)
+	local spec = self.spec_dashboard
+	local filename = self.xmlFile.filename
+	local filenameDBL = DashboardLive.MOD_PATH..filename
+	local isMod = self.baseDirectory ~= ""
+		
+	if fileExists(filenameDBL) and not isMod then
+		local xmlFileDBL = XMLFile.load("DBL Replacement", filenameDBL, self.xmlFile.schema)
+		dbgprint("loadDashboardGroupsFromXML: added xml-file: "..tostring(filenameDBL), 2)
+		
+		local i = 0
+		while true do
+			local baseKey = string.format("%s.groups.group(%d)", "vehicle.dashboard", i)
+			if not xmlFileDBL:hasProperty(baseKey) then
+				break
+			end
+	
+			local group = {}
+			if self:loadDashboardGroupFromXML(xmlFileDBL, baseKey, group) then
+				spec.groups[group.name] = group
+				table.insert(spec.sortedGroups, group)
+				spec.hasGroups = true
+			end
+	
+			i = i + 1
+		end	
+	end
+end
+Dashboard.onLoad = Utils.appendedFunction(Dashboard.onLoad, DashboardUtils.loadDashboardGroupsFromXML)
 
 -- look for alternative xml-file for vehicle and use it for loading additional dashboard entries
 function DashboardUtils:loadDashboardsFromXML(superfunc, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
