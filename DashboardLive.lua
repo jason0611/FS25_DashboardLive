@@ -1801,7 +1801,7 @@ function DashboardLive:loadAudioDashboardFromXML(xmlFile, key, dashboard)
     	Logging.xmlError(self.xmlFile, "Audio Dashboard without unique audio name!")
     	return false
     end
-    dbgprint("loadAudioDashboardFromXML : audioName: "..tostring(dashboard.dblAudioFile), 2)
+    dbgprint("loadAudioDashboardFromXML : audioName: "..tostring(dashboard.dblAudioName), 2)
     local audioFile = Utils.getFilename(dashboard.dblAudioFile, self.baseDirectory)
     if audioFile == nil then
     	Logging.xmlWarning(self.xmlFile, "Audio file not found for audio dashboard "..tostring(dashboard.dblAudioName).."!")
