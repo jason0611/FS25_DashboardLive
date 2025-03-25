@@ -1796,13 +1796,19 @@ function DashboardLive:loadAudioDashboardFromXML(xmlFile, key, dashboard)
     	return false
     end
     dbgprint("loadAudioDashboardFromXML : audioFile: "..tostring(dashboard.dblAudioFile), 2)
+    
 	dashboard.dblAudioName = xmlFile:getValue(key .. "#audioName")
     if dashboard.dblAudioName == nil then
     	Logging.xmlError(self.xmlFile, "Audio Dashboard without unique audio name!")
     	return false
     end
     dbgprint("loadAudioDashboardFromXML : audioName: "..tostring(dashboard.dblAudioName), 2)
-    local audioFile = Utils.getFilename(dashboard.dblAudioFile, self.baseDirectory)
+    
+    local baseDirectory = self.baseDirectory
+    if baseDirectory = "" then -- vanilla has no audios, so switch to DBL-Path
+    	baseDirectory  = DashboardLive.MOD_PATH
+    end
+    local audioFile = Utils.getFilename(dashboard.dblAudioFile, baseDirectory)
     if audioFile == nil then
     	Logging.xmlWarning(self.xmlFile, "Audio file not found for audio dashboard "..tostring(dashboard.dblAudioName).."!")
     	return false
