@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<dashboardCompounds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../shared/xml/schema/dashboardCompounds.xsd">
+    
+	<!-- Pages SC -->
+	<group name="PAGESC1" dbl="page" group="1" page="1"/>
+	<group name="PAGESC2" dbl="page" group="1" page="2"/>
+	
+	<!-- tractors -->
+    <dashboardCompound name="DEUTZFAHR_MAINPAGE" filename="data/vehicles/deutzFahr/shared/displays/iMonitorDisplays.i3d" node="iMonitor_seatConsole">
+    <!-- Seat Console Page1 -->
+		<!-- displays -->
+        <dashboard displayType="VISIBILITY" node="iMonitor_StartScreen_decal" idleValue="0" groups="MOTOR_STARTING"/>
+        <dashboard displayType="EMITTER" node="iMonitor_StartScreen_decal" intensity="0.3" groups="MOTOR_STARTING"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_basicScreen_decal" groups="MOTOR_RUNNING PAGESC1"/>
+        <dashboard displayType="EMITTER" node="iMonitor_basicScreen_decal" idleValue="-1" hideInactiveChildren="true" intensity="0.3" groups="MOTOR_RUNNING PAGESC1"/>
+		
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblSpeedNeedleRotP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblRpmNeedleRotP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblMotorTempP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblMotorTempIconP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblAdBlueP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblAdBluePercIconP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblFuelP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblFuelPercIconP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblFrontAttacherP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblBackAttacherP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblFrontPTOP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblBackPTOP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblCruiseControl00P1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblCruiseControl01P1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblHlmOnOffP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="EMITTER" node="iMonitor_dblGPSActiveP1_SC" intensity="0.3" groups="MOTOR_RUNNING PAGESC1"/>
+		
+		<!-- outsideTemp and operatingTime -->
+		<dashboard displayType="TEXT" valueType="enterable.outsideTemperature" node="iMonitor_dblOutsideTempNumbersP1_SC" textColor="1 1 1 1" textSize="0.0035" textMask="00" font="GENERIC" textAlignment="RIGHT" emissiveScale="0.5" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="TEXT" valueType="operatingTime" node="iMonitor_dblOperatingTimeNumbersP1_SC" textColor="1 1 1 1" textSize="0.003" textMask="0000,0h" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_RUNNING PAGESC1"/>
+		<!-- motorized -->
+		<dashboard displayType="VISIBILITY" valueType="motorized.directionForward" node="iMonitor_dblForwardDriveP1_SC" hideInactive="true" groups="MOTOR_RUNNING PAGESC1"/>
+        <dashboard displayType="VISIBILITY" valueType="motorized.directionBackward" node="iMonitor_dblBackwardDriveP1_SC" hideInactive="true" groups="MOTOR_RUNNING PAGESC1"/>
+        <dashboard displayType="ROT" valueType="motorized.speed" node="iMonitor_dblSpeedNeedleRotP1_SC" rotAxis="2" minRot="45" maxRot="-177" intensity="0.3" groups="MOTOR_RUNNING PAGESC1"/>
+        <dashboard displayType="ROT" valueType="motorized.rpm" node="iMonitor_dblRpmNeedleRotP1_SC" rotAxis="2" minRot="45" maxRot="-177" intensity="0.3" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="SLIDER" valueType="motorized.motorTemperature" node="iMonitor_dblTempSliderP1_SC" minValueSlider="20" maxValueSlider="120" intensity="0.3" groups="MOTOR_RUNNING PAGESC1"/>
+        <dashboard displayType="TEXT" valueType="motorized.speed" node="iMonitor_dblSpeedNumbers00P1_SC" textColor="1 1 1 1" emissiveScale="0.4" textSize="0.0035" textMask="00" font="GENERIC_BOLD" textAlignment="CENTER" groups="MOTOR_RUNNING PAGESC1"/>
+        <dashboard displayType="TEXT" valueType="motorized.speed" node="iMonitor_dblSpeedNumbers01P1_SC" textColor="1 1 1 1" emissiveScale="0.4" textSize="0.005" textMask="00.0" font="GENERIC_BOLD" textAlignment="RIGHT" groups="MOTOR_RUNNING PAGESC1"/>
+        <dashboard displayType="TEXT" valueType="motorized.rpm" node="iMonitor_dblRpmNumbers00P1_SC" textColor="1 1 1 1" emissiveScale="0.4" textSize="0.0035" textMask="0000" font="GENERIC_BOLD" textAlignment="CENTER" groups="MOTOR_RUNNING PAGESC1"/>
+        <dashboard displayType="TEXT" valueType="motorized.rpm" node="iMonitor_dblRpmNumbers01P1_SC" textColor="1 1 1 1" emissiveScale="0.4" textSize="0.005" textMask="0000" font="GENERIC_BOLD" textAlignment="RIGHT" groups="MOTOR_RUNNING PAGESC1"/>
+        <dashboard displayType="TEXT" valueType="motorized.motorTemperature" node="iMonitor_dblTempNumbersP1_SC" textColor="1 1 1 1" emissiveScale="0.4" textSize="0.004" textMask="0000" font="GENERIC_BOLD" textAlignment="RIGHT" groups="MOTOR_RUNNING PAGESC1"/>
+		<!-- drivable -->
+		<dashboard displayType="EMITTER" valueType="drivable.cruiseControlActive" node="iMonitor_dblCruiseControl00P1_SC" baseColor="1 1 1 1" emitColor="BIGBUD_GREEN1" intensity="0.6" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="TEXT" valueType="drivable.cruiseControl" node="iMonitor_dblCruiseControlNumbers00P1_SC" textColor="1 1 1 1" emissiveScale="0.4" textSize="0.005" textMask="00.0" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="TEXT" valueType="drivable.cruiseControl" node="iMonitor_dblCruiseControl00TaskP1_SC" textColor="1 1 1 1" emissiveScale="0.35" textSize="0.005" textMask="00.0" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING PAGESC1"/>
+		<!-- fillLevel -->
+		<dashboard displayType="EMITTER" valueType="fillLevelWarning" fillType="DEF" node="iMonitor_dblAdBlueP1_SC" baseColor="1 1 1 1" emitColor="AGRIO_BLUE" intensity="1" warningThresholdMax="10" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="EMITTER" valueType="fillLevelWarning" fillType="DIESEL" node="iMonitor_dblFuelP1_SC" baseColor="1 1 1 1" emitColor="AMAZONE_ORANGE1" intensity="1" warningThresholdMax="100" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="SLIDER" valueType="fillLevel" fillType="DEF" node="iMonitor_dblAdBlueSliderP1_SC" intensity="0.3" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="SLIDER" valueType="fillLevel" fillType="DIESEL" node="iMonitor_dblFuelSliderP1_SC" intensity="0.3" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="TEXT" valueType="fillLevelPct" fillType="DEF" node="iMonitor_dblAdBluePercNumbersP1_SC" textColor="1 1 1 1" textSize="0.004" textMask="000" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="TEXT" valueType="fillLevelPct" fillType="DIESEL" node="iMonitor_dblFuelPercNumbersP1_SC" textColor="1 1 1 1" textSize="0.004" textMask="000" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING PAGESC1"/>
+		
+		<!-- Cruise Control -->
+		<!-- <dashboard displayType="EMITTER" valueType="cc" cmd="active" state="1" node="iMonitor_dblCruiseControl00P1_SC" baseColor="1 1 1 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGESC1"/> -->
+		<dashboard displayType="EMITTER" valueType="cc" cmd="active" state="2" node="iMonitor_dblCruiseControl01P1_SC" baseColor="1 1 1 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGESC1"/>
+		<!-- <dashboard displayType="TEXT" valueType="cc" cmd="speed" state="1" node="iMonitor_dblCruiseControlNumbers00P1_SC" textColor="1 1 1 1" textSize="0.005" textMask="00.0" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING PAGESC1"/> -->
+		<dashboard displayType="TEXT" valueType="cc" cmd="speed" state="2" node="iMonitor_dblCruiseControlNumbers01P1_SC" textColor="1 1 1 1" textSize="0.005" textMask="00.0" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING PAGESC1"/>
+		<!-- CVT -->
+		<dashboard displayType="EMITTER" valueType="dbl.cvt" cmd="motorcoldlamp" node="iMonitor_dblMotorTempP1_SC" baseColor="1 1 1 1" emitColor="AGRIO_BLUE" intensity="0.4" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.cvt" cmd="drivingLevel" state="1" node="iMonitor_dblCVTDriveLevel00P1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.cvt" cmd="drivingLevel" state="2" node="iMonitor_dblCVTDriveLevel01P1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.cvt" cmd="accRamp" state="1 2 3 4" node="iMonitor_dblCVTDriveRamp00P1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.cvt" cmd="accRamp" state="2 3 4" node="iMonitor_dblCVTDriveRamp01P1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.cvt" cmd="accRamp" state="3 4" node="iMonitor_dblCVTDriveRamp02P1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.cvt" cmd="accRamp" state="4" node="iMonitor_dblCVTDriveRamp03P1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<!-- Connect -->
+		<dashboard displayType="EMITTER" valueType="dbl.base" cmd="connected" joints="2 5" node="iMonitor_dblFrontAttacherP1_SC" baseColor="1 1 1 1" emitColor="AGRIO_BLUE" groups="MOTOR_RUNNING PAGESC1" />
+		<dashboard displayType="EMITTER" valueType="dbl.base" cmd="connected" joints="1 3 4" node="iMonitor_dblBackAttacherP1_SC" baseColor="1 1 1 1" emitColor="AGRIO_BLUE" groups="MOTOR_RUNNING PAGESC1"/>
+		<!-- Front Folding State -->
+		<dashboard displayType="VISIBILITY" valueType="dbl.base" cmd="folded" joints="2 5" option="any" node="iMonitor_dblFrontFoldingP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.base" cmd="unfolded" joints="2 5" option="any" node="iMonitor_dblFrontUnfoldingP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.base" cmd="folding" joints="2 5" option="any" node="iMonitor_dblFrontFoldingStateP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.base" cmd="unfolding" joints="2 5" option="any" node="iMonitor_dblFrontUnfoldingStateP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="EMITTER" valueType="dbl.base" cmd="folded" joints="2 5" option="any" node="iMonitor_dblFrontFoldingP1_SC" emitColor="RED" intensity="0.5" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="EMITTER" valueType="dbl.base" cmd="unfolded" joints="2 5" option="any" node="iMonitor_dblFrontUnfoldingP1_SC" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="EMITTER" valueType="dbl.base" cmd="folding" joints="2 5" option="any" node="iMonitor_dblFrontFoldingStateP1_SC" emitColor="RED" intensity="0.5" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="EMITTER" valueType="dbl.base" cmd="unfolding" joints="2 5" option="any" node="iMonitor_dblFrontUnfoldingStateP1_SC" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGESC1"/>
+		<!-- Back Folding State -->
+		<dashboard displayType="VISIBILITY" valueType="dbl.base" cmd="folded" joints="1 3 4" option="any" node="iMonitor_dblBackFoldingP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.base" cmd="unfolded" joints="1 3 4" option="any" node="iMonitor_dblBackUnfoldingP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.base" cmd="folding" joints="1 3 4" option="any" node="iMonitor_dblBackFoldingStateP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.base" cmd="unfolding" joints="1 3 4" option="any" node="iMonitor_dblBackUnfoldingStateP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="EMITTER" valueType="dbl.base" cmd="folded" joints="1 3 4" option="any" node="iMonitor_dblBackFoldingP1_SC" emitColor="RED" intensity="0.5" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="EMITTER" valueType="dbl.base" cmd="unfolded" joints="1 3 4" option="any" node="iMonitor_dblBackUnfoldingP1_SC" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="EMITTER" valueType="dbl.base" cmd="folding" joints="1 3 4" option="any" node="iMonitor_dblBackFoldingStateP1_SC" emitColor="RED" intensity="0.5" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="EMITTER" valueType="dbl.base" cmd="unfolding" joints="1 3 4" option="any" node="iMonitor_dblBackUnfoldingStateP1_SC" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGESC1"/>
+		<!-- Lifter State -->
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="liftState" joints="2" option="percent" node="iMonitor_dblFrontLiftStateNumbersP1_SC" factor="100" default="0" textColor="1 1 1 1" textSize="0.005" textMask="000" font="GENERIC_BOLD" textAlignment="RIGHT" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="liftState" joints="1" option="percent" node="iMonitor_dblBackLiftStateNumbersP1_SC" factor="100" default="0" textColor="1 1 1 1" textSize="0.005" textMask="000" font="GENERIC_BOLD" textAlignment="RIGHT" groups="MOTOR_RUNNING PAGESC1"/>
+		<!-- PTO -->
+		<dashboard displayType="EMITTER" valueType="dbl.base" cmd="pto" joints="2 5" node="iMonitor_dblFrontPTOP1_SC" baseColor="1 1 1 1" emitColor="AMAZONE_ORANGE1" intensity="0.6" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="EMITTER" valueType="dbl.base" cmd="pto" joints="1 3 4" node="iMonitor_dblBackPTOP1_SC" baseColor="1 1 1 1" emitColor="AMAZONE_ORANGE1" intensity="0.6" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="ptoRpm" joints="2 5" node="iMonitor_dblFrontPTONumbersP1_SC" options="any" max="540" doInterpolation="true" interpolationSpeed="0.5" textColor="1 1 1 1" textSize="0.006" textMask="0000" font="GENERIC_BOLD" textAlignment="RIGHT" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="ptoRpm" joints="1 3 4" node="iMonitor_dblBackPTONumbersP1_SC" options="any" max="1000" doInterpolation="true" interpolationSpeed="0.5" textColor="1 1 1 " textSize="0.006" textMask="0000" font="GENERIC_BOLD" textAlignment="RIGHT" groups="MOTOR_RUNNING PAGESC1"/>
+		<!-- GPS -->
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="fieldNumber" node="iMonitor_dblFieldNumbersP1_SC" textColor="1 1 1 1" textSize="0.004" textMask="000" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="headingText2" node="iMonitor_dblCompassP1_SC" textColor="1 1 1 1" textSize="0.0035" textMask="00" font="GENERIC" textAlignment="CENTER" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="heading" node="iMonitor_dblCompassNumbersP1_SC" textColor="1 1 1 1" textSize="0.0035" textMask="000" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" valueType="ai.automaticSteering.steeringEngaged" node="iMonitor_dblGPSActiveP1_SC" idleValue="-1" groups="MOTOR_RUNNING PAGESC1"/>
+		<!-- HLM -->
+		<dashboard displayType="VISIBILITY" valueType="hlm" option="headland" node="iMonitor_dblHlmHeadlandP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" valueType="hlm" option="field" node="iMonitor_dblHlmFieldP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="EMITTER" valueType="hlm" node="iMonitor_dblHlmOnOffP1_SC" baseColor="1 1 1 1" emitColor="AMAZONE_ORANGE1" intensity="0.2" emissiveScale="0.5" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="EMITTER" valueType="hlm" option="field" node="iMonitor_dblHlmFieldP1_SC" baseColor="1 1 1 1" emitColor="GREEN" intensity="0.2" emissiveScale="0.5" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="EMITTER" valueType="hlm" option="headland" node="iMonitor_dblHlmHeadlandP1_SC" baseColor="1 1 1 1" emitColor="GREEN" intensity="0.2" emissiveScale="0.5" groups="MOTOR_RUNNING PAGESC1"/>
+		<!-- MiniMap -->
+		<dashboard valueType="dbl.miniMap" cmd="map" displayType="VISIBILITY" node="iMonitor_dblNaviMapP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard valueType="dbl.miniMap" cmd="posMarker" displayType="VISIBILITY" node="iMonitor_dblNaviMapPositionP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<!-- Real Clock -->
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="realclock" node="iMonitor_dblClockNumbersP1_SC" textMask="ssssssss" textColor="1 1 1 1" textSize="0.003" fontThickness="1" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_RUNNING PAGESC1"/>
+		<!-- weather -->
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblWeatherSunP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblWeatherCloudP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblWeatherRainP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblWeatherHailP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblWeatherSnowP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblWeatherTwisterP1_SC" groups="MOTOR_RUNNING PAGESC1"/>
+		
+	<!-- Seat Console Page2	-->
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblSpeedNeedleRotP2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblRpmNeedleRotP2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblHlmOnOffP2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="EMITTER" node="iMonitor_dblGPSActiveP2_SC" intensity="0.3" groups="MOTOR_RUNNING PAGESC2"/>
+		
+		<!-- displays -->
+		<dashboard displayType="VISIBILITY" node="iMonitor_gpsScreen_decal" groups="MOTOR_RUNNING PAGESC2"/>
+        <dashboard displayType="EMITTER" node="iMonitor_gpsScreen_decal" intensity="0.3" groups="MOTOR_RUNNING PAGESC2"/>
+
+		<!-- Real Clock -->
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="realclock" node="iMonitor_dblClockNumbersP2_SC" textMask="ssssssss" textColor="1 1 1 1" textSize="0.003" fontThickness="1" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_RUNNING PAGESC2"/>
+		<!-- outsideTemp and operatingTime -->
+		<dashboard displayType="TEXT" valueType="enterable.outsideTemperature" node="iMonitor_dblOutsideTempNumbersP2_SC" textColor="1 1 1 1" textSize="0.0035" textMask="00" font="GENERIC" textAlignment="RIGHT" emissiveScale="0.5" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="TEXT" valueType="operatingTime" node="iMonitor_dblOperatingTimeNumbersP2_SC" textColor="1 1 1 1" textSize="0.003" textMask="0000,0h" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_RUNNING PAGESC2"/>
+		<!-- drivable -->
+		<dashboard displayType="TEXT" valueType="drivable.cruiseControl" node="iMonitor_dblCruiseControl00TaskP2_SC" textColor="1 1 1 1" emissiveScale="0.35" textSize="0.005" textMask="00.0" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING PAGESC2"/>
+		<!-- motorized -->
+        <dashboard displayType="ROT" valueType="motorized.speed" node="iMonitor_dblSpeedNeedleRotP2_SC" rotAxis="2" minRot="45" maxRot="-177" intensity="0.3" groups="MOTOR_RUNNING PAGESC2"/>
+        <dashboard displayType="ROT" valueType="motorized.rpm" node="iMonitor_dblRpmNeedleRotP2_SC" rotAxis="2" minRot="45" maxRot="-177" intensity="0.3" groups="MOTOR_RUNNING PAGESC2"/>
+        <dashboard displayType="TEXT" valueType="motorized.speed" node="iMonitor_dblSpeedNumbers00P1_SC" textColor="1 1 1 1" emissiveScale="0.4" textSize="0.0035" textMask="00" font="GENERIC_BOLD" textAlignment="CENTER" groups="MOTOR_RUNNING PAGESC2"/>
+        <dashboard displayType="TEXT" valueType="motorized.rpm" node="iMonitor_dblRpmNumbers00P1_SC" textColor="1 1 1 1" emissiveScale="0.4" textSize="0.0035" textMask="0000" font="GENERIC_BOLD" textAlignment="CENTER" groups="MOTOR_RUNNING PAGESC2"/>
+		<!-- GPS -->
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="fieldNumber" node="iMonitor_dblFieldNumbersP2_SC" textColor="1 1 1 1" textSize="0.004" textMask="000" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="headingText2" node="iMonitor_dblCompassP2_SC" textColor="1 1 1 1" textSize="0.0035" textMask="00" font="GENERIC" textAlignment="CENTER" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="TEXT" valueType="dbl.base" cmd="heading" node="iMonitor_dblCompassNumbersP2_SC" textColor="1 1 1 1" textSize="0.0035" textMask="000" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="VISIBILITY" valueType="ai.automaticSteering.steeringEngaged" node="iMonitor_dblGPSActiveP2_SC" idleValue="-1" groups="MOTOR_RUNNING PAGESC2"/>
+		<!-- CVT -->
+		<dashboard displayType="VISIBILITY" valueType="dbl.cvt" cmd="drivingLevel" state="1" node="iMonitor_dblCVTDriveLevel00P2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.cvt" cmd="drivingLevel" state="2" node="iMonitor_dblCVTDriveLevel01P2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.cvt" cmd="accRamp" state="1 2 3 4" node="iMonitor_dblCVTDriveRamp00P2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.cvt" cmd="accRamp" state="2 3 4" node="iMonitor_dblCVTDriveRamp01P2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.cvt" cmd="accRamp" state="3 4" node="iMonitor_dblCVTDriveRamp02P2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="VISIBILITY" valueType="dbl.cvt" cmd="accRamp" state="4" node="iMonitor_dblCVTDriveRamp03P2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+		<!-- HLM -->
+		<dashboard displayType="VISIBILITY" valueType="hlm" option="headland" node="iMonitor_dblHlmHeadlandP2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="VISIBILITY" valueType="hlm" option="field" node="iMonitor_dblHlmFieldP2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="EMITTER" valueType="hlm" node="iMonitor_dblHlmOnOffP2_SC" baseColor="1 1 1 1" emitColor="AMAZONE_ORANGE1" intensity="0.2" emissiveScale="0.5" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="EMITTER" valueType="hlm" option="field" node="iMonitor_dblHlmFieldP2_SC" baseColor="1 1 1 1" emitColor="GREEN" intensity="0.2" emissiveScale="0.5" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="EMITTER" valueType="hlm" option="headland" node="iMonitor_dblHlmHeadlandP2_SC" baseColor="1 1 1 1" emitColor="GREEN" intensity="0.2" emissiveScale="0.5" groups="MOTOR_RUNNING PAGESC2"/>
+		<!-- MiniMap -->
+		<dashboard valueType="dbl.miniMap" cmd="map" displayType="VISIBILITY" node="iMonitor_dblNaviMapP2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard valueType="dbl.miniMap" cmd="posMarker" displayType="VISIBILITY" node="iMonitor_dblNaviMapPositionP2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+		<!-- weather -->
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblWeatherSunP2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblWeatherCloudP2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblWeatherRainP2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblWeatherHailP2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblWeatherSnowP2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+		<dashboard displayType="VISIBILITY" node="iMonitor_dblWeatherTwisterP2_SC" groups="MOTOR_RUNNING PAGESC2"/>
+    </dashboardCompound>
+
+    <dashboardCompound name="DEUTZFAHR_STEERINGBASEPAGE" filename="data/vehicles/deutzFahr/shared/displays/iMonitorDisplays.i3d" node="iMonitor_steeringWheel">
+		<!-- displays -->
+        <dashboard displayType="EMITTER" node="steeringBaseScreen_decal" idleValue="-1" hideInactiveChildren="true" intensity="0.3" groups="MOTOR_RUNNING"/>
+	
+        <!-- numbers -->
+        <dashboard displayType="TEXT" valueType="enterable.time" node="steeringBaseScreen_numbersTime" textColor="1 1 1 1" emissiveScale="0.4" textSize="0.004" textMask="00:00" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="TEXT" valueType="motorized.load" node="steeringBaseScreen_numbersLoad01" textColor="0 0.3006 0.6240 1" emissiveScale="0.6" textSize="0.006" textMask="00" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="TEXT" valueType="motorized.load" node="steeringBaseScreen_numbersLoad02" textColor="0 0.3006 0.6240 1" emissiveScale="0.6" textSize="0.006" textMask="00" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="TEXT" valueType="drivable.cruiseControl" node="steeringBaseScreen_numbersCruiseControl" textColor="1 1 1 1" emissiveScale="0.4" textSize="0.006" textMask="00.0" font="GENERIC" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="TEXT" valueType="motorized.speed" node="steeringBaseScreen_numbersSpeed" textColor="0 0.3006 0.6240 1" emissiveScale="0.6" textSize="0.009" textScaleX="0.9" textMask="00.0" font="GENERIC_BOLD" groups="MOTOR_RUNNING"/>
+
+        <!-- icons -->
+        <dashboard displayType="VISIBILITY" valueType="motorized.directionForwardExclusive" node="iconForwardStanding_decal" groups="MOTOR_RUNNING" />
+        <dashboard displayType="VISIBILITY" valueType="motorized.directionForwardExclusive" node="iconForward_decal" groups="MOTOR_RUNNING" />
+        <dashboard displayType="VISIBILITY" valueType="motorized.directionBackward" node="iconBackwardStanding_decal" groups="MOTOR_RUNNING" />
+        <dashboard displayType="VISIBILITY" valueType="motorized.directionBackward" node="iconBackward_decal" groups="MOTOR_RUNNING" />
+
+        <dashboard displayType="MULTI_STATE" valueType="drivable.movingDirection" node="iconsStanding" groups="MOTOR_RUNNING">
+            <state value="-1" visibility="false"/>
+            <state value="0" visibility="true"/>
+            <state value="1" visibility="false"/>
+        </dashboard>
+        <dashboard displayType="MULTI_STATE" valueType="drivable.movingDirection" node="iconsDriving" groups="MOTOR_RUNNING">
+            <state value="-1" visibility="true"/>
+            <state value="0" visibility="false"/>
+            <state value="1" visibility="true"/>
+        </dashboard>
+
+        <dashboard displayType="EMITTER" node="iconForward_decal" intensity="0.3" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="EMITTER" node="iconForwardStanding_decal" intensity="0.3" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="EMITTER" node="iconBackward_decal" intensity="0.3" groups="MOTOR_RUNNING"/>
+        <dashboard displayType="EMITTER" node="iconBackwardStanding_decal" intensity="0.3" groups="MOTOR_RUNNING"/>
+
+        <configuration id="DEUTZFAHR_STARTSCREEN">
+            <dashboard displayType="VISIBILITY" node="steeringBaseStartScreenDeutz_decal" idleValue="0" groups="MOTOR_STARTING"/>
+            <dashboard displayType="EMITTER" node="steeringBaseStartScreenDeutz_decal" intensity="0.1" groups="MOTOR_STARTING"/>
+
+            <objectChange node="steeringBaseStartScreenDeutz_decal" visibilityActive="true" visibilityInactive="false"/>
+        </configuration>
+        <configuration id="DEUTZFAHR_EDITION">
+            <dashboard displayType="EMITTER" node="logoDeutzFahr_decal" hideInactive="true" intensity="0.3" groups="MOTOR_RUNNING"/>
+
+            <objectChange node="logoDeutzFahr_decal" visibilityActive="true" visibilityInactive="false"/>
+        </configuration>
+        <configuration id="WARRIOR_EDITION">
+            <dashboard displayType="EMITTER" node="logoWarrior_decal" hideInactive="true" intensity="0.3" groups="MOTOR_RUNNING"/>
+
+            <objectChange node="logoWarrior_decal" visibilityActive="true" visibilityInactive="false"/>
+        </configuration>
+        <configuration id="SAME_EDITION">
+            <dashboard displayType="VISIBILITY" node="steeringBaseStartScreenSame_decal" idleValue="0" groups="MOTOR_STARTING"/>
+            <dashboard displayType="EMITTER" node="steeringBaseStartScreenSame_decal" intensity="0.1" groups="MOTOR_STARTING"/>
+            <dashboard displayType="EMITTER" node="logoSame_decal" intensity="0.1" groups="MOTOR_RUNNING"/>
+
+            <objectChange node="steeringBaseStartScreenSame_decal" visibilityActive="true" visibilityInactive="false"/>
+            <objectChange node="logoSame_decal" visibilityActive="true" visibilityInactive="false"/>
+        </configuration>
+    </dashboardCompound>
+
+    <i3dMappings>
+		<!-- Basic Screen SC -->
+        <i3dMapping id="iMonitor_seatConsole" node="0>0"/>
+        <i3dMapping id="iMonitor_StartScreen_decal" node="0>0|0|0|0"/>
+		<i3dMapping id="iMonitor_dblSpeedNeedleRotP1_SC" node="0>0|0|1|0"/>
+		<i3dMapping id="iMonitor_dblSpeedNumbers00P1_SC" node="0>0|0|1|1"/>
+		<i3dMapping id="iMonitor_dblRpmNeedleRotP1_SC" node="0>0|0|1|2"/>
+		<i3dMapping id="iMonitor_dblRpmNumbers00P1_SC" node="0>0|0|1|3"/>
+		<i3dMapping id="iMonitor_dblMotorTempP1_SC" node="0>0|0|1|4"/>
+		<i3dMapping id="iMonitor_dblTempSliderP1_SC" node="0>0|0|1|5"/>
+		<i3dMapping id="iMonitor_dblTempNumbersP1_SC" node="0>0|0|1|6"/>
+		<i3dMapping id="iMonitor_dblMotorTempIconP1_SC" node="0>0|0|1|7"/>
+		<i3dMapping id="iMonitor_dblAdBlueP1_SC" node="0>0|0|1|8"/>
+		<i3dMapping id="iMonitor_dblAdBlueSliderP1_SC" node="0>0|0|1|9"/>
+		<i3dMapping id="iMonitor_dblAdBluePercNumbersP1_SC" node="0>0|0|1|10"/>
+		<i3dMapping id="iMonitor_dblAdBluePercIconP1_SC" node="0>0|0|1|11"/>
+		<i3dMapping id="iMonitor_dblFuelP1_SC" node="0>0|0|1|12"/>
+		<i3dMapping id="iMonitor_dblFuelSliderP1_SC" node="0>0|0|1|13"/>
+		<i3dMapping id="iMonitor_dblFuelPercNumbersP1_SC" node="0>0|0|1|14"/>
+		<i3dMapping id="iMonitor_dblFuelPercIconP1_SC" node="0>0|0|1|15"/>
+		<i3dMapping id="iMonitor_dblRpmNumbers01P1_SC" node="0>0|0|1|16"/>
+		<i3dMapping id="iMonitor_dblSpeedNumbers01P1_SC" node="0>0|0|1|17"/>
+		<i3dMapping id="iMonitor_dblForwardDriveP1_SC" node="0>0|0|1|18"/>
+		<i3dMapping id="iMonitor_dblBackwardDriveP1_SC" node="0>0|0|1|19"/>
+		<i3dMapping id="iMonitor_dblFrontAttacherP1_SC" node="0>0|0|1|20"/>
+		<i3dMapping id="iMonitor_dblFrontUnfoldingP1_SC" node="0>0|0|1|21"/>
+		<i3dMapping id="iMonitor_dblFrontUnfoldingStateP1_SC" node="0>0|0|1|22"/>
+		<i3dMapping id="iMonitor_dblFrontFoldingP1_SC" node="0>0|0|1|23"/>
+		<i3dMapping id="iMonitor_dblFrontFoldingStateP1_SC" node="0>0|0|1|24"/>
+		<i3dMapping id="iMonitor_dblFrontLiftStateNumbersP1_SC" node="0>0|0|1|25"/>
+		<i3dMapping id="iMonitor_dblBackAttacherP1_SC" node="0>0|0|1|26"/>
+		<i3dMapping id="iMonitor_dblBackUnfoldingP1_SC" node="0>0|0|1|27"/>
+		<i3dMapping id="iMonitor_dblBackUnfoldingStateP1_SC" node="0>0|0|1|28"/>
+		<i3dMapping id="iMonitor_dblBackFoldingP1_SC" node="0>0|0|1|29"/>
+		<i3dMapping id="iMonitor_dblBackFoldingStateP1_SC" node="0>0|0|1|30"/>
+		<i3dMapping id="iMonitor_dblBackLiftStateNumbersP1_SC" node="0>0|0|1|31"/>
+		<i3dMapping id="iMonitor_dblBackPTOP1_SC" node="0>0|0|1|32"/>
+		<i3dMapping id="iMonitor_dblBackPTONumbersP1_SC" node="0>0|0|1|33"/>
+		<i3dMapping id="iMonitor_dblFrontPTOP1_SC" node="0>0|0|1|34"/>
+		<i3dMapping id="iMonitor_dblFrontPTONumbersP1_SC" node="0>0|0|1|35"/>
+		<i3dMapping id="iMonitor_dblNaviMapP1_SC" node="0>0|0|1|36"/>
+		<i3dMapping id="iMonitor_dblCruiseControl00P1_SC" node="0>0|0|1|37"/>
+		<i3dMapping id="iMonitor_dblCruiseControlNumbers00P1_SC" node="0>0|0|1|38"/>
+		<i3dMapping id="iMonitor_dblCruiseControl01P1_SC" node="0>0|0|1|39"/>
+		<i3dMapping id="iMonitor_dblCruiseControlNumbers01P1_SC" node="0>0|0|1|40"/>
+		<i3dMapping id="iMonitor_dblClockNumbersP1_SC" node="0>0|0|1|41"/>
+		<i3dMapping id="iMonitor_dblOutsideTempNumbersP1_SC" node="0>0|0|1|42"/>
+		<i3dMapping id="iMonitor_dblFieldNumbersP1_SC" node="0>0|0|1|43"/>
+		<i3dMapping id="iMonitor_dblCompassP1_SC" node="0>0|0|1|44"/>
+		<i3dMapping id="iMonitor_dblCompassNumbersP1_SC" node="0>0|0|1|45"/>
+		<i3dMapping id="iMonitor_dblCVTDriveRamp00P1_SC" node="0>0|0|1|46"/>
+		<i3dMapping id="iMonitor_dblCVTDriveRamp01P1_SC" node="0>0|0|1|47"/>
+		<i3dMapping id="iMonitor_dblCVTDriveRamp02P1_SC" node="0>0|0|1|48"/>
+		<i3dMapping id="iMonitor_dblCVTDriveRamp03P1_SC" node="0>0|0|1|49"/>
+		<i3dMapping id="iMonitor_dblCVTDriveRamp04P1_SC" node="0>0|0|1|50"/>
+		<i3dMapping id="iMonitor_dblCVTDriveLevel00P1_SC" node="0>0|0|1|51"/>
+		<i3dMapping id="iMonitor_dblCVTDriveLevel01P1_SC" node="0>0|0|1|52"/>
+		<i3dMapping id="iMonitor_dblOperatingTimeNumbersP1_SC" node="0>0|0|1|53"/>
+		<i3dMapping id="iMonitor_dblCruiseControl00TaskP1_SC" node="0>0|0|1|54"/>
+		<i3dMapping id="iMonitor_dblGPSActiveP1_SC" node="0>0|0|1|55"/>
+		<i3dMapping id="iMonitor_dblHlmOnOffP1_SC" node="0>0|0|1|56"/>
+		<i3dMapping id="iMonitor_dblHlmFieldP1_SC" node="0>0|0|1|57"/>
+		<i3dMapping id="iMonitor_dblHlmHeadlandP1_SC" node="0>0|0|1|58"/>
+		<i3dMapping id="iMonitor_dblWeatherSunP1_SC" node="0>0|0|1|59"/>
+		<i3dMapping id="iMonitor_dblWeatherCloudP1_SC" node="0>0|0|1|60"/>
+		<i3dMapping id="iMonitor_dblWeatherRainP1_SC" node="0>0|0|1|61"/>
+		<i3dMapping id="iMonitor_dblWeatherHailP1_SC" node="0>0|0|1|62"/>
+		<i3dMapping id="iMonitor_dblWeatherSnowP1_SC" node="0>0|0|1|63"/>
+		<i3dMapping id="iMonitor_dblWeatherTwisterP1_SC" node="0>0|0|1|64"/>
+		<i3dMapping id="iMonitor_basicScreen_decal" node="0>0|0|2|0"/>
+		<!-- GPS Screen SC -->
+		<i3dMapping id="iMonitor_dblSpeedNeedleRotP2_SC" node="0>0|1|0|0"/>
+		<i3dMapping id="iMonitor_dblSpeedNumbers00P2_SC" node="0>0|1|0|1"/>
+		<i3dMapping id="iMonitor_dblRpmNeedleRotP2_SC" node="0>0|1|0|2"/>
+		<i3dMapping id="iMonitor_dblRpmNumbers00P2_SC" node="0>0|1|0|3"/>
+		<i3dMapping id="iMonitor_dblClockNumbersP2_SC" node="0>0|1|0|4"/>
+		<i3dMapping id="iMonitor_dblOutsideTempNumbersP2_SC" node="0>0|1|0|5"/>
+		<i3dMapping id="iMonitor_dblFieldNumbersP2_SC" node="0>0|1|0|6"/>
+		<i3dMapping id="iMonitor_dblCompassP2_SC" node="0>0|1|0|7"/>
+		<i3dMapping id="iMonitor_dblCompassNumbersP2_SC" node="0>0|1|0|8"/>
+		<i3dMapping id="iMonitor_dblCVTDriveRamp00P2_SC" node="0>0|1|0|9"/>
+		<i3dMapping id="iMonitor_dblCVTDriveRamp01P2_SC" node="0>0|1|0|10"/>
+		<i3dMapping id="iMonitor_dblCVTDriveRamp02P2_SC" node="0>0|1|0|11"/>
+		<i3dMapping id="iMonitor_dblCVTDriveRamp03P2_SC" node="0>0|1|0|12"/>
+		<i3dMapping id="iMonitor_dblCVTDriveRamp04P2_SC" node="0>0|1|0|13"/>
+		<i3dMapping id="iMonitor_dblCVTDriveLevel00P2_SC" node="0>0|1|0|14"/>
+		<i3dMapping id="iMonitor_dblCVTDriveLevel01P2_SC" node="0>0|1|0|15"/>
+		<i3dMapping id="iMonitor_dblOperatingTimeNumbersP2_SC" node="0>0|1|0|16"/>
+		<i3dMapping id="iMonitor_dblCruiseControl00TaskP2_SC" node="0>0|1|0|17"/>
+		<i3dMapping id="iMonitor_dblGPSActiveP2_SC" node="0>0|1|0|18"/>
+		<i3dMapping id="iMonitor_dblHlmOnOffP2_SC" node="0>0|1|0|19"/>
+		<i3dMapping id="iMonitor_dblHlmFieldP2_SC" node="0>0|1|0|20"/>
+		<i3dMapping id="iMonitor_dblHlmHeadlandP2_SC" node="0>0|1|0|21"/>
+		<i3dMapping id="iMonitor_dblWeatherSunP2_SC" node="0>0|1|0|22"/>
+		<i3dMapping id="iMonitor_dblWeatherCloudP2_SC" node="0>0|1|0|23"/>
+		<i3dMapping id="iMonitor_dblWeatherRainP2_SC" node="0>0|1|0|24"/>
+		<i3dMapping id="iMonitor_dblWeatherHailP2_SC" node="0>0|1|0|25"/>
+		<i3dMapping id="iMonitor_dblWeatherSnowP2_SC" node="0>0|1|0|26"/>
+		<i3dMapping id="iMonitor_dblWeatherTwisterP2_SC" node="0>0|1|0|27"/>
+		<i3dMapping id="iMonitor_dblNaviMapP2_SC" node="0>0|1|1|0"/>
+		<i3dMapping id="iMonitor_dblNaviMapPositionP2_SC" node="0>0|1|1|0|0"/>
+		<i3dMapping id="iMonitor_gpsScreen_decal" node="0>0|1|2|0"/>
+		<!-- Basic Screen SW -->
+		<i3dMapping id="iMonitor_steeringWheel" node="0>1"/>
+		<i3dMapping id="steeringBaseScreen_decal" node="0>1|0|0"/>
+		<i3dMapping id="steeringBaseScreen_numbersCruiseControl" node="0>1|0|0|0|0"/>
+		<i3dMapping id="steeringBaseScreen_numbersLoad01" node="0>1|0|0|0|1"/>
+		<i3dMapping id="steeringBaseScreen_numbersLoad02" node="0>1|0|0|0|2"/>
+		<i3dMapping id="steeringBaseScreen_numbersSpeed" node="0>1|0|0|0|3"/>
+		<i3dMapping id="steeringBaseScreen_numbersTime" node="0>1|0|0|0|4"/>
+		<i3dMapping id="iconsStanding" node="0>1|0|0|1|0"/>
+		<i3dMapping id="iconForwardStanding_decal" node="0>1|0|0|1|0|0"/>
+		<i3dMapping id="iconBackwardStanding_decal" node="0>1|0|0|1|0|1"/>
+		<i3dMapping id="iconsDriving" node="0>1|0|0|1|1"/>
+		<i3dMapping id="iconForward_decal" node="0>1|0|0|1|1|0"/>
+		<i3dMapping id="iconBackward_decal" node="0>1|0|0|1|1|1"/>
+		<i3dMapping id="logoDeutzFahr_decal" node="0>1|0|0|2|0"/>
+		<i3dMapping id="logoWarrior_decal" node="0>1|0|0|2|1"/>
+		<i3dMapping id="logoSame_decal" node="0>1|0|0|2|2"/>
+		<i3dMapping id="steeringBaseStartScreenSame_decal" node="0>1|0|1"/>
+		<i3dMapping id="steeringBaseStartScreenDeutz_decal" node="0>1|0|2"/>
+    </i3dMappings>
+</dashboardCompounds>
