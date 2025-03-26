@@ -46,21 +46,6 @@
 	<group name="DBL_HLM_ON" op="and" dbl="hlm_on"/>
 	<group name="DBL_HLM_FIELD" op="and" dbl="hlm_active_field"/>
 	<group name="DBL_HLM_HEADLAND" op="and" dbl="hlm_active_headland"/>
-
-<!--	
-	<animation name="frontPLifterSliderAnimP1_SC">
-		<part node="dbl_frontPLifterSliderP1_SC" startTime="0.0" endTime="1.0" shaderParameter="sliderPos" shaderStartValues="0 0 0 0" shaderEndValues="1 0 0 0" />
-	</animation>
-	<animation name="backPLifterSliderAnimP1_SC">
-		<part node="dbl_backPLifterSliderP1_SC" startTime="0.0" endTime="1.0" shaderParameter="sliderPos" shaderStartValues="0 0 0 0" shaderEndValues="1 0 0 0" />
-	</animation>
-	<animation name="frontPLifterSliderAnimP3_SC">
-		<part node="dbl_frontPLifterSliderP3_SC" startTime="0.0" endTime="1.0" shaderParameter="sliderPos" shaderStartValues="0 0 0 0" shaderEndValues="1 0 0 0" />
-	</animation>
-	<animation name="backPLifterSliderAnimP3_SC">
-		<part node="dbl_backPLifterSliderP3_SC" startTime="0.0" endTime="1.0" shaderParameter="sliderPos" shaderStartValues="0 0 0 0" shaderEndValues="1 0 0 0" />
-	</animation>
--->
 	
 	<dashboardCompound name="FENDT_ONE_DASHBOARD" filename="data/vehicles/fendt/shared/oneDisplays.i3d" node="fendtOneDisplayFront">
 <!-- SteeringWheel always on -->
@@ -157,14 +142,14 @@
 		<dashboard valueType="dbl.cvt" cmd="drivingLevel" state="1" displayType="EMITTER" node="dbl_groupLevel1P1_SW" emitColor="AMAZONE_ORANGE1" emitColorDarkMode="1 1 1 1" intensity="1" groups="MOTOR_ACTIVE"/>
 		<dashboard valueType="dbl.cvt" cmd="drivingLevel" state="2" displayType="EMITTER" node="dbl_groupNumber2P1_SW" emitColor="AMAZONE_ORANGE1" emitColorDarkMode="1 1 1 1" intensity="1" groups="MOTOR_ACTIVE"/>
 		<dashboard valueType="dbl.cvt" cmd="drivingLevel" state="2" displayType="EMITTER" node="dbl_groupLevel2P1_SW" emitColor="AMAZONE_ORANGE1" emitColorDarkMode="1 1 1 1" intensity="1" groups="MOTOR_ACTIVE"/>
-		<dashboard valueType="dbl.cvt" cmd="accramp" state="1 2 3 4" displayType="VISIBILITY" node="dbl_accRamp1P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
-		<dashboard valueType="dbl.cvt" cmd="accramp" state="1 2 3 4" displayType="EMITTER" node="dbl_accRamp1P1_SW" emitColor="AMAZONE_ORANGE1" intensity="1" groups="MOTOR_ACTIVE"/>
-		<dashboard valueType="dbl.cvt" cmd="accramp" state="2 3 4" displayType="VISIBILITY" node="dbl_accRamp2P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
-		<dashboard valueType="dbl.cvt" cmd="accramp" state="2 3 4" displayType="EMITTER" node="dbl_accRamp2P1_SW" emitColor="AMAZONE_ORANGE1" intensity="1" groups="MOTOR_ACTIVE"/>
-		<dashboard valueType="dbl.cvt" cmd="accramp" state="3 4" displayType="VISIBILITY" node="dbl_accRamp3P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
-		<dashboard valueType="dbl.cvt" cmd="accramp" state="3 4" displayType="EMITTER" node="dbl_accRamp3P1_SW" emitColor="AMAZONE_ORANGE1" intensity="1" groups="MOTOR_ACTIVE"/>
-		<dashboard valueType="dbl.cvt" cmd="accramp" state="4" displayType="VISIBILITY" node="dbl_accRamp4P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
-		<dashboard valueType="dbl.cvt" cmd="accramp" state="4" displayType="EMITTER" node="dbl_accRamp4P1_SW" emitColor="AMAZONE_ORANGE1" intensity="1" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.cvt" cmd="accRamp" state="1 2 3 4" displayType="VISIBILITY" node="dbl_accRamp1P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
+		<dashboard valueType="dbl.cvt" cmd="accRamp" state="1 2 3 4" displayType="EMITTER" node="dbl_accRamp1P1_SW" emitColor="AMAZONE_ORANGE1" intensity="1" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.cvt" cmd="accRamp" state="2 3 4" displayType="VISIBILITY" node="dbl_accRamp2P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
+		<dashboard valueType="dbl.cvt" cmd="accRamp" state="2 3 4" displayType="EMITTER" node="dbl_accRamp2P1_SW" emitColor="AMAZONE_ORANGE1" intensity="1" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.cvt" cmd="accRamp" state="3 4" displayType="VISIBILITY" node="dbl_accRamp3P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
+		<dashboard valueType="dbl.cvt" cmd="accRamp" state="3 4" displayType="EMITTER" node="dbl_accRamp3P1_SW" emitColor="AMAZONE_ORANGE1" intensity="1" groups="MOTOR_ACTIVE"/>
+		<dashboard valueType="dbl.cvt" cmd="accRamp" state="4" displayType="VISIBILITY" node="dbl_accRamp4P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
+		<dashboard valueType="dbl.cvt" cmd="accRamp" state="4" displayType="EMITTER" node="dbl_accRamp4P1_SW" emitColor="AMAZONE_ORANGE1" intensity="1" groups="MOTOR_ACTIVE"/>
 		<dashboard valueType="dbl.cvt" cmd="brakeRamp" state="4 8 15 17" displayType="VISIBILITY" node="dbl_brakeRamp1P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
 		<dashboard valueType="dbl.cvt" cmd="brakeRamp" state="4 8 15 17" displayType="EMITTER" node="dbl_brakeRamp1P1_SW" emitColor="RED" intensity="1" groups="MOTOR_ACTIVE"/>
 		<dashboard valueType="dbl.cvt" cmd="brakeRamp" state="8 15 17" displayType="VISIBILITY" node="dbl_brakeRamp2P1_SW" groups="MOTOR_ACTIVE PAGESW1"/>
@@ -364,8 +349,8 @@
 		<dashboard valueType="dbl.base" cmd="connected" joints="2 5" displayType="EMITTER" node="dbl_frontPLifterP1_SC" baseColor="FENDT_WHITE2" emitColor="LEMKEN_BLUE1" groups="MOTOR_ACTIVE" />
 		<dashboard valueType="dbl.base" cmd="connected" joints="1 3 4" displayType="EMITTER" node="dbl_backPLifterP1_SC" baseColor="FENDT_WHITE2" emitColor="LEMKEN_BLUE1" groups="MOTOR_ACTIVE"/>
 		<!-- Lifter State -->
-		<!-- <dashboard valueType="dbl.base" cmd="liftState" joints="2" displayType="ANIMATION" animName="frontPLifterSliderAnimP1_SC" groups="MOTOR_ACTIVE PAGESC1" />
-		<dashboard valueType="dbl.base" cmd="liftState" joints="1" displayType="ANIMATION" animName="backPLifterSliderAnimP1_SC" groups="MOTOR_ACTIVE PAGESC1" /> -->
+		<dashboard valueType="dbl.base" cmd="liftState" jointSide="front" jointType="implement" displayType="SLIDER" node="dbl_frontPLifterSliderP1_SC" factor="100" minValueSlider="0" maxValueSlider="100" groups="MOTOR_ACTIVE PAGESC1" />
+		<dashboard valueType="dbl.base" cmd="liftState" jointSide="back" jointType="implement" displayType="SLIDER" node="dbl_backPLifterSliderP1_SC" factor="100" minValueSlider="0" maxValueSlider="100" groups="MOTOR_ACTIVE PAGESC1" />
 		<dashboard valueType="dbl.base" cmd="liftState" joints="2" displayType="SLIDER" minValueSlider="0" maxValueSlider="100" groups="MOTOR_ACTIVE PAGESC1" />
 		<dashboard valueType="dbl.base" cmd="liftState" joints="1" displayType="SLIDER" factor="1" minValueSlider="0" maxValueSlider="100" groups="MOTOR_ACTIVE PAGESC1" />
 		<dashboard valueType="dbl.base" cmd="liftState" joints="2" option="percent" displayType="TEXT" node="dbl_frontPLifterPercP1_SC" factor="100" default="0" textColor="0.4 0.4 0.4 1" textColorDarkMode="1 1 1 1" textSize="0.004" textMask="000%" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_ACTIVE PAGESC1"/>
@@ -527,8 +512,8 @@
 		<dashboard valueType="dbl.base" cmd="folding unfolding" joints="1 3 4" option="any" displayType="EMITTER" node="dbl_backFoldingStateP3_SC" emitColor="GREEN" intensity="1" groups="MOTOR_ACTIVE"/>
 		<dashboard valueType="dbl.base" cmd="unfoldingState" joints="1 3 4" option="any" displayType="TEXT" node="dbl_backFoldingStatePercP3_SC" factor="100" textColor="0.4 0.4 0.4 1" textColorDarkMode="1 1 1 1" textSize="0.004" fontThickness="1.5" textMask="000%" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_ACTIVE DBL_3P_B_FOLDABLE PAGESC3"/>
 		<!-- Lifter State -->
-		<dashboard valueType="dbl.base" cmd="liftState" joints="2" factor="100" default="0" displayType="ANIMATION" animName="frontPLifterSliderAnimP3_SC" groups="MOTOR_ACTIVE PAGESC3" />
-		<dashboard valueType="dbl.base" cmd="liftState" joints="1" factor="100" default="0" displayType="ANIMATION" animName="backPLifterSliderAnimP3_SC" groups="MOTOR_ACTIVE PAGESC3" />
+		<dashboard valueType="dbl.base" cmd="liftState" jointSide="front" jointType="implement" displayType="SLIDER" node="dbl_frontPLifterSliderP3_SC" factor="100" minValueSlider="0" maxValueSlider="100" groups="MOTOR_ACTIVE PAGESC3" />
+		<dashboard valueType="dbl.base" cmd="liftState" jointSide="back" jointType="implement" displayType="SLIDER" node="dbl_backPLifterSliderP3_SC" factor="100" minValueSlider="0" maxValueSlider="100" groups="MOTOR_ACTIVE PAGESC3" />
 		<dashboard valueType="dbl.base" cmd="liftState" joints="2" option="percent" displayType="TEXT" node="dbl_frontPLifterPercP3_SC" factor="100" default="0" textColor="0.4 0.4 0.4 1" textColorDarkMode="1 1 1 1" textSize="0.004" textMask="000%" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_ACTIVE PAGESC3"/>
 		<dashboard valueType="dbl.base" cmd="liftState" joints="1" option="percent" displayType="TEXT" node="dbl_backPLifterPercP3_SC" factor="100" default="0" textColor="0.4 0.4 0.4 1" textColorDarkMode="1 1 1 1" textSize="0.004" textMask="000%" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_ACTIVE PAGESC3"/>
     </dashboardCompound>

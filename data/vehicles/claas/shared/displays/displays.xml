@@ -152,12 +152,14 @@
 		<dashboard displayType="VISIBILITY" node="cebisJaguar_vehicleIconDM" groups="MOTOR_RUNNING DARKMODE"/>
 		<dashboard displayType="VISIBILITY" node="cebisJaguar_vehicleInfoLines" groups="MOTOR_RUNNING LIGHTMODE"/>
 		<dashboard displayType="VISIBILITY" node="cebisJaguar_vehicleInfoLinesDM" groups="MOTOR_RUNNING DARKMODE"/>
-		<dashboard displayType="EMITTER" node="cebisJaguar_basicScreenP1_SC" intensity="0.3" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="EMITTER" node="cebisJaguar_basicScreenP1_SC" intensity="0.2" groups="MOTOR_RUNNING LIGHTMODE"/>
 		<dashboard displayType="EMITTER" node="cebisJaguar_basicScreenDMP1_SC" intensity="0.3" groups="MOTOR_RUNNING DARKMODE"/>
-		<dashboard displayType="EMITTER" node="cebisJaguar_vehicleIcon" intensity="0.3" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="EMITTER" node="cebisJaguar_vehicleIcon" intensity="0.2" groups="MOTOR_RUNNING LIGHTMODE"/>
 		<dashboard displayType="EMITTER" node="cebisJaguar_vehicleIconDM" intensity="0.3" groups="MOTOR_RUNNING DARKMODE"/>
-		<dashboard displayType="EMITTER" node="cebisJaguar_vehicleInfoLines" intensity="0.3" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="EMITTER" node="cebisJaguar_vehicleInfoLines" intensity="0.2" groups="MOTOR_RUNNING LIGHTMODE"/>
 		<dashboard displayType="EMITTER" node="cebisJaguar_vehicleInfoLinesDM" intensity="0.3" groups="MOTOR_RUNNING DARKMODE"/>
+		<dashboard displayType="EMITTER" node="cebisJaguar_dblVehicleDecal00P1_SC" intensity="0.2" groups="MOTOR_RUNNING LIGHTMODE"/>
+		<dashboard displayType="EMITTER" node="cebisJaguar_dblVehicleDecal01P1_SC" intensity="0.2" groups="MOTOR_RUNNING LIGHTMODE"/>
 		
 		<dashboard displayType="SLIDER" valueType="motorized.speed" node="cebisJaguar_dblSpeedSliderP1_SC" minValueSlider="0" maxValueSlider="50" intensity="0.4" groups="MOTOR_RUNNING"/>
 		<dashboard displayType="SLIDER" valueType="motorized.rpm" node="cebisJaguar_dblRpmSliderP1_SC" minValueSlider="500" maxValueSlider="2200" intensity="0.4" groups="MOTOR_RUNNING"/>
@@ -189,7 +191,7 @@
 			<state value="1" visibility="false"/>
 		</dashboard>
 		
-		<dashboard displayType="TEXT" valueType="enterable.time" node="cebisJaguar_dblTimeNumbersP1_SC" textColor="0.027 0.027 0.027 1" textColorDarkMode="1 1 1 1" emissiveScale="0.4" textSize="0.004" textMask="00:00" textAlignment="CENTER" font="GENERIC" groups="MOTOR_RUNNING"/>
+		<dashboard displayType="TEXT" valueType="enterable.time" node="cebisJaguar_dblTimeNumbersP1_SC" textColor="1 1 1 1" textColorDarkMode="1 1 1 1" emissiveScale="0.4" textSize="0.004" textMask="00:00" textAlignment="CENTER" font="GENERIC" groups="MOTOR_RUNNING"/>
 		<dashboard displayType="TEXT" valueType="enterable.operatingTime" node="cebisJaguar_dblWorkTimeNumbersP1_SC" textColor="0.027 0.027 0.027 1" textColorDarkMode="1 1 1 1" emissiveScale="0.4" textSize="0.004" textMask="0000,0" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_RUNNING"/>
 		
 		<dashboard displayType="EMITTER" valueType="fillLevelWarning" fillType="DEF" node="cebisJaguar_dblAdBlueP1_SC" baseColor="0.027 0.027 0.027 1" baseColorDarkMode="1 1 1 1" emitColor="ALPEGO_BLUE" intensity="1" warningThresholdMax="10" groups="MOTOR_RUNNING"/>

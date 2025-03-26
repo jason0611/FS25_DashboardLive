@@ -131,7 +131,8 @@
         </mirrors>
 
         <dashboards>
-
+			<dashboard displayType="TEXT" valueType="operatingTime" node="dbl_workHoursNumbersP2_SC" textSize="0.004" textScaleX="0.8" textMask="0000.0" textColor="0.3 0.3 0.3 1" font="GENERIC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="TEXT" valueType="operatingTime" node="dbl_workHoursNumbersP3_SC" textSize="0.004" textScaleX="0.8" textMask="0000.0" textColor="0.3 0.3 0.3 1" font="GENERIC" groups="MOTOR_RUNNING PAGE3"/>
         </dashboards>
     </enterable>
 
@@ -140,8 +141,12 @@
 
         <dashboards>
             <dashboard displayType="ROT" valueType="ac_decelerationAxis" node="joystick" minRot="-2 0 0" maxRot="8 0 0" doInterpolation="true" groups="MOTOR_ACTIVE"/>
-			<dashboard displayType="TEXT" valueType="cruiseControl" node="dbl_cc1NumbersP1_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="00.0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="EMITTER" valueType="cruiseControl" node="dbl_cruiseControl01P1_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.6" groups="MOTOR_ACTIVE PAGE1"/>
+			<dashboard displayType="TEXT" valueType="cruiseControl" node="dbl_cc1NumbersP1_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="00.0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="EMITTER" valueType="cruiseControlActive" node="dbl_cruiseControl01P1_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.6" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="TEXT" valueType="cruiseControl" node="dbl_cc1NumbersP2_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="00.0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="EMITTER" valueType="cruiseControlActive" node="dbl_cruiseControl01P2_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.6" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="TEXT" valueType="cruiseControl" node="dbl_cc1NumbersP3_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="00.0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="EMITTER" valueType="cruiseControlActive" node="dbl_cruiseControl01P3_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.6" groups="MOTOR_RUNNING PAGE3"/>
         </dashboards>
     </drivable>
 
@@ -264,21 +269,21 @@
                     <fillUnit unitTextOverride="$l10n_unit_literShort" showOnHud="false" showInShop="false" fillTypes="diesel" capacity="1225">
                         <exactFillRootNode node="exaktFillRootNodeFuel" />
                         <dashboard displayType="SLIDER" valueType="fillLevel" node="fuelBarDecal" groups="MOTOR_ACTIVE"/>
-                        <dashboard displayType="SLIDER" valueType="fillLevel" node="dbl_fuelSliderBarP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-						<dashboard displayType="EMITTER" valueType="fillLevelWarning" node="dbl_fuelIconP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="AMAZONE_ORANGE1" intensity="0.15" warningThresholdMax="50" groups="MOTOR_ACTIVE PAGE1"/>
+                        <dashboard displayType="SLIDER" valueType="fillLevel" node="dbl_fuelSliderBarP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+						<dashboard displayType="EMITTER" valueType="fillLevelWarning" node="dbl_fuelIconP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="AMAZONE_ORANGE1" intensity="0.15" warningThresholdMax="50" groups="MOTOR_RUNNING PAGE1"/>
                     </fillUnit>
                     <fillUnit unitTextOverride="$l10n_unit_literShort" showOnHud="false" showInShop="false" showOnInfoHud="false" fillTypes="def" capacity="205">
                         <dashboard displayType="SLIDER" valueType="fillLevel" node="defBarDecal" groups="MOTOR_ACTIVE"/>
-                        <dashboard displayType="SLIDER" valueType="fillLevel" node="dbl_defSliderBarP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-						<dashboard displayType="EMITTER" valueType="fillLevelWarning" node="dbl_defIconP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="BOMECH_BLUE1" intensity="0.15" warningThresholdMax="20" groups="MOTOR_ACTIVE PAGE1"/>
+                        <dashboard displayType="SLIDER" valueType="fillLevel" node="dbl_defSliderBarP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+						<dashboard displayType="EMITTER" valueType="fillLevelWarning" node="dbl_defIconP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="BOMECH_BLUE1" intensity="0.15" warningThresholdMax="20" groups="MOTOR_RUNNING PAGE1"/>
                     </fillUnit>
                     <fillUnit unitTextOverride="$l10n_unit_literShort" fillTypes="SILAGE_ADDITIVE" capacity="20" uiPrecision="2">
                         <exactFillRootNode node="exactFillRootNodeAdditives" />
                     </fillUnit>
 					<!-- DBL Test -->
 					<fillUnit unitTextOverride="$l10n_unit_literShort" showOnHud="false" showInShop="false" showOnInfoHud="false" fillTypes="air" capacity="4000">
-                        <dashboard displayType="SLIDER" valueType="fillLevel" node="dbl_airSliderBarP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-						<dashboard displayType="EMITTER" valueType="fillLevelWarning" node="dbl_airIconP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="RED" intensity="0.15" warningThresholdMax="20" groups="MOTOR_ACTIVE PAGE1"/>
+                        <dashboard displayType="SLIDER" valueType="fillLevel" node="dbl_airSliderBarP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+						<dashboard displayType="EMITTER" valueType="fillLevelWarning" node="dbl_airIconP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="RED" intensity="0.15" warningThresholdMax="20" groups="MOTOR_RUNNING PAGE1"/>
                     </fillUnit>
                 </fillUnits>
             </fillUnitConfiguration>
@@ -343,11 +348,22 @@
                 <state value="2" rotation="0 0 -30"/>
             </dashboard>
 		<!-- Dashboard Live -->
-			<dashboard displayType="ANIMATION" valueType="speed" animName="speedAnimP1_SC" minValueAnim="0" maxValueAnim="40" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="ANIMATION" valueType="rpm" animName="rpmAnimP1_SC" minValueAnim="400" maxValueAnim="2200" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="TEXT" valueType="speed" node="dbl_speedNumbersP1_SC" textColor="0.05 0.05 0.05 1" textSize="0.007" textMask="00.0" textAlignment="CENTER" font="GENERIC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="TEXT" valueType="rpm" node="dbl_rpmNumbersP1_SC" textColor="0.05 0.05 0.05 1" textSize="0.007" textMask="0000" textAlignment="CENTER" font="GENERIC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="SLIDER" valueType="motorTemperature" node="dbl_tempSliderBarP1_SC" minValueSlider="40" maxValueSlider="120" groups="MOTOR_ACTIVE PAGE1"/>
+			<!-- Page 1 -->
+			<dashboard displayType="ANIMATION" valueType="speed" animName="speedAnimP1_SC" minValueAnim="0" maxValueAnim="40" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="ANIMATION" valueType="rpm" animName="rpmAnimP1_SC" minValueAnim="400" maxValueAnim="2200" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="TEXT" valueType="speed" node="dbl_speedNumbersP1_SC" textColor="0.05 0.05 0.05 1" textSize="0.007" textMask="00.0" textAlignment="CENTER" font="GENERIC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="TEXT" valueType="rpm" node="dbl_rpmNumbersP1_SC" textColor="0.05 0.05 0.05 1" textSize="0.007" textMask="0000" textAlignment="CENTER" font="GENERIC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="SLIDER" valueType="motorTemperature" node="dbl_tempSliderBarP1_SC" minValueSlider="40" maxValueSlider="120" groups="MOTOR_RUNNING PAGE1"/>
+			<!-- Page 2 -->
+			<dashboard displayType="ROT" valueType="load" node="dbl_engineLoadNeedleP2_SC" rotAxis="2" minRot="60" maxRot="-60" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="TEXT" valueType="speed" node="dbl_speedNumbersP2_SC" textColor="0.05 0.05 0.05 1" textSize="0.007" textMask="00.0" textAlignment="CENTER" font="GENERIC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="TEXT" valueType="rpm" node="dbl_rpmNumbersP2_SC" textColor="0.05 0.05 0.05 1" textSize="0.007" textMask="0000" textAlignment="CENTER" font="GENERIC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="TEXT" valueType="fuelUsage" node="dbl_fuelNumbersP2_SC" textColor="0.3 0.3 0.3 1" textSize="0.004" textMask="0000" textScaleX="0.9" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING PAGE2"/>
+			<!-- Page 3 -->
+			<dashboard displayType="ROT" valueType="load" node="dbl_engineLoadNeedleP3_SC" rotAxis="2" minRot="60" maxRot="-60" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="TEXT" valueType="speed" node="dbl_speedNumbersP3_SC" textColor="0.05 0.05 0.05 1" textSize="0.007" textMask="00.0" textAlignment="CENTER" font="GENERIC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="TEXT" valueType="rpm" node="dbl_rpmNumbersP3_SC" textColor="0.05 0.05 0.05 1" textSize="0.007" textMask="0000" textAlignment="CENTER" font="GENERIC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="TEXT" valueType="fuelUsage" node="dbl_fuelNumbersP3_SC" textColor="0.3 0.3 0.3 1" textSize="0.004" textMask="0000" textScaleX="0.9" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING PAGE3"/>
         </dashboards>
     </motorized>
 
@@ -534,6 +550,24 @@
 		<animation name="rpmAnimP1_SC">
             <part node="dbl_rpmNeedleP1_SC" startTime="0" endTime="1" startRot="0 -61 0" endRot="0 -6 0"/>
 		</animation>
+		<!-- <animation name="combineXPEngineLoadAnimP2_SC">
+			<part node="dbl_engineLoadNeedleP2_SC" startTime="0" endTime="1" startRot="0 60 0" endRot="0 -60 0"/>
+		</animation> -->
+		<animation name="gpsActiveAnimP2_SC">
+            <part node="dbl_gpsOFFP2_SC" startTime="0" endTime="0.01" visibility="true"/>
+            <part node="dbl_gpsOFFP2_SC" startTime="0.01" endTime="0.02" visibility="false"/>
+		</animation>
+		<!-- <animation name="combineXPEngineLoadAnimP3_SC">
+			<part node="dbl_engineLoadNeedleP3_SC" startTime="0" endTime="1" startRot="0 60 0" endRot="0 -60 0"/>
+		</animation> -->
+		<animation name="gpsActiveAnimP3_SC">
+            <part node="dbl_gpsOFFP3_SC" startTime="0" endTime="0.01" visibility="true"/>
+            <part node="dbl_gpsOFFP3_SC" startTime="0.01" endTime="0.02" visibility="false"/>
+		</animation>
+		<animation name="gpsActiveAnimP4_SC">
+            <part node="dbl_gpsOFFP4_SC" startTime="0" endTime="0.01" visibility="true"/>
+            <part node="dbl_gpsOFFP4_SC" startTime="0.01" endTime="0.02" visibility="false"/>
+		</animation>
     </animations>
 
     <wipers>
@@ -637,122 +671,295 @@
 
     <dashboard>
         <groups>
-            <group name="MOTOR_STARTING" electronicsStarting="true"/>
-			<group name="MOTOR_ACTIVE" electronicsStarting="true" electronicsRunning="true"/>
+			<group name="MOTOR_STARTING" electronicsStarting="true"/>
+            <group name="MOTOR_ACTIVE" electronicsStarting="true" electronicsRunning="true"/>
+            <group name="MOTOR_RUNNING" electronicsStarting="false" electronicsRunning="true"/>
 			<group name="FRONT_ATTACHMENT" attacherJointIndices="1"/>
 			<!-- Page -->
 			<group name="PAGE1" dbl="page" page="1"/>
 			<group name="PAGE2" dbl="page" page="2"/>
 			<group name="PAGE3" dbl="page" page="3"/>
 			<group name="PAGE4" dbl="page" page="4"/>
+			<!-- Guidance Steering -->
+			<group name="DBL_GPS_ON" op="and" dbl="gps_on" />
+			<group name="DBL_PARK" isMotorStarting="true" op="or" dbl="vca_park" />
         </groups>
 		
         <default>
 		<!-- Always on -->
 			<dashboard displayType="VISIBILITY" node="numbers"  groups="MOTOR_ACTIVE" />
-            <dashboard displayType="VISIBILITY" node="dbl_engineWarningP1_SC"  groups="MOTOR_STARTING PAGE1" />
-            <dashboard displayType="EMITTER" node="dbl_engineWarningP1_SC" intensity="0.4" baseColor="1 1 1 0" emitColor="FENDT_YELLOW1" groups="MOTOR_STARTING PAGE1" />
             <dashboard displayType="EMITTER" node="startingDecal" intensity="0.4" baseColor="BLACK" groups="MOTOR_STARTING" />
             <dashboard displayType="EMITTER" node="cameraDisplay_static" idleValue="-1" intensity="0.4" groups="MOTOR_ACTIVE" />
 		<!-- SeatConsole Screen -->
-			<dashboard displayType="VISIBILITY" node="dbl_defaultScreenP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="VISIBILITY" node="dbl_chopperScreenP2_SC" groups="MOTOR_ACTIVE PAGE2"/>
-			<dashboard displayType="VISIBILITY" node="dbl_chopperScreenP3_SC" groups="MOTOR_ACTIVE PAGE3"/>
-			<dashboard displayType="VISIBILITY" node="dbl_gpsScreenP4_SC" groups="MOTOR_ACTIVE PAGE4"/>
+			<dashboard displayType="VISIBILITY" node="dbl_defaultScreenP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_chopperScreenP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="VISIBILITY" node="dbl_chopperScreenP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="VISIBILITY" node="dbl_gpsScreenP4_SC" groups="MOTOR_RUNNING PAGE4"/>
 			<dashboard displayType="EMITTER" node="dbl_bootScreen" idleValue="-1" intensity="0.3" groups="MOTOR_STARTING"/>
-			<dashboard displayType="EMITTER" node="dbl_defaultScreenP1_SC" idleValue="-1" intensity="0.3" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="EMITTER" node="dbl_chopperScreenP2_SC" idleValue="-1" intensity="0.3" groups="MOTOR_ACTIVE PAGE2"/>
-			<dashboard displayType="EMITTER" node="dbl_chopperScreenP3_SC" idleValue="-1" intensity="0.3" groups="MOTOR_ACTIVE PAGE3"/>
-			<dashboard displayType="EMITTER" node="dbl_gpsScreenP4_SC" idleValue="-1" intensity="0.3" groups="MOTOR_ACTIVE PAGE4"/>
+			<dashboard displayType="EMITTER" node="dbl_defaultScreenP1_SC" idleValue="-1" intensity="0.3" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="EMITTER" node="dbl_chopperScreenP2_SC" idleValue="-1" intensity="0.3" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="EMITTER" node="dbl_chopperScreenP3_SC" idleValue="-1" intensity="0.3" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="EMITTER" node="dbl_gpsScreenP4_SC" idleValue="-1" intensity="0.3" groups="MOTOR_RUNNING PAGE4"/>
 		<!-- SeatConsole Page1 -->
-			<dashboard displayType="VISIBILITY" node="dbl_speedNeedleP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="VISIBILITY" node="dbl_speedNumbersP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="VISIBILITY" node="dbl_rpmNeedleP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="VISIBILITY" node="dbl_rpmNumbersP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="VISIBILITY" node="dbl_gpsSatellitP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="VISIBILITY" node="dbl_gpsActiveP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="VISIBILITY" node="dbl_diffAutoP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="VISIBILITY" node="dbl_parkbreakP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<!-- <dashboard displayType="VISIBILITY" node="dbl_warningP1_SC" groups="MOTOR_ACTIVE PAGE1"/> -->
-			<dashboard displayType="VISIBILITY" node="dbl_defIconP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="VISIBILITY" node="dbl_fuelIconP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="VISIBILITY" node="dbl_tempIconP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="VISIBILITY" node="dbl_airIconP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="VISIBILITY" node="dbl_cruiseControl01P1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="VISIBILITY" node="dbl_cruiseControl02P1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="VISIBILITY" node="dbl_wheelSlipIconP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="EMITTER" node="dbl_speedNeedleP1_SC" intensity="0.15" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="EMITTER" node="dbl_rpmNeedleP1_SC" intensity="0.15" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="EMITTER" node="dbl_fuelSliderBarP1_SC" intensity="0.15" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="EMITTER" node="dbl_defSliderBarP1_SC" intensity="0.15" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="EMITTER" node="dbl_airSliderBarP1_SC" intensity="0.15" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="EMITTER" node="dbl_tempSliderBarP1_SC" intensity="0.15" groups="MOTOR_ACTIVE PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_engineWarningP1_SC"  groups="MOTOR_RUNNING PAGE1" />
+			<dashboard displayType="VISIBILITY" node="dbl_speedNeedleP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_speedNumbersP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_rpmNeedleP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_rpmNumbersP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_gpsSatellitP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_gpsActiveP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_diffAutoP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_parkbreakP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<!-- <dashboard displayType="VISIBILITY" node="dbl_warningP1_SC" groups="MOTOR_RUNNING PAGE1"/> -->
+			<dashboard displayType="VISIBILITY" node="dbl_defIconP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_fuelIconP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_tempIconP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_airIconP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_cruiseControl01P1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_cruiseControl02P1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_wheelSlipIconP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_fuelSliderBarP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_defSliderBarP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_airSliderBarP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="VISIBILITY" node="dbl_tempSliderBarP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="EMITTER" node="dbl_engineWarningP1_SC" intensity="0.4" baseColor="1 1 1 0" emitColor="FENDT_YELLOW1" groups="MOTOR_RUNNING PAGE1" />
+			<dashboard displayType="EMITTER" node="dbl_speedNeedleP1_SC" intensity="0.15" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="EMITTER" node="dbl_rpmNeedleP1_SC" intensity="0.15" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="EMITTER" node="dbl_fuelSliderBarP1_SC" intensity="0.15" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="EMITTER" node="dbl_defSliderBarP1_SC" intensity="0.15" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="EMITTER" node="dbl_airSliderBarP1_SC" intensity="0.15" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard displayType="EMITTER" node="dbl_tempSliderBarP1_SC" intensity="0.15" groups="MOTOR_RUNNING PAGE1"/>
 		<!-- SeatConsole Page2 -->
-			<dashboard displayType="VISIBILITY" node="dbl_engineLoadNeedleP2_SC" groups="MOTOR_ACTIVE PAGE2"/>
-			<dashboard displayType="VISIBILITY" node="dbl_gpsSatellitP2_SC" groups="MOTOR_ACTIVE PAGE2"/>
-			<dashboard displayType="VISIBILITY" node="dbl_gpsActiveP2_SC" groups="MOTOR_ACTIVE PAGE2"/>
-			<dashboard displayType="VISIBILITY" node="dbl_diffAutoP2_SC" groups="MOTOR_ACTIVE PAGE2"/>
-			<dashboard displayType="VISIBILITY" node="dbl_parkbreakP2_SC" groups="MOTOR_ACTIVE PAGE2"/>
-			<dashboard displayType="VISIBILITY" node="dbl_gpsOFFP2_SC" groups="MOTOR_ACTIVE PAGE2"/>
-			<dashboard displayType="VISIBILITY" node="dbl_hlmOnOffP2_SC" groups="MOTOR_ACTIVE PAGE2"/>
-			<dashboard displayType="VISIBILITY" node="dbl_cruiseControl01P2_SC" groups="MOTOR_ACTIVE PAGE2"/>
-			<dashboard displayType="VISIBILITY" node="dbl_cruiseControl02P2_SC" groups="MOTOR_ACTIVE PAGE2"/>
-			<dashboard displayType="EMITTER" node="dbl_engineLoadNeedleP2_SC" intensity="0.15" groups="MOTOR_ACTIVE PAGE2"/>
-			<dashboard displayType="EMITTER" node="dbl_gpsOFFP2_SC" intensity="0.15" groups="MOTOR_ACTIVE PAGE2"/>
+			<dashboard displayType="VISIBILITY" node="dbl_engineLoadNeedleP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="VISIBILITY" node="dbl_gpsSatellitP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="VISIBILITY" node="dbl_gpsActiveP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="VISIBILITY" node="dbl_diffAutoP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="VISIBILITY" node="dbl_parkbreakP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="VISIBILITY" node="dbl_gpsOFFP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="VISIBILITY" node="dbl_hlmOnOffP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="VISIBILITY" node="dbl_cruiseControl01P2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="VISIBILITY" node="dbl_cruiseControl02P2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="EMITTER" node="dbl_engineLoadNeedleP2_SC" intensity="0.15" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="EMITTER" node="dbl_gpsOFFP2_SC" intensity="0.15" groups="MOTOR_RUNNING PAGE2"/>
 		<!-- SeatConsole Page3 -->
-			<dashboard displayType="VISIBILITY" node="dbl_engineLoadNeedleP3_SC" groups="MOTOR_ACTIVE PAGE3"/>
-			<dashboard displayType="VISIBILITY" node="dbl_gpsSatellitP3_SC" groups="MOTOR_ACTIVE PAGE3"/>
-			<dashboard displayType="VISIBILITY" node="dbl_gpsActiveP3_SC" groups="MOTOR_ACTIVE PAGE3"/>
-			<dashboard displayType="VISIBILITY" node="dbl_diffAutoP3_SC" groups="MOTOR_ACTIVE PAGE3"/>
-			<dashboard displayType="VISIBILITY" node="dbl_parkbreakP3_SC" groups="MOTOR_ACTIVE PAGE3"/>
-			<dashboard displayType="VISIBILITY" node="dbl_gpsOFFP3_SC" groups="MOTOR_ACTIVE PAGE3"/>
-			<dashboard displayType="VISIBILITY" node="dbl_hlmOnOffP3_SC" groups="MOTOR_ACTIVE PAGE3"/>
-			<dashboard displayType="VISIBILITY" node="dbl_cruiseControl01P3_SC" groups="MOTOR_ACTIVE PAGE3"/>
-			<dashboard displayType="VISIBILITY" node="dbl_cruiseControl02P3_SC" groups="MOTOR_ACTIVE PAGE3"/>
-			<dashboard displayType="EMITTER" node="dbl_engineLoadNeedleP3_SC" intensity="0.15" groups="MOTOR_ACTIVE PAGE3"/>
-			<dashboard displayType="EMITTER" node="dbl_gpsOFFP3_SC" intensity="0.15" groups="MOTOR_ACTIVE PAGE3"/>
+			<dashboard displayType="VISIBILITY" node="dbl_engineLoadNeedleP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="VISIBILITY" node="dbl_gpsSatellitP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="VISIBILITY" node="dbl_gpsActiveP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="VISIBILITY" node="dbl_diffAutoP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="VISIBILITY" node="dbl_parkbreakP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="VISIBILITY" node="dbl_gpsOFFP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="VISIBILITY" node="dbl_hlmOnOffP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="VISIBILITY" node="dbl_cruiseControl01P3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="VISIBILITY" node="dbl_cruiseControl02P3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="EMITTER" node="dbl_engineLoadNeedleP3_SC" intensity="0.15" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="EMITTER" node="dbl_gpsOFFP3_SC" intensity="0.15" groups="MOTOR_RUNNING PAGE3"/>
 		<!-- SeatConsole Page4 -->
-			<dashboard displayType="VISIBILITY" node="dbl_gpsOFFP4_SC" groups="MOTOR_ACTIVE PAGE4"/>
-			<dashboard displayType="VISIBILITY" node="dbl_hlmOnOffP4_SC" groups="MOTOR_ACTIVE PAGE4"/>
-			<dashboard displayType="EMITTER" node="dbl_gpsOFFP4_SC" intensity="0.15" groups="MOTOR_ACTIVE PAGE4"/>
+			<dashboard displayType="VISIBILITY" node="dbl_gpsOFFP4_SC" groups="MOTOR_RUNNING PAGE4"/>
+			<dashboard displayType="VISIBILITY" node="dbl_hlmOnOffP4_SC" groups="MOTOR_RUNNING PAGE4"/>
+			<dashboard displayType="EMITTER" node="dbl_gpsOFFP4_SC" intensity="0.15" groups="MOTOR_RUNNING PAGE4"/>
         </default>
 		
 		<dashboardLive>
+		<!-- SeatConsole Boot Screen -->	
+			<dashboard valueType="base" cmd="" displayType="AUDIO" audioName="dbl_bootScreen" loop="1" volume="0.5" audioFile="utils/sounds/fendtBoot.ogg" groups="MOTOR_STARTING"/>
 		<!-- SeatConsole Display Page1 -->
 			<!-- Real Clock -->
-			<dashboard displayType="TEXT" valueType="base" cmd="realclock" node="dbl_realClockP1_SC" textMask="ssssssss" textColor="BLACK" textSize="0.004" fontThickness="1" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_ACTIVE PAGE1"/>
+			<dashboard displayType="TEXT" valueType="base" cmd="realclock" node="dbl_realClockP1_SC" textMask="ssssssss" textColor="BLACK" textSize="0.004" fontThickness="1" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_RUNNING PAGE1"/>
 		<!-- GPS -->
-			<!-- <dashboard valueType="gps" option="on" displayType="EMITTER" node="dbl_gpsSatellitP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard valueType="gps" option="active" displayType="EMITTER" node="dbl_gpsActiveP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_ACTIVE PAGE1"/> -->
+			<!-- <dashboard valueType="gps" option="on" displayType="EMITTER" node="dbl_gpsSatellitP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard valueType="gps" option="active" displayType="EMITTER" node="dbl_gpsActiveP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE1"/> -->
 		<!-- Cruise Control -->
-			<!-- <dashboard valueType="cc" cmd="active" state="1" displayType="EMITTER" node="dbl_cruiseControl01P1_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_ACTIVE PAGE1"/> -->
-			<dashboard valueType="cc" cmd="active" state="2" displayType="EMITTER" node="dbl_cruiseControl02P1_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_ACTIVE PAGE1"/>
-			<!-- <dashboard valueType="cc" cmd="speed" state="1" displayType="TEXT" node="dbl_cc1NumbersP1_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="00.0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_ACTIVE PAGE1"/> -->
-			<dashboard valueType="cc" cmd="speed" state="2" displayType="TEXT" node="dbl_cc2NumbersP1_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="00.0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_ACTIVE PAGE1"/>
+			<!-- <dashboard valueType="cc" cmd="active" state="1" displayType="EMITTER" node="dbl_cruiseControl01P1_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE1"/> -->
+			<dashboard valueType="cc" cmd="active" state="2" displayType="EMITTER" node="dbl_cruiseControl02P1_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE1"/>
+			<!-- <dashboard valueType="cc" cmd="speed" state="1" displayType="TEXT" node="dbl_cc1NumbersP1_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="00.0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING PAGE1"/> -->
+			<dashboard valueType="cc" cmd="speed" state="2" displayType="TEXT" node="dbl_cc2NumbersP1_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="00.0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING PAGE1"/>
 		<!-- CVT -->
-			<dashboard valueType="cvt" cmd="autodiffs" displayType="EMITTER" node="dbl_diffAutoP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="AMAZONE_ORANGE1" intensity="0.5" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard valueType="cvt" cmd="motorcoldlamp" displayType="EMITTER" node="dbl_tempIconP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="CARUELLENICOLAS_BLUE1" intensity="0.4" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard valueType="cvt" cmd="critdamage" displayType="VISIBILITY" node="dbl_warningP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard valueType="cvt" cmd="tmspedalVmax" displayType="TEXT" node="dbl_tmsVMaxNumbersP1_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="00.0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard valueType="cvt" cmd="accramp" displayType="TEXT" node="dbl_accRampNumbersP1_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard valueType="cvt" cmd="drivingLevel" displayType="TEXT" node="dbl_driveLevelNumbersP1_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_ACTIVE PAGE1"/>
+			<dashboard valueType="cvt" cmd="autodiffs" displayType="EMITTER" node="dbl_diffAutoP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="AMAZONE_ORANGE1" intensity="0.5" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard valueType="cvt" cmd="motorcoldlamp" displayType="EMITTER" node="dbl_tempIconP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="CARUELLENICOLAS_BLUE1" intensity="0.4" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard valueType="cvt" cmd="critdamage" displayType="VISIBILITY" node="dbl_warningP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard valueType="cvt" cmd="tmspedalVmax" displayType="TEXT" node="dbl_tmsVMaxNumbersP1_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="00.0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard valueType="cvt" cmd="accramp" displayType="TEXT" node="dbl_accRampNumbersP1_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard valueType="cvt" cmd="drivingLevel" displayType="TEXT" node="dbl_driveLevelNumbersP1_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING PAGE1"/>
 		<!-- VCA -->
-			<dashboard displayType="VISIBILITY" valueType="vca" cmd="diff_back" node="dbl_backDiffLockP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="VISIBILITY" valueType="vca" cmd="diff_awd" node="dbl_awdActiveP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="VISIBILITY" valueType="vca" cmd="diff_front" node="dbl_frontDiffP1_SC" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="EMITTER" valueType="vca" cmd="diff_back" node="dbl_backDiffLockP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_ORANGE1" intensity="0.5" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="EMITTER" valueType="vca" cmd="diff_awd" node="dbl_awdActiveP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_ORANGE1" intensity="0.5" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="EMITTER" valueType="vca" cmd="diff_front" node="dbl_frontDiffP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_ORANGE1" intensity="0.5" groups="MOTOR_ACTIVE PAGE1"/>
-			<dashboard displayType="EMITTER" valueType="base" cmd="" node="dbl_parkbreakP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="RED" intensity="0.5" groups="MOTOR_ACTIVE DBL_PARK PAGE1"/>
-			<dashboard displayType="AUDIO" valueType="vca" cmd="park" outside="true" distance="50.0" audioName="Brake" loop="1" volume="0.5" audioFile="$data/sounds/vehicles/brake/brake_big.ogg" groups="MOTOR_ACTIVE" />
-			<!-- <dashboard displayType="AUDIO" valueType="vca" cmd="park" cond="not" outside="true" distance="50.0" audioName="Brake" loop="1" volume="0.5" audioFile="$data/sounds/vehicles/compressor/compressor_controller.ogg" groups="MOTOR_ACTIVE" /> -->
-			<dashboard displayType="EMITTER" valueType="vca" cmd="slip" node="dbl_wheelSlipIconP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="AGRISEM_YELLOW1" groups="MOTOR_ACTIVE PAGE1" />
-			<dashboard displayType="TEXT" valueType="vca" cmd="slip" option="percent" node="dbl_wheelSlipNumbersP1_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="000" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_ACTIVE PAGE1"/>
+			<dashboard valueType="vca" displayType="VISIBILITY" cmd="diff_back" node="dbl_backDiffLockP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard valueType="vca" displayType="VISIBILITY" cmd="diff_awd" node="dbl_awdActiveP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard valueType="vca" displayType="VISIBILITY" cmd="diff_front" node="dbl_frontDiffP1_SC" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard valueType="vca" displayType="EMITTER" cmd="diff_back" node="dbl_backDiffLockP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_ORANGE1" intensity="0.5" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard valueType="vca" displayType="EMITTER" cmd="diff_awd" node="dbl_awdActiveP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_ORANGE1" intensity="0.5" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard valueType="vca" displayType="EMITTER" cmd="diff_front" node="dbl_frontDiffP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_ORANGE1" intensity="0.5" groups="MOTOR_RUNNING PAGE1"/>
+			<dashboard valueType="base" displayType="EMITTER" cmd="" node="dbl_parkbreakP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="RED" intensity="0.5" groups="MOTOR_RUNNING DBL_PARK PAGE1"/>
+			<dashboard valueType="vca" displayType="AUDIO" cmd="park" outside="true" distance="50.0" audioName="Brake" loop="1" volume="0.5" audioFile="$data/sounds/vehicles/brake/brake_big.ogg" groups="MOTOR_RUNNING" />
+			<!-- <dashboard valueType="vca" displayType="AUDIO" cmd="park" cond="not" outside="true" distance="50.0" audioName="Brake" loop="1" volume="0.5" audioFile="$data/sounds/vehicles/compressor/compressor_controller.ogg" groups="MOTOR_RUNNING" /> -->
+			<dashboard valueType="vca" displayType="EMITTER" cmd="slip" node="dbl_wheelSlipIconP1_SC" baseColor="0.3 0.3 0.3 1" emitColor="AGRISEM_YELLOW1" groups="MOTOR_RUNNING PAGE1" />
+			<dashboard valueType="vca" displayType="TEXT" cmd="slip" option="percent" node="dbl_wheelSlipNumbersP1_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="000" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING PAGE1"/>
 		<!-- SeatConsole Display Page2 -->
 			<!-- Real Clock -->
-			<dashboard valueType="base" cmd="realclock" displayType="TEXT" node="dbl_realClockP2_SC" textMask="ssssssss" textColor="BLACK" textSize="0.004" fontThickness="1" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_ACTIVE PAGE2"/>
+			<dashboard valueType="base" cmd="realclock" displayType="TEXT" node="dbl_realClockP2_SC" textMask="ssssssss" textColor="BLACK" textSize="0.004" fontThickness="1" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_RUNNING PAGE2"/>
+			<!-- Field -->
+			<dashboard valueType="base" cmd="fieldNumber" displayType="TEXT" node="dbl_gpsFieldNumberP2_SC" textMask="Feld000" textColor="0.9 0.9 0.9 1" textSize="0.004" fontThickness="1" font="GENERIC" textAlignment="CENTER" groups="MOTOR_RUNNING PAGE2"/>
+			<!-- combineXP -->
+			<!-- <dashboard valueType="combineXP" cmd="engineLoad" displayType="ANIMATION" animName="combineXPEngineLoadAnimP2_SC" minValueAnim="1" maxValueAnim="160" groups="MOTOR_RUNNING PAGE2"/> -->
+			<dashboard valueType="combineXP" cmd="tonPerHour" displayType="TEXT" node="dbl_tonPerHourNumbersP2_SC" textColor="0.3 0.3 0.3 1" textSize="0.004" textMask="00.0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="combineXP" cmd="yield" displayType="TEXT" node="dbl_yieldNumbersP2_SC" textColor="0.3 0.3 0.3 1" textSize="0.004" textMask="00.0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING PAGE2"/>
+			<!-- Cruise Control -->
+			<!-- <dashboard valueType="cc" cmd="active" state="1" displayType="EMITTER" node="dbl_cruiseControl01P2_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE2"/> -->
+			<dashboard valueType="cc" cmd="active" state="2" displayType="EMITTER" node="dbl_cruiseControl02P2_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<!-- <dashboard valueType="cc" cmd="speed" state="1" displayType="TEXT" node="dbl_cc1NumbersP2_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="00.0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING PAGE2"/> -->
+			<dashboard valueType="cc" cmd="speed" state="2" displayType="TEXT" node="dbl_cc2NumbersP2_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="00.0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING PAGE2"/>
+			<!-- Compass -->
+			<dashboard valueType="base" cmd="headingText2" displayType="TEXT" node="dbl_gpsCompassP2_SC" textColor="0.9 0.9 0.9 1" textSize="0.0045" textMask="00" font="GENERIC" textAlignment="CENTER" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="base" cmd="heading" displayType="TEXT" node="dbl_gpsCompassNumberP2_SC" textColor="0.9 0.9 0.9 1" textSize="0.0045" textMask="000.0" font="GENERIC" textAlignment="LEFT" groups="MOTOR_RUNNING PAGE2"/>
+			<!-- CVT -->
+			<dashboard valueType="cvt" cmd="autodiffs" displayType="EMITTER" node="dbl_diffAutoP2_SC" baseColor="0.3 0.3 0.3 1" emitColor="AMAZONE_ORANGE1" intensity="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<!-- GPS -->
+			<dashboard valueType="gps" option="on" displayType="EMITTER" node="dbl_gpsSatellitP2_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="gps" option="active" displayType="EMITTER" node="dbl_gpsActiveP2_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="gps" option="active" displayType="VISIBILITY" node="dbl_gpsONP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="gps" option="active" displayType="EMITTER" node="dbl_gpsONP2_SC" intensity="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="gps" option="active" displayType="ANIMATION" animName="gpsActiveAnimP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="gpsLane" option="dirLeft"  displayType="VISIBILITY" node="dbl_gpsLaneLeftP2_SC" groups="MOTOR_RUNNING DBL_GPS_ON PAGE2"/>
+			<dashboard valueType="gpsLane" option="dirRight" displayType="VISIBILITY" node="dbl_gpsLaneRightP2_SC" groups="MOTOR_RUNNING DBL_GPS_ON PAGE2"/>
+			<dashboard valueType="gpsLane" option="dirLeft"  displayType="EMITTER" node="dbl_gpsLaneLeftP2_SC" intensity="1" groups="MOTOR_RUNNING"/>
+			<dashboard valueType="gpsLane" option="dirRight" displayType="EMITTER" node="dbl_gpsLaneRightP2_SC" intensity="1" groups="MOTOR_RUNNING"/>
+			<dashboard valueType="gpsWidth" factor="1" displayType="TEXT" node="dbl_gpsWorkWidthP2_SC" textColor="BIGBUD_GREEN1" textSize="0.006" textMask="00.00m" textAlignment="CENTER" font="GENERIC" groups="MOTOR_RUNNING DBL_GPS_ON PAGE2"/>
+			<!-- Connect -->
+			<dashboard valueType="base" cmd="connected" joints="1" displayType="VISIBILITY" node="dbl_headerUpP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="base" cmd="connected" joints="1" displayType="VISIBILITY" node="dbl_headerDownP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="base" cmd="connected" joints="1" displayType="VISIBILITY" node="dbl_headerFoldingP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="base" cmd="connected" joints="1" displayType="VISIBILITY" node="dbl_headerUnfoldingP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="base" cmd="connected" joints="1" displayType="VISIBILITY" node="dbl_headerFoldingStateP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="base" cmd="connected" joints="1" displayType="VISIBILITY" node="dbl_headerUnfoldingStateP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<!-- Header -->
+			<dashboard valueType="base" displayType="VISIBILITY" cmd="lifted" joints="1" node="dbl_headerUpP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="base" displayType="VISIBILITY" cmd="lowered" joints="1" node="dbl_headerDownP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="base" displayType="EMITTER" cmd="lifted" joints="1" node="dbl_headerUpP2_SC" baseColor="0.3 0.3 0.3 1" emitColor="RED" intensity="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="base" displayType="EMITTER" cmd="lowered" joints="1" node="dbl_headerDownP2_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="base" displayType="VISIBILITY" cmd="folded" joints="1" option="any" node="dbl_headerFoldingP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="base" displayType="VISIBILITY" cmd="unfolded" joints="1" option="any" node="dbl_headerUnfoldingP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="base" displayType="VISIBILITY" cmd="folding" joints="1" option="any" node="dbl_headerFoldingStateP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="base" displayType="VISIBILITY" cmd="unfolding" joints="1" option="any" node="dbl_headerUnfoldingStateP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="base" displayType="EMITTER" cmd="folded" joints="1" option="any" node="dbl_headerFoldingP2_SC" emitColor="RED" intensity="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="base" displayType="EMITTER" cmd="unfolded" joints="1" option="any" node="dbl_headerUnfoldingP2_SC" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="base" displayType="EMITTER" cmd="folding" joints="1" option="any" node="dbl_headerFoldingStateP2_SC" emitColor="RED" intensity="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="base" displayType="EMITTER" cmd="unfolding" joints="1" option="any" node="dbl_headerUnfoldingStateP2_SC" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<!-- HLM -->
+			<dashboard valueType="hlm" option="headland" displayType="VISIBILITY" node="dbl_hlmHeadlandP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="hlm" option="field" displayType="VISIBILITY" node="dbl_hlmFieldP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="hlm" option="" 		 displayType="EMITTER"    node="dbl_hlmOnOffP2_SC" 	  baseColor="0.9 0.9 0.9 1" emitColor="AMAZONE_ORANGE1" intensity="0.2" emissiveScale="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="hlm" option="field" 	 displayType="EMITTER"    node="dbl_hlmFieldP2_SC" 	  baseColor="0.9 0.9 0.9 1" emitColor="GREEN" intensity="0.2" emissiveScale="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="hlm" option="headland" displayType="EMITTER"    node="dbl_hlmHeadlandP2_SC" baseColor="0.9 0.9 0.9 1" emitColor="GREEN" intensity="0.2" emissiveScale="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<!-- Pipe -->
+			<dashboard displayType="VISIBILITY" valueType="combine" cmd="pipeState" state="1" node="dbl_pipeFoldingP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="VISIBILITY" valueType="combine" cmd="pipeState" state="2" node="dbl_pipeUnfoldingP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="EMITTER" valueType="combine" cmd="pipeState" state="1" node="dbl_pipeFoldingP2_SC" baseColor="0.3 0.3 0.3 1" emitColor="RED" intensity="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard displayType="EMITTER" valueType="combine" cmd="pipeState" state="2" node="dbl_pipeUnfoldingP2_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<!-- VCA -->
+			<dashboard valueType="vca" cmd="diff_back" displayType="VISIBILITY" node="dbl_backDiffLockP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="vca" cmd="diff_awd" displayType="VISIBILITY" node="dbl_awdActiveP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="vca" cmd="diff_front" displayType="VISIBILITY" node="dbl_frontDiffP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="vca" cmd="diff_back" displayType="EMITTER" node="dbl_backDiffLockP2_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_ORANGE1" intensity="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="vca" cmd="diff_awd" displayType="EMITTER" node="dbl_awdActiveP2_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_ORANGE1" intensity="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="vca" cmd="diff_front" displayType="EMITTER" node="dbl_frontDiffP2_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_ORANGE1" intensity="0.5" groups="MOTOR_RUNNING PAGE2"/>
+			<dashboard valueType="base" cmd="" displayType="EMITTER" node="dbl_parkbreakP2_SC" baseColor="0.3 0.3 0.3 1" emitColor="RED" intensity="0.5" groups="MOTOR_RUNNING DBL_PARK PAGE2"/>
+			<!-- MiniMap -->
+			<dashboard valueType="miniMap" cmd="map" displayType="VISIBILITY" node="dbl_smallMapPlaneP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+        	<dashboard valueType="miniMap" cmd="posMarker" displayType="VISIBILITY" node="dbl_smallNaviPositionP2_SC" groups="MOTOR_RUNNING PAGE2"/>
+		<!-- SeatConsole Display Page3 -->
+			<!-- Real Clock -->
+			<dashboard valueType="base" cmd="realclock" displayType="TEXT" node="dbl_realClockP3_SC" textMask="ssssssss" textColor="BLACK" textSize="0.004" fontThickness="1" font="GENERIC" textAlignment="RIGHT" groups="MOTOR_RUNNING PAGE3"/>
+			<!-- Field -->
+			<dashboard valueType="base" cmd="fieldNumber" displayType="TEXT" node="dbl_gpsFieldNumberP3_SC" textMask="Feld000" textColor="0.9 0.9 0.9 1" textSize="0.004" fontThickness="1" font="GENERIC" textAlignment="CENTER" groups="MOTOR_RUNNING PAGE3"/>
+			<!-- combineXP -->
+			<!-- <dashboard valueType="combineXP" cmd="engineLoad" displayType="ANIMATION" animName="combineXPEngineLoadAnimP3_SC" minValueAnim="1" maxValueAnim="160" groups="MOTOR_RUNNING PAGE3"/> -->
+			<dashboard valueType="combineXP" cmd="tonPerHour" displayType="TEXT" node="dbl_tonPerHourNumbersP3_SC" textColor="0.3 0.3 0.3 1" textSize="0.004" textMask="00.0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="combineXP" cmd="yield" displayType="TEXT" node="dbl_yieldNumbersP3_SC" textColor="0.3 0.3 0.3 1" textSize="0.004" textMask="00.0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC" groups="MOTOR_RUNNING PAGE3"/>
+			<!-- Cruise Control -->
+			<!-- <dashboard valueType="cc" cmd="active" state="1" displayType="EMITTER" node="dbl_cruiseControl01P3_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE3"/> -->
+			<dashboard valueType="cc" cmd="active" state="2" displayType="EMITTER" node="dbl_cruiseControl02P3_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<!-- <dashboard valueType="cc" cmd="speed" state="1" displayType="TEXT" node="dbl_cc1NumbersP3_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="00.0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING PAGE3"/> -->
+			<dashboard valueType="cc" cmd="speed" state="2" displayType="TEXT" node="dbl_cc2NumbersP3_SC" textColor="0.3 0.3 0.3 1" textSize="0.005" textMask="00.0" textScaleX="0.6" fontThickness="1.5" textAlignment="RIGHT" font="GENERIC_BOLD" groups="MOTOR_RUNNING PAGE3"/>
+			<!-- Compass -->
+			<dashboard valueType="base" cmd="headingText2" displayType="TEXT" node="dbl_gpsCompassP3_SC" textColor="0.9 0.9 0.9 1" textSize="0.0045" textMask="00" font="GENERIC" textAlignment="CENTER" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="base" cmd="heading" displayType="TEXT" node="dbl_gpsCompassNumberP3_SC" textColor="0.9 0.9 0.9 1" textSize="0.0045" textMask="000.0" font="GENERIC" textAlignment="LEFT" groups="MOTOR_RUNNING PAGE3"/>
+			<!-- CVT -->
+			<dashboard valueType="cvt" cmd="autodiffs" displayType="EMITTER" node="dbl_diffAutoP3_SC" baseColor="0.3 0.3 0.3 1" emitColor="AMAZONE_ORANGE1" intensity="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<!-- Connect -->
+			<dashboard valueType="base" cmd="connected" joints="1" displayType="VISIBILITY" node="dbl_headerUpP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="base" cmd="connected" joints="1" displayType="VISIBILITY" node="dbl_headerDownP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="base" cmd="connected" joints="1" displayType="VISIBILITY" node="dbl_headerFoldingP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="base" cmd="connected" joints="1" displayType="VISIBILITY" node="dbl_headerUnfoldingP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="base" cmd="connected" joints="1" displayType="VISIBILITY" node="dbl_headerFoldingStateP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="base" cmd="connected" joints="1" displayType="VISIBILITY" node="dbl_headerUnfoldingStateP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<!-- Header -->
+			<dashboard valueType="base" displayType="VISIBILITY" cmd="lifted" joints="1" node="dbl_headerUpP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="base" displayType="VISIBILITY" cmd="lowered" joints="1" node="dbl_headerDownP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="base" displayType="EMITTER" cmd="lifted" joints="1" node="dbl_headerUpP3_SC" baseColor="0.3 0.3 0.3 1" emitColor="RED" intensity="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="base" displayType="EMITTER" cmd="lowered" joints="1" node="dbl_headerDownP3_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="base" displayType="VISIBILITY" cmd="folded" joints="1" option="any" node="dbl_headerFoldingP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="base" displayType="VISIBILITY" cmd="unfolded" joints="1" option="any" node="dbl_headerUnfoldingP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="base" displayType="VISIBILITY" cmd="folding" joints="1" option="any" node="dbl_headerFoldingStateP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="base" displayType="VISIBILITY" cmd="unfolding" joints="1" option="any" node="dbl_headerUnfoldingStateP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="base" displayType="EMITTER" cmd="folded" joints="1" option="any" node="dbl_headerFoldingP3_SC" emitColor="RED" intensity="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="base" displayType="EMITTER" cmd="unfolded" joints="1" option="any" node="dbl_headerUnfoldingP3_SC" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="base" displayType="EMITTER" cmd="folding" joints="1" option="any" node="dbl_headerFoldingStateP3_SC" emitColor="RED" intensity="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="base" displayType="EMITTER" cmd="unfolding" joints="1" option="any" node="dbl_headerUnfoldingStateP3_SC" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<!-- GPS -->
+			<dashboard valueType="gps" option="on" displayType="EMITTER" node="dbl_gpsSatellitP3_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="gps" option="active" displayType="EMITTER" node="dbl_gpsActiveP3_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="gps" option="active" displayType="VISIBILITY" node="dbl_gpsONP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="gps" option="active" displayType="EMITTER" node="dbl_gpsONP3_SC" intensity="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="gps" option="active" displayType="ANIMATION" animName="gpsActiveAnimP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="gpsLane" option="dirLeft"  displayType="VISIBILITY" node="dbl_gpsLaneLeftP3_SC" groups="MOTOR_RUNNING DBL_GPS_ON PAGE3"/>
+			<dashboard valueType="gpsLane" option="dirRight" displayType="VISIBILITY" node="dbl_gpsLaneRightP3_SC" groups="MOTOR_RUNNING DBL_GPS_ON PAGE3"/>
+			<dashboard valueType="gpsLane" option="dirLeft"  displayType="EMITTER" node="dbl_gpsLaneLeftP3_SC" intensity="1" groups="MOTOR_RUNNING"/>
+			<dashboard valueType="gpsLane" option="dirRight" displayType="EMITTER" node="dbl_gpsLaneRightP3_SC" intensity="1" groups="MOTOR_RUNNING"/>
+			<dashboard valueType="gpsWidth" factor="1" displayType="TEXT" node="dbl_gpsWorkWidthP3_SC" textColor="BIGBUD_GREEN1" textSize="0.007" textMask="00.00m" textAlignment="CENTER" font="GENERIC" groups="MOTOR_RUNNING DBL_GPS_ON PAGE3"/>
+			<!-- HLM -->
+			<dashboard valueType="hlm" option="headland" displayType="VISIBILITY" node="dbl_hlmHeadlandP3_SC"  groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="hlm" option="field" displayType="VISIBILITY" node="dbl_hlmFieldP3_SC"  groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="hlm" option="" 		 displayType="EMITTER"    node="dbl_hlmOnOffP3_SC" 	  baseColor="0.9 0.9 0.9 1" emitColor="AMAZONE_ORANGE1" intensity="0.2" emissiveScale="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="hlm" option="field" 	 displayType="EMITTER"    node="dbl_hlmFieldP3_SC" 	  baseColor="0.9 0.9 0.9 1" emitColor="GREEN" intensity="0.2" emissiveScale="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="hlm" option="headland" displayType="EMITTER"    node="dbl_hlmHeadlandP3_SC" baseColor="0.9 0.9 0.9 1" emitColor="GREEN" intensity="0.2" emissiveScale="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<!-- Pipe -->
+			<dashboard displayType="VISIBILITY" valueType="combine" cmd="pipeState" state="1" node="dbl_pipeFoldingP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="VISIBILITY" valueType="combine" cmd="pipeState" state="2" node="dbl_pipeUnfoldingP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="EMITTER" valueType="combine" cmd="pipeState" state="1" node="dbl_pipeFoldingP3_SC" baseColor="0.3 0.3 0.3 1" emitColor="RED" intensity="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard displayType="EMITTER" valueType="combine" cmd="pipeState" state="2" node="dbl_pipeUnfoldingP3_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_GREEN1" intensity="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<!-- VCA -->
+			<dashboard valueType="vca" cmd="diff_back" displayType="VISIBILITY" node="dbl_backDiffLockP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="vca" cmd="diff_awd" displayType="VISIBILITY" node="dbl_awdActiveP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="vca" cmd="diff_front" displayType="VISIBILITY" node="dbl_frontDiffP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="vca" cmd="diff_back" displayType="EMITTER" node="dbl_backDiffLockP3_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_ORANGE1" intensity="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="vca" cmd="diff_awd" displayType="EMITTER" node="dbl_awdActiveP3_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_ORANGE1" intensity="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="vca" cmd="diff_front" displayType="EMITTER" node="dbl_frontDiffP3_SC" baseColor="0.3 0.3 0.3 1" emitColor="BIGBUD_ORANGE1" intensity="0.5" groups="MOTOR_RUNNING PAGE3"/>
+			<dashboard valueType="base" cmd="" displayType="EMITTER" node="dbl_parkbreakP3_SC" baseColor="0.3 0.3 0.3 1" emitColor="RED" intensity="0.5" groups="MOTOR_RUNNING DBL_PARK PAGE3"/>
+			<!-- MiniMap -->
+			<dashboard valueType="miniMap" cmd="map" displayType="VISIBILITY" node="dbl_middleMapPlaneP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+        	<dashboard valueType="miniMap" cmd="posMarker" displayType="VISIBILITY" node="dbl_middleNaviPositionP3_SC" groups="MOTOR_RUNNING PAGE3"/>
+		<!-- SeatConsole Display Page4 -->
 			<!-- Field Number -->
-			<dashboard valueType="base" cmd="fieldNumber" displayType="TEXT" node="dbl_gpsFieldNumberP2_SC" textMask="Feld000" textColor="0.9 0.9 0.9 1" textSize="0.004" fontThickness="1" font="GENERIC" textAlignment="CENTER" groups="MOTOR_ACTIVE PAGE2"/>
+			<dashboard valueType="base" cmd="fieldNumber" displayType="TEXT" node="dbl_gpsFieldNumberP4_SC" textMask="Feld000" textColor="0.9 0.9 0.9 1" textSize="0.004" fontThickness="1" font="GENERIC" textAlignment="CENTER" groups="MOTOR_RUNNING PAGE4"/>
+			<!-- Compass -->
+			<dashboard valueType="base" cmd="headingText2" displayType="TEXT" node="dbl_gpsCompassP4_SC" textColor="0.9 0.9 0.9 1" textSize="0.0045" textMask="00" font="GENERIC" textAlignment="CENTER" groups="MOTOR_RUNNING PAGE4"/>
+			<dashboard valueType="base" cmd="heading" displayType="TEXT" node="dbl_gpsCompassNumberP4_SC" textColor="0.9 0.9 0.9 1" textSize="0.0045" textMask="000.0" font="GENERIC" textAlignment="LEFT" groups="MOTOR_RUNNING PAGE4"/>
+			<!-- GPS -->
+			<dashboard valueType="gps" option="active" displayType="VISIBILITY" node="dbl_gpsONP4_SC" groups="MOTOR_RUNNING PAGE4"/>
+			<dashboard valueType="gps" option="active" displayType="EMITTER" node="dbl_gpsONP4_SC" intensity="0.5" groups="MOTOR_RUNNING PAGE4"/>
+			<dashboard valueType="gps" option="active" displayType="ANIMATION" animName="gpsActiveAnimP4_SC" groups="MOTOR_RUNNING PAGE4"/>
+			<dashboard valueType="gpsLane" option="dirLeft"  displayType="VISIBILITY" node="dbl_gpsLaneLeftP4_SC" groups="MOTOR_RUNNING DBL_GPS_ON PAGE4"/>
+			<dashboard valueType="gpsLane" option="dirRight" displayType="VISIBILITY" node="dbl_gpsLaneRightP4_SC" groups="MOTOR_RUNNING DBL_GPS_ON PAGE4"/>
+			<dashboard valueType="gpsLane" option="dirLeft"  displayType="EMITTER" node="dbl_gpsLaneLeftP4_SC" intensity="1" groups="MOTOR_RUNNING"/>
+			<dashboard valueType="gpsLane" option="dirRight" displayType="EMITTER" node="dbl_gpsLaneRightP4_SC" intensity="1" groups="MOTOR_RUNNING"/>
+			<dashboard valueType="gpsWidth" factor="1" displayType="TEXT" node="dbl_gpsWorkWidthP4_SC" textColor="BIGBUD_GREEN1" textSize="0.007" textMask="00.00m" textAlignment="CENTER" font="GENERIC" groups="MOTOR_RUNNING DBL_GPS_ON PAGE4"/>
+			<!-- HLM -->
+			<dashboard valueType="hlm" option="headland" displayType="VISIBILITY" node="dbl_hlmHeadlandP4_SC"  groups="MOTOR_RUNNING PAGE4"/>
+			<dashboard valueType="hlm" option="field" displayType="VISIBILITY" node="dbl_hlmFieldP4_SC"  groups="MOTOR_RUNNING PAGE4"/>
+			<dashboard valueType="hlm" option="" 		 displayType="EMITTER"    node="dbl_hlmOnOffP4_SC" 	  baseColor="0.9 0.9 0.9 1" emitColor="AMAZONE_ORANGE1" intensity="0.2" emissiveScale="0.5" groups="MOTOR_RUNNING PAGE4"/>
+			<dashboard valueType="hlm" option="field" 	 displayType="EMITTER"    node="dbl_hlmFieldP4_SC" 	  baseColor="0.9 0.9 0.9 1" emitColor="GREEN" intensity="0.2" emissiveScale="0.5" groups="MOTOR_RUNNING PAGE4"/>
+			<dashboard valueType="hlm" option="headland" displayType="EMITTER"    node="dbl_hlmHeadlandP4_SC" baseColor="0.9 0.9 0.9 1" emitColor="GREEN" intensity="0.2" emissiveScale="0.5" groups="MOTOR_RUNNING PAGE4"/>
+			<!-- MiniMap -->
+			<dashboard valueType="miniMap" cmd="map" displayType="VISIBILITY" node="dbl_bigMapPlaneP4_SC" groups="MOTOR_RUNNING PAGE4"/>
+        	<dashboard valueType="miniMap" cmd="posMarker" displayType="VISIBILITY" node="dbl_bigNaviPositionP4_SC" groups="MOTOR_RUNNING PAGE4"/>
 		</dashboardLive>
     </dashboard>
 
@@ -762,8 +969,12 @@
 		
 		<automaticSteering>
 			<dashboards>
-				<dashboard displayType="EMITTER" valueType="steeringState" node="dbl_gpsSatellitP1_SC" baseColor="0.2 0.2 0.2 1" emitColor="BAUER_GREEN1" intensity="0.6" groups="MOTOR_ACTIVE PAGE1"/>
-				<dashboard displayType="EMITTER" valueType="steeringEngaged" node="dbl_gpsActiveP1_SC" baseColor="0.2 0.2 0.2 1" emitColor="BAUER_GREEN1" intensity="0.6" groups="MOTOR_ACTIVE PAGE1"/>
+				<dashboard displayType="EMITTER" valueType="steeringState" node="dbl_gpsSatellitP1_SC" baseColor="0.2 0.2 0.2 1" emitColor="BAUER_GREEN1" intensity="0.6" groups="MOTOR_RUNNING PAGE1"/>
+				<dashboard displayType="EMITTER" valueType="steeringEngaged" node="dbl_gpsActiveP1_SC" baseColor="0.2 0.2 0.2 1" emitColor="BAUER_GREEN1" intensity="0.6" groups="MOTOR_RUNNING PAGE1"/>
+				<dashboard displayType="EMITTER" valueType="steeringState" node="dbl_gpsSatellitP2_SC" baseColor="0.2 0.2 0.2 1" emitColor="BAUER_GREEN1" intensity="0.6" groups="MOTOR_RUNNING PAGE2"/>
+				<dashboard displayType="EMITTER" valueType="steeringEngaged" node="dbl_gpsActiveP2_SC" baseColor="0.2 0.2 0.2 1" emitColor="BAUER_GREEN1" intensity="0.6" groups="MOTOR_RUNNING PAGE2"/>
+				<dashboard displayType="EMITTER" valueType="steeringState" node="dbl_gpsSatellitP3_SC" baseColor="0.2 0.2 0.2 1" emitColor="BAUER_GREEN1" intensity="0.6" groups="MOTOR_RUNNING PAGE3"/>
+				<dashboard displayType="EMITTER" valueType="steeringEngaged" node="dbl_gpsActiveP3_SC" baseColor="0.2 0.2 0.2 1" emitColor="BAUER_GREEN1" intensity="0.6" groups="MOTOR_RUNNING PAGE3"/>
 			</dashboards>
 		</automaticSteering>
     </ai>
@@ -1024,6 +1235,16 @@
 		<i3dMapping id="dbl_cc1NumbersP2_SC" node="0>0|7|2|3|2|0|26"/>
 		<i3dMapping id="dbl_cruiseControl02P2_SC" node="0>0|7|2|3|2|0|27"/>
 		<i3dMapping id="dbl_cc2NumbersP2_SC" node="0>0|7|2|3|2|0|28"/>
+		<i3dMapping id="dbl_speedNumbersP2_SC" node="0>0|7|2|3|2|0|29"/>
+		<i3dMapping id="dbl_rpmNumbersP2_SC" node="0>0|7|2|3|2|0|30"/>
+		<i3dMapping id="dbl_pipeUnfoldingP2_SC" node="0>0|7|2|3|2|0|31"/>
+		<i3dMapping id="dbl_pipeFoldingP2_SC" node="0>0|7|2|3|2|0|32"/>
+		<i3dMapping id="dbl_headerUpP2_SC" node="0>0|7|2|3|2|0|33"/>
+		<i3dMapping id="dbl_headerDownP2_SC" node="0>0|7|2|3|2|0|34"/>
+		<i3dMapping id="dbl_headerFoldingP2_SC" node="0>0|7|2|3|2|0|35"/>
+		<i3dMapping id="dbl_headerFoldingStateP2_SC" node="0>0|7|2|3|2|0|36"/>
+		<i3dMapping id="dbl_headerUnfoldingP2_SC" node="0>0|7|2|3|2|0|37"/>
+		<i3dMapping id="dbl_headerUnfoldingStateP2_SC" node="0>0|7|2|3|2|0|38"/>
 		<i3dMapping id="dbl_chopperScreenP2_SC" node="0>0|7|2|3|2|1|0"/>
 		<!-- SeatConsole Page3 -->
 		<i3dMapping id="dbl_realClockP3_SC" node="0>0|7|2|3|3|0|0"/>
@@ -1055,8 +1276,18 @@
 		<i3dMapping id="dbl_cc1NumbersP3_SC" node="0>0|7|2|3|3|0|26"/>
 		<i3dMapping id="dbl_cruiseControl02P3_SC" node="0>0|7|2|3|3|0|27"/>
 		<i3dMapping id="dbl_cc2NumbersP3_SC" node="0>0|7|2|3|3|0|28"/>
-		<!-- SeatConsole Page4 -->
+		<i3dMapping id="dbl_speedNumbersP3_SC" node="0>0|7|2|3|3|0|29"/>
+		<i3dMapping id="dbl_rpmNumbersP3_SC" node="0>0|7|2|3|3|0|30"/>
+		<i3dMapping id="dbl_pipeUnfoldingP3_SC" node="0>0|7|2|3|3|0|31"/>
+		<i3dMapping id="dbl_pipeFoldingP3_SC" node="0>0|7|2|3|3|0|32"/>
+		<i3dMapping id="dbl_headerUpP3_SC" node="0>0|7|2|3|3|0|33"/>
+		<i3dMapping id="dbl_headerDownP3_SC" node="0>0|7|2|3|3|0|34"/>
+		<i3dMapping id="dbl_headerFoldingP3_SC" node="0>0|7|2|3|3|0|35"/>
+		<i3dMapping id="dbl_headerFoldingStateP3_SC" node="0>0|7|2|3|3|0|36"/>
+		<i3dMapping id="dbl_headerUnfoldingP3_SC" node="0>0|7|2|3|3|0|37"/>
+		<i3dMapping id="dbl_headerUnfoldingStateP3_SC" node="0>0|7|2|3|3|0|38"/>
 		<i3dMapping id="dbl_chopperScreenP3_SC" node="0>0|7|2|3|3|1|0"/>
+		<!-- SeatConsole Page4 -->
 		<i3dMapping id="dbl_gpsONP4_SC" node="0>0|7|2|3|4|0|0"/>
 		<i3dMapping id="dbl_gpsOFFP4_SC" node="0>0|7|2|3|4|0|1"/>
 		<i3dMapping id="dbl_hlmFieldP4_SC" node="0>0|7|2|3|4|0|10"/>
@@ -1071,6 +1302,5 @@
 		<i3dMapping id="dbl_gpsFieldNumberP4_SC" node="0>0|7|2|3|4|0|8"/>
 		<i3dMapping id="dbl_hlmOnOffP4_SC" node="0>0|7|2|3|4|0|9"/>
 		<i3dMapping id="dbl_gpsScreenP4_SC" node="0>0|7|2|3|4|1|0"/>
-		
     </i3dMappings>
 </vehicle>
