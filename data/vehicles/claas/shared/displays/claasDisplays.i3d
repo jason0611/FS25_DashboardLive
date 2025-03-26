@@ -23,7 +23,7 @@
     <File fileId="12" filename="textures/claasXerion12Navi_decal.dds"/>
     <File fileId="11" filename="../../../../../shader/minimap.xml"/>
     <File fileId="8" filename="../../../../../utils/DBL_MeshLibary/dashboardSymbolsAdd_diffuse.dds"/>
-    <File fileId="5" filename="../../../../../utils/DBL_MeshLibary//dblSliderLine_diffuse.dds"/>
+    <File fileId="5" filename="../../../../../utils/DBL_MeshLibary/dblSliderLine_diffuse.dds"/>
     <File fileId="18" filename="$data/fillPlanes/chaff_diffuse.dds"/>
     <File fileId="4" filename="$data/shaders/glowShader.xml"/>
     <File fileId="2" filename="$data/shared/default_normal.dds"/>

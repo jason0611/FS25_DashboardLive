@@ -6,7 +6,7 @@
   </Asset>
 
   <Files>
-    <File fileId="5" filename="../../../../shared/dashboardSymbolsAdd_diffuse.png"/>
+    <File fileId="5" filename="../../../../utils/DBL_MeshLibary/dashboardSymbolsAdd_diffuse.png"/>
     <File fileId="13" filename="textures/fendtNavi.dds"/>
     <File fileId="27" filename="textures/fendtOneCabDisplayLCDBasicDM_diffuse.png"/>
     <File fileId="26" filename="textures/fendtOneCabDisplayLCDBasic_diffuse.png"/>
