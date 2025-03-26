@@ -1808,8 +1808,12 @@ function DashboardLive:loadAudioDashboardFromXML(xmlFile, key, dashboard)
     if baseDirectory == "" then -- vanilla has no audios, so switch to DBL-Path
     	baseDirectory  = DashboardLive.MOD_PATH
     end
+    
     local audioFile = Utils.getFilename(dashboard.dblAudioFile, baseDirectory)
-    if audioFile == nil then
+    if audioFile == nil or not fileExists(audioFile) then
+    	audioFile = Utils.getFilename(dashboard.dblAudioFile, DashboardLive.MOD_PATH)
+    end
+    if audioFile == nil or not fileExists(audioFile) then
     	Logging.xmlWarning(self.xmlFile, "Audio file not found for audio dashboard "..tostring(dashboard.dblAudioName).."!")
     	return false
     end
