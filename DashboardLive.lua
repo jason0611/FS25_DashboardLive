@@ -1177,10 +1177,15 @@ local function getAttachedStatus(vehicle, element, mode, default)
 		if element.attacherJointIndices ~= nil then
 			element.dblAttacherJointIndices = element.attacherJointIndices
 		else
-			--Logging.xmlWarning(vehicle.xmlFile, "No attacherJointIndex given for DashboardLive attacher command "..tostring(mode))
-			return false
+			--dbgprint("getAttachedStatus: No attacherJointIndex given for DashboardLive attacher command "..tostring(mode), 4)
+			element.dblAttacherJointIndices = {}
 		end
 	end
+	
+	local resultValue
+	local result = default or false
+	local noImplement = true
+	local jointExists = false
 	
 	local joints 
 	if type(element.dblAttacherJointIndices) == "number" then
@@ -1191,9 +1196,6 @@ local function getAttachedStatus(vehicle, element, mode, default)
 	else
 		joints = string.split(element.dblAttacherJointIndices, " ")
 	end
-	local result = default or false
-	local noImplement = true
-	local jointExists = false
 	
 	local andMode = element.dblOption ~= nil and string.find(string.lower(element.dblOption), "all") ~= nil
 	local orMode = element.dblOption ~= nil and string.find(string.lower(element.dblOption), "any") ~= nil
@@ -1623,6 +1625,7 @@ local function getAttachedStatus(vehicle, element, mode, default)
     return result
 end
 
+--[[ Obsolete in FS25
 -- Overwritten vanilla-functions to achieve a better tolerance to errors caused by wrong variable types
 function DashboardLive:catchBooleanForDashboardStateFunc(superfunc, dashboard, newValue, minValue, maxValue, isActive)
 	if type(newValue)=="boolean" then
@@ -1635,6 +1638,7 @@ function DashboardLive:catchBooleanForDashboardStateFunc(superfunc, dashboard, n
 end
 Dashboard.defaultAnimationDashboardStateFunc = Utils.overwrittenFunction(Dashboard.defaultAnimationDashboardStateFunc, DashboardLive.catchBooleanForDashboardStateFunc)
 Dashboard.defaultSliderDashboardStateFunc = Utils.overwrittenFunction(Dashboard.defaultSliderDashboardStateFunc, DashboardLive.catchBooleanForDashboardStateFunc)
+--]]
 
 -- Append schema definitions to registerDashboardXMLPath function 
 function DashboardLive.addDarkModeToRegisterDashboardXMLPaths(schema, basePath, availableValueTypes)
@@ -1878,7 +1882,7 @@ end
 Dashboard.registerDisplayType(Dashboard.TYPES.AUDIO, false, DashboardLive.initAudioDashboardSchema, DashboardLive.loadAudioDashboardFromXML, DashboardLive.defaultAudioStateFunc)
 
 --[[
--- Overwritten function loadDashboardFromXML to load displayType="AUDIO"
+-- Overwritten function loadDashboardFromXML to load displayType="AUDIO" / Obsolete in FS25
 function DashboardLive:overWrittenLoadDashboardFromXML(superfunc, xmlFile, key, dashboard, valueType, components, i3dMappings, parentNode)
 
 --xmlFile, key, dashboard, dashboardData
@@ -2842,13 +2846,14 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		
 		-- lowering state
 		elseif cmds == "liftstate" and self.spec_attacherJoints ~= nil then
+			dbgprint("getDashboardLiveBase : liftstate:", 4)
 			local joints = jointsToTable(j)
 			returnValue = 0
 			for i, jointIndex in ipairs(joints) do
 				local attacherJoint = self.spec_attacherJoints.attacherJoints[tonumber(jointIndex)]
 				if attacherJoint ~= nil and attacherJoint.moveAlpha ~= nil then
 					returnValue = math.max(returnValue, 1 - attacherJoint.moveAlpha)
-					dbgprint("liftstate "..tostring(i)..": "..tostring(returnValue), 4)
+					dbgprint("getDashboardLiveBase : liftstate "..tostring(i)..": "..tostring(returnValue), 4)
 					dbgrender("liftstate: "..tostring(returnValue), 1+2*i, 3)
 				end
 			end
@@ -3197,7 +3202,7 @@ function DashboardLive.getDashboardLiveVCA(self, dashboard)
 end
 
 function DashboardLive.getDashboardLiveCC(self, dashboard)
-	dbgprint("getDashboardLiveCC : dblState: "..tostring(dashboard.dblState), 4)
+	dbgprint("getDashboardLiveCC : dblCommand: "..tostring(dashboard.dblCommand).." / dblState: "..tostring(dashboard.dblState), 4)
 	local spec = self.spec_DashboardLive
 	local specECC = self.spec_extendedCruiseControl
 	local state = tonumber(dashboard.dblState)
