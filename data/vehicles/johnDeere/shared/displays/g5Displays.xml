@@ -173,7 +173,7 @@
 		<dashboard displayType="EMITTER" node="g5Display_dblFuelP1_SC" emitColor="1 0.3 0 1" intensity="0.6" groups="MOTOR_ACTIVE PAGESC1"/>
         <dashboard displayType="AUDIO" valueType="fillLevelWarning" fillType="DIESEL" warningThresholdMax="50" outside="false" distance="1.0" loop="1" volume="0.4" audioName="fuelWarning" audioFile="$data/sounds/vehicles/reverse_beep/vehTerraVariant435ReverseBeepPlay_01.ogg" groups="MOTOR_ACTIVE PAGESC1"/>
 
-        <dashboard displayType="VISIBILITY" node="g5Display_dblCultivatorDephP1_SC" valueType="dbl.base"            cmd="cultivator" option="shallowmode" groups="MOTOR_RUNNING PAGESC1"/>
+        <dashboard displayType="VISIBILITY" node="g5Display_dblCultivatorDephP1_SC" valueType="dbl.base"            cmd="cultivator" state="shallowmode" groups="MOTOR_RUNNING PAGESC1"/>
         <dashboard displayType="VISIBILITY" node="g5Display_dblRidgeMarkerLeftP1_SC" valueType="dbl.base"  jointSide="back" option="any" cmd="ridgeMarker" state="1" groups="MOTOR_RUNNING PAGESC1"/>
         <dashboard displayType="VISIBILITY" node="g5Display_dblRidgeMarkerRightP1_SC" valueType="dbl.base" jointSide="back" option="any" cmd="ridgeMarker" state="2" groups="MOTOR_RUNNING PAGESC1"/>
         <dashboard displayType="EMITTER" node="g5Display_dblCultivatorDephP1_SC" emitColor="GREEN" intensity="0.6" groups="MOTOR_ACTIVE PAGESC1"/>
