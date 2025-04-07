@@ -2400,11 +2400,15 @@ end
 
 -- hlm
 function DashboardLive.getDBLAttributesHLM(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
+	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", ""))
+    dbgprint("getDBLAttributesHLM : cmd: "..tostring(dashboard.dblCommand), 2)
+	
 	dashboard.dblOption = lower(xmlFile:getValue(key .. "#option"))
     dbgprint("getDBLAttributesHLM : option: "..tostring(dashboard.dblOption), 2)
     
 	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
 	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+	
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
 	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
@@ -3260,22 +3264,39 @@ function DashboardLive.getDashboardLiveHLM(self, dashboard)
 	local spec = self.spec_DashboardLive
 	local specHLM = self.spec_HeadlandManagement
 	
+	local c = dashboard.dblCommand
 	local o = dashboard.dblOption
 	local returnValue = false
 
 	if specHLM ~= nil and specHLM.exists then
-		if o == "field" then
-			returnValue = specHLM.isOn and not specHLM.isActive and (specHLM.contour == 0 or specHLM.contour == nil)
-		elseif o == "headland" then
-			returnValue = specHLM.isOn and specHLM.isActive
-		elseif o == "contour" then
-			returnValue = specHLM.isOn and not specHLM.isActive and (specHLM.contour ~= 0 and specHLM.contour ~= nil)
-		else
-			returnValue = specHLM.isOn
-			if dashboard.dblCond ~= nil and type(returnValue) == "boolean" then
-				if dashboard.dblCond == "not" then
-					returnValue = not returnValue
+	
+		if c == "" or c == "mode" then
+			if o == "field" then
+				returnValue = specHLM.isOn and not specHLM.isActive and (specHLM.contour == 0 or specHLM.contour == nil)
+			elseif o == "headland" then
+				returnValue = specHLM.isOn and specHLM.isActive
+			elseif o == "contour" then
+				returnValue = specHLM.isOn and not specHLM.isActive and (specHLM.contour ~= 0 and specHLM.contour ~= nil)
+			else
+				returnValue = specHLM.isOn
+				if dashboard.dblCond ~= nil and type(returnValue) == "boolean" then
+					if dashboard.dblCond == "not" then
+						returnValue = not returnValue
+					end
 				end
+			end
+		end
+		if c == "automatic" then
+			local headlandAutomatic	  = not specHLM.autoOverride and (specHLM.useHLMTriggerF or specHLM.useHLMTriggerB)
+			local headlandAutomaticGS = not specHLM.autoOverride and (specHLM.modGuidanceSteeringFound and specHLM.useGuidanceSteeringTrigger) 
+			local headlandAutomaticResume = specHLM.autoResume and not specHLM.autoOverride 
+		
+			if o == "field" then
+				returnValue = specHLM.isOn and not specHLM.isActive and (headlandAutomatic or headlandAutomaticGS)
+			elseif o == "headland" then
+				returnValue = specHLM.isOn and specHLM.isActive and headlandAutomaticResume
+			elseif o == "override" then
+				returnValue = specHLM.isOn and specHLM.autoOverride
 			end
 		end
 	end	
