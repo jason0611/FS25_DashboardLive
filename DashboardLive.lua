@@ -17,7 +17,7 @@ source(DashboardLive.MOD_PATH.."tools/gmsDebug.lua")
 GMSDebug:init(DashboardLive.MOD_NAME, true, 2)
 GMSDebug:enableConsoleCommands("dblDebug")
 
-source(DashboardLive.MOD_PATH.."utils/DashboardUtils.lua")
+--source(DashboardLive.MOD_PATH.."utils/DashboardUtils.lua")
 
 -- DashboardLive Editor
 DashboardLive.xTrans, DashboardLive.yTrans, DashboardLive.zTrans = 0, 0, 0
