@@ -4,7 +4,7 @@ DashboardUtils = {}
 
 -- look for alternative i3d-file for vehicle and load it if existing
 function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
-	local filenameDBL = DashboardLive.MOD_PATH..filename
+	local filenameDBL = DashboardLive.INT_PATH..filename
 	local isMod = string.find(filename, "/mods/") ~= nil
 	
 	if fileExists(filenameDBL) and not isMod then
@@ -20,7 +20,7 @@ I3DManager.loadSharedI3DFileAsync = Utils.overwrittenFunction(I3DManager.loadSha
 -- look for alternative xml-file for vehicle and use it for loading i3dMappings 
 function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLevelNodes, i3dMappings, realNumComponents)
 	local filename = xmlFile.filename
-	local filenameDBL = DashboardLive.MOD_PATH..filename
+	local filenameDBL = DashboardLive.INT_PATH..filename
 	local isMod = string.find(filename, "/mods/") ~= nil
 	local replaceI3dMappings = false
 	local returnValue
@@ -46,7 +46,7 @@ I3DUtil.loadI3DMapping = Utils.overwrittenFunction(I3DUtil.loadI3DMapping, Dashb
 function DashboardUtils:loadDashboardGroupsFromXML(savegame)
 	local spec = self.spec_dashboard
 	local filename = self.xmlFile.filename
-	local filenameDBL = DashboardLive.MOD_PATH..filename
+	local filenameDBL = DashboardLive.INT_PATH..filename
 	local isMod = self.baseDirectory ~= ""
 		
 	if fileExists(filenameDBL) and not isMod then
@@ -76,7 +76,7 @@ Dashboard.onLoad = Utils.appendedFunction(Dashboard.onLoad, DashboardUtils.loadD
 -- look for alternative xml-file for vehicle and use it for loading additional dashboard entries
 function DashboardUtils:loadDashboardsFromXML(superfunc, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
 	local filename = xmlFile.filename
-	local filenameDBL = DashboardLive.MOD_PATH..filename
+	local filenameDBL = DashboardLive.INT_PATH..filename
 	local isMod = self.baseDirectory ~= ""
 	
 	local returnValue = superfunc(self, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
@@ -93,7 +93,7 @@ Dashboard.loadDashboardsFromXML = Utils.overwrittenFunction(Dashboard.loadDashbo
 -- look for alternative xml-file for vehicle and use it for loading additional animations 
 function DashboardUtils:loadAnimations(superfunc, savegame)	
 	local filename = self.xmlFile.filename
-	local filenameDBL = DashboardLive.MOD_PATH..filename
+	local filenameDBL = DashboardLive.INT_PATH..filename
 	local isMod = self.baseDirectory ~= ""
 	
 	-- load animations from vanilla xml
@@ -126,21 +126,20 @@ AnimatedVehicle.onLoad = Utils.overwrittenFunction(AnimatedVehicle.onLoad, Dashb
 -- look for alternative compound dashboard xml-file and use it for loading instead of original file
 function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, compound)
 	local spec = self.spec_dashboard
-	local fileName = xmlFile:getValue(key .. "#filename")
-	local fileNameNew = string.sub(fileName, 2) -- rip $ off the path
-	local dblReplacementExists = XMLFile.loadIfExists("DBL Replacement", DashboardLive.MOD_PATH..fileNameNew, xmlFile.schema) ~= nil --and self.baseDirectory == ""
-	local baseDirectoryChanged = false
-	
 	dbgprint("loadDashboardCompoundFromXML :: self.baseDirectory: "..tostring(self.baseDirectory), 2)
+	local fileName = xmlFile:getValue(key .. "#filename")
 	dbgprint("loadDashboardCompoundFromXML :: fileName    = "..tostring(fileName), 2)
-	dbgprint("loadDashboardCompoundFromXML :: fileNameNew = "..DashboardLive.MOD_PATH..fileNameNew, 2)
+	local fileNameNew = string.sub(fileName, 2) -- rip $ off the path
+	dbgprint("loadDashboardCompoundFromXML :: fileNameNew = "..tostring(DashboardLive.INT_PATH)..fileNameNew, 2)
+	local dblReplacementExists = XMLFile.loadIfExists("DBL Replacement", DashboardLive.INT_PATH..fileNameNew, xmlFile.schema) ~= nil --and self.baseDirectory == ""
 	dbgprint("loadDashboardCompoundFromXML :: dblReplacementExists = "..tostring(dblReplacementExists), 2)
+	local baseDirectoryChanged = false
 	
 	if dblReplacementExists then
 		xmlFile:setValue(key .. "#filename", fileNameNew)
 		dbgprint("loadDashboardCompoundFromXML :: fileName replaced", 2)
 		self.baseDirectoryBackup = self.baseDirectory
-		self.baseDirectory = DashboardLive.MOD_PATH
+		self.baseDirectory = DashboardLive.INT_PATH
 		baseDirectoryChanged = true
 		dbgprint("loadDashboardCompoundFromXML :: baseDirectory temporarily changed", 2)
 	end	

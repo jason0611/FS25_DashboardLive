@@ -8,6 +8,7 @@ DashboardLive = {}
 if DashboardLive.MOD_NAME == nil then
 	DashboardLive.MOD_NAME = g_currentModName
 	DashboardLive.MOD_PATH = g_currentModDirectory
+	DashboardLive.INT_PATH = "notLoaded"
 	DashboardLive.MODSETTINGSDIR = g_currentModSettingsDirectory
 	createFolder(DashboardLive.MODSETTINGSDIR)
 end
