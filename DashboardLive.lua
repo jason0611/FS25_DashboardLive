@@ -563,7 +563,7 @@ function DashboardLive:onRegisterActionEvents(isActiveForInput, isActiveForInput
 		end	
 		-- solve mod conflict with CameraZoomExtension by Ifko: disable temporary zoom of dbl
 		if not spec.CZEexists then
-			self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM', self, DashboardLive.ZOOM, false, true, true, true)	
+			self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM', self, DashboardLive.ZOOM, true, true, false, true)	
 		end
 		self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM_PERM', self, DashboardLive.ZOOM, false, true, false, true)
 		self:addActionEvent(DashboardLive.actionEvents, 'DBL_HUDVISIBILITY_FULL', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
@@ -664,21 +664,61 @@ end
 
 function DashboardLive:ZOOM(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("ZOOM: "..tostring(actionName), 2)
+	dbgprint("ZOOM: keyStatus = "..tostring(keyStatus), 2)	
 	local spec = self.spec_DashboardLive
+	local zoomPressed = keyStatus == 1 and actionName == "DBL_ZOOM"
+	
 	if actionName == "DBL_ZOOM_PERM" then
 		spec.zoomPerm = not spec.zoomPerm
 	end
-	if actionName == "DBL_ZOOM" then
-		spec.zoomPressed = true
-	else
-		spec.zoomPressed = false
-	end
+	
 	-- solve mod conflict with CameraZoomExtension by Ifko: disable Ifko's zoom while DBLs permanent zoom is active
 	if spec.CZEexists then
 		if spec.zoomPerm then
 			SpecializationUtil.removeEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
 		else
 			SpecializationUtil.registerEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
+		end
+	end
+	
+	-- zoom
+	if zoomPressed or spec.zoomPerm then
+		dbgprint("ZOOM : Zooming in", 2)
+		if spec.fovLast == nil then
+			local fov
+			if g_currentMission and g_localPlayer:getCurrentVehicle() ~= nil then
+				local camera = g_localPlayer:getCurrentVehicle():getActiveCamera()
+				if camera ~= nil then
+					fov = math.deg(camera.fovY)
+				end
+				spec.fovLast = fov
+				dbgprint("ZOOM : setting fovLast to "..tostring(fov), 2)
+			end
+		end
+		if spec.fovLast ~= nil then
+			setFovY(g_cameraManager.activeCameraNode, math.rad(20))
+		end
+				
+	elseif not zoomPressed and not spec.zoomPerm then
+		dbgprint("ZOOM : Zooming out", 2)
+		local fov
+		if g_currentMission and g_localPlayer:getCurrentVehicle() ~= nil then
+			local camera = g_localPlayer:getCurrentVehicle():getActiveCamera()
+			if camera ~= nil then
+				if spec.fovLast ~= nil then
+					fov = spec.fovLast
+					spec.fovLast = nil
+				else
+					dbgprint("ZOOM :: ERROR: zoom is active, but fovLast not set! Falling back to -1", 1)
+					fov = -1
+				end
+			
+				dbgprint("ZOOM : setting fov to "..tostring(fov), 2)
+				
+				setFovY(g_cameraManager.activeCameraNode, math.rad(fov))
+			else
+				dbgprint("ZOOM : camera inactive", 2)
+			end
 		end
 	end
 end
@@ -3938,51 +3978,6 @@ function DashboardLive:onUpdate(dt)
 		--dbgprint("Selector group: "..tostring(spec.selectorGroup), 2)
 		--dbgrenderTable(spec, 1, 3)
 	end
-		
-	-- zoom
-	if (spec.zoomPressed or spec.zoomPerm) and not spec.zoomed then
-		dbgprint("onUpdate : Zooming in", 2)
-		
-		if spec.fovLast == nil then
-			local fov
-			if g_currentMission and g_localPlayer:getCurrentVehicle() ~= nil then
-				local camera = g_localPlayer:getCurrentVehicle():getActiveCamera()
-				if camera ~= nil then
-					fov = math.deg(camera.fovY)
-				end
-				spec.fovLast = fov
-				dbgprint("onUpdate : setting fovLast to "..tostring(fov), 2)
-			end
-		end
-		if spec.fovLast ~= nil then
-			setFovY(g_cameraManager.activeCameraNode, math.rad(20))
-			spec.zoomed = true
-		end
-				
-	elseif (not spec.zoomPressed and not spec.zoomPerm) and spec.zoomed then
-		dbgprint("onUpdate : Zooming out", 2)
-		local fov
-		if g_currentMission and g_localPlayer:getCurrentVehicle() ~= nil then
-			local camera = g_localPlayer:getCurrentVehicle():getActiveCamera()
-			if camera ~= nil then
-				if spec.fovLast ~= nil then
-					fov = spec.fovLast
-					spec.fovLast = nil
-				else
-					dbgprint("onUpdate :: ERROR: zoom is active, but fovLast not set! Falling back to -1", 1)
-					fov = -1
-				end
-			
-				dbgprint("onUpdate : setting fov to "..tostring(fov), 2)
-				
-				setFovY(g_cameraManager.activeCameraNode, math.rad(fov))
-				spec.zoomed = false
-			else
-				dbgprint("onUpdate : camera inactive", 2)
-			end
-		end
-	end
-	spec.zoomPressed = false
 	
 	-- sync engine data with server
 	spec.updateTimer = spec.updateTimer + dt
