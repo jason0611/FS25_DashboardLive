@@ -207,6 +207,8 @@ function DashboardLive.registerEventListeners(vehicleType)
 	SpecializationUtil.registerEventListener(vehicleType, "onUpdate", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onDraw", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onPostAttachImplement", DashboardLive)
+--	SpecializationUtil.registerEventListener(vehicleType, "onLeaveVehicle", DashboardLive)
+--	SpecializationUtil.registerEventListener(vehicleType, "onEnterVehicle", DashboardLive)
 end
 
 function DashboardLive.registerOverwrittenFunctions(vehicleType)
@@ -661,10 +663,15 @@ function DashboardLive:MAPORIENTATION(actionName, keyStatus, arg3, arg4, arg5)
 end
 
 function DashboardLive:ZOOM(actionName, keyStatus, arg3, arg4, arg5)
-	dbgprint("ZOOM", 4)
+	dbgprint("ZOOM: "..tostring(actionName), 2)
 	local spec = self.spec_DashboardLive
 	if actionName == "DBL_ZOOM_PERM" then
 		spec.zoomPerm = not spec.zoomPerm
+	end
+	if actionName == "DBL_ZOOM" then
+		spec.zoomPressed = true
+	else
+		spec.zoomPressed = false
 	end
 	-- solve mod conflict with CameraZoomExtension by Ifko: disable Ifko's zoom while DBLs permanent zoom is active
 	if spec.CZEexists then
@@ -674,7 +681,6 @@ function DashboardLive:ZOOM(actionName, keyStatus, arg3, arg4, arg5)
 			SpecializationUtil.registerEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
 		end
 	end
-	spec.zoomPressed = true
 end
 
 function DashboardLive:HUDVISIBILITY(actionName, keyStatus)
@@ -3918,7 +3924,7 @@ function DashboardLive.getDashboardLiveRDS(self, dashboard)
 	dbgprint("getDashboardLiveRDS : returnValue: "..tostring(returnValue), 4)
 	return returnValue
 end
-	
+
 function DashboardLive:onUpdate(dt)
 	local spec = self.spec_DashboardLive
 	local dspec = self.spec_dashboard
@@ -3936,28 +3942,45 @@ function DashboardLive:onUpdate(dt)
 	-- zoom
 	if (spec.zoomPressed or spec.zoomPerm) and not spec.zoomed then
 		dbgprint("onUpdate : Zooming in", 2)
-		if spec.fovBackup == nil then
-			local cam = self.spec_enterable.activeCamera
-			--spec.fovBackup = self.spec_enterable ~= nil and self.spec_enterable.activeCamera ~= nil and math.deg(self.spec_enterable.activeCamera.fovY) or nil
-			if self.spec_enterable ~= nil and self.spec_enterable.activeCamera ~= nil then
-				spec.fovBackup = math.deg(getFovY(self.spec_enterable.activeCamera.cameraNode))
+		
+		if spec.fovLast == nil then
+			local fov
+			if g_currentMission and g_localPlayer:getCurrentVehicle() ~= nil then
+				local camera = g_localPlayer:getCurrentVehicle():getActiveCamera()
+				if camera ~= nil then
+					fov = math.deg(camera.fovY)
+				end
+				spec.fovLast = fov
+				dbgprint("onUpdate : setting fovLast to "..tostring(fov), 2)
 			end
-			dbgprint("onUpdate : fovBackup = "..tostring(spec.fovBackup), 2)
 		end
-		g_cameraManager:consoleCommandSetFOV("20")
-		spec.zoomed = true
+		if spec.fovLast ~= nil then
+			setFovY(g_cameraManager.activeCameraNode, math.rad(20))
+			spec.zoomed = true
+		end
+				
 	elseif (not spec.zoomPressed and not spec.zoomPerm) and spec.zoomed then
-		dbgprint("onUpdate : Zoomig out", 2)
+		dbgprint("onUpdate : Zooming out", 2)
 		local fov
-		if spec.fovBackup ~= nil then
-			fov = spec.fovBackup
-			spec.fovBackup = nil
-		else
-			fov = -1
+		if g_currentMission and g_localPlayer:getCurrentVehicle() ~= nil then
+			local camera = g_localPlayer:getCurrentVehicle():getActiveCamera()
+			if camera ~= nil then
+				if spec.fovLast ~= nil then
+					fov = spec.fovLast
+					spec.fovLast = nil
+				else
+					dbgprint("onUpdate :: ERROR: zoom is active, but fovLast not set! Falling back to -1", 1)
+					fov = -1
+				end
+			
+				dbgprint("onUpdate : setting fov to "..tostring(fov), 2)
+				
+				setFovY(g_cameraManager.activeCameraNode, math.rad(fov))
+				spec.zoomed = false
+			else
+				dbgprint("onUpdate : camera inactive", 2)
+			end
 		end
-		dbgprint("onUpdate : fov = "..tostring(fov), 2)
-		g_cameraManager:consoleCommandSetFOV(tostring(fov))
-		spec.zoomed = false
 	end
 	spec.zoomPressed = false
 	
@@ -4009,6 +4032,10 @@ function DashboardLive:onDraw()
 	if self.spec_globalPositioningSystem ~= nil then
 		dbgrenderTable(self.spec_globalPositioningSystem.guidanceData, 1, 3)
 	end
+	dbgrender("zoomed: "..tostring(self.spec_DashboardLive.zoomed), 23, 2)
+	dbgrender("fovLast: "..tostring(self.spec_DashboardLive.fovLast), 24, 2)
+	dbgrender("zoomPerm: "..tostring(self.spec_DashboardLive.zoomPerm), 25, 2)
+	dbgrender("zoomPressed: "..tostring(self.spec_DashboardLive.zoomPressed), 26, 2)
 end
 
 DashboardLiveKeepActive = {}
