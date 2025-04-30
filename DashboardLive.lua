@@ -663,7 +663,8 @@ end
 function DashboardLive:ZOOM(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("ZOOM: "..tostring(actionName), 2)
 	dbgprint("ZOOM: keyStatus = "..tostring(keyStatus), 2)	
-	local spec = self.spec_DashboardLive
+--	local spec = self.spec_DashboardLive doesn't work reliably, Giants alone knows why...
+	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
 	local zoomPressed = keyStatus == 1 and actionName == "DBL_ZOOM"
 	
 	if actionName == "DBL_ZOOM_PERM" then
@@ -4025,8 +4026,11 @@ function DashboardLive:onDraw()
 	if self.spec_globalPositioningSystem ~= nil then
 		dbgrenderTable(self.spec_globalPositioningSystem.guidanceData, 1, 3)
 	end
-	dbgrender("fovLast: "..tostring(self.spec_DashboardLive.fovLast), 24, 2)
-	dbgrender("zoomPerm: "..tostring(self.spec_DashboardLive.zoomPerm), 25, 2)
+	if g_currentMission.hud.controlledVehicle == self then
+		local spec = self.spec_DashboardLive
+		dbgrender("fovLast: "..tostring(spec.fovLast), 24, 2)
+		dbgrender("zoomPerm: "..tostring(spec.zoomPerm), 25, 2)
+	end
 end
 
 DashboardLiveKeepActive = {}
