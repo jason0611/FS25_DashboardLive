@@ -603,7 +603,8 @@ end
 
 function DashboardLive:CHANGEPAGE(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("CHANGEPAGE: "..tostring(actionName), 2)
-	local spec = self.spec_DashboardLive
+	--	local spec = self.spec_DashboardLive doesn't work reliably, Giants alone knows why...
+	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
 	if actionName == "DBL_PAGEGRPUP" then
 		local pageGroupNum = spec.actPageGroup + 1
 		while spec.pageGroups[pageGroupNum] == nil do
@@ -645,7 +646,8 @@ end
 
 function DashboardLive:MAPORIENTATION(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("MAPORIENTATION: "..tostring(actionName), 2)
-	local spec = self.spec_DashboardLive
+	--	local spec = self.spec_DashboardLive doesn't work reliably, Giants alone knows why...
+	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
 	local index = 1
 	while spec.orientation ~= spec.orientations[index] do
 		index = index + 1
@@ -731,23 +733,10 @@ function DashboardLive:HUDVISIBILITY(actionName, keyStatus)
 	end
 end
 
-function DashboardLive:consoleCommandToggleVisibility(superfunc)
-	self:setIsVisible(not self:getIsVisible())
-	if self:getIsVisible() then
-		g_noHudModeEnabled = false
-		--print("HUD (new) is now visible")
-		return "HUD (new) is now visible"
-	else
-		g_noHudModeEnabled = true
-		--print("Warning: HUD (new) is now disabled. Use \'gsHudVisibility\' to enable again")
-		return "Warning: HUD (new) is now disabled. Use \'gsHudVisibility\' to enable again"
-	end
-end
---HUD.consoleCommandToggleVisibility = Utils.overwrittenFunction(HUD.consoleCommandToggleVisibility, DashboardLive.consoleCommandToggleVisibility)
-
 function DashboardLive:DARKMODE(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("DARKMODE", 4)
-	local spec = self.spec_DashboardLive
+	--	local spec = self.spec_DashboardLive doesn't work reliably, Giants alone knows why...
+	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
 	if spec.darkMode == spec.darkModeLast then
 		spec.darkMode = not spec.darkMode
 	else
@@ -756,143 +745,6 @@ function DashboardLive:DARKMODE(actionName, keyStatus, arg3, arg4, arg5)
 	spec.isDirty = true
 	dbgprint("DARKMODE: set to "..tostring(spec.darkMode), 2)
 end
-
---[[ Dashboard Editor Mode
-
-function DashboardLive:startEditorMode(node, index)
-	if g_server ~= nil then
-		if tostring(node) ~= nil and tonumber(index) ~= nil then
-			DashboardUtils.createEditorNode(g_currentMission.hud.controlledVehicle, tostring(node), tonumber(index), false)
-			DashboardLive.editMode = true
-			print("DBL Editor Mode enabled")
-		else
-			if DashboardLive.editSymbol ~= nil then
-				setVisibility(DashboardLive.editSymbol, false)
-			end
-			DashboardLive.editSymbol = nil
-			DashboardLive.editMode = false
-			print("Usage: dblEditorMode <node> <index>")
-		end
-	else
-		print("Editor Mode requires SinglePlayer or MultiPlayer Host")
-	end
-end
-addConsoleCommand("dblEditorMode", "Glowins Mod Smithery: Enable Editor Mode: dblEditorMode [<node>]", "startEditorMode", DashboardLive)
-
-function DashboardLive:startEditorModeAddMiniMap(node)
-	if g_server ~= nil then
-		if tostring(node) ~= nil then
-			DashboardUtils.createEditorNode(g_currentMission.hud.controlledVehicle, tostring(node), 0, true)
-			DashboardLive.editMode = true
-			print("DBL Editor Mode enabled")
-		else
-			if DashboardLive.editSymbol ~= nil then
-				setVisibility(DashboardLive.editSymbol, false)
-			end
-			DashboardLive.editSymbol = nil
-			DashboardLive.editMode = false
-			print("Usage: dblEditorMode <node>")
-		end
-	else
-		print("Editor Mode requires SinglePlayer or MultiPlayer Host")
-	end
-end
-addConsoleCommand("dblEditorModeAddMinimap", "Glowins Mod Smithery: Enable Editor Mode with MiniMap: dblEditorModeAddMinimap [<node>]", "startEditorModeAddMiniMap", DashboardLive)
-
-function DashboardLive:MOVESYMBOL(actionName, keyStatus)
-	dbgprint("MOVESYMBOL", 4)
-	if not DashboardLive.editMode or DashboardLive.editSymbol == nil then return end
-
-	if actionName == "DBL_XUP" then
-		DashboardLive.xTrans = DashboardLive.xTrans - 0.0001
-	elseif actionName == "DBL_XDN" then
-		DashboardLive.xTrans = DashboardLive.xTrans + 0.0001
-	elseif actionName == "DBL_YUP" then
-		DashboardLive.yTrans = DashboardLive.yTrans + 0.0001
-	elseif actionName == "DBL_YDN" then
-		DashboardLive.yTrans = DashboardLive.yTrans - 0.0001
-	elseif actionName == "DBL_ZUP" then
-		DashboardLive.zTrans = DashboardLive.zTrans + 0.0001
-	elseif actionName == "DBL_ZDN" then
-		DashboardLive.zTrans = DashboardLive.zTrans - 0.0001
-	elseif actionName == "DBL_XR" then
-		DashboardLive.xRot = DashboardLive.xRot + 1
-	elseif actionName == "DBL_XL" then
-		DashboardLive.xRot = DashboardLive.xRot - 1
-	elseif actionName == "DBL_YR" then
-		DashboardLive.yRot = DashboardLive.yRot + 1
-	elseif actionName == "DBL_YL" then
-		DashboardLive.yRot = DashboardLive.yRot - 1
-	elseif actionName == "DBL_ZR" then
-		DashboardLive.zRot = DashboardLive.zRot + 1
-	elseif actionName == "DBL_ZL" then
-		DashboardLive.zRot = DashboardLive.zRot - 1
-	elseif actionName == "DBL_SI" then
-		DashboardLive.xScl = DashboardLive.xScl + 0.001
-		DashboardLive.yScl = DashboardLive.yScl + 0.001
-		DashboardLive.zScl = DashboardLive.zScl + 0.001
-	elseif actionName == "DBL_SO" then
-		DashboardLive.xScl = DashboardLive.xScl - 0.001
-		DashboardLive.yScl = DashboardLive.yScl - 0.001
-		DashboardLive.zScl = DashboardLive.zScl - 0.001
-	elseif actionName == "DBL_XSI" then
-		DashboardLive.xScl = DashboardLive.xScl + 0.001
-	elseif actionName == "DBL_XSO" then
-		DashboardLive.xScl = DashboardLive.xScl - 0.001
-	elseif actionName == "DBL_YSI" then
-		DashboardLive.yScl = DashboardLive.yScl + 0.001
-	elseif actionName == "DBL_YSO" then
-		DashboardLive.yScl = DashboardLive.yScl - 0.001
-	elseif actionName == "DBL_ZSI" then
-		DashboardLive.zScl = DashboardLive.zScl + 0.001
-	elseif actionName == "DBL_ZSO" then
-		DashboardLive.zScl = DashboardLive.zScl - 0.001
-	end
-	dbgprint("xTrans: "..tostring(DashboardLive.xTrans), 2)
-	dbgprint("yTrans: "..tostring(DashboardLive.yTrans), 2)
-	dbgprint("zTrans: "..tostring(DashboardLive.zTrans), 2)
-	dbgprint("xRot: "..tostring(DashboardLive.xRot), 2)
-	dbgprint("yRot: "..tostring(DashboardLive.yRot), 2)
-	dbgprint("zRot: "..tostring(DashboardLive.zRot), 2)
-	dbgprint("scale x: "..tostring(DashboardLive.xScl), 2)
-	dbgprint("scale y: "..tostring(DashboardLive.yScl), 2)
-	dbgprint("scale z: "..tostring(DashboardLive.zScl), 2)
-	setTranslation(DashboardLive.editSymbol, DashboardLive.xTrans, DashboardLive.yTrans, DashboardLive.zTrans)
-	setRotation(DashboardLive.editSymbol, math.rad(DashboardLive.xRot), math.rad(DashboardLive.yRot), math.rad(DashboardLive.zRot))
-	setScale(DashboardLive.editSymbol, DashboardLive.xScl, DashboardLive.yScl, DashboardLive.zScl)
-end
-
-function DashboardLive:PRINTSYMBOL(actionName, keyStatus)
-	print("DashboardLive Editor Printout:")
-	print("==============================")
-	print("Vehicle: "..self:getName())
-	local xmlPath
-	if self.xmlFile ~= nil then
-		xmlPath = self.xmlFile.filename
-	end
-	print("Vehicle XML-Path: "..tostring(xmlPath))
-	print("Reference node: "..tostring(DashboardLive.editNode))
-	print("x_trans = "..tostring(DashboardLive.xTrans))
-	print("y_trans = "..tostring(DashboardLive.yTrans))
-	print("z_trans = "..tostring(DashboardLive.zTrans))
-	print("x_rot = "..tostring(DashboardLive.xRot))
-	print("y_rot = "..tostring(DashboardLive.yRot))
-	print("z_rot = "..tostring(DashboardLive.zRot))
-	print("x_scale = "..tostring(DashboardLive.xScl))
-	print("y_scale = "..tostring(DashboardLive.yScl))
-	print("z_scale = "..tostring(DashboardLive.zScl))
-	if xmlPath == nil then return end
-	print("==============================")
-	print("<vanillaDashboard name=\""..tostring(self:getName()).."\" fileName=\""..tostring(xmlPath).."\" >")
-	print("	<nodes>")
-	print("		<node name=\"<set a name here>\" node=\""..DashboardLive.editNode.."\" symbol=\""..DashboardLive.editSymbolIndex.."\" moveTo=\""..tostring(DashboardLive.xTrans).." "..tostring(DashboardLive.yTrans).." "..tostring(DashboardLive.zTrans).."\" rotate=\""..tostring(DashboardLive.xRot).." "..tostring(DashboardLive.yRot).." "..tostring(DashboardLive.zRot).."\" scale=\""..tostring(DashboardLive.xScl).." "..tostring(DashboardLive.yScl).." "..tostring(DashboardLive.zScl).."\"/>")
-	print("	</nodes>")
-	print("</vanillaDashboard>")
-	print("==============================")
-end
---]]
-
-
 
 -- Main script
 -- ===========
