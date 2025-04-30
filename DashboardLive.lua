@@ -246,8 +246,6 @@ function DashboardLive:onLoad(savegame)
 	spec.compoundGroupsLoaded = false
 		
 	-- zoom data
-	spec.zoomed = false
-	spec.zoomPressed = false
 	spec.zoomPerm = false
 	
 	--miniMap
@@ -4027,10 +4025,8 @@ function DashboardLive:onDraw()
 	if self.spec_globalPositioningSystem ~= nil then
 		dbgrenderTable(self.spec_globalPositioningSystem.guidanceData, 1, 3)
 	end
-	dbgrender("zoomed: "..tostring(self.spec_DashboardLive.zoomed), 23, 2)
 	dbgrender("fovLast: "..tostring(self.spec_DashboardLive.fovLast), 24, 2)
 	dbgrender("zoomPerm: "..tostring(self.spec_DashboardLive.zoomPerm), 25, 2)
-	dbgrender("zoomPressed: "..tostring(self.spec_DashboardLive.zoomPressed), 26, 2)
 end
 
 DashboardLiveKeepActive = {}
