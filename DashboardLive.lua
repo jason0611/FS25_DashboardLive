@@ -3880,8 +3880,8 @@ function DashboardLive:onDraw()
 	end
 	if g_currentMission.hud.controlledVehicle == self then
 		local spec = self.spec_DashboardLive
-		dbgrender("fovLast: "..tostring(spec.fovLast), 24, 2)
-		dbgrender("zoomPerm: "..tostring(spec.zoomPerm), 25, 2)
+		dbgrender("fovLast: "..tostring(spec.fovLast), 20, 3)
+		dbgrender("zoomPerm: "..tostring(spec.zoomPerm), 21, 3)
 	end
 end
 
