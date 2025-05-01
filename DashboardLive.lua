@@ -452,13 +452,13 @@ function DashboardLive:onPostLoad(savegame)
 	-- solve mod conflict with CameraZoomExtension by Ifko: detect if mod exists in the game
 	spec.CZEexists = self.spec_cameraZoomExtension ~= nil
 	
-	if spec.CZEexists then
+--	if spec.CZEexists then
 	--	if spec.zoomPerm then
-			SpecializationUtil.removeEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
+	--		SpecializationUtil.removeEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
 	--	else
 	--		SpecializationUtil.registerEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
 	--	end
-	end
+--	end
 
 	DashboardLive.createDashboardPages(self)
 end
@@ -568,9 +568,9 @@ function DashboardLive:onRegisterActionEvents(isActiveForInput, isActiveForInput
 			end
 		end	
 		-- solve mod conflict with CameraZoomExtension by Ifko: disable temporary zoom of dbl
---		if not spec.CZEexists then
+		if not spec.CZEexists then
 			self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM', self, DashboardLive.ZOOM, true, true, false, true)	
---		end
+		end
 		self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM_PERM', self, DashboardLive.ZOOM, false, true, false, true)
 		self:addActionEvent(DashboardLive.actionEvents, 'DBL_HUDVISIBILITY_FULL', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
 		self:addActionEvent(DashboardLive.actionEvents, 'DBL_HUDVISIBILITY_PART', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
@@ -679,14 +679,13 @@ function DashboardLive:ZOOM(actionName, keyStatus, arg3, arg4, arg5)
 	
 	if actionName == "DBL_ZOOM_PERM" then
 		spec.zoomPerm = not spec.zoomPerm
-	end
-	
-	-- solve mod conflict with CameraZoomExtension by Ifko: disable Ifko's zoom while DBLs permanent zoom is active
-	if spec.CZEexists then
-		if spec.zoomPerm then
---			SpecializationUtil.removeEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
-		else
---			SpecializationUtil.registerEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
+		-- solve mod conflict with CameraZoomExtension by Ifko: disable Ifko's zoom while DBLs permanent zoom is active
+		if spec.CZEexists then
+			if spec.zoomPerm then
+				SpecializationUtil.removeEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
+			else
+				SpecializationUtil.registerEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
+			end
 		end
 	end
 	
