@@ -270,9 +270,6 @@ function DashboardLive:onLoad(savegame)
 	spec.lastDefUsage = 0
 	spec.lastAirUsage = 0
 	
-	-- solve mod conflict with CameraZoomExtension by Ifko: detect if mod exists in the game
-	spec.CZEexists = self.spec_cameraZoomExtension ~= nil
-	
 --[[
 	-- Integrate vanilla dashboards
 	if DashboardLive.vanillaIntegrationXMLFile ~= nil then
@@ -451,6 +448,17 @@ function DashboardLive:onPostLoad(savegame)
 	
 	--Check if Mod HeadlandManagement exists
 	spec.modHLMFound = self.spec_HeadlandManagement ~= nil
+	
+	-- solve mod conflict with CameraZoomExtension by Ifko: detect if mod exists in the game
+	spec.CZEexists = self.spec_cameraZoomExtension ~= nil
+	
+	if spec.CZEexists then
+	--	if spec.zoomPerm then
+			SpecializationUtil.removeEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
+	--	else
+	--		SpecializationUtil.registerEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
+	--	end
+	end
 
 	DashboardLive.createDashboardPages(self)
 end
