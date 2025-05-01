@@ -568,9 +568,9 @@ function DashboardLive:onRegisterActionEvents(isActiveForInput, isActiveForInput
 			end
 		end	
 		-- solve mod conflict with CameraZoomExtension by Ifko: disable temporary zoom of dbl
-		if not spec.CZEexists then
+--		if not spec.CZEexists then
 			self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM', self, DashboardLive.ZOOM, true, true, false, true)	
-		end
+--		end
 		self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM_PERM', self, DashboardLive.ZOOM, false, true, false, true)
 		self:addActionEvent(DashboardLive.actionEvents, 'DBL_HUDVISIBILITY_FULL', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
 		self:addActionEvent(DashboardLive.actionEvents, 'DBL_HUDVISIBILITY_PART', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
