@@ -207,6 +207,8 @@ function DashboardLive.registerEventListeners(vehicleType)
 	SpecializationUtil.registerEventListener(vehicleType, "onUpdate", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onDraw", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onPostAttachImplement", DashboardLive)
+--	SpecializationUtil.registerEventListener(vehicleType, "onLeaveVehicle", DashboardLive)
+--	SpecializationUtil.registerEventListener(vehicleType, "onEnterVehicle", DashboardLive)
 end
 
 function DashboardLive.registerOverwrittenFunctions(vehicleType)
@@ -244,8 +246,6 @@ function DashboardLive:onLoad(savegame)
 	spec.compoundGroupsLoaded = false
 		
 	-- zoom data
-	spec.zoomed = false
-	spec.zoomPressed = false
 	spec.zoomPerm = false
 	
 	--miniMap
@@ -269,9 +269,6 @@ function DashboardLive:onLoad(savegame)
 	spec.lastFuelUsage = 0
 	spec.lastDefUsage = 0
 	spec.lastAirUsage = 0
-	
-	-- solve mod conflict with CameraZoomExtension by Ifko: detect if mod exists in the game
-	spec.CZEexists = self.spec_cameraZoomExtension ~= nil
 	
 --[[
 	-- Integrate vanilla dashboards
@@ -451,6 +448,17 @@ function DashboardLive:onPostLoad(savegame)
 	
 	--Check if Mod HeadlandManagement exists
 	spec.modHLMFound = self.spec_HeadlandManagement ~= nil
+	
+	-- solve mod conflict with CameraZoomExtension by Ifko: detect if mod exists in the game
+	spec.CZEexists = self.spec_cameraZoomExtension ~= nil
+	
+--	if spec.CZEexists then
+	--	if spec.zoomPerm then
+	--		SpecializationUtil.removeEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
+	--	else
+	--		SpecializationUtil.registerEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
+	--	end
+--	end
 
 	DashboardLive.createDashboardPages(self)
 end
@@ -561,7 +569,7 @@ function DashboardLive:onRegisterActionEvents(isActiveForInput, isActiveForInput
 		end	
 		-- solve mod conflict with CameraZoomExtension by Ifko: disable temporary zoom of dbl
 		if not spec.CZEexists then
-			self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM', self, DashboardLive.ZOOM, false, true, true, true)	
+			self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM', self, DashboardLive.ZOOM, true, true, false, true)	
 		end
 		self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM_PERM', self, DashboardLive.ZOOM, false, true, false, true)
 		self:addActionEvent(DashboardLive.actionEvents, 'DBL_HUDVISIBILITY_FULL', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
@@ -603,7 +611,8 @@ end
 
 function DashboardLive:CHANGEPAGE(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("CHANGEPAGE: "..tostring(actionName), 2)
-	local spec = self.spec_DashboardLive
+	--	local spec = self.spec_DashboardLive doesn't work reliably, Giants alone knows why...
+	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
 	if actionName == "DBL_PAGEGRPUP" then
 		local pageGroupNum = spec.actPageGroup + 1
 		while spec.pageGroups[pageGroupNum] == nil do
@@ -645,7 +654,8 @@ end
 
 function DashboardLive:MAPORIENTATION(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("MAPORIENTATION: "..tostring(actionName), 2)
-	local spec = self.spec_DashboardLive
+	--	local spec = self.spec_DashboardLive doesn't work reliably, Giants alone knows why...
+	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
 	local index = 1
 	while spec.orientation ~= spec.orientations[index] do
 		index = index + 1
@@ -661,20 +671,64 @@ function DashboardLive:MAPORIENTATION(actionName, keyStatus, arg3, arg4, arg5)
 end
 
 function DashboardLive:ZOOM(actionName, keyStatus, arg3, arg4, arg5)
-	dbgprint("ZOOM", 4)
-	local spec = self.spec_DashboardLive
+	dbgprint("ZOOM: "..tostring(actionName), 2)
+	dbgprint("ZOOM: keyStatus = "..tostring(keyStatus), 2)	
+--	local spec = self.spec_DashboardLive doesn't work reliably, Giants alone knows why...
+	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
+	local zoomPressed = keyStatus == 1 and actionName == "DBL_ZOOM"
+	
 	if actionName == "DBL_ZOOM_PERM" then
 		spec.zoomPerm = not spec.zoomPerm
-	end
-	-- solve mod conflict with CameraZoomExtension by Ifko: disable Ifko's zoom while DBLs permanent zoom is active
-	if spec.CZEexists then
-		if spec.zoomPerm then
-			SpecializationUtil.removeEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
-		else
-			SpecializationUtil.registerEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
+		-- solve mod conflict with CameraZoomExtension by Ifko: disable Ifko's zoom while DBLs permanent zoom is active
+		if spec.CZEexists then
+			if spec.zoomPerm then
+				SpecializationUtil.removeEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
+			else
+				SpecializationUtil.registerEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
+			end
 		end
 	end
-	spec.zoomPressed = true
+	
+	-- zoom
+	if zoomPressed or spec.zoomPerm then
+		dbgprint("ZOOM : Zooming in", 2)
+		if spec.fovLast == nil then
+			local fov
+			if g_currentMission and g_localPlayer:getCurrentVehicle() ~= nil then
+				local camera = g_localPlayer:getCurrentVehicle():getActiveCamera()
+				if camera ~= nil then
+					fov = math.deg(camera.fovY)
+				end
+				spec.fovLast = fov
+				dbgprint("ZOOM : setting fovLast to "..tostring(fov), 2)
+			end
+		end
+		if spec.fovLast ~= nil then
+			setFovY(g_cameraManager.activeCameraNode, math.rad(20))
+		end
+				
+	elseif not zoomPressed and not spec.zoomPerm then
+		dbgprint("ZOOM : Zooming out", 2)
+		local fov
+		if g_currentMission and g_localPlayer:getCurrentVehicle() ~= nil then
+			local camera = g_localPlayer:getCurrentVehicle():getActiveCamera()
+			if camera ~= nil then
+				if spec.fovLast ~= nil then
+					fov = spec.fovLast
+					spec.fovLast = nil
+				else
+					dbgprint("ZOOM :: ERROR: zoom is active, but fovLast not set! Falling back to -1", 1)
+					fov = -1
+				end
+			
+				dbgprint("ZOOM : setting fov to "..tostring(fov), 2)
+				
+				setFovY(g_cameraManager.activeCameraNode, math.rad(fov))
+			else
+				dbgprint("ZOOM : camera inactive", 2)
+			end
+		end
+	end
 end
 
 function DashboardLive:HUDVISIBILITY(actionName, keyStatus)
@@ -686,23 +740,10 @@ function DashboardLive:HUDVISIBILITY(actionName, keyStatus)
 	end
 end
 
-function DashboardLive:consoleCommandToggleVisibility(superfunc)
-	self:setIsVisible(not self:getIsVisible())
-	if self:getIsVisible() then
-		g_noHudModeEnabled = false
-		--print("HUD (new) is now visible")
-		return "HUD (new) is now visible"
-	else
-		g_noHudModeEnabled = true
-		--print("Warning: HUD (new) is now disabled. Use \'gsHudVisibility\' to enable again")
-		return "Warning: HUD (new) is now disabled. Use \'gsHudVisibility\' to enable again"
-	end
-end
---HUD.consoleCommandToggleVisibility = Utils.overwrittenFunction(HUD.consoleCommandToggleVisibility, DashboardLive.consoleCommandToggleVisibility)
-
 function DashboardLive:DARKMODE(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("DARKMODE", 4)
-	local spec = self.spec_DashboardLive
+	--	local spec = self.spec_DashboardLive doesn't work reliably, Giants alone knows why...
+	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
 	if spec.darkMode == spec.darkModeLast then
 		spec.darkMode = not spec.darkMode
 	else
@@ -711,143 +752,6 @@ function DashboardLive:DARKMODE(actionName, keyStatus, arg3, arg4, arg5)
 	spec.isDirty = true
 	dbgprint("DARKMODE: set to "..tostring(spec.darkMode), 2)
 end
-
---[[ Dashboard Editor Mode
-
-function DashboardLive:startEditorMode(node, index)
-	if g_server ~= nil then
-		if tostring(node) ~= nil and tonumber(index) ~= nil then
-			DashboardUtils.createEditorNode(g_currentMission.hud.controlledVehicle, tostring(node), tonumber(index), false)
-			DashboardLive.editMode = true
-			print("DBL Editor Mode enabled")
-		else
-			if DashboardLive.editSymbol ~= nil then
-				setVisibility(DashboardLive.editSymbol, false)
-			end
-			DashboardLive.editSymbol = nil
-			DashboardLive.editMode = false
-			print("Usage: dblEditorMode <node> <index>")
-		end
-	else
-		print("Editor Mode requires SinglePlayer or MultiPlayer Host")
-	end
-end
-addConsoleCommand("dblEditorMode", "Glowins Mod Smithery: Enable Editor Mode: dblEditorMode [<node>]", "startEditorMode", DashboardLive)
-
-function DashboardLive:startEditorModeAddMiniMap(node)
-	if g_server ~= nil then
-		if tostring(node) ~= nil then
-			DashboardUtils.createEditorNode(g_currentMission.hud.controlledVehicle, tostring(node), 0, true)
-			DashboardLive.editMode = true
-			print("DBL Editor Mode enabled")
-		else
-			if DashboardLive.editSymbol ~= nil then
-				setVisibility(DashboardLive.editSymbol, false)
-			end
-			DashboardLive.editSymbol = nil
-			DashboardLive.editMode = false
-			print("Usage: dblEditorMode <node>")
-		end
-	else
-		print("Editor Mode requires SinglePlayer or MultiPlayer Host")
-	end
-end
-addConsoleCommand("dblEditorModeAddMinimap", "Glowins Mod Smithery: Enable Editor Mode with MiniMap: dblEditorModeAddMinimap [<node>]", "startEditorModeAddMiniMap", DashboardLive)
-
-function DashboardLive:MOVESYMBOL(actionName, keyStatus)
-	dbgprint("MOVESYMBOL", 4)
-	if not DashboardLive.editMode or DashboardLive.editSymbol == nil then return end
-
-	if actionName == "DBL_XUP" then
-		DashboardLive.xTrans = DashboardLive.xTrans - 0.0001
-	elseif actionName == "DBL_XDN" then
-		DashboardLive.xTrans = DashboardLive.xTrans + 0.0001
-	elseif actionName == "DBL_YUP" then
-		DashboardLive.yTrans = DashboardLive.yTrans + 0.0001
-	elseif actionName == "DBL_YDN" then
-		DashboardLive.yTrans = DashboardLive.yTrans - 0.0001
-	elseif actionName == "DBL_ZUP" then
-		DashboardLive.zTrans = DashboardLive.zTrans + 0.0001
-	elseif actionName == "DBL_ZDN" then
-		DashboardLive.zTrans = DashboardLive.zTrans - 0.0001
-	elseif actionName == "DBL_XR" then
-		DashboardLive.xRot = DashboardLive.xRot + 1
-	elseif actionName == "DBL_XL" then
-		DashboardLive.xRot = DashboardLive.xRot - 1
-	elseif actionName == "DBL_YR" then
-		DashboardLive.yRot = DashboardLive.yRot + 1
-	elseif actionName == "DBL_YL" then
-		DashboardLive.yRot = DashboardLive.yRot - 1
-	elseif actionName == "DBL_ZR" then
-		DashboardLive.zRot = DashboardLive.zRot + 1
-	elseif actionName == "DBL_ZL" then
-		DashboardLive.zRot = DashboardLive.zRot - 1
-	elseif actionName == "DBL_SI" then
-		DashboardLive.xScl = DashboardLive.xScl + 0.001
-		DashboardLive.yScl = DashboardLive.yScl + 0.001
-		DashboardLive.zScl = DashboardLive.zScl + 0.001
-	elseif actionName == "DBL_SO" then
-		DashboardLive.xScl = DashboardLive.xScl - 0.001
-		DashboardLive.yScl = DashboardLive.yScl - 0.001
-		DashboardLive.zScl = DashboardLive.zScl - 0.001
-	elseif actionName == "DBL_XSI" then
-		DashboardLive.xScl = DashboardLive.xScl + 0.001
-	elseif actionName == "DBL_XSO" then
-		DashboardLive.xScl = DashboardLive.xScl - 0.001
-	elseif actionName == "DBL_YSI" then
-		DashboardLive.yScl = DashboardLive.yScl + 0.001
-	elseif actionName == "DBL_YSO" then
-		DashboardLive.yScl = DashboardLive.yScl - 0.001
-	elseif actionName == "DBL_ZSI" then
-		DashboardLive.zScl = DashboardLive.zScl + 0.001
-	elseif actionName == "DBL_ZSO" then
-		DashboardLive.zScl = DashboardLive.zScl - 0.001
-	end
-	dbgprint("xTrans: "..tostring(DashboardLive.xTrans), 2)
-	dbgprint("yTrans: "..tostring(DashboardLive.yTrans), 2)
-	dbgprint("zTrans: "..tostring(DashboardLive.zTrans), 2)
-	dbgprint("xRot: "..tostring(DashboardLive.xRot), 2)
-	dbgprint("yRot: "..tostring(DashboardLive.yRot), 2)
-	dbgprint("zRot: "..tostring(DashboardLive.zRot), 2)
-	dbgprint("scale x: "..tostring(DashboardLive.xScl), 2)
-	dbgprint("scale y: "..tostring(DashboardLive.yScl), 2)
-	dbgprint("scale z: "..tostring(DashboardLive.zScl), 2)
-	setTranslation(DashboardLive.editSymbol, DashboardLive.xTrans, DashboardLive.yTrans, DashboardLive.zTrans)
-	setRotation(DashboardLive.editSymbol, math.rad(DashboardLive.xRot), math.rad(DashboardLive.yRot), math.rad(DashboardLive.zRot))
-	setScale(DashboardLive.editSymbol, DashboardLive.xScl, DashboardLive.yScl, DashboardLive.zScl)
-end
-
-function DashboardLive:PRINTSYMBOL(actionName, keyStatus)
-	print("DashboardLive Editor Printout:")
-	print("==============================")
-	print("Vehicle: "..self:getName())
-	local xmlPath
-	if self.xmlFile ~= nil then
-		xmlPath = self.xmlFile.filename
-	end
-	print("Vehicle XML-Path: "..tostring(xmlPath))
-	print("Reference node: "..tostring(DashboardLive.editNode))
-	print("x_trans = "..tostring(DashboardLive.xTrans))
-	print("y_trans = "..tostring(DashboardLive.yTrans))
-	print("z_trans = "..tostring(DashboardLive.zTrans))
-	print("x_rot = "..tostring(DashboardLive.xRot))
-	print("y_rot = "..tostring(DashboardLive.yRot))
-	print("z_rot = "..tostring(DashboardLive.zRot))
-	print("x_scale = "..tostring(DashboardLive.xScl))
-	print("y_scale = "..tostring(DashboardLive.yScl))
-	print("z_scale = "..tostring(DashboardLive.zScl))
-	if xmlPath == nil then return end
-	print("==============================")
-	print("<vanillaDashboard name=\""..tostring(self:getName()).."\" fileName=\""..tostring(xmlPath).."\" >")
-	print("	<nodes>")
-	print("		<node name=\"<set a name here>\" node=\""..DashboardLive.editNode.."\" symbol=\""..DashboardLive.editSymbolIndex.."\" moveTo=\""..tostring(DashboardLive.xTrans).." "..tostring(DashboardLive.yTrans).." "..tostring(DashboardLive.zTrans).."\" rotate=\""..tostring(DashboardLive.xRot).." "..tostring(DashboardLive.yRot).." "..tostring(DashboardLive.zRot).."\" scale=\""..tostring(DashboardLive.xScl).." "..tostring(DashboardLive.yScl).." "..tostring(DashboardLive.zScl).."\"/>")
-	print("	</nodes>")
-	print("</vanillaDashboard>")
-	print("==============================")
-end
---]]
-
-
 
 -- Main script
 -- ===========
@@ -3918,7 +3822,7 @@ function DashboardLive.getDashboardLiveRDS(self, dashboard)
 	dbgprint("getDashboardLiveRDS : returnValue: "..tostring(returnValue), 4)
 	return returnValue
 end
-	
+
 function DashboardLive:onUpdate(dt)
 	local spec = self.spec_DashboardLive
 	local dspec = self.spec_dashboard
@@ -3932,34 +3836,6 @@ function DashboardLive:onUpdate(dt)
 		--dbgprint("Selector group: "..tostring(spec.selectorGroup), 2)
 		--dbgrenderTable(spec, 1, 3)
 	end
-		
-	-- zoom
-	if (spec.zoomPressed or spec.zoomPerm) and not spec.zoomed then
-		dbgprint("onUpdate : Zooming in", 2)
-		if spec.fovBackup == nil then
-			local cam = self.spec_enterable.activeCamera
-			--spec.fovBackup = self.spec_enterable ~= nil and self.spec_enterable.activeCamera ~= nil and math.deg(self.spec_enterable.activeCamera.fovY) or nil
-			if self.spec_enterable ~= nil and self.spec_enterable.activeCamera ~= nil then
-				spec.fovBackup = math.deg(getFovY(self.spec_enterable.activeCamera.cameraNode))
-			end
-			dbgprint("onUpdate : fovBackup = "..tostring(spec.fovBackup), 2)
-		end
-		g_cameraManager:consoleCommandSetFOV("20")
-		spec.zoomed = true
-	elseif (not spec.zoomPressed and not spec.zoomPerm) and spec.zoomed then
-		dbgprint("onUpdate : Zoomig out", 2)
-		local fov
-		if spec.fovBackup ~= nil then
-			fov = spec.fovBackup
-			spec.fovBackup = nil
-		else
-			fov = -1
-		end
-		dbgprint("onUpdate : fov = "..tostring(fov), 2)
-		g_cameraManager:consoleCommandSetFOV(tostring(fov))
-		spec.zoomed = false
-	end
-	spec.zoomPressed = false
 	
 	-- sync engine data with server
 	spec.updateTimer = spec.updateTimer + dt
@@ -4008,6 +3884,11 @@ function DashboardLive:onDraw()
 	end
 	if self.spec_globalPositioningSystem ~= nil then
 		dbgrenderTable(self.spec_globalPositioningSystem.guidanceData, 1, 3)
+	end
+	if g_currentMission.hud.controlledVehicle == self then
+		local spec = self.spec_DashboardLive
+		dbgrender("fovLast: "..tostring(spec.fovLast), 20, 3)
+		dbgrender("zoomPerm: "..tostring(spec.zoomPerm), 21, 3)
 	end
 end
 
