@@ -3866,7 +3866,15 @@ function DashboardLive:onUpdate(dt)
 	
 	-- switch light/dark mode
 	if spec.isDirty then
-		self:updateDashboards(dspec.dashboards, dt, true)
+	
+		-- force update of all dashboards
+		self:updateDashboards(dspec.groupDashboards, dt, true)
+		self:updateDashboards(dspec.tickDashboards, dt, true)
+		self:updateDashboards(dspec.criticalDashboards, dt, true)
+		for _, dashboards in pairs(dspec.dashboardsByValueType) do
+			self:updateDashboards(dashboards, dt, true)
+		end
+	
 		spec.isDirty = false
 		spec.darkModeLast = spec.darkMode
 	end
