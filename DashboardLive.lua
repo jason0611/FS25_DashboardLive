@@ -544,65 +544,65 @@ function DashboardLive:onRegisterActionEvents(isActiveForInput, isActiveForInput
 	dbgprint("onRegisterActionEvents", 4)
 	if self.isClient then
 		local spec = self.spec_DashboardLive
-		DashboardLive.actionEvents = {} 
+		spec.actionEvents = {} 
 		if spec ~= nil then
 			local actionEventId
 			local sp = spec.maxPage > 1
 			local sg = spec.maxPageGroup > 1
 			if sg then
 				-- Syntax: self:addActionEvent(actionEventsTable, inputAction, target, newCallback, triggerUp, triggerDown, triggerAlways, startActive, callbackState, customIconName, ignoreCollisions, reportAnyDeviceCollision)
-				_, actionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_PAGEGRPUP', self, DashboardLive.CHANGEPAGE, false, true, false, true)
+				_, actionEventId = self:addActionEvent(spec.actionEvents, 'DBL_PAGEGRPUP', self, DashboardLive.CHANGEPAGE, false, true, false, true)
 				g_inputBinding:setActionEventTextPriority(actionEventId, GS_PRIO_NORMAL)
 				g_inputBinding:setActionEventTextVisibility(actionEventId, sg)
-				_, actionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_PAGEGRPDN', self, DashboardLive.CHANGEPAGE, false, true, false, true)
+				_, actionEventId = self:addActionEvent(spec.actionEvents, 'DBL_PAGEGRPDN', self, DashboardLive.CHANGEPAGE, false, true, false, true)
 				g_inputBinding:setActionEventTextPriority(actionEventId, GS_PRIO_NORMAL)
 				g_inputBinding:setActionEventTextVisibility(actionEventId, sg)
 			end
 			if sp then
-				_, actionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_PAGEUP', self, DashboardLive.CHANGEPAGE, false, true, false, true)
+				_, actionEventId = self:addActionEvent(spec.actionEvents, 'DBL_PAGEUP', self, DashboardLive.CHANGEPAGE, false, true, false, true)
 				g_inputBinding:setActionEventTextPriority(actionEventId, GS_PRIO_NORMAL)
 				g_inputBinding:setActionEventTextVisibility(actionEventId, sp)
-				_, actionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_PAGEDN', self, DashboardLive.CHANGEPAGE, false, true, false, true)
+				_, actionEventId = self:addActionEvent(spec.actionEvents, 'DBL_PAGEDN', self, DashboardLive.CHANGEPAGE, false, true, false, true)
 				g_inputBinding:setActionEventTextPriority(actionEventId, GS_PRIO_NORMAL)
 				g_inputBinding:setActionEventTextVisibility(actionEventId, sp)
 			end
 		end	
 		-- solve mod conflict with CameraZoomExtension by Ifko: disable temporary zoom of dbl
 		if not spec.CZEexists then
-			self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM', self, DashboardLive.ZOOM, true, true, false, true)	
+			self:addActionEvent(spec.actionEvents, 'DBL_ZOOM', self, DashboardLive.ZOOM, true, true, false, true)	
 		end
-		self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZOOM_PERM', self, DashboardLive.ZOOM, false, true, false, true)
-		self:addActionEvent(DashboardLive.actionEvents, 'DBL_HUDVISIBILITY_FULL', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
-		self:addActionEvent(DashboardLive.actionEvents, 'DBL_HUDVISIBILITY_PART', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
-		self:addActionEvent(DashboardLive.actionEvents, 'DBL_MAPORIENTATION', self, DashboardLive.MAPORIENTATION, false, true, false, true)	
+		self:addActionEvent(spec.actionEvents, 'DBL_ZOOM_PERM', self, DashboardLive.ZOOM, false, true, false, true)
+		self:addActionEvent(spec.actionEvents, 'DBL_HUDVISIBILITY_FULL', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
+		self:addActionEvent(spec.actionEvents, 'DBL_HUDVISIBILITY_PART', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
+		self:addActionEvent(spec.actionEvents, 'DBL_MAPORIENTATION', self, DashboardLive.MAPORIENTATION, false, true, false, true)	
 		if spec.darkModeExists then
-			self:addActionEvent(DashboardLive.actionEvents, 'DBL_DARKMODE', self, DashboardLive.DARKMODE, false, true, false, true)		
+			self:addActionEvent(spec.actionEvents, 'DBL_DARKMODE', self, DashboardLive.DARKMODE, false, true, false, true)		
 		end
 		
 --[[
 		if g_server ~= nil then 
 			if DashboardLive.editMode and DashboardLive.editSymbol ~= nil and self:getIsActiveForInput(true) and spec ~= nil then 
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_XUP', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_XDN', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_YUP', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_YDN', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZUP', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZDN', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_XR', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_XL', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_YR', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_YL', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZR', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZL', self, DashboardLive.MOVESYMBOL, false, true, true, true)	
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_SI', self, DashboardLive.MOVESYMBOL, false, true, true, true)	
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_SO', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_XSI', self, DashboardLive.MOVESYMBOL, false, true, true, true)	
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_XSO', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_YSI', self, DashboardLive.MOVESYMBOL, false, true, true, true)	
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_YSO', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZSI', self, DashboardLive.MOVESYMBOL, false, true, true, true)	
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_ZSO', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(DashboardLive.actionEvents, 'DBL_PRINTOUT', self, DashboardLive.PRINTSYMBOL, false, true, false, true)				
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_XUP', self, DashboardLive.MOVESYMBOL, false, true, true, true)
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_XDN', self, DashboardLive.MOVESYMBOL, false, true, true, true)
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_YUP', self, DashboardLive.MOVESYMBOL, false, true, true, true)
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_YDN', self, DashboardLive.MOVESYMBOL, false, true, true, true)
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_ZUP', self, DashboardLive.MOVESYMBOL, false, true, true, true)
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_ZDN', self, DashboardLive.MOVESYMBOL, false, true, true, true)
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_XR', self, DashboardLive.MOVESYMBOL, false, true, true, true)
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_XL', self, DashboardLive.MOVESYMBOL, false, true, true, true)
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_YR', self, DashboardLive.MOVESYMBOL, false, true, true, true)
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_YL', self, DashboardLive.MOVESYMBOL, false, true, true, true)
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_ZR', self, DashboardLive.MOVESYMBOL, false, true, true, true)
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_ZL', self, DashboardLive.MOVESYMBOL, false, true, true, true)	
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_SI', self, DashboardLive.MOVESYMBOL, false, true, true, true)	
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_SO', self, DashboardLive.MOVESYMBOL, false, true, true, true)
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_XSI', self, DashboardLive.MOVESYMBOL, false, true, true, true)	
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_XSO', self, DashboardLive.MOVESYMBOL, false, true, true, true)
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_YSI', self, DashboardLive.MOVESYMBOL, false, true, true, true)	
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_YSO', self, DashboardLive.MOVESYMBOL, false, true, true, true)
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_ZSI', self, DashboardLive.MOVESYMBOL, false, true, true, true)	
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_ZSO', self, DashboardLive.MOVESYMBOL, false, true, true, true)
+				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_PRINTOUT', self, DashboardLive.PRINTSYMBOL, false, true, false, true)				
 			end	
 		end
 --]]
@@ -682,9 +682,9 @@ function DashboardLive:ZOOM(actionName, keyStatus, arg3, arg4, arg5)
 		-- solve mod conflict with CameraZoomExtension by Ifko: disable Ifko's zoom while DBLs permanent zoom is active
 		if spec.CZEexists then
 			if spec.zoomPerm then
-				SpecializationUtil.removeEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
+				SpecializationUtil.removeEventListener(g_currentMission.hud.controlledVehicle, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
 			else
-				SpecializationUtil.registerEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
+				SpecializationUtil.registerEventListener(g_currentMission.hud.controlledVehicle, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
 			end
 		end
 	end
