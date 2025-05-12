@@ -578,34 +578,6 @@ function DashboardLive:onRegisterActionEvents(isActiveForInput, isActiveForInput
 		if spec.darkModeExists then
 			self:addActionEvent(spec.actionEvents, 'DBL_DARKMODE', self, DashboardLive.DARKMODE, false, true, false, true)		
 		end
-		
---[[
-		if g_server ~= nil then 
-			if DashboardLive.editMode and DashboardLive.editSymbol ~= nil and self:getIsActiveForInput(true) and spec ~= nil then 
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_XUP', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_XDN', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_YUP', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_YDN', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_ZUP', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_ZDN', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_XR', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_XL', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_YR', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_YL', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_ZR', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_ZL', self, DashboardLive.MOVESYMBOL, false, true, true, true)	
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_SI', self, DashboardLive.MOVESYMBOL, false, true, true, true)	
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_SO', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_XSI', self, DashboardLive.MOVESYMBOL, false, true, true, true)	
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_XSO', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_YSI', self, DashboardLive.MOVESYMBOL, false, true, true, true)	
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_YSO', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_ZSI', self, DashboardLive.MOVESYMBOL, false, true, true, true)	
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_ZSO', self, DashboardLive.MOVESYMBOL, false, true, true, true)
-				_, zoomActionEventId = self:addActionEvent(spec.actionEvents, 'DBL_PRINTOUT', self, DashboardLive.PRINTSYMBOL, false, true, false, true)				
-			end	
-		end
---]]
 	end
 end
 
