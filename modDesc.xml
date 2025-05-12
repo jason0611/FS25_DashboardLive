@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="98">
 	<author>Glowins Modschmiede</author>
-	<version>1.9.9.8</version>
+	<version>1.9.9.9</version>
 	<contributors>SbSh, mister_mojo_AT, AgrarPlay und LUWZ, Farming Duds</contributors>
 	<title>
 		<en>Dashboard Live</en>
@@ -406,30 +406,6 @@ Mais ideias ou solicitações são bem-vindas em <a href="https://github.com/jas
 		<action name="DBL_DARKMODE"		category="VEHICLE"	ignoreComboMask="false" />
 		<action name="DBL_HUDVISIBILITY_FULL" category="VEHICLE"	ignoreComboMask="false" />
 		<action name="DBL_HUDVISIBILITY_PART" category="VEHICLE"	ignoreComboMask="false" />
-		
-		<!-- Editor Mode only
-		<action name="DBL_XUP" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_XDN" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_YUP" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_YDN" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_ZUP" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_ZDN" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_XR" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_XL" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_YR" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_YL" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_ZR" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_ZL" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_XSI" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_XSO" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_YSI" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_YSO" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_ZSI" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_ZSO" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_SI" 			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_SO"			category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_PRINTOUT" 	category="VEHICLE" ignoreComboMask="false" />
-		-->
 	</actions>
 	<inputBinding>	
 		<actionBinding action="DBL_PAGEGRPUP">
