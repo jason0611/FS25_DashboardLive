@@ -3520,9 +3520,9 @@ function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
 	
 	local specCropSensor
 	if tonumber(t) ~= nil then 
-		specCropSensor = findSpecialization(self, "spec_cropSensor", t or 1)
+		specCropSensor = findSpecialization(self, "spec_FS25_precisionFarming.cropSensor", t or 1)
 	else
-		specCropSensor = findLastSpecialization(self, "spec_cropSensor")
+		specCropSensor = findLastSpecialization(self, "spec_FS25_precisionFarming.cropSensor")
 	end
 	
 	if c == "cropsensor" then
@@ -3537,12 +3537,12 @@ function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
 	
 	local specExtendedSprayer, pfVehicle
 	if tonumber(t) ~= nil then
-		specExtendedSprayer, pfVehicle = findSpecialization(self, "spec_extendedSprayer", t)
+		specExtendedSprayer, pfVehicle = findSpecialization(self, "spec_FS25_precisionFarming.extendedSprayer", t)
 	else
-		specExtendedSprayer, pfVehicle = findLastSpecialization(self, "spec_extendedSprayer")
+		specExtendedSprayer, pfVehicle = findLastSpecialization(self, "spec_FS25_precisionFarming.extendedSprayer")
 	end
 	if specExtendedSprayer ~= nil then
-		dbgprint("found spec spec_extendedSprayer in "..tostring(pfVehicle:getName()), 2)
+		dbgprint("found spec spec_FS25_precisionFarming.extendedSprayer in "..tostring(pfVehicle:getName()), 2)
 
 		local sourceVehicle, fillUnitIndex = FS22_precisionFarming.ExtendedSprayer.getFillTypeSourceVehicle(pfVehicle)
 		local hasLimeLoaded, hasFertilizerLoaded = FS22_precisionFarming.ExtendedSprayer.getCurrentSprayerMode(pfVehicle)
