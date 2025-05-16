@@ -3544,8 +3544,8 @@ function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
 	if specExtendedSprayer ~= nil then
 		dbgprint("found spec spec_FS25_precisionFarming.extendedSprayer in "..tostring(pfVehicle:getName()), 2)
 
-		local sourceVehicle, fillUnitIndex = FS22_precisionFarming.ExtendedSprayer.getFillTypeSourceVehicle(pfVehicle)
-		local hasLimeLoaded, hasFertilizerLoaded = FS22_precisionFarming.ExtendedSprayer.getCurrentSprayerMode(pfVehicle)
+		local sourceVehicle, fillUnitIndex = FS25_precisionFarming.ExtendedSprayer.getFillTypeSourceVehicle(pfVehicle)
+		local hasLimeLoaded, hasFertilizerLoaded = FS25_precisionFarming.ExtendedSprayer.getCurrentSprayerMode(pfVehicle)
 	
 		local returnValueFormat = "%.2f t/ha"
 		
