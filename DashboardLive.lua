@@ -3579,15 +3579,15 @@ function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
 		if hasLimeLoaded and (c == "phactual" or c == "phtarget" or c == "phchanged" or c == "applicationrate") then
 		
 			local phMap = specExtendedSprayer.pHMap
-            local phActual = specExtendedSprayer.phActualValue --phActualBuffer:get()
-            local phTarget = specExtendedSprayer.phTargetValue --phTargetBuffer:get()
+            local phActualInt = specExtendedSprayer.phActualValue 
+            local phTargetInt = specExtendedSprayer.phTargetValue 
             
-            --local phActual = phMap:getPhValueFromInternalValue(phActualInt) or 0
+            local phActual = phMap:getPhValueFromInternalValue(phActualInt) or 0
             if c == "phactual" then
             	returnValue = phActual
             end
             
-            --local phTarget = phMap:getPhValueFromInternalValue(phTargetInt)	or 0		
+            local phTarget = phMap:getPhValueFromInternalValue(phTargetInt)	or 0		
 			if c == "phtarget" then
             	returnValue = phTarget
             end
@@ -3618,8 +3618,8 @@ function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
 		elseif hasFertilizerLoaded and (c == "nactual" or c == "ntarget" or c == "nchanged" or c == "applicationrate") then
 			
 			local nitrogenMap = specExtendedSprayer.nitrogenMap
-			local nActualInt = specExtendedSprayer.nActualBuffer:get()
-			local nTargetInt = specExtendedSprayer.nTargetBuffer:get()		
+			local nActualInt = specExtendedSprayer.nActualValue
+			local nTargetInt = specExtendedSprayer.nTargetValue
 			
 			local nActual = nitrogenMap:getNitrogenValueFromInternalValue(nActualInt) or 0
 			if c == "nactual" then 
