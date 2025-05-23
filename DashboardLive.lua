@@ -3542,7 +3542,7 @@ function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
 		specExtendedSprayer, pfVehicle = findLastSpecialization(self, "spec_FS25_precisionFarming.extendedSprayer")
 	end
 	if specExtendedSprayer ~= nil then
-		dbgprint("found spec spec_FS25_precisionFarming.extendedSprayer in "..tostring(pfVehicle:getName()), 2)
+		dbgprint("found spec spec_FS25_precisionFarming.extendedSprayer in "..tostring(pfVehicle:getName()), 4)
 
 		local sourceVehicle, fillUnitIndex = FS25_precisionFarming.ExtendedSprayer.getFillTypeSourceVehicle(pfVehicle)
 		local hasLimeLoaded, hasFertilizerLoaded = FS25_precisionFarming.ExtendedSprayer.getCurrentSprayerMode(pfVehicle)
