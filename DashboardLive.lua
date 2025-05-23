@@ -1482,9 +1482,9 @@ local function getAttachedStatus(vehicle, element, mode, default)
             				resultValue = false
             			end
             		end
-            		dbgprint("AttacherJoint #"..tostring(jointIndex).."(trailer = "..tostring(t+1)..") connected: "..tostring(resultValue), 2)
+            		dbgprint("AttacherJoint #"..tostring(jointIndex).."(trailer = "..tostring(t+1)..") connected: "..tostring(resultValue), 4)
             	end
-              	dbgprint("AttacherJoint #"..tostring(jointIndex).."connected: "..tostring(resultValue), 2)
+              	dbgprint("AttacherJoint #"..tostring(jointIndex).."connected: "..tostring(resultValue), 4)
             	
             elseif mode == "disconnected" then
             	dbgprint("AttacherJoint #"..tostring(jointIndex).." not disconnected", 4)
