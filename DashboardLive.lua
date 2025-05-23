@@ -1475,8 +1475,16 @@ local function getAttachedStatus(vehicle, element, mode, default)
 				resultValue = coverSpec ~= nil and coverSpec.state > 0 or false
 			
             elseif mode == "connected" then
-            	dbgprint("AttacherJoint #"..tostring(jointIndex).." connected", 4)
             	resultValue = true
+            	if tonumber(t) ~= nil and t > 0 then
+            		if implement.object ~= nil and implement.object.spec_attacherJoints ~= nil then
+            			if implement.object.spec_attacherJoints.attachedImplements ~= nil and #implement.object.spec_attacherJoints.attachedImplements < 1 then
+            				resultValue = false
+            			end
+            		end
+            		dbgprint("AttacherJoint #"..tostring(jointIndex).."(trailer = "..tostring(t+1)..") connected: "..tostring(resultValue), 2)
+            	end
+              	dbgprint("AttacherJoint #"..tostring(jointIndex).."connected: "..tostring(resultValue), 2)
             	
             elseif mode == "disconnected" then
             	dbgprint("AttacherJoint #"..tostring(jointIndex).." not disconnected", 4)
