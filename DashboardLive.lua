@@ -1922,7 +1922,7 @@ function DashboardLive:getIsDashboardGroupActive(superFunc, group)
 	-- page
 	elseif group.dblCommand == "page" and group.dblPage ~= nil and group.dblPageGroup ~= nil then 
 		if group.dblPage and group.dblPage > 0 then 
-			returnValue = group.dblPage == spec.pageGroups[group.dblPageGroup].actPage
+			returnValue = spec.pageGroups[group.dblPageGroup] ~= nil and group.dblPage == spec.pageGroups[group.dblPageGroup].actPage
 		else
 			returnValue = group.dblPageGroup == spec.actPageGroup
 		end

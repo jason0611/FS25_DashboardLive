@@ -165,28 +165,30 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 	dbgprint("onDashboardCompoundLoaded :: dashboardXMLFile: "..tostring(dashboardXMLFile.filename), 2)
 	
 -- compound extension: dashboard groups
-	--if not spec.compoundGroupsLoaded then
-		local i = 0
-		while true do
-			local baseKey = string.format("%s.group(%d)", "dashboardCompounds", i)
-			dbgprint("onDashboardCompoundLoaded :: groups :: looking for key "..baseKey, 2)
-			if not dashboardXMLFile:hasProperty(baseKey) then
-				break
-			end
-	
-			local group = {}
-			if self:loadDashboardGroupFromXML(dashboardXMLFile, baseKey, group) then
-				spec.groups[group.name] = group
+	local i = 0
+	while true do
+		local baseKey = string.format("%s.group(%d)", "dashboardCompounds", i)
+		dbgprint("onDashboardCompoundLoaded :: groups :: looking for key "..baseKey, 2)
+		if not dashboardXMLFile:hasProperty(baseKey) then
+			break
+		end
+
+		local group = {}
+		if self:loadDashboardGroupFromXML(dashboardXMLFile, baseKey, group) then
+			if spec.groups[group.name] ~= nil then
+				Logging.xmlWarning(dashboardXMLFile, "Skipping already existing group "..tostring(group.name).."!")
+			else
+				spec.groups[group.name] = group			
 				table.insert(spec.sortedGroups, group)
 				dbgprint("onDashboardCompoundLoaded :: group "..tostring(group.name).." added", 2)
 				spec.hasGroups = true
 				spec.compoundGroupsLoaded = true
 			end
-	
-			i = i + 1
 		end
-		DashboardLive.createDashboardPages(self)
-	--end
+
+		i = i + 1
+	end
+	DashboardLive.createDashboardPages(self)
 	
 --[[ Deactivated because of engine restrictions:
 -- compound extension: dashboard animations	
