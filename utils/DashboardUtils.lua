@@ -165,7 +165,7 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 	dbgprint("onDashboardCompoundLoaded :: dashboardXMLFile: "..tostring(dashboardXMLFile.filename), 2)
 	
 -- compound extension: dashboard groups
-	if not spec.compoundGroupsLoaded then
+	--if not spec.compoundGroupsLoaded then
 		local i = 0
 		while true do
 			local baseKey = string.format("%s.group(%d)", "dashboardCompounds", i)
@@ -186,7 +186,7 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 			i = i + 1
 		end
 		DashboardLive.createDashboardPages(self)
-	end
+	--end
 	
 --[[ Deactivated because of engine restrictions:
 -- compound extension: dashboard animations	

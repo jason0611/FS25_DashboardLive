@@ -481,6 +481,7 @@ function DashboardLive.createDashboardPages(self)
     			spec.pageGroups[group.dblPageGroup].actPage = 1
     		end
     		spec.pageGroups[group.dblPageGroup].pages[group.dblPage] = true
+    		dbgprint("createDashboardPages : pages found in group "..group.name, 2)
     		dbgprint("createDashboardPages : maxPageGroup set to "..tostring(spec.maxPageGroup), 2)
     		dbgprint("createDashboardPages : maxPage set to "..tostring(spec.maxPage), 2)
     	else
@@ -1962,6 +1963,9 @@ function DashboardLive:getIsDashboardGroupActive(superFunc, group)
 	elseif group.dblCommand == "base_disconnected" then
 		returnValue = getAttachedStatus(self, group, "disconnected")
 	
+	elseif group.dblCommand == "base_connected" then
+		returnValue = getAttachedStatus(self, group, "connected")
+		
 	elseif group.dblCommand == "base_lifted" then
 		returnValue = getAttachedStatus(self, group, "lifted", group.dblActiveWithoutImplement)
 		
