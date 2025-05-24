@@ -481,6 +481,7 @@ function DashboardLive.createDashboardPages(self)
     			spec.pageGroups[group.dblPageGroup].actPage = 1
     		end
     		spec.pageGroups[group.dblPageGroup].pages[group.dblPage] = true
+    		dbgprint("createDashboardPages : pages found in group "..group.name, 2)
     		dbgprint("createDashboardPages : maxPageGroup set to "..tostring(spec.maxPageGroup), 2)
     		dbgprint("createDashboardPages : maxPage set to "..tostring(spec.maxPage), 2)
     	else
@@ -1475,8 +1476,16 @@ local function getAttachedStatus(vehicle, element, mode, default)
 				resultValue = coverSpec ~= nil and coverSpec.state > 0 or false
 			
             elseif mode == "connected" then
-            	dbgprint("AttacherJoint #"..tostring(jointIndex).." connected", 4)
             	resultValue = true
+            	if tonumber(t) ~= nil and t > 0 then
+            		if implement.object ~= nil and implement.object.spec_attacherJoints ~= nil then
+            			if implement.object.spec_attacherJoints.attachedImplements ~= nil and #implement.object.spec_attacherJoints.attachedImplements < 1 then
+            				resultValue = false
+            			end
+            		end
+            		dbgprint("AttacherJoint #"..tostring(jointIndex).."(trailer = "..tostring(t+1)..") connected: "..tostring(resultValue), 4)
+            	end
+              	dbgprint("AttacherJoint #"..tostring(jointIndex).."connected: "..tostring(resultValue), 4)
             	
             elseif mode == "disconnected" then
             	dbgprint("AttacherJoint #"..tostring(jointIndex).." not disconnected", 4)
@@ -1913,7 +1922,7 @@ function DashboardLive:getIsDashboardGroupActive(superFunc, group)
 	-- page
 	elseif group.dblCommand == "page" and group.dblPage ~= nil and group.dblPageGroup ~= nil then 
 		if group.dblPage and group.dblPage > 0 then 
-			returnValue = group.dblPage == spec.pageGroups[group.dblPageGroup].actPage
+			returnValue = spec.pageGroups[group.dblPageGroup] ~= nil and group.dblPage == spec.pageGroups[group.dblPageGroup].actPage
 		else
 			returnValue = group.dblPageGroup == spec.actPageGroup
 		end
@@ -1954,6 +1963,9 @@ function DashboardLive:getIsDashboardGroupActive(superFunc, group)
 	elseif group.dblCommand == "base_disconnected" then
 		returnValue = getAttachedStatus(self, group, "disconnected")
 	
+	elseif group.dblCommand == "base_connected" then
+		returnValue = getAttachedStatus(self, group, "connected")
+		
 	elseif group.dblCommand == "base_lifted" then
 		returnValue = getAttachedStatus(self, group, "lifted", group.dblActiveWithoutImplement)
 		
@@ -3520,9 +3532,9 @@ function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
 	
 	local specCropSensor
 	if tonumber(t) ~= nil then 
-		specCropSensor = findSpecialization(self, "spec_cropSensor", t or 1)
+		specCropSensor = findSpecialization(self, "spec_FS25_precisionFarming.cropSensor", t or 1)
 	else
-		specCropSensor = findLastSpecialization(self, "spec_cropSensor")
+		specCropSensor = findLastSpecialization(self, "spec_FS25_precisionFarming.cropSensor")
 	end
 	
 	if c == "cropsensor" then
@@ -3537,15 +3549,15 @@ function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
 	
 	local specExtendedSprayer, pfVehicle
 	if tonumber(t) ~= nil then
-		specExtendedSprayer, pfVehicle = findSpecialization(self, "spec_extendedSprayer", t)
+		specExtendedSprayer, pfVehicle = findSpecialization(self, "spec_FS25_precisionFarming.extendedSprayer", t)
 	else
-		specExtendedSprayer, pfVehicle = findLastSpecialization(self, "spec_extendedSprayer")
+		specExtendedSprayer, pfVehicle = findLastSpecialization(self, "spec_FS25_precisionFarming.extendedSprayer")
 	end
 	if specExtendedSprayer ~= nil then
-		dbgprint("found spec spec_extendedSprayer in "..tostring(pfVehicle:getName()), 2)
+		dbgprint("found spec spec_FS25_precisionFarming.extendedSprayer in "..tostring(pfVehicle:getName()), 4)
 
-		local sourceVehicle, fillUnitIndex = FS22_precisionFarming.ExtendedSprayer.getFillTypeSourceVehicle(pfVehicle)
-		local hasLimeLoaded, hasFertilizerLoaded = FS22_precisionFarming.ExtendedSprayer.getCurrentSprayerMode(pfVehicle)
+		local sourceVehicle, fillUnitIndex = FS25_precisionFarming.ExtendedSprayer.getFillTypeSourceVehicle(pfVehicle)
+		local hasLimeLoaded, hasFertilizerLoaded = FS25_precisionFarming.ExtendedSprayer.getCurrentSprayerMode(pfVehicle)
 	
 		local returnValueFormat = "%.2f t/ha"
 		
@@ -3579,8 +3591,8 @@ function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
 		if hasLimeLoaded and (c == "phactual" or c == "phtarget" or c == "phchanged" or c == "applicationrate") then
 		
 			local phMap = specExtendedSprayer.pHMap
-            local phActualInt = specExtendedSprayer.phActualBuffer:get()
-            local phTargetInt = specExtendedSprayer.phTargetBuffer:get()
+            local phActualInt = specExtendedSprayer.phActualValue 
+            local phTargetInt = specExtendedSprayer.phTargetValue 
             
             local phActual = phMap:getPhValueFromInternalValue(phActualInt) or 0
             if c == "phactual" then
@@ -3618,8 +3630,8 @@ function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
 		elseif hasFertilizerLoaded and (c == "nactual" or c == "ntarget" or c == "nchanged" or c == "applicationrate") then
 			
 			local nitrogenMap = specExtendedSprayer.nitrogenMap
-			local nActualInt = specExtendedSprayer.nActualBuffer:get()
-			local nTargetInt = specExtendedSprayer.nTargetBuffer:get()		
+			local nActualInt = specExtendedSprayer.nActualValue
+			local nTargetInt = specExtendedSprayer.nTargetValue
 			
 			local nActual = nitrogenMap:getNitrogenValueFromInternalValue(nActualInt) or 0
 			if c == "nactual" then 
