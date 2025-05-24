@@ -185,7 +185,7 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 				spec.compoundGroupsLoaded = true
 			end
 		end
-
+		dbgprint("onDashboardCompoundLoaded: Next group:", 2)
 		i = i + 1
 	end
 	DashboardLive.createDashboardPages(self)
