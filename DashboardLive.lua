@@ -1695,8 +1695,8 @@ function DashboardLive:loadAudioDashboardFromXML(xmlFile, key, dashboard)
     dbgprint("loadAudioDashboardFromXML : audioName: "..tostring(dashboard.dblAudioName), 2)
     
     local baseDirectory = self.baseDirectory
-    if baseDirectory == "" then -- vanilla has no audios, so switch to DBL-Path
-    	baseDirectory = DashboardLive.INT_PATH or ""--DashboardLive.MOD_PATH
+    if baseDirectory == "" then -- vanilla has no audios, so switch to DBL_VV-Path
+    	baseDirectory = DashboardLive.INT_PATH or ""
     	dbgprint("loadAudioDashboardFromXML : set baseDirectory to "..tostring(DashboardLive.INT_PATH), 2)
     end
     
