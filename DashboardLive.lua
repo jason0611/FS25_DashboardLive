@@ -270,6 +270,10 @@ function DashboardLive:onLoad(savegame)
 	spec.lastDefUsage = 0
 	spec.lastAirUsage = 0
 	
+	-- discharge state
+	spec.currentDischargeState = 0
+	spec.lastDischargeState = 0
+	
 --[[
 	-- Integrate vanilla dashboards
 	if DashboardLive.vanillaIntegrationXMLFile ~= nil then
@@ -521,6 +525,7 @@ function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 			spec.lastFuelUsage = streamReadFloat32(streamId)
 			spec.lastDefUsage = streamReadFloat32(streamId)
 			spec.lastAirUsage = streamReadFloat32(streamId)
+			spec.currentDischargeState = streamReadInt8(streamId)
 		end
 	end
 end
@@ -534,6 +539,7 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 			streamWriteFloat32(streamId, spec.lastFuelUsage)
 			streamWriteFloat32(streamId, spec.lastDefUsage)
 			streamWriteFloat32(streamId, spec.lastAirUsage)
+			streamWriteInt8(streamId, spec.currentDischargeState)
 			self.spec_motorized.motorTemperature.valueSend = spec.motorTemperature
 		end
 	end
@@ -3810,6 +3816,7 @@ end
 
 function DashboardLive:onUpdate(dt)
 	local spec = self.spec_DashboardLive
+	local specDis = self.spec_dischargeable
 	local dspec = self.spec_dashboard
 	local mspec = self.spec_motorized
 	
@@ -3822,33 +3829,60 @@ function DashboardLive:onUpdate(dt)
 		--dbgrenderTable(spec, 1, 3)
 	end
 	
-	-- sync engine data with server
-	spec.updateTimer = spec.updateTimer + dt
-	if self.isServer and self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
-		spec.motorTemperature = mspec.motorTemperature.value
-		spec.fanEnabled = mspec.motorFan.enabled
-		spec.lastFuelUsage = mspec.lastFuelUsage
-		spec.lastDefUsage = mspec.lastDefUsage
-		spec.lastAirUsage = mspec.lastAirUsage
+	-- sync server to client data
+	if self.isServer then
+		local setDirty = false
 		
-		if spec.updateTimer >= 1000 and spec.motorTemperature ~= self.spec_motorized.motorTemperature.valueSend then
-			self:raiseDirtyFlags(spec.dirtyFlag)
+		-- sync currentDischargeState with server
+		if specDis ~= nil then
+			spec.currentDischargeState = specDis.currentDischargeState
+			if spec.currentDischargeState ~= spec.lastDischargeState then
+				spec.lastDischargeState = spec.currentDischargeState
+				setDirty = true
+			end
 		end
-		
-		if spec.fanEnabled ~= spec.fanEnabledLast then
-			spec.fanEnabledLast = spec.fanEnabled
-			self:raiseDirtyFlags(spec.dirtyFlag)
-		end
-		
-	end
-	if self.isClient and not self.isServer and self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
-		mspec.motorTemperature.value = spec.motorTemperature
-		mspec.motorFan.enabled = spec.fanEnabled
-		mspec.lastFuelUsage = spec.lastFuelUsage
-		mspec.lastDefUsage = spec.lastDefUsage
-		mspec.lastAirUsage = spec.lastAirUsage
-	end
 	
+		-- sync motor temperature
+		if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
+			spec.motorTemperature = mspec.motorTemperature.value
+			spec.fanEnabled = mspec.motorFan.enabled
+			spec.lastFuelUsage = mspec.lastFuelUsage
+			spec.lastDefUsage = mspec.lastDefUsage
+			spec.lastAirUsage = mspec.lastAirUsage
+			
+			if spec.motorTemperature ~= self.spec_motorized.motorTemperature.valueSend then
+				setDirty = true
+			end
+			
+			if spec.fanEnabled ~= spec.fanEnabledLast then
+				spec.fanEnabledLast = spec.fanEnabled
+				setDirty = true
+			end
+			
+		end
+		if setDirty then
+			self:raiseDirtyFlags(spec.dirtyFlag)
+		end
+	end
+		
+	-- sync client from server data
+	if self.isClient and not self.isServer then
+	
+		-- sync motor data
+		if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
+			mspec.motorTemperature.value = spec.motorTemperature
+			mspec.motorFan.enabled = spec.fanEnabled
+			mspec.lastFuelUsage = spec.lastFuelUsage
+			mspec.lastDefUsage = spec.lastDefUsage
+			mspec.lastAirUsage = spec.lastAirUsage
+		end
+		
+		-- sync currentDischargeState from server
+		if specDis ~= nil then
+			specDis.currentDischargeState = spec.currentDischargeState
+		end
+	end
+		
 	-- switch light/dark mode
 	if spec.isDirty then
 	
