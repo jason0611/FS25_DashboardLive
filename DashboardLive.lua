@@ -1340,45 +1340,32 @@ local function getAttachedStatus(vehicle, element, mode, default)
 						resultValue = baleTypeDef.length * 100
 					end
 				end
-			elseif mode == "balecountanz" or mode == "balecounttotal" then -- baleCounter by Ifko|nator, www.lsfarming-mods.com
+			elseif mode == "balecountanz" or mode == "balecounttotal" then
 				local specBaleCounter = findSpecialization(implement.object,"spec_baleCounter")	
 				resultValue = 0
 				if specBaleCounter ~= nil then 
 					if mode == "balecountanz" then
-						resultValue = specBaleCounter.countToday
+						resultValue = specBaleCounter.sessionCounter
 						dbgprint(implement.object:getFullName().." baleCountAnz: "..tostring(resultValue), 4)	
 					else
-						resultValue = specBaleCounter.countTotal
+						resultValue = specBaleCounter.lifetimeCounter
 						dbgprint(implement.object:getFullName().." baleCountTotal: "..tostring(resultValue), 4)
 					end
-				else
-					-- support for Goeweil or Vermeer DLC bale counter
-					specBaleCounter = findSpecialization(implement.object,"spec_pdlc_vermeerPack.baleCounter")
-										or findSpecialization(implement.object,"spec_pdlc_goeweilPack.baleCounter") 
-					if specBaleCounter ~= nil then
-						if mode == "balecountanz" then
-							resultValue = specBaleCounter.sessionCounter
-							dbgprint(implement.object:getFullName().." baleCountAnz: "..tostring(resultValue), 4)	
-						else
-							resultValue = specBaleCounter.lifetimeCounter
-							dbgprint(implement.object:getFullName().." baleCountTotal: "..tostring(resultValue), 4)
-						end
-					end
 				end
-			
-			elseif mode == "wrappedbalecountanz" or mode == "wrappedbalecounttotal" then --baleCounter by Ifko|nator, www.lsfarming-mods.com
+--[[
+			elseif mode == "wrappedbalecountanz" or mode == "wrappedbalecounttotal" then
 				local specBaleCounter = findSpecialization(implement.object,"spec_wrappedBaleCounter")	
 				resultValue = 0
 				if specBaleCounter ~= nil then 
 					if mode == "wrappedbalecountanz" then
-						resultValue = specBaleCounter.countToday
+						resultValue = specBaleCounter.sessionCounter
 						dbgprint(implement.object:getFullName().." wrappedBaleCountAnz: "..tostring(resultValue), 4)	
 					else
-						resultValue = specBaleCounter.countTotal
+						resultValue = specBaleCounter.lifetimeCounter
 						dbgprint(implement.object:getFullName().." wrappedBaleCountTotal: "..tostring(resultValue), 4)
 					end
 				end
-
+--]]
 			elseif mode == "locksteeringaxle" then --lockSteeringAxles by Ifko|nator, www.lsfarming-mods.com
 				local c = element.dblCommand
 				local specLSA = findSpecialization(implement.object, "spec_lockSteeringAxles", t)
@@ -2669,8 +2656,8 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		end
 		
 		-- crabSteering
-		if cmds == "crabsteering" and spec_CS ~= nil then
-			local state = dashboard.dblState
+		if cmds == "crabsteering" and specCS ~= nil then
+			local dblState = dashboard.dblState
 			if dblState ~= nil and type(dblState) == "number" then
 				returnValue = specCS.state == dblState
 			else
@@ -3000,7 +2987,7 @@ function DashboardLive.getDashboardLiveCombine(self, dashboard)
 end
 
 function DashboardLive.getDashboardLiveRDA(self, dashboard)
-	dbgprint("getDashboardLiveVCA : dblCommand: "..tostring(dashboard.dblCommand), 4)
+	dbgprint("getDashboardLiveRDA : dblCommand: "..tostring(dashboard.dblCommand), 4)
 	local specRDA = self.spec_tirePressure
 	
 	if specRDA ~= nil and dashboard.dblCommand ~= nil then
@@ -3458,7 +3445,7 @@ function DashboardLive.getDashboardLiveBaler(self, dashboard)
 	local spec = self.spec_DashboardLive
 	local c = dashboard.dblCommand
 	if c == "isroundbale" then
-		return getAttachedStatus(self, dashboard, "baleisround", 0)
+		return getAttachedStatus(self, dashboard, "isroundbale", 0)
 	elseif c == "balesize" then
 		return getAttachedStatus(self, dashboard, "balesize", 0)
 	elseif c == "balecountanz" then
