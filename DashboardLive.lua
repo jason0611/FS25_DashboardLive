@@ -2658,10 +2658,10 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		-- crabSteering
 		if cmds == "crabsteering" and specCS ~= nil then
 			local dblState = dashboard.dblState
-			if dblState ~= nil and type(dblState) == "number" then
-				returnValue = specCS.state == dblState
+			if dblState ~= nil and tonumber(dblState) ~= nil then
+				returnValue = specCS.state == tonumber(dblState)
 			else
-				Logging.xmlWarning(vehicle.xmlFile, "No steering mode number given for DashboardLive crabSteering command")
+				Logging.xmlWarning(self.xmlFile, "No steering mode number given for DashboardLive crabSteering command")
 			end
 		end
 		
