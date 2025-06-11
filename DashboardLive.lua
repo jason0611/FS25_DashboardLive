@@ -14,29 +14,16 @@ if DashboardLive.MOD_NAME == nil then
 end
 
 source(DashboardLive.MOD_PATH.."tools/gmsDebug.lua")
-
-GMSDebug:init(DashboardLive.MOD_NAME, true, 2)
+GMSDebug:init(DashboardLive.MOD_NAME, true, 1)
 GMSDebug:enableConsoleCommands("dblDebug")
 
 source(DashboardLive.MOD_PATH.."utils/DashboardUtils.lua")
 
--- DashboardLive Editor
-DashboardLive.xTrans, DashboardLive.yTrans, DashboardLive.zTrans = 0, 0, 0
-DashboardLive.xRot, DashboardLive.yRot, DashboardLive.zRot = 0, 0, 0
-DashboardLive.xScl, DashboardLive.yScl, DashboardLive.zScl = 1, 1, 1
-DashboardLive.editIndex = 1
-DashboardLive.editNode = ""
-DashboardLive.editSymbol = nil
-DashboardLive.editSymbolIndex = ""
-DashboardLive.editMode = false
-
-DashboardLive.vanillaSchema = nil
-
 DashboardLive.scale = 0.1
-
 DashboardLive.minimapConfig = {}
 
 -- Console
+
 function DashboardLive:editParameter(scale)
 	local scale = tonumber(scale) or DashboardLive.scale
 	print("DBL Parameter: Scale = "..tostring(scale))
@@ -163,35 +150,6 @@ function DashboardLive.initSpecialization()
 	Dashboard.compoundsXMLSchema:register(XMLValueType.BOOL, COMPOUND_XML_KEY .. "#outside", "hearable from outside?")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_XML_KEY .. "#distance", "hearable distance")
 	dbgprint("initSpecialization : DashboardLive compound options registered", 2)
-	
---[[
-	DashboardLive.vanillaSchema = XMLSchema.new("vanillaIntegration")
-	
-	Dashboard.registerDashboardXMLPaths(DashboardLive.vanillaSchema, "vanillaDashboards.vanillaDashboard(?).dashboardLive", "base vca gps")
-	DashboardLive.DBL_Vanilla_XML_KEY = "vanillaDashboards.vanillaDashboard(?).dashboardLive.dashboard(?)"
-	
-	DashboardLive.vanillaSchema:register(XMLValueType.STRING, DashboardLive.DBL_Vanilla_XML_KEY .. "#cmd", "DashboardLive command")
-	DashboardLive.vanillaSchema:register(XMLValueType.STRING, DashboardLive.DBL_Vanilla_XML_KEY .. "#joints")
-	DashboardLive.vanillaSchema:register(XMLValueType.STRING, DashboardLive.DBL_Vanilla_XML_KEY .. "#state", "state")
-	DashboardLive.vanillaSchema:register(XMLValueType.STRING, DashboardLive.DBL_Vanilla_XML_KEY .. "#option", "Option")
-	DashboardLive.vanillaSchema:register(XMLValueType.FLOAT, DashboardLive.DBL_Vanilla_XML_KEY .. "#factor", "Factor")
-	DashboardLive.vanillaSchema:register(XMLValueType.INT, DashboardLive.DBL_Vanilla_XML_KEY .. "#min", "Minimum")
-	DashboardLive.vanillaSchema:register(XMLValueType.INT, DashboardLive.DBL_Vanilla_XML_KEY .. "#max", "Maximum")
-	DashboardLive.vanillaSchema:register(XMLValueType.INT, DashboardLive.DBL_Vanilla_XML_KEY .. "#trailer", "trailer number")
-	DashboardLive.vanillaSchema:register(XMLValueType.INT, DashboardLive.DBL_Vanilla_XML_KEY .. "#partition", "partition number")
-	DashboardLive.vanillaSchema:register(XMLValueType.STRING, DashboardLive.DBL_Vanilla_XML_KEY .. "#stateText", "stateText")
-	DashboardLive.vanillaSchema:register(XMLValueType.STRING, DashboardLive.DBL_Vanilla_XML_KEY .. "#scale", "scale")
-	DashboardLive.vanillaSchema:register(XMLValueType.STRING, DashboardLive.DBL_Vanilla_XML_KEY .. "#cond", "condition command")
-	DashboardLive.vanillaSchema:register(XMLValueType.FLOAT, DashboardLive.DBL_Vanilla_XML_KEY .. "#condValue", "condition value")
-	DashboardLive.vanillaSchema:register(XMLValueType.STRING, DashboardLive.DBL_Vanilla_XML_KEY .. "#baseColorDarkMode", "Base color for dark mode")
-	DashboardLive.vanillaSchema:register(XMLValueType.STRING, DashboardLive.DBL_Vanilla_XML_KEY .. "#emitColorDarkMode", "Emit color for dark mode")
-	DashboardLive.vanillaSchema:register(XMLValueType.FLOAT, DashboardLive.DBL_Vanilla_XML_KEY .. "#intensityDarkMode", "Intensity for dark mode")
-	DashboardLive.vanillaSchema:register(XMLValueType.STRING, DashboardLive.DBL_Vanilla_XML_KEY .. "#audioFile", "Path to audio file")
-	DashboardLive.vanillaSchema:register(XMLValueType.STRING, DashboardLive.DBL_Vanilla_XML_KEY .. "#audioName", "Unique name of sound sample")
-	DashboardLive.vanillaSchema:register(XMLValueType.INT, DashboardLive.DBL_Vanilla_XML_KEY .. "#loop", "repeat sound n times")
-	DashboardLive.vanillaSchema:register(XMLValueType.FLOAT, DashboardLive.DBL_Vanilla_XML_KEY .. "#volume", "sound volume")
-	dbgprint("initSpecialization : vanillaSchema element options registered", 2)
---]]
 end
 
 function DashboardLive.registerEventListeners(vehicleType)
@@ -221,12 +179,6 @@ end
 
 function DashboardLive:onPreLoad(savegame)
 	self.spec_DashboardLive = self["spec_"..DashboardLive.MOD_NAME..".DashboardLive"]
-		
-	--DashboardLive.vanillaIntegrationXML = DashboardLive.MOD_PATH.."xml/vanillaDashboards.xml"
-	--DashboardLive.vanillaIntegrationXMLFile = XMLFile.loadIfExists("VanillaDashboards", DashboardLive.vanillaIntegrationXML, DashboardLive.vanillaSchema)
-
-	--DashboardLive.modIntegrationXML = DashboardLive.MODSETTINGSDIR.."modDashboards.xml"
-	--DashboardLive.modIntegrationXMLFile = XMLFile.loadIfExists("ModDashboards", DashboardLive.modIntegrationXML, DashboardLive.vanillaSchema)
 end
 
 function DashboardLive:onLoad(savegame)
