@@ -176,7 +176,7 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 		local group = {}
 		if self:loadDashboardGroupFromXML(dashboardXMLFile, baseKey, group) then
 			if spec.groups[group.name] ~= nil then
-				Logging.xmlWarning(dashboardXMLFile, "Skipping already existing group "..tostring(group.name).."!")
+				Logging.xmlInfo(dashboardXMLFile, "Skipping already existing group "..tostring(group.name).."!")
 			else
 				spec.groups[group.name] = group			
 				table.insert(spec.sortedGroups, group)

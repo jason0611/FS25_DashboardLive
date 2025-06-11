@@ -2120,7 +2120,7 @@ function DashboardLive.getDBLAttributesBase(self, xmlFile, key, dashboard, compo
 				Logging.xmlWarning(self.xmlFile, "command `liftstate` to show state of 3P-Joint should apply to only one attacherJoint at a time, please ensure that this condition is met")
 			end
 		else
-			Logging.xmlError(self.xmlFile, "command `liftstate` without given attacherJoint")
+			Logging.xmlInfo(self.xmlFile, "command `liftstate` without given attacherJoint")
 			return false
 		end
 	end
