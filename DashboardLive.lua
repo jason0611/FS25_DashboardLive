@@ -667,15 +667,10 @@ end
 
 function DashboardLive:HUDVISIBILITY(actionName, keyStatus)
 	dbgprint("HUDVISIBILITY", 2)
-	--	local spec = self.spec_DashboardLive doesn't work reliably, Giants alone knows why...
-	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
-	local isVisible = g_currentMission.hud:getIsVisible()
 	if actionName == "DBL_HUDVISIBILITY_PART" then
-		g_currentMission.hud:setIsVisible(not isVisible)
-		if isVisible then spec.hudMode = "PARTIALLY_INVISIBLE" else spec.hudMode = "VISIBLE" end
+		g_currentMission.hud:setIsVisible(not g_currentMission.hud:getIsVisible())
 	elseif actionName == "DBL_HUDVISIBILITY_FULL" then
 		g_currentMission.hud:consoleCommandToggleVisibility()
-		if isVisible then spec.hudMode = "INVISIBLE" else spec.hudMode = "VISIBLE" end
 	end
 end
 
@@ -3778,7 +3773,7 @@ function DashboardLive:onUpdate(dt)
 	end
 	
 	-- enable InteractiveControl if present
-	if self.isClient and icspec ~= nil and spec.hudMode == "PARTIALLY_INVISIBLE" then
+	if self.isClient and icspec ~= nil and not g_currentMission.hud:getIsVisible() and not g_noHudModeEnabled then
 		local isIndoor = self:isIndoorActive()
 		local isOutdoor = self:isOutdoorActive()
 		self:updateInteractiveController(isIndoor, isOutdoor, self:getIsActiveForInput(true))
