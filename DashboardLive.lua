@@ -208,6 +208,9 @@ function DashboardLive:onLoad(savegame)
 	-- selector data
 	spec.selectorActive = 0
 	
+	-- hud visibility
+	spec.hudMode = "VISIBLE"
+	
 	-- dark mode
 	spec.darkModeExists = false
 	spec.darkMode = false
@@ -664,10 +667,15 @@ end
 
 function DashboardLive:HUDVISIBILITY(actionName, keyStatus)
 	dbgprint("HUDVISIBILITY", 2)
+	--	local spec = self.spec_DashboardLive doesn't work reliably, Giants alone knows why...
+	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
+	local isVisible = g_currentMission.hud:getIsVisible()
 	if actionName == "DBL_HUDVISIBILITY_PART" then
-		g_currentMission.hud:setIsVisible(not g_currentMission.hud:getIsVisible())
+		g_currentMission.hud:setIsVisible(not isVisible)
+		if isVisible then spec.hudMode = "PARTIALLY_INVISIBLE" else spec.hudMode = "VISIBLE" end
 	elseif actionName == "DBL_HUDVISIBILITY_FULL" then
 		g_currentMission.hud:consoleCommandToggleVisibility()
+		if isVisible then spec.hudMode = "INVISIBLE" else spec.hudMode = "VISIBLE" end
 	end
 end
 
@@ -3758,6 +3766,7 @@ function DashboardLive:onUpdate(dt)
 	local specDis = self.spec_dischargeable
 	local dspec = self.spec_dashboard
 	local mspec = self.spec_motorized
+	local icspec = self.spec_interactiveControl
 	
 	if self:getIsActiveForInput(true) then
 		-- get active vehicle
@@ -3766,6 +3775,13 @@ function DashboardLive:onUpdate(dt)
 		--dbgprint("Selector value: "..tostring(spec.selectorActive), 2)
 		--dbgprint("Selector group: "..tostring(spec.selectorGroup), 2)
 		--dbgrenderTable(spec, 1, 3)
+	end
+	
+	-- enable InteractiveControl if present
+	if self.isClient and icspec ~= nil and spec.hudMode == "PARTIALLY_INVISIBLE" then
+		local isIndoor = self:isIndoorActive()
+		local isOutdoor = self:isOutdoorActive()
+		self:updateInteractiveController(isIndoor, isOutdoor, self:getIsActiveForInput(true))
 	end
 	
 	-- sync server to client data
