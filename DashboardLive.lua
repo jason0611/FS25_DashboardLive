@@ -3477,7 +3477,7 @@ function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
 	local o = dashboard.dblOption
 	local t = dashboard.dblTrailer
 	
-	local returnValue = ""
+	local returnValue = 0
 	
 	local specCropSensor
 	if tonumber(t) ~= nil then 
