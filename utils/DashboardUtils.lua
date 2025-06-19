@@ -2,7 +2,7 @@ DashboardUtils = {}
 
 -- ** Vehicle Dashboards **
 
--- look for alternative i3d-file for vehicle and load it if existing
+-- look for alternative i3d-file for vehicle and use it for loading instead of original file
 function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	local filenameDBL = DashboardLive.INT_PATH..filename
 	local isMod = string.find(filename, "/mods/") ~= nil
@@ -17,7 +17,7 @@ function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate
 end
 I3DManager.loadSharedI3DFileAsync = Utils.overwrittenFunction(I3DManager.loadSharedI3DFileAsync, DashboardUtils.loadSharedI3DFileAsync)
 
--- look for alternative xml-file for vehicle and use it for loading i3dMappings 
+-- look for alternative xml-file for vehicle and use it for loading instead of original i3dMappings 
 function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLevelNodes, i3dMappings, realNumComponents)
 	local filename = xmlFile.filename
 	dbgprint("loadI3DMapping: fileName: "..tostring(filename), 2)
@@ -48,13 +48,20 @@ function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLeve
 end
 I3DUtil.loadI3DMapping = Utils.overwrittenFunction(I3DUtil.loadI3DMapping, DashboardUtils.loadI3DMapping)
 
-function DashboardUtils:loadDashboardGroupsFromXML(savegame)
+function DashboardUtils:loadDashboardGroupsFromXML(superfunc, savegame)
 	local spec = self.spec_dashboard
 	local filename = self.xmlFile.filename
 	local filenameDBL = DashboardLive.INT_PATH..filename
 	local isMod = self.baseDirectory ~= ""
+	local returnValue
 		
 	if fileExists(filenameDBL) and not isMod then
+		self.xmlFile.filename = filenameDBL
+		dbgprint("loadDashboardGroupsFromXML : replacing filename with "..tostring(self.xmlFile.filename), 2)
+		returnValue = superfunc(self, savegame)
+		self.xmlFile.filename = filename
+		dbgprint("loadDashboardGroupsFromXML : restoring filename to "..tostring(self.xmlFile.filename), 2)
+--[[
 		local xmlFileDBL = XMLFile.load("DBL Replacement", filenameDBL, self.xmlFile.schema)
 		dbgprint("loadDashboardGroupsFromXML: added xml-file: "..tostring(filenameDBL), 2)
 		
@@ -74,22 +81,26 @@ function DashboardUtils:loadDashboardGroupsFromXML(savegame)
 	
 			i = i + 1
 		end	
+--]]
+	else
+		returnValue = superfunc(self, savegame)
 	end
 end
-Dashboard.onLoad = Utils.appendedFunction(Dashboard.onLoad, DashboardUtils.loadDashboardGroupsFromXML)
+Dashboard.onLoad = Utils.overwrittenFunction(Dashboard.onLoad, DashboardUtils.loadDashboardGroupsFromXML)
 
--- look for alternative xml-file for vehicle and use it for loading additional dashboard entries
+-- look for alternative xml-file for vehicle and use it for loading dashboard entries instead
 function DashboardUtils:loadDashboardsFromXML(superfunc, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
 	local filename = xmlFile.filename
 	local filenameDBL = DashboardLive.INT_PATH..filename
 	local isMod = self.baseDirectory ~= ""
+	local returnValue
 	
-	local returnValue = superfunc(self, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
-	
-	if returnValue and fileExists(filenameDBL) and not isMod then
+	if fileExists(filenameDBL) and not isMod then
 		local xmlFileDBL = XMLFile.load("DBL Replacement", filenameDBL, xmlFile.schema)
-		dbgprint("loadDashboardsFromXML: added xml-file: "..tostring(filenameDBL), 2)
+		dbgprint("loadDashboardsFromXML: replaced xml-file: "..tostring(filenameDBL), 2)
 		returnValue = superfunc(self, xmlFileDBL, key, dashboardValueType, components, i3dMappings, parentNode)
+	else
+		returnValue = superfunc(self, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
 	end
 	return returnValue
 end
@@ -97,31 +108,25 @@ Dashboard.loadDashboardsFromXML = Utils.overwrittenFunction(Dashboard.loadDashbo
 
 -- look for alternative xml-file for vehicle and use it for loading additional animations 
 function DashboardUtils:loadAnimations(superfunc, savegame)	
+	local specAnim = self.spec_animatedVehicle
 	local filename = self.xmlFile.filename
 	local filenameDBL = DashboardLive.INT_PATH..filename
 	local isMod = self.baseDirectory ~= ""
 	
-	-- load animations from vanilla xml
-	superfunc(self, savegame)
-	
-	local specAnim = self.spec_animatedVehicle
 	if specAnim ~= nil and not isMod and fileExists(filenameDBL) then
 		
-		local animBackup = specAnim.animations
 		local xmlFileBackup = self.xmlFile
 		local xmlFile = XMLFile.load("DBL Anim Replacement", filenameDBL, self.xmlFile.schema)
 	
-		dbgprint("loadAnimations: added xml-file: "..tostring(filenameDBL), 2)
+		dbgprint("loadAnimations: replaced xml-file: "..tostring(filenameDBL), 2)
 		self.xmlFile = xmlFile
 		
 		superfunc(self, savegame)
 		
 		self.xmlFile = xmlFileBackup
 		xmlFile:delete()
-		
-		for _name, _anim in pairs(animBackup) do
-			specAnim.animations[_name] = _anim
-		end
+	else
+		superfunc(self, savegame)
 	end
 end
 AnimatedVehicle.onLoad = Utils.overwrittenFunction(AnimatedVehicle.onLoad, DashboardUtils.loadAnimations)
