@@ -55,34 +55,15 @@ function DashboardUtils:loadDashboardGroupsFromXML(superfunc, savegame)
 	local isMod = self.baseDirectory ~= ""
 		
 	if fileExists(filenameDBL) and not isMod then
-		self.xmlFile.filename = filenameDBL
-		dbgprint("loadDashboardGroupsFromXML : replacing filename with "..tostring(self.xmlFile.filename), 2)
+		local xmlFileDBL = XMLFile.load("DBL Replacement", filenameDBL, self.xmlFile.schema)
+		local xmlFileBackup = self.xmlFile
+		self.xmlFile = xmlFileDBL
+		dbgprint("loadDashboardGroupsFromXML : replaced file with "..tostring(self.xmlFile.filename), 2)
+		
 		superfunc(self, savegame)
 		
+		self.xmlFile = xmlFileBackup
 		dbgprint("loadDashboardGroupsFromXML : restoring filename to "..tostring(self.xmlFile.filename), 2)
---![[
-		local xmlFileDBL = XMLFile.load("DBL Replacement", filenameDBL, self.xmlFile.schema)
-		dbgprint("loadDashboardGroupsFromXML: added xml-file: "..tostring(filenameDBL), 2)
-		
-		local i = 0
-		while true do
-			local baseKey = string.format("%s.groups.group(%d)", "vehicle.dashboard", i)
-			if not xmlFileDBL:hasProperty(baseKey) then
-				break
-			end
-	
-			local group = {}
-			if self:loadDashboardGroupFromXML(xmlFileDBL, baseKey, group) then
-				spec.groups[group.name] = group
-				table.insert(spec.sortedGroups, group)
-				spec.hasGroups = true
-			end
-	
-			i = i + 1
-		end	
-		
-		self.xmlFile.filename = filename
---]]
 	else
 		superfunc(self, savegame)
 	end
