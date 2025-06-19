@@ -53,12 +53,11 @@ function DashboardUtils:loadDashboardGroupsFromXML(superfunc, savegame)
 	local filename = self.xmlFile.filename
 	local filenameDBL = DashboardLive.INT_PATH..filename
 	local isMod = self.baseDirectory ~= ""
-	local returnValue
 		
 	if fileExists(filenameDBL) and not isMod then
 		self.xmlFile.filename = filenameDBL
 		dbgprint("loadDashboardGroupsFromXML : replacing filename with "..tostring(self.xmlFile.filename), 2)
-		returnValue = superfunc(self, savegame)
+		superfunc(self, savegame)
 		self.xmlFile.filename = filename
 		dbgprint("loadDashboardGroupsFromXML : restoring filename to "..tostring(self.xmlFile.filename), 2)
 --[[
@@ -83,7 +82,7 @@ function DashboardUtils:loadDashboardGroupsFromXML(superfunc, savegame)
 		end	
 --]]
 	else
-		returnValue = superfunc(self, savegame)
+		superfunc(self, savegame)
 	end
 end
 Dashboard.onLoad = Utils.overwrittenFunction(Dashboard.onLoad, DashboardUtils.loadDashboardGroupsFromXML)
