@@ -58,9 +58,9 @@ function DashboardUtils:loadDashboardGroupsFromXML(superfunc, savegame)
 		self.xmlFile.filename = filenameDBL
 		dbgprint("loadDashboardGroupsFromXML : replacing filename with "..tostring(self.xmlFile.filename), 2)
 		superfunc(self, savegame)
-		self.xmlFile.filename = filename
+		
 		dbgprint("loadDashboardGroupsFromXML : restoring filename to "..tostring(self.xmlFile.filename), 2)
---[[
+--![[
 		local xmlFileDBL = XMLFile.load("DBL Replacement", filenameDBL, self.xmlFile.schema)
 		dbgprint("loadDashboardGroupsFromXML: added xml-file: "..tostring(filenameDBL), 2)
 		
@@ -80,6 +80,8 @@ function DashboardUtils:loadDashboardGroupsFromXML(superfunc, savegame)
 	
 			i = i + 1
 		end	
+		
+		self.xmlFile.filename = filename
 --]]
 	else
 		superfunc(self, savegame)
