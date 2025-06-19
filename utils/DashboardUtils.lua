@@ -20,7 +20,7 @@ I3DManager.loadSharedI3DFileAsync = Utils.overwrittenFunction(I3DManager.loadSha
 -- look for alternative xml-file for vehicle and use it for loading i3dMappings 
 function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLevelNodes, i3dMappings, realNumComponents)
 	local filename = xmlFile.filename
-	dbgprint("loadI3DMapping: fileName: "..tostring(fileName), 2)
+	dbgprint("loadI3DMapping: fileName: "..tostring(filename), 2)
 	local filenameDBL = DashboardLive.INT_PATH..filename
 	dbgprint("loadI3DMapping: filenameDBL: "..tostring(filenameDBL), 2)
 	local isMod = string.find(filename, "/mods/") ~= nil
@@ -32,7 +32,6 @@ function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLeve
 		xmlFileDBL = XMLFile.load("DBL Replacement", filenameDBL, xmlFile.schema)
 		if xmlFileDBL:hasProperty("vehicle.i3dMappings") then 
 			replaceI3dMappings = true
-			xmlFile:delete()
 			dbgprint("loadI3DMapping: ... success", 2)
 		else
 			xmlFileDBL:delete()
