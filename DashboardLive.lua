@@ -1797,7 +1797,6 @@ function DashboardLive:loadDashboardGroupFromXML(superFunc, xmlFile, key, group)
 			dbgprint("loadDashboardGroupFromXML : superfunc failed for group "..tostring(group.name), 2)
 			return false
 		end
-    
 --	*******
 	end
 	
