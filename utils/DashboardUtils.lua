@@ -70,7 +70,7 @@ function DashboardUtils:loadDashboardGroupsFromXML(superfunc, savegame)
 end
 Dashboard.onLoad = Utils.overwrittenFunction(Dashboard.onLoad, DashboardUtils.loadDashboardGroupsFromXML)
 
--- look for alternative xml-file for vehicle and use it for loading dashboard entries instead
+-- look for alternative xml-file for vehicle and use it for loading dashboard entries
 function DashboardUtils:loadDashboardsFromXML(superfunc, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
 	local filename = xmlFile.filename
 	local filenameDBL = DashboardLive.INT_PATH..filename
@@ -88,7 +88,7 @@ function DashboardUtils:loadDashboardsFromXML(superfunc, xmlFile, key, dashboard
 end
 Dashboard.loadDashboardsFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardsFromXML, DashboardUtils.loadDashboardsFromXML)
 
--- look for alternative xml-file for vehicle and use it for loading additional animations 
+-- look for alternative xml-file for vehicle and use it for loading animations
 function DashboardUtils:loadAnimations(superfunc, savegame)	
 	local specAnim = self.spec_animatedVehicle
 	local filename = self.xmlFile.filename
