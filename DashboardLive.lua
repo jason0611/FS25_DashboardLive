@@ -14,7 +14,7 @@ if DashboardLive.MOD_NAME == nil then
 end
 
 source(DashboardLive.MOD_PATH.."tools/gmsDebug.lua")
-GMSDebug:init(DashboardLive.MOD_NAME, true, 1)
+GMSDebug:init(DashboardLive.MOD_NAME, false)
 GMSDebug:enableConsoleCommands("dblDebug")
 
 source(DashboardLive.MOD_PATH.."utils/DashboardUtils.lua")
@@ -168,16 +168,11 @@ function DashboardLive.registerEventListeners(vehicleType)
 	SpecializationUtil.registerEventListener(vehicleType, "onUpdate", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onDraw", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onPostAttachImplement", DashboardLive)
---	SpecializationUtil.registerEventListener(vehicleType, "onLeaveVehicle", DashboardLive)
---	SpecializationUtil.registerEventListener(vehicleType, "onEnterVehicle", DashboardLive)
 end
 
 function DashboardLive.registerOverwrittenFunctions(vehicleType)
 	SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadDashboardGroupFromXML", DashboardLive.loadDashboardGroupFromXML)
     SpecializationUtil.registerOverwrittenFunction(vehicleType, "getIsDashboardGroupActive", DashboardLive.getIsDashboardGroupActive)
-    --SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadEmitterDashboardFromXML", DashboardLive.addDarkModeToLoadEmitterDashboardFromXML)
-    --SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadTextDashboardFromXML", DashboardLive.addDarkModeToLoadTextDashboardFromXML)
-    --SpecializationUtil.registerOverwrittenFunction(vehicleType, "loadNumberDashboardFromXML", DashboardLive.addDarkModeToLoadNumberDashboardFromXML)
 end
 
 function DashboardLive:onPreLoad(savegame)
@@ -231,13 +226,6 @@ function DashboardLive:onLoad(savegame)
 	-- discharge state
 	spec.currentDischargeState = 0
 	spec.lastDischargeState = 0
-	
---[[
-	-- Integrate vanilla dashboards
-	if DashboardLive.vanillaIntegrationXMLFile ~= nil then
-		DashboardUtils.createVanillaNodes(self, DashboardLive.vanillaIntegrationXMLFile, DashboardLive.modIntegrationXMLFile)
-	end
---]]
 end
 
 function DashboardLive:onRegisterDashboardValueTypes()
@@ -414,14 +402,6 @@ function DashboardLive:onPostLoad(savegame)
 	-- solve mod conflict with CameraZoomExtension by Ifko: detect if mod exists in the game
 	spec.CZEexists = self.spec_cameraZoomExtension ~= nil
 	
---	if spec.CZEexists then
-	--	if spec.zoomPerm then
-	--		SpecializationUtil.removeEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
-	--	else
-	--		SpecializationUtil.registerEventListener(self, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
-	--	end
---	end
-
 	DashboardLive.createDashboardPages(self)
 end
 
@@ -450,7 +430,6 @@ function DashboardLive.createDashboardPages(self)
     		dbgprint("createDashboardPages : no pages found in group "..group.name, 2)
     	end
     end
-    --self:loadDashboardsFromXML(self.xmlFile, "vehicle.dashboard.dashboardLive")
     dbgprint_r(spec.pageGroups, 4, 3)
 end
 
@@ -548,7 +527,7 @@ end
 
 function DashboardLive:CHANGEPAGE(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("CHANGEPAGE: "..tostring(actionName), 2)
-	--	local spec = self.spec_DashboardLive doesn't work reliably, Giants alone knows why...
+	--	local spec = self.spec_DashboardLive doesn't work reliably with actions, Giants alone knows why...
 	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
 	if actionName == "DBL_PAGEGRPUP" then
 		local pageGroupNum = spec.actPageGroup + 1
@@ -591,7 +570,7 @@ end
 
 function DashboardLive:MAPORIENTATION(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("MAPORIENTATION: "..tostring(actionName), 2)
-	--	local spec = self.spec_DashboardLive doesn't work reliably, Giants alone knows why...
+	--	local spec = self.spec_DashboardLive doesn't work reliably with actions, Giants alone knows why...
 	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
 	local index = 1
 	while spec.orientation ~= spec.orientations[index] do
@@ -610,7 +589,7 @@ end
 function DashboardLive:ZOOM(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("ZOOM: "..tostring(actionName), 2)
 	dbgprint("ZOOM: keyStatus = "..tostring(keyStatus), 2)	
---	local spec = self.spec_DashboardLive doesn't work reliably, Giants alone knows why...
+--	local spec = self.spec_DashboardLive doesn't work reliably with actions, Giants alone knows why...
 	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
 	local zoomPressed = keyStatus == 1 and actionName == "DBL_ZOOM"
 	
@@ -679,7 +658,7 @@ end
 
 function DashboardLive:DARKMODE(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("DARKMODE", 4)
-	--	local spec = self.spec_DashboardLive doesn't work reliably, Giants alone knows why...
+	--	local spec = self.spec_DashboardLive doesn't work reliably with actions, Giants alone knows why...
 	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
 	if spec.darkMode == spec.darkModeLast then
 		spec.darkMode = not spec.darkMode
@@ -1462,21 +1441,6 @@ local function getAttachedStatus(vehicle, element, mode, default)
     return result
 end
 
---[[ Obsolete in FS25
--- Overwritten vanilla-functions to achieve a better tolerance to errors caused by wrong variable types
-function DashboardLive:catchBooleanForDashboardStateFunc(superfunc, dashboard, newValue, minValue, maxValue, isActive)
-	if type(newValue)=="boolean" then
-		local min = minValue or 0
-		local max = maxValue or 1
-		--newValue = newValue and 1 or 0
-		newValue = newValue and max or min
-	end
-	return superfunc(self, dashboard, tonumber(newValue) or 0, minValue, maxValue, isActive)
-end
-Dashboard.defaultAnimationDashboardStateFunc = Utils.overwrittenFunction(Dashboard.defaultAnimationDashboardStateFunc, DashboardLive.catchBooleanForDashboardStateFunc)
-Dashboard.defaultSliderDashboardStateFunc = Utils.overwrittenFunction(Dashboard.defaultSliderDashboardStateFunc, DashboardLive.catchBooleanForDashboardStateFunc)
---]]
-
 -- Append schema definitions to registerDashboardXMLPath function 
 function DashboardLive.addDarkModeToRegisterDashboardXMLPaths(schema, basePath, availableValueTypes)
 	dbgprint("addDarkModeToRegisterDashboardXMLPaths : registerDashboardXMLPaths appended to "..basePath, 2)
@@ -1718,34 +1682,6 @@ function DashboardLive.defaultAudioStateFunc(self, dashboard, newValue, minValue
 	end
 end
 Dashboard.registerDisplayType(Dashboard.TYPES.AUDIO, false, DashboardLive.initAudioDashboardSchema, DashboardLive.loadAudioDashboardFromXML, DashboardLive.defaultAudioStateFunc)
-
---[[
--- Overwritten function loadDashboardFromXML to load displayType="AUDIO" / Obsolete in FS25
-function DashboardLive:overWrittenLoadDashboardFromXML(superfunc, xmlFile, key, dashboard, valueType, components, i3dMappings, parentNode)
-
---xmlFile, key, dashboard, dashboardData
-
-	if superfunc(self, xmlFile, key, dashboard, valueType, components, i3dMappings, parentNode) then
-		if dashboard.displayTypeIndex == Dashboard.TYPES.AUDIO then
-			dbgprint("loadDashboardFromXML: displayType AUDIO", 2)
-			if not DashboardLive.loadAudioDashboardFromXML(self, xmlFile, key, dashboard) then
-				return false
-			end
-			dbgprint("loadDashboardFromXML : Audio loaded succesfully", 2)
-			
-			if valueType.loadFunction ~= nil then
-				if not valueType.loadFunction(self, xmlFile, key, dashboard) then
-					return false
-				end
-			end
-			dashboard.stateFunction = DashboardLive.defaultAudioStateFunc
-		end
-		return true
-	end
-	return false
-end
-Dashboard.loadDashboardFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardFromXML, DashboardLive.overWrittenLoadDashboardFromXML)
---]]
 
 -- identify joints with mapping options
 local function jointMapping(vehicle, jointIndices, jointSide, jointType)
