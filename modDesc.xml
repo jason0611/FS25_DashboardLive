@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<modDesc descVersion="99">
+<modDesc descVersion="100">
 	<author>Glowins Modschmiede</author>
-	<version>2.G.M.0</version>
+	<version>2.0.0.0</version>
 	<contributors>SbSh, mister_mojo_AT, AgrarPlay und LUWZ, Farming Duds</contributors>
 	<title>
 		<en>Dashboard Live</en>
@@ -9,131 +9,88 @@
     <description>
 		<en>
 <![CDATA[
-Dashboard Live (short: DBL) allows you to display all kinds of information in your board computers and/or dashboards in all kinds of tractors, no matter what brand. 
+Dashboard Live (DBL for short) allows you to display all kinds of information in your board computers and/or dashboards in all kinds of tractors, regardless of brand.
 
-A zoom function is included for better viewing of displays: 
-- Left shift key - space bar: Short zoom
-- Both shift keys - space bar: Permanent zoom on/off 
+A zoom function is included to make it easier to view displays:
+- Left Shift key - Space bar: Short zoom
+- Both shift keys - space bar: Permanent zoom on/off
 
 If supported in the vehicle, the right Alt key and left/right/up/down arrow can be used to scroll through displays.
 
-In MultiPlayer game, DBL synchronises engine temperature, fuel and air consumption from the server to the clients.
+In the MultiPlayer game, DBL synchronizes the engine temperature, fuel and air consumption from the server to the clients.
 
 What can be displayed?
 
 Basic game:
 - Status of the front and rear linkage
-- Status of attached implements and trailers
-- Fill levels
+- Status of attached devices and trailers
+- Filling levels
 - Compass heading
 - PTOs
 - Display of the currently active implement
-- Folding state
-- Tipping State
-- TipSide
-- Heading (N/E/S/W, N/NE/E/SE/S/SW/W/NE or degree) 
-- Field Number
-- FillLevel Weight
-- Realtime Clock
+- Status of the folding/unfolding process
+- Tipping status
+- Tipping side
+- Course display (N/E/S/W, N/NE/E/SE/S/SW/SW/W/NE or degrees)
+- Field number
+- Weight of the loaded filling quantity
+- Real-time clock
+
+Minimap:
+- Display of the surrounding map in the dashboard
+
+Thresher:
+- Filling indicator
+- Status of straw chopper/swath delivery
+- Cutting height
+- Position of the transfer tube
+- Overloading process active
+
+Bale press / Bale wrapper:
+- Bale size
+- Bale counter
+
+Front loader:
+- Tool position
+
+Further functions:
+- Dark mode
+- Acoustic signals
+
+
+Supported mods (optional):
 
 VehicleControlAddon:
 - Status of the differential locks
 - Status of the all-wheel drive
 - Hold speed
 - GPS status
-- Actual wheel slip (if FS22_VehicleControlAddon or FS22_reaGUI is present)
+- Slip of the drive wheels
 
 Enhanced Vehicle:
 - Status of the differential locks
 - Status of the all-wheel drive
 
-Guidance Steering
-- GPS status
-- Working width
-- GPS Track
-
 Headland Management:
 - Status
-- Field/Headland mode
-
-ProSeed:
-- All displays of the ProSeed HUD
-
-Combine:
-- Filling state
-- Chopper / Swath state
-- Worked hectars
-- Cutting height
-- Pipe folding state
-- Pipe overloading state
+- Field/pre-turn mode
 
 CombineXP:
-- Tons per Hour
-- Engine Load
+- Tonnes per hour
+- Engine load
 - Yield
 - High moisture warning
 
-Baler:
-- Bale size
-- Bale counter (if Vermeer-DLC, Goeweill DLC or Ifko's BaleCounter mod is present)
-- Wrapped bale counter (if Ifko's BaleCounter is present)
+CVTaddon:
+- Speed steps
+- Acceleration ramps
+- Braking ramps
+- Various warning states
 
-Frontloader:
-- Tool position
+Important: Vehicles must be prepared for DashboardLive in advance in order to be able to use the functions and displays. 
+An installation guide and documentation are included, and video tutorials are also available.
 
-All supported mods are optional.
-
-Changelog V1.1.0.0:
-- added new base game functions
-- combine support
-- baler support
-- front loader support
-- wheel slip 
-- support for FS22_combineXP
-- support for FS22_lockSteeringAxle
-- several fixes
-- complete command overview added
-
-Changelog V1.2.0.0:
-- added MiniMap integration
-- added page groups to be able to scroll pages on multiple terminals
-
-Changelog V1.3.0.0:
-- Support for PrecisionFarming
-- Support for CVTaddon
-- Support for RDA (tyre pressure regulation system)
-- Compatibility with customPDAs of the realGPS mod
-- Translation for front loader added
-- Dark Mode added
-- Fix for cutHeight
-- displayType="AUDIO" added
-
-Changelog V1.4.0.0:
-- Support for variable working widths
-- Support for FS22_ExtendedCruiseControl and FS22_SpeedControl
-- Support for FS22_RealisticDamageSystem
-- Display of the set speed for VCA KeepSpeed
-- Display for cover opening
-- Display of cultivator type ("normal" cultivator or deep cultivator / subsoiler)
-- Filling material display (name / icon)
-- Factor evaluation for RDA added
-- Display of the current player name added 
-- Dollies and hooklift trailers are now skipped when evaluating "trailer"
-- Comparison operators and negation for base, vca, gps and hlm added
-- PrecisionFarming evaluation corrected
-- Bug in dark mode corrected, which caused more dark switching than planned
-- Bug with fillTypes fixed, whereby the specification of "trailer" was mandatory
-- Bug in page switching fixed, whereby an empty terminal could be activated
-- displayType="AUDIO" is now also audible outside the vehicle
-
-Changelog V1.4.1.0:
-- Nil condition fixed with cultivator state, after attachment is disconnected
-- Nil conditions fixed with "isToolRotation" and "isToolTranslation", if min and/or max values are missing
-
-Important: Vehicles must be prepared for DashboardLive in advance to use the features and displays.
-Installation guide and documentation are included, video tutorials are also available.
-
-Further ideas or requests are welcome at <a href="https://github.com/jason0611/FS22_DashboardLive">GitHub: FS22_DashboardLive</a>.
+Further ideas or requests are welcome at <a href="https://github.com/jason0611/FS25_DashboardLive">GitHub: FS25_DashboardLive</a>
 ]]>
 		</en>
 		<de>
@@ -165,28 +122,8 @@ Basisspiel:
 - Gewicht der geladenen Füllmenge
 - Echtzeit Uhr
 
-VehicleControlAddon:
-- Status der Differentialsperren
-- Status des Allradantriebs
-- Geschwindigkeit halten
-- GPS-Status
-- Schlupf der Antriebsräder (wenn FS22_VehicleControlAddon oder FS22_reaGUI vorhanden sind)
-
-Enhanced Vehicle:
-- Status der Differentialsperren
-- Status des Allradantriebs
-
-Guidance Steering:
-- GPS-Status
-- Arbeitsbreite
-- GPS-Spur
-
-Headland Management:
-- Status
-- Feld-/Vorgewendemodus
-
-Proseed:
-- Alle Anzeigen des ProSeed-HUD
+Minimap:
+- Darstellung der Umgebungskarte im Dashboard
 
 Drescher:
 - Füllanzeige
@@ -195,200 +132,57 @@ Drescher:
 - Stellung des Überladerohrs
 - Überladevorgang aktiv
 
+Ballenpressen / Ballenwickler:
+- Ballengröße
+- Ballenzähler
+
+Frontlader:
+- Werkzeugstellung
+
+Weitere Funkrionen:
+- Dark Mode
+- Akustische Signale
+
+
+Unterstützte Mods (optional):
+
+VehicleControlAddon:
+- Status der Differentialsperren
+- Status des Allradantriebs
+- Geschwindigkeit halten
+- GPS-Status
+- Schlupf der Antriebsräder
+
+Enhanced Vehicle:
+- Status der Differentialsperren
+- Status des Allradantriebs
+
+Headland Management:
+- Status
+- Feld-/Vorgewendemodus
+
 CombineXP:
 - Tonnen pro Stunde
 - Motorlast
 - Ertrag
 - Warnung bei hoher Feuchtigkeit
 
-Ballenpressen / Ballenwickler:
-- Ballengröße
-- Ballenzähler (wenn Vermeer-DLC, Goeweill DLC oder Ifko's BaleCounter Mod vorhanden ist)
-- Zähler gewickelter Ballen (wenn Ifko's BaleCounter Mod vorhanden ist)
-
-Frontlader:
-- Werkzeugstellung
+CVTaddon:
+- Fahrstufen
+- Beschleunigungsrampen
+- Bremsrampen
+- Diverse Warnzustände
  
-Alle unterstützten Mods sind optional.
-
-Changelog V1.1.0.0:
-- Neue Funktionen des Basisspiels hinzugefügt
-- Unterstützung für Mähdrescher
-- Unterstützung für Ballenpressen
-- Frontlader-Unterstützung
-- Radschlupf 
-- Unterstützung für FS22_combineXP
-- Unterstützung für FS22_lockSteeringAxle
-- verschiedene Korrekturen
-- komplette Befehlsübersicht hinzugefügt
-
-Changelog V1.2.0.0:
-- MiniMap-Integration hinzugefügt
-- Page groups hinzugefügt, um Seiten auf mehreren Terminals blättern zu können
-
-Changelog V1.3.0.0:
-- Unterstützung für PrecisionFarming
-- Unterstützung für CVTaddon
-- Unterstützung für RDA (Reifendruckregelanlage)
-- Kompatibilität zu customPDAs des realGPS mod
-- Translation für Frontlader ergänzt
 - Dark Mode hinzugefügt
 - Fix für cutHeight
 - displayType="AUDIO" hinzugefügt
 
-Changelog V1.4.0.0:
-- Unterstützung für variable Arbeitsbreiten
-- Unterstützung für FS22_ExtendedCruiseControl und FS22_SpeedControl
-- Unterstützung für FS22_RealisticDamageSystem
-- Anzeige der eingestellten Geschwindigkeit bei VCA KeepSpeed
-- Anzeige für Coveröffnung
-- Anzeige des Grubbertyps ("normaler" Grubber oder Tiefengrubber / Tiefenlockerer)
-- Füllgut-Anzeige (Name / Icon)
-- Faktor-Auswertung bei RDA ergänzt
-- Anzeige des aktuellen Spielernamens ergänzt 
-- Dollies und Hakenlift-Trailer werden nun bei der Auswertung von "trailer" übersprungen
-- Vergleichsoperatoren und Negation für base, vca, gps und hlm ergänzt
-- PrecisionFarming-Auswertung bei Schleppschäuchen etc. korrigiert
-- Bug im Dark Mode korrigiert, wodurch mehr dunkel geschaltet wurde, als geplant
-- Bug bei fillTypes behoben, wodurch die Angabe von "trailer" zwingend erforderlich war
-- Bug bei der Seitenschaltung behoben, wodurch ein leeres Terminal aktiviert werden konnte
-- displayType="AUDIO" ist nun auch außerhalb des Fahrzeugs hörbar
-
-Changelog V1.4.1.0:
-- Nil-Bedingung bei Grubber-Status behoben, nachdem das Gerät abgekoppelt wurde
-- Nil-Bedingungen bei "isToolRotation" und "isToolTranslation" behoben, wenn min und/oder max Werte fehlen
-
 Wichtig: Fahrzeuge müssen vorab für DashboardLive vorbereitet werden, um die Funktionen und Anzeigen nutzen zu können.
 Eine Einbauhilfe und Dokumentation sind enthalten, außerdem sind Video-Tutorials verfügbar.
 
-Weitere Ideen oder Wünsche werden gerne unter <a href="https://github.com/jason0611/FS22_DashboardLive">GitHub: FS22_DashboardLive</a> entgegengenommen
+Weitere Ideen oder Wünsche werden gerne unter <a href="https://github.com/jason0611/FS25_DashboardLive">GitHub: FS25_DashboardLive</a> entgegengenommen
 ]]>
 		</de>
-		<br>
-<![CDATA[
-Painel ao vivo (abreviação: DBL) permite que você exiba todos os tipos de informações em seus computadores de bordo e/ou painéis em todos os tipos de tratores, não importa a marca.
-
-Uma função de zoom está incluída para melhor visualização dos monitores:
-- Tecla shift esquerda - barra de espaço: zoom curto
-- Ambas as teclas shift - barra de espaço: zoom permanente ativado/desativado
-
-Se houver suporte no veículo, a tecla Alt direita e a seta esquerda/direita podem ser usadas para rolar pelas telas.
-
-No jogo MultiPlayer, o DBL sincroniza a temperatura do motor, combustível e consumo de ar do servidor para os clientes.
-
-O que pode ser exibido?
-
-jogo básico:
-- Estado do hidráulico dianteiro e traseiro
-- Status dos implementos e reboques acoplados
-- Níveis de preenchimento
-- Direção da bússola
-- PTOs
-- Exibição do implemento atualmente ativo
-- Estado do engate frontal e traseiro
-- Estado das alfaias e reboques ligados
-- Níveis de enchimento
-- Direcção da bússola
-- Número do campo
-- FillLevel Weight (peso do nível de enchimento)
-- Relógio em tempo real
-
-Controle de veículo Addon:
-- Estado dos bloqueios do diferencial
-- Status da tração nas quatro rodas
-- Mantenha a velocidade
-- estado do GPS
-- Patinagem real das rodas (se FS22_VehicleControlAddon ou FS22_reaGUI estiver presente)
-
-Veículo aprimorado:
-- Estado dos bloqueios do diferencial
-- Status da tração nas quatro rodas
-
-Direção de Orientação
-- estado do GPS
-- Largura de trabalho
-- Rastreamento GPS
-
-Gestão de Cabeceiras:
-- Status
-- Modo de campo/cabeceira
-
-ProSeed:
-- Todas as exibições do ProSeed HUD
-
-Combinar:
-- Estado de enchimento
-- Estado do cortador / faixa
-- Hectares trabalhados
-- Altura de corte
-- Estado de dobragem do tubo
-- Estado de sobrecarga do tubo
-
-CombineXP:
-- Toneladas por hora
-- Carga do motor
-- Rendimento
-- Aviso de humidade elevada
-
-Enfardadeira:
-- Tamanho do fardo
-- Contador de fardos (se Vermeer-DLC, Goeweill DLC ou Ifko's BaleCounter mod estiver presente)
-- Contador de fardos embrulhados (se o Ifko's BaleCounter estiver presente)
-
-Carregador frontal:
-- Posição da ferramenta
-
-Todos os mods suportados são opcionais.
-
-Changelog V1.1.0.0:
-- adicionadas novas funções de jogo base
-- suporte para ceifeira-debulhadora
-- suporte para enfardadeira
-- suporte para carregador frontal
-- deslizamento de rodas 
-- suporte para FS22_combineXP
-- suporte para FS22_lockSteeringAxle
-- várias correcções
-- visão geral completa dos comandos adicionada
-
-Changelog V1.2.0.0:
-- Integração do MiniMap adicionada
-- Grupos de páginas adicionados para permitir a rolagem de páginas em vários terminais.
-
-Mudanças V1.3.0.0:
-- Suporte para PrecisionFarming
-- Suporte para CVTaddon
-- Suporte para RDA (sistema de regulagem da pressão dos pneus)
-- Compatibilidade com PDAs personalizados do mod realGPS
-- Adicionada tradução para o carregador frontal
-- Modo escuro adicionado
-- Correção para cutHeight
-- displayType="AUDIO" adicionado
-
-Mudanças V1.4.0.0:
-- Suporte a larguras de trabalho variáveis
-- Suporte para FS22_ExtendedCruiseControl e FS22_SpeedControl
-- Suporte para FS22_RealisticDamageSystems
-- Exibição da velocidade definida para VCA KeepSpeed
-- Exibição da abertura da tampa
-- Exibição do tipo de cultivador (cultivador "normal" ou cultivador profundo/subsolador)
-- Exibição do material de enchimento (nome/ícone)
-- Adicionada avaliação de fator para RDA
-- Exibição do nome do jogador atual adicionada 
-- Os reboques de bonde e de gancho agora são ignorados na avaliação de "reboque".
-- Adicionados operadores de comparação e negação para base, vca, gps e hlm
-- Correção da avaliação PrecisionFarming para mangueiras rebocadas etc.
-- Correção do erro no modo escuro, que causava mais alternância de escuro do que o planejado
-- Corrigido o erro com fillTypes, em que a especificação de "trailer" era obrigatória
-- Corrigido um erro na troca de páginas que poderia causar a ativação de um terminal vazio
-- displayType="AUDIO" agora também é audível fora do veículo
-
-Importante: os veículos devem ser preparados para o DashboardLive com antecedência para usar os recursos e as telas.
-A ajuda e a documentação de instalação estão incluídas e também há tutoriais em vídeo disponíveis.
-
-Mais ideias ou solicitações são bem-vindas em <a href="https://github.com/jason0611/FS22_DashboardLive">GitHub: FS22_DashboardLive</a>.
-]]>
-		</br>	
  	</description>	
     <multiplayer supported="true"/>
 	<iconFilename>icon_DashboardLive.dds</iconFilename>
@@ -504,154 +298,5 @@ Mais ideias ou solicitações são bem-vindas em <a href="https://github.com/jas
             <br>Alternar Dark Mode</br>
             <ru>Переключить на тёмный режим</ru>
         </text>
-<!--
-        <text name="input_DBL_XUP">
-            <en>DBL: Editor Mode: X+</en>
-            <cz>DBL: Režim editoru: X+</cz>
-            <de>DBL: Editor Modus: X+</de>
-            <br>DBL: Modo Editor: X+</br>
-            <ru>DBL: Редактирование: X+</ru>
-        </text>
-        <text name="input_DBL_XDN">
-            <en>DBL: Editor Mode: X-</en>
-            <cz>DBL: Režim editoru: X-</cz>
-            <de>DBL: Editor Modus: X-</de>
-            <br>DBL: Modo Editor: X-</br>
-            <ru>DBL: Редактирование: X-</ru>
-        </text>
-        <text name="input_DBL_YUP">
-            <en>DBL: Editor Mode: Y+</en>
-            <cz>DBL: Režim editoru: Y+</cz>
-            <de>DBL: Editor Modus: Y+</de>
-            <br>DBL: Modo Editor: Y+</br>
-            <ru>DBL: Редактирование: Y+</ru>
-        </text>
-        <text name="input_DBL_YDN">
-            <en>DBL: Editor Mode: Y-</en>
-            <cz>DBL: Režim editoru: Y-</cz>
-            <de>DBL: Editor Modus: Y-</de>
-            <br>DBL: Modo Editor: Y-</br>
-            <ru>DBL: Редактирование: Y-</ru>
-        </text>
-        <text name="input_DBL_ZUP">
-            <en>DBL: Editor Mode: Z+</en>
-            <cz>DBL: Režim editoru: Z+</cz>
-            <de>DBL: Editor Modus: Z+</de>
-            <br>DBL: Modo Editor: Z+</br>
-            <ru>DBL: Редактирование: Z+</ru>
-        </text>
-        <text name="input_DBL_ZDN">
-            <en>DBL: Editor Mode: Z-</en>
-            <cz>DBL: Režim editoru: Z-</cz>
-            <de>DBL: Editor Modus: Z-</de>
-            <br>DBL: Modo Editor: Z-</br>
-            <ru>DBL: Редактирование: Z-</ru>
-        </text>
-        <text name="input_DBL_XR">
-            <en>DBL: Editor Mode: Turn right x-axis</en>
-            <cz>DBL: Režim editoru: Otočit pravou osu x</cz>
-            <de>DBL: Editor Modus: Rechtsdrehung um x-Achse</de>
-            <br>DBL: Modo Editor: Vire à direita eixo x</br>
-            <ru>DBL: Редактирование: Повернуть вправо по оси X</ru>
-        </text>
-        <text name="input_DBL_XL">
-            <en>DBL: Editor Mode: Turn left x-axis</en>
-            <cz>DBL: Režim editoru: Otočit levou osu x</cz>
-            <de>DBL: Editor Modus: Linksdrehung um x-Achse</de>
-            <br>DBL: Modo Editor: Vire à esquerda eixo x</br>
-            <ru>DBL: Редактирование: Повернуть влево по оси X</ru>
-        </text>
-        <text name="input_DBL_YR">
-            <en>DBL: Editor Mode: Turn right y-axis</en>
-            <cz>DBL: Režim editoru: Otočit pravou osu y</cz>
-            <de>DBL: Editor Modus: Rechtsdrehung um y-Achse</de>
-            <br>DBL: Modo Editor: Vire à direita eixo y</br>
-            <ru>DBL: Редактирование: Повернуть вправо по оси Y</ru>
-        </text>
-        <text name="input_DBL_YL">
-            <en>DBL: Editor Mode: Turn left y-axis</en>
-            <cz>DBL: Režim editoru: Otočit levou osu y</cz>
-            <de>DBL: Editor Modus: Linksdrehung um y-Achse</de>
-            <br>DBL: Modo Editor: Vire à esquerda eixo y</br>
-            <ru>DBL: Редактирование: Повернуть влево по оси Y</ru>
-        </text>
-        <text name="input_DBL_ZR">
-            <en>DBL: Editor Mode: Turn right z-axis</en>
-            <cz>DBL: Režim editoru: Otočit pravou osu z</cz>
-            <de>DBL: Editor Modus: Rechtsdrehung um z-Achse</de>
-            <br>DBL: Modo Editor: Vire à direita eixo z</br>
-            <ru>DBL: Редактирование: Повернуть вправо по оси Z</ru>
-        </text>
-        <text name="input_DBL_ZL">
-            <en>DBL: Editor Mode: Turn left z-axis</en>
-            <cz>DBL: Režim editoru: Otočit levou osu z</cz>
-            <de>DBL: Editor Modus: Linksdrehung um z-Achse</de>
-            <br>DBL: Modo Editor: Vire à esquerda eixo z</br>
-            <ru>DBL: Редактирование: Повернуть влево по оси Z</ru>
-        </text>
-        <text name="input_DBL_XSI">
-            <en>DBL: Editor Mode: Scale up x-axis</en>
-            <cz>DBL: Režim editoru: Zvětšení osy x</cz>
-            <de>DBL: Editor Modus: x-Achse hoch skalieren</de>
-            <br>DBL: Modo Editor: Aumenta escala eixo x</br>
-            <ru>DBL: Редактирование: Увеличить масштаб по оси X</ru>
-        </text>
-        <text name="input_DBL_XSO">
-            <en>DBL: Editor Mode: Scale down x-axis</en>
-            <cz>DBL: Režim editoru: Zmenšení osy x</cz>
-            <de>DBL: Editor Modus: x-Achse runter skalieren</de>
-            <br>DBL: Modo Editor: Diminui escala eixo x</br>
-            <ru>DBL: Редактирование: Уменьшить масштаб по оси X</ru>
-        </text>
-        <text name="input_DBL_YSI">
-            <en>DBL: Editor Mode: Scale up y-axis</en>
-            <cz>DBL: Režim editoru: Zvětšení osy y</cz>
-            <de>DBL: Editor Modus: y-Achse hoch skalieren</de>
-            <br>DBL: Modo Editor: Aumenta escala eixo y</br>
-            <ru>DBL: Редактирование: Увеличить масштаб по оси Y</ru>
-        </text>
-        <text name="input_DBL_YSO">
-            <en>DBL: Editor Mode: Scale down y-axis</en>
-            <cz>DBL: Režim editoru: Zmenšení osy y</cz>
-            <de>DBL: Editor Modus: y-Achse runter skalieren</de>
-            <br>DBL: Modo Editor: Diminui escala eixo y</br>
-            <ru>DBL: Редактирование: Уменьшить масштаб по оси Y</ru>
-        </text>
-        <text name="input_DBL_ZSI">
-            <en>DBL: Editor Mode: Scale up z-axis</en>
-            <cz>DBL: Režim editoru: Zvětšení osy z</cz>
-            <de>DBL: Editor Modus: z-Achse hoch skalieren</de>
-            <br>DBL: Modo Editor: Aumenta escala eixo z</br>
-            <ru>DBL: Редактирование: Увеличить масштаб по оси Z</ru>
-        </text>
-        <text name="input_DBL_ZSO">
-            <en>DBL: Editor Mode: Scale down z-axis</en>
-            <cz>DBL: Režim editoru: Zmenšení osy z</cz>
-            <de>DBL: Editor Modus: z-Achse runter skalieren</de>
-            <br>DBL: Modo Editor: Diminui escala eixo z</br>
-            <ru>DBL: Редактирование: Уменьшить масштаб по оси Z</ru>
-        </text>
-        <text name="input_DBL_SI">
-            <en>DBL: Editor Mode: Scale up all</en>
-            <cz>DBL: Režim editoru: Zvětšit vše</cz>
-            <de>DBL: Editor Modus: Gleichmäßig hoch skalieren</de>
-            <br>DBL: Modo Editor: Aumenta todas escalas</br>
-            <ru>DBL: Редактирование: Увеличить масштаб</ru>
-        </text>
-        <text name="input_DBL_SO">
-            <en>DBL: Editor Mode: Scale down all</en>
-            <cz>DBL: Režim editoru: Zmenšit vše</cz>
-            <de>DBL: Editor Modus: Gleichmäßig runter skalieren</de>
-            <br>DBL: Modo Editor: Diminui todas escalas</br>
-            <ru>DBL: Редактирование: Уменьшить масштаб</ru>
-        </text>
-        <text name="input_DBL_PRINTOUT">
-            <en>DBL: Editor Mode: Print out to log</en>
-            <cz>DBL: Režim editoru: Zapsat do logu</cz>
-            <de>DBL: Editor Modus: Ausgabe ins Log</de>
-            <br>DBL: Modo Editor: Imprimir no registro</br>
-            <ru>DBL: Редактирование: Записать в журнал</ru>
-        </text>
--->
 	</l10n>
 </modDesc>
