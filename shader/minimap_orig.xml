@@ -3,14 +3,7 @@
     <Parameters>
         <Parameter name="map"			   target="map"            	 type="float4" group="base"   	         defaultValue="0 0 0.2 0"/>
         <Parameter name="lightControl"     target="lightControl"     type="float"  group="base"              defaultValue="1.0"              minValue="0.0"         maxValue="10"          description="X - glowing intensity, can go above 1\nin STATIC_LIGHT mesh completely black while value is below -1, used to shut display completely off independent of diffuse map" />
-    
-		<!-- 🔧 NEU: GPS + PF -->
-        <Parameter name="gpsCenter" 		target="gpsCenter" 			type="float2" 	group="base" 	defaultValue="0 0"/>
-        <Parameter name="gpsLeft" 			target="gpsLeft" 			type="float2" 	group="base" 	defaultValue="0 0"/>
-        <Parameter name="gpsRight" 			target="gpsRight" 			type="float2" 	group="base" 	defaultValue="0 0"/>
-        <Parameter name="pfNitrogenLevel" 	target="pfNitrogenLevel" 	type="float" 	group="base" 	defaultValue="0.0"/>
-        <Parameter name="pfPhLevel" 		target="pfPhLevel" 			type="float" 	group="base" 	defaultValue="0.0"/>	
-	</Parameters>
+    </Parameters>
     <UvUsages/>
     <Textures/>
     <VertexAttributes/>
@@ -26,13 +19,6 @@
 	// map.z: zoom factor
 	// map.w: rotation (radiant)
     float4 map;
-	
-	// 🔧 NEU
-    float2 gpsCenter;
-    float2 gpsLeft;
-    float2 gpsRight;
-    float pfNitrogenLevel;
-    float pfPhLevel;
 ]]>
             </CodeInjection>
             <CodeInjection position="POST_SET_TEXCOORDS_VS">
@@ -186,24 +172,6 @@ if ( globals.gIsEmissiveActivated ){
     #endif
     emissiveColor *= mLightControl;
     emissiveColor *= globals.gEmissiveColor.w;
-	
-	// 🧭 NEU: GPS + PF Farbanzeige
-    float2 uv = In.vs.defaultTexCoords.xy;
-    float3 gpsColor      = float3(0.0, 1.0, 0.0);
-    float3 gpsWidthColor = float3(0.0, 0.5, 1.0);
-    float3 nitrogenColor = lerp(float3(0.8, 0.1, 0.1), float3(0.1, 0.9, 0.1), saturate(object.pfNitrogenLevel));
-    float3 phColor       = lerp(float3(1.0, 1.0, 1.0), float3(0.1, 0.6, 1.0), saturate(object.pfPhLevel));
-
-    if (distance(uv, object.gpsCenter) < 0.004) {
-        emissiveColor.rgb = gpsColor;
-    }
-    else if (distance(uv, object.gpsLeft) < 0.004 || distance(uv, object.gpsRight) < 0.004) {
-        emissiveColor.rgb = gpsWidthColor;
-    }
-    else {
-        emissiveColor.rgb = lerp(emissiveColor.rgb, nitrogenColor, 0.3);
-        emissiveColor.rgb = lerp(emissiveColor.rgb, phColor, 0.2);
-    }
 }
 ]]>
             </CodeInjection>
