@@ -198,6 +198,7 @@ function DashboardLive:onLoad(savegame)
 	-- zoom data
 	spec.zoomPerm = {}
 	spec.fovLast = {}
+	spec.zoomCount = 0
 	
 	--miniMap
 	spec.zoomValue = 1
@@ -602,10 +603,15 @@ function DashboardLive:ZOOM(actionName, keyStatus, arg3, arg4, arg5)
 		spec.zoomPerm[actCamNode] = not spec.zoomPerm[actCamNode]
 		-- solve mod conflict with CameraZoomExtension by Ifko: disable Ifko's zoom while DBLs permanent zoom is active
 		if spec.CZEexists then
+			print(spec.zoomCount)
 			if spec.zoomPerm[actCamNode] then
+				spec.zoomCount = spec.zoomCount + 1
 				SpecializationUtil.removeEventListener(g_currentMission.hud.controlledVehicle, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
 			else
-				SpecializationUtil.registerEventListener(g_currentMission.hud.controlledVehicle, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
+				spec.zoomCount = spec.zoomCount - 1
+				if spec.zoomCount == 0 then
+					SpecializationUtil.registerEventListener(g_currentMission.hud.controlledVehicle, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
+				end
 			end
 		end
 	end
