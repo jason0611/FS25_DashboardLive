@@ -196,7 +196,9 @@ function DashboardLive:onLoad(savegame)
 	spec.compoundGroupsLoaded = false
 		
 	-- zoom data
-	spec.zoomPerm = false
+	spec.zoomPerm = {}
+	spec.fovLast = {}
+	spec.zoomCount = 0
 	
 	--miniMap
 	spec.zoomValue = 1
@@ -591,59 +593,49 @@ function DashboardLive:ZOOM(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("ZOOM: keyStatus = "..tostring(keyStatus), 2)	
 --	local spec = self.spec_DashboardLive doesn't work reliably with actions, Giants alone knows why...
 	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
+	local actCamNode = g_cameraManager.activeCameraNode
 	local zoomPressed = keyStatus == 1 and actionName == "DBL_ZOOM"
 	
 	if actionName == "DBL_ZOOM_PERM" then
-		spec.zoomPerm = not spec.zoomPerm
+		if spec.zoomPerm[actCamNode] == nil then 
+			spec.zoomPerm[actCamNode] = false 
+		end
+		spec.zoomPerm[actCamNode] = not spec.zoomPerm[actCamNode]
 		-- solve mod conflict with CameraZoomExtension by Ifko: disable Ifko's zoom while DBLs permanent zoom is active
 		if spec.CZEexists then
-			if spec.zoomPerm then
+			if spec.zoomPerm[actCamNode] then
+				spec.zoomCount = spec.zoomCount + 1
 				SpecializationUtil.removeEventListener(g_currentMission.hud.controlledVehicle, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
 			else
-				SpecializationUtil.registerEventListener(g_currentMission.hud.controlledVehicle, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
+				spec.zoomCount = spec.zoomCount - 1
+				if spec.zoomCount == 0 then
+					SpecializationUtil.registerEventListener(g_currentMission.hud.controlledVehicle, "onUpdate", FS25_cameraZoomExtension.CameraZoomExtension)
+				end
 			end
 		end
 	end
 	
 	-- zoom
-	if zoomPressed or spec.zoomPerm then
+	
+	if zoomPressed or spec.zoomPerm[actCamNode] then
 		dbgprint("ZOOM : Zooming in", 2)
-		if spec.fovLast == nil then
-			local fov
-			if g_currentMission and g_localPlayer:getCurrentVehicle() ~= nil then
-				local camera = g_localPlayer:getCurrentVehicle():getActiveCamera()
-				if camera ~= nil then
-					fov = math.deg(camera.fovY)
-				end
-				spec.fovLast = fov
-				dbgprint("ZOOM : setting fovLast to "..tostring(fov), 2)
-			end
+		if spec.fovLast[actCamNode] == nil then
+			spec.fovLast[actCamNode] = math.deg(getFovY(actCamNode))
+			dbgprint("ZOOM : setting fovLast to "..tostring(spec.fovLast[actCamNode]), 2)
 		end
-		if spec.fovLast ~= nil then
-			setFovY(g_cameraManager.activeCameraNode, math.rad(20))
+		if spec.fovLast[actCamNode] ~= nil then
+			setFovY(actCamNode, math.rad(20))
 		end
 				
-	elseif not zoomPressed and not spec.zoomPerm then
+	elseif not zoomPressed and not spec.zoomPerm[actCamNode] then
 		dbgprint("ZOOM : Zooming out", 2)
-		local fov
-		if g_currentMission and g_localPlayer:getCurrentVehicle() ~= nil then
-			local camera = g_localPlayer:getCurrentVehicle():getActiveCamera()
-			if camera ~= nil then
-				if spec.fovLast ~= nil then
-					fov = spec.fovLast
-					spec.fovLast = nil
-				else
-					dbgprint("ZOOM :: ERROR: zoom is active, but fovLast not set! Falling back to -1", 1)
-					fov = -1
-				end
-			
-				dbgprint("ZOOM : setting fov to "..tostring(fov), 2)
-				
-				setFovY(g_cameraManager.activeCameraNode, math.rad(fov))
-			else
-				dbgprint("ZOOM : camera inactive", 2)
-			end
+		if spec.fovLast[actCamNode] == nil then 
+			spec.fovLast[actCamNode] = 50 
+			dbgprint("ZOOM :: ERROR: zoom is active, but fovLast not set! Falling back to 50", 1)
 		end
+		dbgprint("ZOOM : setting fov to "..tostring(spec.fovLast[actCamNode]), 2)
+		setFovY(g_cameraManager.activeCameraNode, math.rad(spec.fovLast[actCamNode]))
+		spec.fovLast[actCamNode] = nil
 	end
 end
 
