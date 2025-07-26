@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="100">
 	<author>Glowins Modschmiede</author>
-	<version>2.9.0.2</version>
+	<version>2.9.1.0</version>
 	<contributors>SbSh, mister_mojo_AT, AgrarPlay und LUWZ, Farming Duds</contributors>
 	<title>
 		<en>Dashboard Live</en>
@@ -35,6 +35,8 @@ Basic game:
 - Field number
 - Weight of the loaded filling quantity
 - Real-time clock
+- Radio station and volume
+- Radio volume adjustable via buttons
 
 Minimap:
 - Display of the surrounding map in the dashboard
@@ -87,6 +89,12 @@ CVTaddon:
 - Braking ramps
 - Various warning states
 
+Changelog:
+
+V2.0.1.0:
+- Zoom function improved and adapted to patch 1.10
+- Radio display and controls added
+
 Important: Vehicles must be prepared for DashboardLive in advance in order to be able to use the functions and displays. 
 An installation guide and documentation are included, and video tutorials are also available.
 
@@ -121,6 +129,8 @@ Basisspiel:
 - Feldnummer
 - Gewicht der geladenen Füllmenge
 - Echtzeit Uhr
+- Radiosender und -lautstärke
+- Radiolautstärke über Tasten einstellbar
 
 Minimap:
 - Darstellung der Umgebungskarte im Dashboard
@@ -177,6 +187,12 @@ CVTaddon:
 - Fix für cutHeight
 - displayType="AUDIO" hinzugefügt
 
+Changelog:
+
+V2.0.1.0: 
+- Zoomfunktion an Patch 1.10 angepasst und verbessert
+- Radioanzeuge und -steuerung ergänzt
+
 Wichtig: Fahrzeuge müssen vorab für DashboardLive vorbereitet werden, um die Funktionen und Anzeigen nutzen zu können.
 Eine Einbauhilfe und Dokumentation sind enthalten, außerdem sind Video-Tutorials verfügbar.
 
@@ -200,6 +216,8 @@ Weitere Ideen oder Wünsche werden gerne unter <a href="https://github.com/jason
 		<action name="DBL_DARKMODE"		category="VEHICLE"	ignoreComboMask="false" />
 		<action name="DBL_HUDVISIBILITY_FULL" category="VEHICLE"	ignoreComboMask="false" />
 		<action name="DBL_HUDVISIBILITY_PART" category="VEHICLE"	ignoreComboMask="false" />
+		<action name="DBL_RADIO_VOL_UP" categoy="VEHICLE" ignoreComboMask="false" />
+		<action name="DBL_RADIO_VOL_DOWN" categoy="VEHICLE" ignoreComboMask="false" />
 	</actions>
 	<inputBinding>	
 		<actionBinding action="DBL_PAGEGRPUP">
@@ -297,6 +315,20 @@ Weitere Ideen oder Wünsche werden gerne unter <a href="https://github.com/jason
             <de>Dark Mode an/aus</de>
             <br>Alternar Dark Mode</br>
             <ru>Переключить на тёмный режим</ru>
+        </text>
+        <text name="input_DBL_RADIO_VOL_UP">
+            <en>Radio volume up</en>
+            <cz>Radio hlasitější</cz>
+            <de>Radio lauter</de>
+            <br>Radio hlasitější</br>
+            <ru>Усилить радио</ru>
+        </text>
+        <text name="input_DBL_RADIO_VOL_DOWN">
+            <en>Radio volume down</en>
+            <cz>Ztište rádio.</cz>
+            <de>Radio leiser</de>
+            <br>Baixe o volume do rádio</br>
+            <ru>Уменьшить громкость радио</ru>
         </text>
 	</l10n>
 </modDesc>

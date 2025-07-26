@@ -521,13 +521,15 @@ function DashboardLive:onRegisterActionEvents(isActiveForInput, isActiveForInput
 		self:addActionEvent(spec.actionEvents, 'DBL_HUDVISIBILITY_FULL', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
 		self:addActionEvent(spec.actionEvents, 'DBL_HUDVISIBILITY_PART', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
 		self:addActionEvent(spec.actionEvents, 'DBL_MAPORIENTATION', self, DashboardLive.MAPORIENTATION, false, true, false, true)	
+		self:addActionEvent(spec.actionEvents, 'DBL_RADIO_VOL_UP', self, DashboardLive.RADIO, false, true, false, true)
+		self:addActionEvent(spec.actionEvents, 'DBL_RADIO_VOL_DOWN', self, DashboardLive.RADIO, false, true, false, true)
 		if spec.darkModeExists then
 			self:addActionEvent(spec.actionEvents, 'DBL_DARKMODE', self, DashboardLive.DARKMODE, false, true, false, true)		
 		end
 	end
 end
 
-function DashboardLive:CHANGEPAGE(actionName, keyStatus, arg3, arg4, arg5)
+function DashboardLive:CHANGEPAGE(actionName, keyStatus)
 	dbgprint("CHANGEPAGE: "..tostring(actionName), 2)
 	--	local spec = self.spec_DashboardLive doesn't work reliably with actions, Giants alone knows why...
 	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
@@ -570,7 +572,7 @@ function DashboardLive:CHANGEPAGE(actionName, keyStatus, arg3, arg4, arg5)
 	spec.isDirty = true
 end
 
-function DashboardLive:MAPORIENTATION(actionName, keyStatus, arg3, arg4, arg5)
+function DashboardLive:MAPORIENTATION(actionName, keyStatus)
 	dbgprint("MAPORIENTATION: "..tostring(actionName), 2)
 	--	local spec = self.spec_DashboardLive doesn't work reliably with actions, Giants alone knows why...
 	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
@@ -588,7 +590,7 @@ function DashboardLive:MAPORIENTATION(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("MAPORIENTATION: set to "..tostring(spec.orientation), 2)
 end
 
-function DashboardLive:ZOOM(actionName, keyStatus, arg3, arg4, arg5)
+function DashboardLive:ZOOM(actionName, keyStatus)
 	dbgprint("ZOOM: "..tostring(actionName), 2)
 	dbgprint("ZOOM: keyStatus = "..tostring(keyStatus), 2)	
 --	local spec = self.spec_DashboardLive doesn't work reliably with actions, Giants alone knows why...
@@ -648,8 +650,8 @@ function DashboardLive:HUDVISIBILITY(actionName, keyStatus)
 	end
 end
 
-function DashboardLive:DARKMODE(actionName, keyStatus, arg3, arg4, arg5)
-	dbgprint("DARKMODE", 4)
+function DashboardLive:DARKMODE(actionName, keyStatus)
+	dbgprint("DARKMODE", 2)
 	--	local spec = self.spec_DashboardLive doesn't work reliably with actions, Giants alone knows why...
 	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
 	if spec.darkMode == spec.darkModeLast then
@@ -661,6 +663,21 @@ function DashboardLive:DARKMODE(actionName, keyStatus, arg3, arg4, arg5)
 	dbgprint("DARKMODE: set to "..tostring(spec.darkMode), 2)
 end
 
+function DashboardLive:RADIO(actionName, keyStatus)
+	dbgprint("RADIO", 2)
+	local volume = g_gameSettings:getValue("radioVolume")
+	if actionName == "DBL_RADIO_VOL_UP" then
+		volume = volume + 0.1
+		if volume > 0.9 then volume = 1 end
+	elseif actionName == "DBL_RADIO_VOL_DOWN" then
+		volume = volume - 0.1
+		if volume < 0.1 then volume = 0 end
+	end
+	g_gameSettings:setValue("radioVolume", volume, true)
+	g_soundMixer:setAudioGroupVolumeFactor(4, volume)
+	dbgprint("RADIO: Volume set to "..tostring(volume), 1)
+end
+	
 -- Main script
 -- ===========
 
@@ -2555,6 +2572,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			returnValue = getAttachedStatus(self, dashboard, "filllevel", 0)
 			
 		-- fillType (text or icon)
+		
 		elseif cmds == "filltype" then
 			dbgprint("fillType: option = "..tostring(dashboard.dblOption), 4)
 			returnValue = false
@@ -2684,6 +2702,15 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 				if specFan ~= nil then
 					returnValue = specFan.enabled
 				end
+			end
+		elseif cmds == "radio" then
+			if o == "volume" then
+				returnValue = g_gameSettings:getValue("radioVolume")
+			else
+				local senderName = g_soundPlayer.currentChannelName
+				local len = string.len(dashboard.textMask or "xxxx")
+				local alignment = dashboard.textAlignment or "LEFT"
+				returnValue = trim(senderName, len, alignment)
 			end
 			
 		-- empty command is allowed here to add symbols (EMITTER) in off-state, too
