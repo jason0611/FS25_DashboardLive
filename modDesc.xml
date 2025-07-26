@@ -35,6 +35,8 @@ Basic game:
 - Field number
 - Weight of the loaded filling quantity
 - Real-time clock
+- Radio station and volume
+- Radio volume adjustable via buttons
 
 Minimap:
 - Display of the surrounding map in the dashboard
@@ -87,6 +89,12 @@ CVTaddon:
 - Braking ramps
 - Various warning states
 
+Changelog:
+
+V2.0.1.0:
+- Zoom function improved and adapted to patch 1.10
+- Radio display and controls added
+
 Important: Vehicles must be prepared for DashboardLive in advance in order to be able to use the functions and displays. 
 An installation guide and documentation are included, and video tutorials are also available.
 
@@ -121,6 +129,8 @@ Basisspiel:
 - Feldnummer
 - Gewicht der geladenen Füllmenge
 - Echtzeit Uhr
+- Radiosender und -lautstärke
+- Radiolautstärke über Tasten einstellbar
 
 Minimap:
 - Darstellung der Umgebungskarte im Dashboard
@@ -176,6 +186,12 @@ CVTaddon:
 - Dark Mode hinzugefügt
 - Fix für cutHeight
 - displayType="AUDIO" hinzugefügt
+
+Changelog:
+
+V2.0.1.0: 
+- Zoomfunktion an Patch 1.10 angepasst und verbessert
+- Radioanzeuge und -steuerung ergänzt
 
 Wichtig: Fahrzeuge müssen vorab für DashboardLive vorbereitet werden, um die Funktionen und Anzeigen nutzen zu können.
 Eine Einbauhilfe und Dokumentation sind enthalten, außerdem sind Video-Tutorials verfügbar.
