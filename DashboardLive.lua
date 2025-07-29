@@ -22,6 +22,8 @@ source(DashboardLive.MOD_PATH.."utils/DashboardUtils.lua")
 DashboardLive.scale = 0.1
 DashboardLive.minimapConfig = {}
 
+DashboardLive.vis_partly = false
+
 -- Console
 
 function DashboardLive:editParameter(scale)
@@ -165,6 +167,7 @@ function DashboardLive.registerEventListeners(vehicleType)
 	SpecializationUtil.registerEventListener(vehicleType, "onWriteStream", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onReadUpdateStream", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onWriteUpdateStream", DashboardLive)
+	SpecializationUtil.registerEventListener(vehicleType, "onUpdateTick", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onUpdate", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onDraw", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onPostAttachImplement", DashboardLive)
@@ -207,9 +210,6 @@ function DashboardLive:onLoad(savegame)
 	
 	-- selector data
 	spec.selectorActive = 0
-	
-	-- hud visibility
-	spec.hudMode = "VISIBLE"
 	
 	-- dark mode
 	spec.darkModeExists = false
@@ -643,9 +643,12 @@ end
 
 function DashboardLive:HUDVISIBILITY(actionName, keyStatus)
 	dbgprint("HUDVISIBILITY", 2)
+	--	local spec = self.spec_DashboardLive doesn't work reliably with actions, Giants alone knows why...
 	if actionName == "DBL_HUDVISIBILITY_PART" then
-		g_currentMission.hud:setIsVisible(not g_currentMission.hud:getIsVisible())
+		DashboardLive.vis_partly =  g_currentMission.hud:getIsVisible()
+		g_currentMission.hud:setIsVisible(not DashboardLive.vis_partly)
 	elseif actionName == "DBL_HUDVISIBILITY_FULL" then
+		DashboardLive.vis_partly = false
 		g_currentMission.hud:consoleCommandToggleVisibility()
 	end
 end
@@ -3713,28 +3716,37 @@ function DashboardLive.getDashboardLiveRDS(self, dashboard)
 	return returnValue
 end
 
+function DashboardLive:onUpdateTick(dt)
+	-- enable crosshair for InteractiveControl if it's present and the hud is invisible
+	local icspec = self.spec_interactiveControl
+	
+	if self.isClient and icspec ~= nil and not g_currentMission.hud:getIsVisible() then
+		local isIndoor = self:isIndoorActive()
+		local isOutdoor = self:isOutdoorActive()
+		
+    	if (g_currentMission.hud.controlledVehicle == nil or self == g_currentMission.hud.controlledVehicle) then
+        	if (isIndoor and icspec.state == true) or isOutdoor then
+            	renderText(0.496, 0.495, 0.018, "+")
+        	end
+    	end
+		self:updateInteractiveController(isIndoor, isOutdoor, self:getIsActiveForInput(true))
+	end
+end
+
 function DashboardLive:onUpdate(dt)
 	local spec = self.spec_DashboardLive
 	local specDis = self.spec_dischargeable
 	local dspec = self.spec_dashboard
 	local mspec = self.spec_motorized
-	local icspec = self.spec_interactiveControl
 	
+	
+	-- get active vehicle
 	if self:getIsActiveForInput(true) then
-		-- get active vehicle
 		spec.selectorActive = getIndexOfActiveImplement(self:getRootVehicle())
 		spec.selectorGroup = self.currentSelection.subIndex or 0
-		--dbgprint("Selector value: "..tostring(spec.selectorActive), 2)
-		--dbgprint("Selector group: "..tostring(spec.selectorGroup), 2)
-		--dbgrenderTable(spec, 1, 3)
 	end
 	
-	-- enable InteractiveControl if present
-	if self.isClient and icspec ~= nil and not g_currentMission.hud:getIsVisible() and not g_noHudModeEnabled then
-		local isIndoor = self:isIndoorActive()
-		local isOutdoor = self:isOutdoorActive()
-		self:updateInteractiveController(isIndoor, isOutdoor, self:getIsActiveForInput(true))
-	end
+
 	
 	-- sync server to client data
 	if self.isServer then
@@ -3807,6 +3819,14 @@ function DashboardLive:onUpdate(dt)
 end
 
 function DashboardLive:onDraw()
+	local spec = self.spec_DashboardLive
+	if DashboardLive.vis_partly then
+		if g_localPlayer ~= nil and g_localPlayer.currentHandTool ~= nil and g_localPlayer.currentHandTool.spec_hands ~= nil then
+			g_localPlayer.currentHandTool.spec_hands.crosshair:render()
+		end
+	end
+
+-- Debug informations
 	if self.spec_combine ~= nil then
 		dbgrender("chopper: "..tostring(self.spec_combine.chopperPSenabled), 23, 3)
 		dbgrender("swath: "..tostring(self.spec_combine.strawPSenabled), 24, 3)
@@ -3824,6 +3844,7 @@ function DashboardLive:onDraw()
 		dbgrender("fovLast: "..tostring(spec.fovLast), 20, 3)
 		dbgrender("zoomPerm: "..tostring(spec.zoomPerm), 21, 3)
 	end
+	
 end
 
 DashboardLiveKeepActive = {}
