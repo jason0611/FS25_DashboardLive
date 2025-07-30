@@ -3820,11 +3820,6 @@ end
 
 function DashboardLive:onDraw()
 	local spec = self.spec_DashboardLive
-	if DashboardLive.vis_partly then
-		if g_localPlayer ~= nil and g_localPlayer.currentHandTool ~= nil and g_localPlayer.currentHandTool.spec_hands ~= nil then
-			g_localPlayer.currentHandTool.spec_hands.crosshair:render()
-		end
-	end
 
 -- Debug informations
 	if self.spec_combine ~= nil then
@@ -3844,7 +3839,6 @@ function DashboardLive:onDraw()
 		dbgrender("fovLast: "..tostring(spec.fovLast), 20, 3)
 		dbgrender("zoomPerm: "..tostring(spec.zoomPerm), 21, 3)
 	end
-	
 end
 
 DashboardLiveKeepActive = {}
