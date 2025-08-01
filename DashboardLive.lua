@@ -22,6 +22,8 @@ source(DashboardLive.MOD_PATH.."utils/DashboardUtils.lua")
 DashboardLive.scale = 0.1
 DashboardLive.minimapConfig = {}
 
+DashboardLive.vis_partly = false
+
 -- Console
 
 function DashboardLive:editParameter(scale)
@@ -207,9 +209,6 @@ function DashboardLive:onLoad(savegame)
 	
 	-- selector data
 	spec.selectorActive = 0
-	
-	-- hud visibility
-	spec.hudMode = "VISIBLE"
 	
 	-- dark mode
 	spec.darkModeExists = false
@@ -643,9 +642,12 @@ end
 
 function DashboardLive:HUDVISIBILITY(actionName, keyStatus)
 	dbgprint("HUDVISIBILITY", 2)
+	--	local spec = self.spec_DashboardLive doesn't work reliably with actions, Giants alone knows why...
 	if actionName == "DBL_HUDVISIBILITY_PART" then
-		g_currentMission.hud:setIsVisible(not g_currentMission.hud:getIsVisible())
+		DashboardLive.vis_partly =  g_currentMission.hud:getIsVisible()
+		g_currentMission.hud:setIsVisible(not DashboardLive.vis_partly)
 	elseif actionName == "DBL_HUDVISIBILITY_FULL" then
+		DashboardLive.vis_partly = false
 		g_currentMission.hud:consoleCommandToggleVisibility()
 	end
 end
@@ -3718,23 +3720,15 @@ function DashboardLive:onUpdate(dt)
 	local specDis = self.spec_dischargeable
 	local dspec = self.spec_dashboard
 	local mspec = self.spec_motorized
-	local icspec = self.spec_interactiveControl
 	
+	
+	-- get active vehicle
 	if self:getIsActiveForInput(true) then
-		-- get active vehicle
 		spec.selectorActive = getIndexOfActiveImplement(self:getRootVehicle())
 		spec.selectorGroup = self.currentSelection.subIndex or 0
-		--dbgprint("Selector value: "..tostring(spec.selectorActive), 2)
-		--dbgprint("Selector group: "..tostring(spec.selectorGroup), 2)
-		--dbgrenderTable(spec, 1, 3)
 	end
 	
-	-- enable InteractiveControl if present
-	if self.isClient and icspec ~= nil and not g_currentMission.hud:getIsVisible() and not g_noHudModeEnabled then
-		local isIndoor = self:isIndoorActive()
-		local isOutdoor = self:isOutdoorActive()
-		self:updateInteractiveController(isIndoor, isOutdoor, self:getIsActiveForInput(true))
-	end
+
 	
 	-- sync server to client data
 	if self.isServer then
@@ -3807,6 +3801,9 @@ function DashboardLive:onUpdate(dt)
 end
 
 function DashboardLive:onDraw()
+	local spec = self.spec_DashboardLive
+
+-- Debug informations
 	if self.spec_combine ~= nil then
 		dbgrender("chopper: "..tostring(self.spec_combine.chopperPSenabled), 23, 3)
 		dbgrender("swath: "..tostring(self.spec_combine.strawPSenabled), 24, 3)
@@ -3830,5 +3827,23 @@ DashboardLiveKeepActive = {}
 function DashboardLiveKeepActive:update(dt)
 	g_inputBinding:registerActionEvent('DBL_HUDVISIBILITY_FULL', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
 	g_inputBinding:registerActionEvent('DBL_HUDVISIBILITY_PART', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
+
+	-- enable crosshair for InteractiveControl if it's present and the hud is invisible
+	if g_currentMission.interactiveControl ~= nil and not g_currentMission.hud:getIsVisible() then
+		if g_currentMission.interactiveControl:isInteractiveControlActivated() then
+			setTextColor(0.5, 0.5, 0.5, 0.5)
+			renderText(0.496, 0.495, 0.018, "+")
+		end
+		
+		local vehicle = g_currentMission.hud.controlledVehicle
+		if vehicle ~= nil then
+			local icspec = vehicle.spec_interactiveControl
+			if vehicle.isClient and icspec ~= nil then
+				local isIndoor = vehicle:isIndoorActive()
+				local isOutdoor = vehicle:isOutdoorActive()
+				vehicle:updateInteractiveController(isIndoor, isOutdoor, vehicle:getIsActiveForInput(true))
+			end
+		end
+	end
 end
 addModEventListener(DashboardLiveKeepActive)
