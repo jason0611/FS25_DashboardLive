@@ -167,7 +167,6 @@ function DashboardLive.registerEventListeners(vehicleType)
 	SpecializationUtil.registerEventListener(vehicleType, "onWriteStream", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onReadUpdateStream", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onWriteUpdateStream", DashboardLive)
-	SpecializationUtil.registerEventListener(vehicleType, "onUpdateTick", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onUpdate", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onDraw", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onPostAttachImplement", DashboardLive)
@@ -3716,23 +3715,6 @@ function DashboardLive.getDashboardLiveRDS(self, dashboard)
 	return returnValue
 end
 
-function DashboardLive:onUpdateTick(dt)
-	-- enable crosshair for InteractiveControl if it's present and the hud is invisible
-	local icspec = self.spec_interactiveControl
-	
-	if self.isClient and icspec ~= nil and not g_currentMission.hud:getIsVisible() then
-		local isIndoor = self:isIndoorActive()
-		local isOutdoor = self:isOutdoorActive()
-		
-    	if (g_currentMission.hud.controlledVehicle == nil or self == g_currentMission.hud.controlledVehicle) then
-        	if (isIndoor and icspec.state == true) or isOutdoor then
-            	renderText(0.496, 0.495, 0.018, "+")
-        	end
-    	end
-		self:updateInteractiveController(isIndoor, isOutdoor, self:getIsActiveForInput(true))
-	end
-end
-
 function DashboardLive:onUpdate(dt)
 	local spec = self.spec_DashboardLive
 	local specDis = self.spec_dischargeable
@@ -3845,5 +3827,23 @@ DashboardLiveKeepActive = {}
 function DashboardLiveKeepActive:update(dt)
 	g_inputBinding:registerActionEvent('DBL_HUDVISIBILITY_FULL', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
 	g_inputBinding:registerActionEvent('DBL_HUDVISIBILITY_PART', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
+
+	-- enable crosshair for InteractiveControl if it's present and the hud is invisible
+	if g_currentMission.interactiveControl ~= nil and not g_currentMission.hud:getIsVisible() then
+		if g_currentMission.interactiveControl:isInteractiveControlActivated() then
+			setTextColor(0.5, 0.5, 0.5, 0.5)
+			renderText(0.496, 0.495, 0.018, "+")
+		end
+		
+		local vehicle = g_currentMission.hud.controlledVehicle
+		if vehicle ~= nil then
+			local icspec = vehicle.spec_interactiveControl
+			if vehicle.isClient and icspec ~= nil then
+				local isIndoor = vehicle:isIndoorActive()
+				local isOutdoor = vehicle:isOutdoorActive()
+				vehicle:updateInteractiveController(isIndoor, isOutdoor, vehicle:getIsActiveForInput(true))
+			end
+		end
+	end
 end
 addModEventListener(DashboardLiveKeepActive)
