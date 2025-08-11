@@ -431,7 +431,7 @@ function DashboardLive.createDashboardPages(self)
     		dbgprint("createDashboardPages : no pages found in group "..group.name, 2)
     	end
     end
-    dbgprint_r(spec.pageGroups, 4, 3)
+    if spec ~= nil then dbgprint_r(spec.pageGroups, 4, 3) end
 end
 
 -- Network stuff to synchronize engine data not synced by the game itself
