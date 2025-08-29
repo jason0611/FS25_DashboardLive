@@ -887,8 +887,8 @@ local function getChoosenAttacherState(device, ftType)
 			--fillLevel.pct = fillLevel.pct + device:getFillUnitFillLevelPercentage(i)
 			fillLevel.abs = fillUnit.fillLevel ~= nil and fillLevel.abs + fillUnit.fillLevel or fillLevel.abs
 			fillLevel.max = fillUnit.fillLevel ~= nil and fillLevel.max + fillUnit.fillLevel or fillLevel.max
-			-- so lets calculate it on our own. (lua should not have a divide by zero problem...)
-			fillLevel.pct = fillLevel.abs / fillLevel.max
+			-- so lets calculate it on our own. (so we should not have a divide by zero problem...)
+			fillLevel.pct = fillLevel.max ~= 0 and fillLevel.abs / fillLevel.max or 0
 			local fillTypeDesc = g_fillTypeManager:getFillTypeByIndex(ftIndex)
 			if fillTypeDesc ~= nil then
 				fillLevel.absKg = fillUnit.fillLevel ~= nil and fillLevel.absKg + fillUnit.fillLevel * fillTypeDesc.massPerLiter * 1000 or fillLevel.absKg
