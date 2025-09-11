@@ -2708,11 +2708,13 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		elseif cmds == "radio" then
 			if o == "volume" then
 				returnValue = g_gameSettings:getValue("radioVolume")
-			else
+			elseif o == "station" then
 				local senderName = g_soundPlayer.currentChannelName
 				local len = string.len(dashboard.textMask or "xxxx")
 				local alignment = dashboard.textAlignment or "LEFT"
 				returnValue = trim(senderName, len, alignment)
+			else
+				returnValue = g_soundPlayer.isPlaying
 			end
 			
 		-- empty command is allowed here to add symbols (EMITTER) in off-state, too

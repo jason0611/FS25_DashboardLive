@@ -35,7 +35,7 @@ Basic game:
 - Field number
 - Weight of the loaded filling quantity
 - Real-time clock
-- Radio station and volume
+- Radio: On/Off, station and volume
 - Radio volume adjustable via buttons
 
 Minimap:
@@ -133,7 +133,7 @@ Basisspiel:
 - Feldnummer
 - Gewicht der geladenen Füllmenge
 - Echtzeit Uhr
-- Radiosender und -lautstärke
+- Radio: An/Aus, Sender und Lautstärke
 - Radiolautstärke über Tasten einstellbar
 
 Minimap:
