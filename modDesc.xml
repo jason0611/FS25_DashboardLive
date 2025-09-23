@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="100">
 	<author>Glowins Modschmiede</author>
-	<version>2.0.1.0</version>
+	<version>2.0.2.0</version>
 	<contributors>SbSh, mister_mojo_AT, AgrarPlay und LUWZ, Farming Duds</contributors>
 	<title>
 		<en>Dashboard Live</en>
@@ -98,6 +98,9 @@ V2.0.1.0:
 - Compatibility with FS25_Rhoenplateu_crossplay
 - Fixed div/0 condition with fillLevel
 - Fixed audio path for mod vehicles
+
+V2.0.2.0:
+- FillLevel of overload target added
 
 Important: Vehicles must be prepared for DashboardLive in advance in order to be able to use the functions and displays. 
 An installation guide and documentation are included, and video tutorials are also available.
@@ -196,6 +199,9 @@ V2.0.1.0:
 - Kompatibel mit FS25_Rhoenplateu_crossplay
 - Div/0 in Verbindung mit fillLevel behoben
 - Dateipfad für Audio bei Mod-Fahrzeugen korrigiert
+
+V2.0.2.0:
+- Füllstand für Überladeziel ergänzt
 
 Wichtig: Fahrzeuge müssen vorab für DashboardLive vorbereitet werden, um die Funktionen und Anzeigen nutzen zu können.
 Eine Einbauhilfe und Dokumentation sind enthalten, außerdem sind Video-Tutorials verfügbar.

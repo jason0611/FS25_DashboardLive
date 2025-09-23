@@ -14,7 +14,7 @@ if DashboardLive.MOD_NAME == nil then
 end
 
 source(DashboardLive.MOD_PATH.."tools/gmsDebug.lua")
-GMSDebug:init(DashboardLive.MOD_NAME, false)
+GMSDebug:init(DashboardLive.MOD_NAME, true, 2)
 GMSDebug:enableConsoleCommands("dblDebug")
 
 source(DashboardLive.MOD_PATH.."utils/DashboardUtils.lua")
@@ -2470,6 +2470,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		local specRM = self.spec_ridgeMarker
 		local specMO = self.spec_motorized
 		local specCS = self.spec_crabSteering
+		local specPI = self.spec_pipe
 		local cmds, j, s, o = dashboard.dblCommand, dashboard.dblAttacherJointIndices, dashboard.dblStateText or dashboard.dblState, dashboard.dblOption
 		local cmd = string.split(cmds, " ")
 		local returnValue = false
@@ -2573,8 +2574,39 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		if cmds == "filllevel" then
 			returnValue = getAttachedStatus(self, dashboard, "filllevel", 0)
 			
-		-- fillType (text or icon)
+		-- fillLevel of overload target
+		elseif cmds == "targetfilllevel" then
+			if o ~= nil then
+				returnValue = 0
+			end
+			
+			if specPI ~= nil then
+				dbgprint("targetFillLevel: specPI exists", 2)
+				local targetId = specPI.nearestObjectInTriggers.objectId
+				if targetId ~= nil then
+					local target = NetworkUtil.getObject(targetId)		
+					local unit = specPI.nearestObjectInTriggers.fillUnitIndex
+					local fillUnit = target.spec_fillUnit.fillUnits[unit]
+					
+					if o == "abs" then
+						returnValue = math.floor(fillUnit.fillLevel)
+					elseif o == "max" then
+						returnValue = math.floor(fillUnit.capacity)
+					elseif o == "percent" then
+						local akt = math.floor(fillUnit.fillLevel)
+						local max = math.floor(fillUnit.capacity)
+						returnValue = max ~= 0 and math.floor((akt/max)*100)/100 or 0
+					elseif o == "name" then
+						returnValue = target.getFullName ~= nil and target:getFullName() or "unknown"
+					elseif o == "overloading" then
+						returnValue = specPI.nearestObjectInTriggers.isDischargeObject
+					else
+						returnValue = true
+					end
+				end
+			end	
 		
+		-- fillType (text or icon)
 		elseif cmds == "filltype" then
 			dbgprint("fillType: option = "..tostring(dashboard.dblOption), 4)
 			returnValue = false
