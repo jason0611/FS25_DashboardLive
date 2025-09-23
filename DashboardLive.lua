@@ -415,6 +415,7 @@ function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, joi
 	
 	local spec_ISOBUS = implement.spec_DashboardIsobus
 	local spec = self.spec_DashboardLive
+	local dashboard = self.spec_dashboard
 	
 	if implement.spec_pickup ~= nil then
 		dbgprint("Implement has pickup", 2)
@@ -427,7 +428,12 @@ function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, joi
 		local isobusNode = spec.isobusNode
 		dbgprint("onPostAttachImplement: isobusNode = "..tostring(isobusNode), 1)
 		
-		
+		for _, dashboard in pairs(dashboard.dasboards) do
+			if dashboard.isIsobus then
+				-- magic here :-)
+				break
+			end
+		end
 	else
 		dbgprint("onPostAttachImplement: implement without isobus", 1)
 	end
@@ -2019,6 +2025,15 @@ function DashboardLive.getDBLAttributesPage(self, xmlFile, key, dashboard, compo
 	dbgprint("getDBLAttributesPage : group: "..tostring(dashboard.dblPageGroup), 2)
 	
 	return true
+end
+
+--isobus
+function DashboardLive.getDBLAttributesIsobus(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
+	local node = xmlFile:getValue(key .. "#isobusNode")
+	local fullTerminal = xmlFile:getValue(key .. "#isFullTerminal", false)
+	dashboard.isIsobus = true
+	dashboard.node = node
+	dashboard.isFullTerminal = fullTerminal
 end
 
 -- base

@@ -47,4 +47,3 @@ function DashboardIsobus:onLoad(savegame)
 		end
 	end
 end
-
