@@ -406,6 +406,39 @@ function DashboardLive:onPostLoad(savegame)
 	DashboardLive.createDashboardPages(self)
 end
 
+function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, jointDescIndex)
+	-- implement - attacherJoint
+	dbgprint("Implement "..implement:getFullName().." attached to "..self:getFullName().." at index "..tostring(jointDescIndex), 2)
+	if implement.getAllowsLowering ~= nil then
+		dbgprint("Implement is lowerable: "..tostring(implement:getAllowsLowering()), 2)
+	end
+	
+	local spec_ISOBUS = implement.spec_DashboardIsobus
+	local spec = self.spec_DashboardLive
+	
+	if implement.spec_pickup ~= nil then
+		dbgprint("Implement has pickup", 2)
+	end
+	
+	if spec.isobusNode ~= nil and spec_ISOBUS ~= nil then
+		dbgprint("onPostAttachImplement: implement with isobus", 1)
+		local isobusFile = spec_ISOBUS.xmlFile
+		dbgprint("onPostAttachImplement: isobusFile = "..tostring(isobusFile), 1)
+		local isobusNode = spec.isobusNode
+		dbgprint("onPostAttachImplement: isobusNode = "..tostring(isobusNode), 1)
+		
+		
+	else
+		dbgprint("onPostAttachImplement: implement without isobus", 1)
+	end
+	
+	
+
+end
+
+function DashboardLive:onPreDetachImplement(implement)
+end
+
 function DashboardLive.createDashboardPages(self)
 	local spec = self.spec_DashboardLive
     local dashboard = self.spec_dashboard
@@ -684,18 +717,6 @@ end
 -- ===========
 
 -- Debug stuff
-
-function DashboardLive:onPostAttachImplement(implement, x, jointDescIndex)
-	-- implement - attacherJoint
-	dbgprint("Implement "..implement:getFullName().." attached to "..self:getFullName().." at index "..tostring(jointDescIndex), 2)
-	if implement.getAllowsLowering ~= nil then
-		dbgprint("Implement is lowerable: "..tostring(implement:getAllowsLowering()), 2)
-	end
-	if implement.spec_pickup ~= nil then
-		dbgprint("Implement has pickup", 2)
-	end
-	--dbgprint_r(implement, 4, 0)
-end
 
 -- Supporting functions
 
