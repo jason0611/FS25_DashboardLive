@@ -49,9 +49,12 @@ function DashboardIsobus:onLoad(savegame)
 	local implementXmlFile = XMLFile.load("IMPLEMENT", implementXmlFilename, vehicleXmlSchema)
 	if implementXmlFile:hasProperty(DashboardIsobus.XMLkey) then
 		local isobusFilename = implementXmlFile:getValue(DashboardIsobus.XMLkey .. "#isobusTerminal")
+		local isobusFilepath = self.baseDirectory
 		dbgprint("onLoad: ISOBUS filename = "..tostring(isobusFilename), 1)
+		dbgprint("onLoad: ISOBUS filepath = "..tostring(isobusFilepath), 1)
 		if isobusFilename ~= nil then
 			spec.xmlFilename = isobusFilename
+			spec.xmlFilepath = isobusFilepath
 --			spec.xmlFile = XMLFile.load("ISOBUS", isobusFilename, vehicleXmlSchema)
 		else
 			self.spec_DashboardIsobus = nil

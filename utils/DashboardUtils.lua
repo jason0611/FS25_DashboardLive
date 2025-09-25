@@ -116,37 +116,51 @@ AnimatedVehicle.onLoad = Utils.overwrittenFunction(AnimatedVehicle.onLoad, Dashb
 -- ** Dashboard Compounds **
 
 -- look for alternative compound dashboard xml-file and use it for loading instead of original file
-function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, compound, implementFilename)
+function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, compound, isobusFilename, isobusFilepath)
 	local spec = self.spec_dashboard
+	local returnValue = false
 	dbgprint("loadDashboardCompoundFromXML :: self.baseDirectory: "..tostring(self.baseDirectory), 2)
+	
+	local replacementPath = DashboardLive.INT_PATH
+	
+	if isobusFilename ~= nil then
+		xmlFile:setValue(key .. "#filename", isobusFilename)
+		replacementPath = isobusFilepath
+	end
 	
 	local fileName = xmlFile:getValue(key .. "#filename")
 	dbgprint("loadDashboardCompoundFromXML :: fileName    = "..tostring(fileName), 2)
-	local fileNameNew = string.sub(fileName, 2) -- rip $ off the path
-	dbgprint("loadDashboardCompoundFromXML :: fileNameNew = "..tostring(DashboardLive.INT_PATH)..fileNameNew, 2)
-	local dblReplacementExists = XMLFile.loadIfExists("DBL Replacement", DashboardLive.INT_PATH..fileNameNew, xmlFile.schema) ~= nil --and self.baseDirectory == ""
-	dbgprint("loadDashboardCompoundFromXML :: dblReplacementExists = "..tostring(dblReplacementExists), 2)
-	local baseDirectoryChanged = false
 	
-	if dblReplacementExists then
-		xmlFile:setValue(key .. "#filename", fileNameNew)
-		dbgprint("loadDashboardCompoundFromXML :: fileName replaced", 2)
-		self.baseDirectoryBackup = self.baseDirectory
-		self.baseDirectory = DashboardLive.INT_PATH
-		baseDirectoryChanged = true
-		dbgprint("loadDashboardCompoundFromXML :: baseDirectory temporarily changed", 2)
-	elseif implementFilename ~= nil then
-		xmlFile:setValue(key .. "#filename", implementFilename)
-		dbgprint("loadDashboardCompoundFromXML :: fileName for ISOBUS: "..tostring(implementFilename), 2)
-	end	
-	
-	local returnValue = superfunc(self, xmlFile, key, compound)
-	
-	if baseDirectoryChanged then
-		self.baseDirectory = self.baseDirectoryBackup
-		self.baseDirectoryBackup = nil
-	end
+	if fileName ~= "ISOBUS" then 		
+		local fileNameNew = string.sub(fileName, 2) -- rip $ off the path
+		dbgprint("loadDashboardCompoundFromXML :: fileNameNew = "..tostring(DashboardLive.INT_PATH)..fileNameNew, 2)
+		local dblReplacementExists = XMLFile.loadIfExists("DBL Replacement", DashboardLive.INT_PATH..fileNameNew, xmlFile.schema) ~= nil --and self.baseDirectory == ""
+		dbgprint("loadDashboardCompoundFromXML :: dblReplacementExists = "..tostring(dblReplacementExists), 2)
 		
+		if dblReplacementExists then
+			xmlFile:setValue(key .. "#filename", fileNameNew)
+			dbgprint("loadDashboardCompoundFromXML :: fileName replaced", 2)
+		end
+		
+		local baseDirectoryChanged = false
+		if dblReplacementExists or isobusFilename ~= nil then
+			self.baseDirectoryBackup = self.baseDirectory
+			self.baseDirectory = replacementPath
+			baseDirectoryChanged = true
+			dbgprint("loadDashboardCompoundFromXML :: baseDirectory temporarily changed to "..tostring(replacementPath), 2)
+		end	
+		
+		returnValue = superfunc(self, xmlFile, key, compound)
+		
+		if baseDirectoryChanged then
+			self.baseDirectory = self.baseDirectoryBackup
+			self.baseDirectoryBackup = nil
+		end
+	else
+		spec.dblIsobusNode = xmlFile:getValue(key .. "#linkNode", nil, self.components, self.i3dMappings)
+		spec.dblIsobusKey = key
+		returnValue = spec.dblIsobusNode ~= nil
+	end		
 	return returnValue
 end
 Dashboard.loadDashboardCompoundFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardCompoundFromXML, DashboardUtils.loadDashboardCompoundFromXML)
