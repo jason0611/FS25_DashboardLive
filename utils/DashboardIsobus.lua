@@ -5,7 +5,7 @@ if DashboardIsobus.MOD_NAME == nil then
 	DashboardIsobus.MOD_PATH = g_currentModDirectory
 end
 
-DashboardIsobus.XMLkey = "vehicle.dashboardLive"
+DashboardIsobus.XMLkey = "vehicle.dashboard.dashboardLive.isobus"
 
 source(DashboardIsobus.MOD_PATH.."tools/gmsDebug.lua")
 GMSDebug:init(DashboardIsobus.MOD_NAME, true, 2)
@@ -30,18 +30,29 @@ function DashboardIsobus.registerEventListeners(vehicleType)
 --	SpecializationUtil.registerEventListener(vehicleType, "onPostAttachImplement", DashboardIsobus)
 end
 
+function DashboardIsobus:initSpecialization()
+	local schema = Vehicle.xmlSchema
+	Dashboard.registerDashboardXMLPaths(schema, "vehicle.dashboard.dashboardLive", "dbl.isobus")
+	DashboardIsobus.DBL_XML_KEY = "vehicle.dashboard.dashboardLive.isobus"
+	schema:register(XMLValueType.STRING, DashboardIsobus.DBL_XML_KEY .. "#isobusTerminal", "ISOBUS file")
+	dbgprint("initSpecialization : DashboardIsobus: "..tostring(DashboardIsobus.DBL_XML_KEY .. "#isobusTerminal").." registered", 2)
+end
+
 function DashboardIsobus:onPreLoad(savegame)
 	self.spec_DashboardIsobus = self["spec_"..DashboardIsobus.MOD_NAME..".DashboardIsobus"]
 end
 
 function DashboardIsobus:onLoad(savegame)
 	local spec = self.spec_DashboardIsobus 
-	local xmlFileName = self.xmlFile.filename
-	local xmlFile = XMLFile.load("DBL ISOBUS", xmlFileName, self.xmlFile.schema)
-	if xmlFile:hasProperty(DashboardIsobus.XMLkey) then
-		local isobusFilename = xmlFile:getValue(DashboardIsobus.XMLkey .. "#isobusTerminal")
-		if isobusFile ~= nil and fileExists(isobusFilename) then
-			spec.xmlFile = isobusFilename
+	local vehicleXmlSchema = self.xmlFile.schema
+	local implementXmlFilename = self.xmlFile.filename
+	local implementXmlFile = XMLFile.load("IMPLEMENT", implementXmlFilename, vehicleXmlSchema)
+	if implementXmlFile:hasProperty(DashboardIsobus.XMLkey) then
+		local isobusFilename = implementXmlFile:getValue(DashboardIsobus.XMLkey .. "#isobusTerminal")
+		dbgprint("onLoad: ISOBUS filename = "..tostring(isobusFilename), 1)
+		if isobusFilename ~= nil then
+			spec.xmlFilename = isobusFilename
+--			spec.xmlFile = XMLFile.load("ISOBUS", isobusFilename, vehicleXmlSchema)
 		else
 			self.spec_DashboardIsobus = nil
 		end

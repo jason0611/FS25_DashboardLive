@@ -116,9 +116,10 @@ AnimatedVehicle.onLoad = Utils.overwrittenFunction(AnimatedVehicle.onLoad, Dashb
 -- ** Dashboard Compounds **
 
 -- look for alternative compound dashboard xml-file and use it for loading instead of original file
-function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, compound)
+function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, compound, implementFilename)
 	local spec = self.spec_dashboard
 	dbgprint("loadDashboardCompoundFromXML :: self.baseDirectory: "..tostring(self.baseDirectory), 2)
+	
 	local fileName = xmlFile:getValue(key .. "#filename")
 	dbgprint("loadDashboardCompoundFromXML :: fileName    = "..tostring(fileName), 2)
 	local fileNameNew = string.sub(fileName, 2) -- rip $ off the path
@@ -134,6 +135,9 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 		self.baseDirectory = DashboardLive.INT_PATH
 		baseDirectoryChanged = true
 		dbgprint("loadDashboardCompoundFromXML :: baseDirectory temporarily changed", 2)
+	elseif implementFilename ~= nil then
+		xmlFile:setValue(key .. "#filename", implementFilename)
+		dbgprint("loadDashboardCompoundFromXML :: fileName for ISOBUS: "..tostring(implementFilename), 2)
 	end	
 	
 	local returnValue = superfunc(self, xmlFile, key, compound)

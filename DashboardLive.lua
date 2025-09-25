@@ -240,6 +240,13 @@ function DashboardLive:onRegisterDashboardValueTypes()
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesPage)
 	self:registerDashboardValueType(dblValueType)
 	
+	-- isobus
+	dblValueType = DashboardValueType.new("dbl", "isobus")
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setValue(self, DashboardLive.getDashboardLiveIsobus)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesIsobus)
+	self:registerDashboardValueType(dblValueType)
+	
 	-- base
 	dblValueType = DashboardValueType.new("dbl", "base")
 	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
@@ -413,31 +420,38 @@ function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, joi
 		dbgprint("Implement is lowerable: "..tostring(implement:getAllowsLowering()), 2)
 	end
 	
-	local spec_ISOBUS = implement.spec_DashboardIsobus
-	local spec = self.spec_DashboardLive
-	local dashboard = self.spec_dashboard
-	
+	-- debug print
 	if implement.spec_pickup ~= nil then
 		dbgprint("Implement has pickup", 2)
 	end
 	
-	if spec.isobusNode ~= nil and spec_ISOBUS ~= nil then
-		dbgprint("onPostAttachImplement: implement with isobus", 1)
-		local isobusFile = spec_ISOBUS.xmlFile
-		dbgprint("onPostAttachImplement: isobusFile = "..tostring(isobusFile), 1)
-		local isobusNode = spec.isobusNode
-		dbgprint("onPostAttachImplement: isobusNode = "..tostring(isobusNode), 1)
+	-- ISOBUS
+	local spec_ISOBUS = implement.spec_DashboardIsobus
+	if spec_ISOBUS ~= nil then
+		dbgprint("onPostAttachImplement: implement ISOBUS found", 1)
+		local specDBL = self.spec_DashboardLive
+		local specDB  = self.spec_dashboard
 		
-		for _, dashboard in pairs(dashboard.dasboards) do
+		local isobusFilename = spec_ISOBUS.xmlFilename
+		dbgprint("onPostAttachImplement: isobusFile = "..tostring(isobusFilename), 1)
+		assert(isobusFilename ~= nil, "Error: ISOBUS terminal xmlFile is missing!")
+		
+--		local isobusNode = specDBL.isobusNode
+--		dbgprint("onPostAttachImplement: isobusNode = "..tostring(isobusNode), 1)
+--		assert(isobusNode ~= nil, "Error: ISOBUS terminal connection node is missing!")
+		
+		for _, dashboard in pairs(specDB.dashboardCompounds) do
 			if dashboard.isIsobus then
-				-- magic here :-)
-				break
+				local dashboardIsobus = {}
+				dashboardIsobus.isIsobus = true
+				if self:loadDashboardCompoundFromXML(self.xmlFile, dashboard.xmlKey, dashboardIsobus, isobusFilename) then
+                	table.insert(spec.dashboardCompounds, dashboardIsobus)
+            	end
 			end
 		end
 	else
 		dbgprint("onPostAttachImplement: implement without isobus", 1)
 	end
-	
 	
 
 end
@@ -2029,11 +2043,12 @@ end
 
 --isobus
 function DashboardLive.getDBLAttributesIsobus(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
-	local node = xmlFile:getValue(key .. "#isobusNode")
-	local fullTerminal = xmlFile:getValue(key .. "#isFullTerminal", false)
+--	local node = xmlFile:getValue(key .. "#linkNode")
+--	local fullTerminal = xmlFile:getValue(key .. "#isFullTerminal", false)
 	dashboard.isIsobus = true
+	dashboard.xmlKey = key
 	dashboard.node = node
-	dashboard.isFullTerminal = fullTerminal
+--	dashboard.isFullTerminal = fullTerminal
 end
 
 -- base
