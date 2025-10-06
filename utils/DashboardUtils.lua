@@ -249,3 +249,11 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 --]]
 end
 Dashboard.onDashboardCompoundLoaded = Utils.prependedFunction(Dashboard.onDashboardCompoundLoaded, DashboardUtils.onDashboardCompoundLoaded)
+
+function DashboardUtils:addVehicle(superfunc, vehicle)
+	dbgprint("addVehicle: vehicle", 2)
+	dbgprint_r(vehicle, 2, 0)
+	printCallstack()
+	return superfunc(self, vehicle)
+end
+VehicleSystem.addVehicle = Utils.overwrittenFunction(VehicleSystem.addVehicle, DashboardUtils.addVehicle)

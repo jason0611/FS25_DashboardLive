@@ -446,9 +446,10 @@ function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, joi
 		local isobusCompound = {}
 		isobusCompound.isIsobus = true
 		if self:loadDashboardCompoundFromXML(self.xmlFile, isobusXmlKey, isobusCompound, isobusFilename, isobusFilepath) then
+			dbgprint("onPostAttachImplement: isobusCompound loaded: "..tostring(isobusFilepath)..tostring(isobusFilename), 2)
 			table.insert(specDB.dashboardCompounds, isobusCompound)
 		end
-		
+		dbgprint("onPostAttachImplement: finished with isobus", 1)
 	else
 		dbgprint("onPostAttachImplement: implement without isobus", 1)
 	end
