@@ -116,51 +116,43 @@ AnimatedVehicle.onLoad = Utils.overwrittenFunction(AnimatedVehicle.onLoad, Dashb
 -- ** Dashboard Compounds **
 
 -- look for alternative compound dashboard xml-file and use it for loading instead of original file
-function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, compound, isobusFilename, isobusFilepath)
+function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, compound)
 	local spec = self.spec_dashboard
 	local returnValue = false
 	dbgprint("loadDashboardCompoundFromXML :: self.baseDirectory: "..tostring(self.baseDirectory), 2)
 	
 	local replacementPath = DashboardLive.INT_PATH
-	
-	if isobusFilename ~= nil then
-		xmlFile:setValue(key .. "#filename", isobusFilename)
-		replacementPath = isobusFilepath
-	end
-	
+
 	local fileName = xmlFile:getValue(key .. "#filename")
 	dbgprint("loadDashboardCompoundFromXML :: fileName    = "..tostring(fileName), 2)
 	
-	if fileName ~= "ISOBUS" then 		
-		local fileNameNew = string.sub(fileName, 2) -- rip $ off the path
-		dbgprint("loadDashboardCompoundFromXML :: fileNameNew = "..tostring(DashboardLive.INT_PATH)..fileNameNew, 2)
-		local dblReplacementExists = XMLFile.loadIfExists("DBL Replacement", DashboardLive.INT_PATH..fileNameNew, xmlFile.schema) ~= nil --and self.baseDirectory == ""
-		dbgprint("loadDashboardCompoundFromXML :: dblReplacementExists = "..tostring(dblReplacementExists), 2)
-		
-		if dblReplacementExists then
-			xmlFile:setValue(key .. "#filename", fileNameNew)
-			dbgprint("loadDashboardCompoundFromXML :: fileName replaced", 2)
-		end
-		
-		local baseDirectoryChanged = false
-		if dblReplacementExists or isobusFilename ~= nil then
-			self.baseDirectoryBackup = self.baseDirectory
-			self.baseDirectory = replacementPath
-			baseDirectoryChanged = true
-			dbgprint("loadDashboardCompoundFromXML :: baseDirectory temporarily changed to "..tostring(replacementPath), 2)
-		end	
-		
-		returnValue = superfunc(self, xmlFile, key, compound)
-		
-		if baseDirectoryChanged then
-			self.baseDirectory = self.baseDirectoryBackup
-			self.baseDirectoryBackup = nil
-		end
-	else
-		spec.dblIsobusNode = xmlFile:getValue(key .. "#linkNode", nil, self.components, self.i3dMappings)
-		spec.dblIsobusKey = key
-		returnValue = spec.dblIsobusNode ~= nil
-	end		
+--	if fileName ~= "ISOBUS" then 	
+
+	local fileNameNew = string.sub(fileName, 2) -- rip $ off the path
+	dbgprint("loadDashboardCompoundFromXML :: fileNameNew = "..tostring(DashboardLive.INT_PATH)..fileNameNew, 2)
+	local dblReplacementExists = XMLFile.loadIfExists("DBL Replacement", DashboardLive.INT_PATH..fileNameNew, xmlFile.schema) ~= nil --and self.baseDirectory == ""
+	dbgprint("loadDashboardCompoundFromXML :: dblReplacementExists = "..tostring(dblReplacementExists), 2)
+	
+	if dblReplacementExists then
+		xmlFile:setValue(key .. "#filename", fileNameNew)
+		dbgprint("loadDashboardCompoundFromXML :: fileName replaced", 2)
+	end
+	
+	local baseDirectoryChanged = false
+	if dblReplacementExists or isobusFilename ~= nil then
+		self.baseDirectoryBackup = self.baseDirectory
+		self.baseDirectory = replacementPath
+		baseDirectoryChanged = true
+		dbgprint("loadDashboardCompoundFromXML :: baseDirectory temporarily changed to "..tostring(replacementPath), 2)
+	end	
+	
+	returnValue = superfunc(self, xmlFile, key, compound)
+	
+	if baseDirectoryChanged then
+		self.baseDirectory = self.baseDirectoryBackup
+		self.baseDirectoryBackup = nil
+	end
+
 	return returnValue
 end
 Dashboard.loadDashboardCompoundFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardCompoundFromXML, DashboardUtils.loadDashboardCompoundFromXML)
@@ -256,4 +248,18 @@ function DashboardUtils:addVehicle(superfunc, vehicle)
 	printCallstack()
 	return superfunc(self, vehicle)
 end
-VehicleSystem.addVehicle = Utils.overwrittenFunction(VehicleSystem.addVehicle, DashboardUtils.addVehicle)
+--VehicleSystem.addVehicle = Utils.overwrittenFunction(VehicleSystem.addVehicle, DashboardUtils.addVehicle)
+
+function DashboardUtils:loadDashboardCompoundFromExternalXML(dashboardXMLFile, compound, compoundKey, components)
+	dbgprint("loadDashboardCompoundFromExternalXML: "..tostring(self.getFullName ~= nil and self:getFullName() or self:getName()), 1)
+	dbgprint("loadDashboardCompoundFromExternalXML: dashboardXMLFile: "..tostring(dashboardXMLFile.filename), 1)
+	dbgprint("loadDashboardCompoundFromExternalXML: compoundKey = "..tostring(compoundKey), 1)
+	dbgprint("loadDashboardCompoundFromExternalXML: compound: "..tostring(compound), 1)
+	dbgprint_r(compound, 1, 0)
+	
+	printCallstack()
+end
+--Dashboard.loadDashboardCompoundFromExternalXML = Utils.prependedFunction(Dashboard.loadDashboardCompoundFromExternalXML, DashboardUtils.loadDashboardCompoundFromExternalXML)
+
+	
+

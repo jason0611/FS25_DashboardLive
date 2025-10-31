@@ -56,7 +56,11 @@ function DashboardLive.initSpecialization()
 	schema:register(XMLValueType.STRING, Dashboard.GROUP_XML_KEY .. "#dblTrailer", "DBL Trailer")
 	dbgprint("initSpecialization : DashboardLive group options registered", 2)
 	
+	schema:register(XMLValueType.NODE_INDEX, "vehicle.dashboard.compounds.compound(?)#node")
+	
 	Dashboard.registerDashboardXMLPaths(schema, "vehicle.dashboard.dashboardLive", "dbl.base dbl.fillLevel dbl.fillType dbl.vca dbl.hlm dbl.gps dbl.gps_lane dbl.gps_width dbl.proseed dbl.selector")
+	schema:register(XMLValueType.NODE_INDEX, "vehicle.dashboard.dashboardLive.isobus.isobusTerminal(?)#node")
+
 	DashboardLive.DBL_XML_KEY = "vehicle.dashboard.dashboardLive.dashboard(?)"
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#cmd", "DashboardLive command")
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#joints")
@@ -403,8 +407,88 @@ function DashboardLive:onPostLoad(savegame)
 	-- solve mod conflict with CameraZoomExtension by Ifko: detect if mod exists in the game
 	spec.CZEexists = self.spec_cameraZoomExtension ~= nil
 	
+	-- load ISOBUS connect node
+	dbgprint("onPostLoad: checking ISOBUS preparations", 1)
+	local xmlFile = self.xmlFile
+	local xmlIsobusKey = "vehicle.dashboard.dashboardLive.isobus" --".isobusTerminal(?)#node"
+	if xmlFile:hasProperty(xmlIsobusKey) then
+		local n = 0
+		local key
+		while true do
+			key = xmlIsobusKey..string.format(".isobusTerminal(%i)", n)
+			if xmlFile:hasProperty(key) then
+				if spec.isobusNodes == nil then 
+					spec.isobusNodes = {} 
+					spec.isobusKeys = {}
+				end
+				local node = xmlFile:getValue(key .. "#node", nil, self.components, self.i3dMappings, true)
+				dbgprint("onPostLoad: ISOBUS key = "..tostring(key), 1)
+				spec.isobusNodes[n+1] = node
+				spec.isobusKeys[n+1] = key
+				n = n + 1
+			else 
+				break
+			end
+		end
+	end
+	dbgprint("onPostLoad: ISOBUS hub nodes found:", 2)
+	dbgprint_r(spec.isobusNodes, 2, 1)
 	DashboardLive.createDashboardPages(self)
 end
+
+-- modified giants code
+function DashboardLive.loadIsobusCompoundFromXML(self, xmlFile, key, compound)
+	dbgprint("loadIsobusCompoundFromXML: key = "..tostring(key), 1)
+	local dashboardXMLFile = XMLFile.load("IsobusCompoundXML", compound.filename, Dashboard.compoundsXMLSchema)
+	if dashboardXMLFile ~= nil then
+		local compoundKey
+		dashboardXMLFile:iterate("dashboardCompounds.dashboardCompound", function(index, _compoundKey)
+			if dashboardXMLFile:getValue(_compoundKey .. "#name") == compound.name then
+				compoundKey = _compoundKey
+				return
+			end
+		end)
+
+		if compoundKey ~= nil then
+			dbgprint("loadIsobusCompoundFromXML: compoundKey = "..tostring(compoundKey), 1)
+			local i3dFilename = dashboardXMLFile:getValue(compoundKey .. "#filename")
+			if i3dFilename ~= nil then
+				i3dFilename = compound.filepath .. i3dFilename
+			else
+				Logging.xmlWarning(dashboardXMLFile, "Missing filename for compound '%s'", compound.name)
+				return false
+			end
+			
+			dbgprint("loadIsobusCompoundFromXML: loading I3DFile", 1)
+			local node = g_i3DManager:loadI3DFile(i3dFilename, false, false)
+			dbgprint("loadIsobusCompoundFromXML: node = "..tostring(node), 1)
+        
+			link(compound.linkNode, node)
+			setTranslation(node, 0, 0.005, 0)
+			setRotation(node, 0, 0, 0)
+			
+			local components = {}
+			for i=1, getNumOfChildren(node) do
+				table.insert(components, {node=getChildAt(node, i - 1)})
+			end
+			dbgprint("loadIsobusCompoundFromXML: "..tostring(#components).." components created", 1)
+			
+			compound.i3dMappings = {}
+			I3DUtil.loadI3DMapping(dashboardXMLFile, "dashboardCompounds", components, compound.i3dMappings, nil)
+			dbgprint("loadIsobusCompoundFromXML: "..tostring(#compound.i3dMappings).." i3dMappings loaded", 1)
+			self:loadDashboardsFromXML(dashboardXMLFile, compoundKey, nil, components, compound.i3dMappings, node)
+			
+			return true
+		else
+			Logging.xmlWarning(dashboardXMLFile, "Unable to find compound by name '%s'", compound.name)
+			dashboardXMLFile:delete()
+			return false
+		end
+	end
+
+    return false
+end
+-- modified giants code
 
 function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, jointDescIndex)
 	-- implement - attacherJoint
@@ -422,39 +506,32 @@ function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, joi
 	local specDBL = self.spec_DashboardLive
 	local specDB  = self.spec_dashboard
 	local specISOBUS = implement.spec_DashboardIsobus
-	local linkNode = specDB.dblIsobusNode
 	
 	if specISOBUS ~= nil then
-		dbgprint("onPostAttachImplement: implement ISOBUS found", 1)
+		dbgprint("onPostAttachImplement: ISOBUS spec found!", 1)
 	end
-	if linkNode ~= nil then
-		dbgprint("onPostAttachImplement: vehicle is ISOBUS prepared", 1)
-	end
-	if specISOBUS ~= nil and linkNode ~= nil then
-		local isobusFilename = specISOBUS.xmlFilename	
-		local isobusFilepath = specISOBUS.xmlFilepath
-		assert(isobusFilename ~= nil, "Error: ISOBUS xmlFile is missing!")
-		
-		local isobusXmlKey = specDB.dblIsobusKey
-		assert(isobusXmlKey ~= nil, "Error: ISOBUS xmlKey missing!")
-		
-		dbgprint("onPostAttachImplement: isobusFile = "..tostring(isobusFilename), 1)
-		dbgprint("onPostAttachImplement: isobusPath = "..tostring(isobusFilepath), 1)
-		dbgprint("onPostAttachImplement: isobusNode = "..tostring(linkNode), 1)
-		dbgprint("onPostAttachImplement: isobusKey = "..tostring(isobusXmlKey), 1)
-		
-		local isobusCompound = {}
-		isobusCompound.isIsobus = true
-		if self:loadDashboardCompoundFromXML(self.xmlFile, isobusXmlKey, isobusCompound, isobusFilename, isobusFilepath) then
-			dbgprint("onPostAttachImplement: isobusCompound loaded: "..tostring(isobusFilepath)..tostring(isobusFilename), 2)
-			table.insert(specDB.dashboardCompounds, isobusCompound)
-		end
-		dbgprint("onPostAttachImplement: finished with isobus", 1)
-	else
-		dbgprint("onPostAttachImplement: implement without isobus", 1)
+	if specDBL.isobusNodes ~= nil then
+		dbgprint("onPostAttachImplement: ISOBUS preparation found!", 1)
 	end
 	
+	if specISOBUS ~= nil and specDBL.isobusNodes ~= nil then
+		dbgprint("onPostAttachImplement: loading ISOBUS", 1)
+		for _, isobusNode in pairs(specDBL.isobusNodes) do
+			dbgprint("onPostAttachImplement: ISOBUS node: "..tostring(isobusNode), 1)
 
+			-- get compoundKey
+			local compoundKey = "dashboardCompounds.dashboardCompound(0)"
+			
+			-- build up compound
+			local compound = {}
+			compound.linkNode = isobusNode
+			compound.filename = specISOBUS.baseDirectory..specISOBUS.xmlFilename
+			compound.filepath = specISOBUS.baseDirectory
+			compound.name = "ISOBUS"
+			
+			DashboardLive.loadIsobusCompoundFromXML(self, self.xmlFile, compoundKey, compound)
+		end
+	end
 end
 
 function DashboardLive:onPreDetachImplement(implement)

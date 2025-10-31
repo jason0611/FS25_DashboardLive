@@ -18,16 +18,6 @@ end
 function DashboardIsobus.registerEventListeners(vehicleType)
 	SpecializationUtil.registerEventListener(vehicleType, "onLoad", DashboardIsobus)
 	SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", DashboardIsobus)
---  SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", DashboardIsobus)
---	SpecializationUtil.registerEventListener(vehicleType, "onRegisterDashboardValueTypes", DashboardIsobus)
---	SpecializationUtil.registerEventListener(vehicleType, "onRegisterActionEvents", DashboardIsobus)
---	SpecializationUtil.registerEventListener(vehicleType, "onReadStream", DashboardIsobus)
---	SpecializationUtil.registerEventListener(vehicleType, "onWriteStream", DashboardIsobus)
---	SpecializationUtil.registerEventListener(vehicleType, "onReadUpdateStream", DashboardIsobus)
---	SpecializationUtil.registerEventListener(vehicleType, "onWriteUpdateStream", DashboardIsobus)
---	SpecializationUtil.registerEventListener(vehicleType, "onUpdate", DashboardIsobus)
---	SpecializationUtil.registerEventListener(vehicleType, "onDraw", DashboardIsobus)
---	SpecializationUtil.registerEventListener(vehicleType, "onPostAttachImplement", DashboardIsobus)
 end
 
 function DashboardIsobus:initSpecialization()
@@ -44,18 +34,15 @@ end
 
 function DashboardIsobus:onLoad(savegame)
 	local spec = self.spec_DashboardIsobus 
-	local vehicleXmlSchema = self.xmlFile.schema
 	local implementXmlFilename = self.xmlFile.filename
-	local implementXmlFile = XMLFile.load("IMPLEMENT", implementXmlFilename, vehicleXmlSchema)
+	local implementXmlFile = XMLFile.load("IMPLEMENT", implementXmlFilename, self.xmlFile.schema)
 	if implementXmlFile:hasProperty(DashboardIsobus.XMLkey) then
 		local isobusFilename = implementXmlFile:getValue(DashboardIsobus.XMLkey .. "#isobusTerminal")
-		local isobusFilepath = self.baseDirectory
 		dbgprint("onLoad: ISOBUS filename = "..tostring(isobusFilename), 1)
-		dbgprint("onLoad: ISOBUS filepath = "..tostring(isobusFilepath), 1)
+		dbgprint("onLoad: ISOBUS baseDirectory = "..tostring(self.baseDirectory), 1)
 		if isobusFilename ~= nil then
 			spec.xmlFilename = isobusFilename
-			spec.xmlFilepath = isobusFilepath
---			spec.xmlFile = XMLFile.load("ISOBUS", isobusFilename, vehicleXmlSchema)
+			spec.baseDirectory = self.baseDirectory
 		else
 			self.spec_DashboardIsobus = nil
 		end
