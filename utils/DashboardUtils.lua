@@ -77,6 +77,8 @@ function DashboardUtils:loadDashboardsFromXML(superfunc, xmlFile, key, dashboard
 	local isMod = self.baseDirectory ~= ""
 	local returnValue
 	
+	dbgprint("loadDashboardsFromXML: key: "..tostring(key), 2)
+	
 	if fileExists(filenameDBL) and not isMod then
 		local xmlFileDBL = XMLFile.load("DBL Replacement", filenameDBL, xmlFile.schema)
 		dbgprint("loadDashboardsFromXML: replaced xml-file: "..tostring(filenameDBL), 2)
