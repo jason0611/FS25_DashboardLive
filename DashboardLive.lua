@@ -255,7 +255,7 @@ function DashboardLive:onRegisterDashboardValueTypes()
 	-- isobus
 	dblValueType = DashboardValueType.new("dbl", "isobus")
 	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
-	dblValueType:setValue(self, true)
+	dblValueType:setValue(self, DashboardLive.getDashboardLiveIsobus)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesIsobus)
 	self:registerDashboardValueType(dblValueType)
 	
@@ -419,6 +419,68 @@ function DashboardLive:onPostLoad(savegame)
 end
 
 -- modified giants code
+function DashboardLive.loadDashboardsFromIsobus(self, xmlFile, key, components, i3dMappings, parentNode)
+	if self.isClient then
+        local spec = self.spec_dashboard
+
+        xmlFile:iterate(key .. ".dashboard", function(index, dashboardKey)
+            local valueTypeName = xmlFile:getValue(dashboardKey .. "#valueType")
+
+            local dashboardValueTypeToUse
+            local numMatches = 0
+            if dashboardValueTypeToUse == nil and valueTypeName ~= nil then
+                for _, _dashboardValueType in ipairs(spec.dashboardValueTypes) do
+                    if valueTypeName == _dashboardValueType.name or valueTypeName == _dashboardValueType.fullName then
+                        dashboardValueTypeToUse = _dashboardValueType
+                        numMatches = numMatches + 1
+                    end
+                end
+            end
+
+            if numMatches > 1 and dashboardValueTypeToUse.xmlKey == nil then
+                Logging.xmlWarning(xmlFile, "Dashboard valueType name '%s' is used in multiple specializations. Please specify with specialization prefix. (e.g. 'motorized.rpm')", valueTypeName)
+            end
+
+            if valueTypeName ~= nil and dashboardValueTypeToUse == nil then
+                Logging.xmlWarning(xmlFile, "Unknown dashboard valueType '%s' for dashboard '%s'", valueTypeName, dashboardKey)
+                return
+            end
+			
+			dbgprint("loadDashboardsFromIsobus: loading dashboard ("..tostring(dashboardValueTypeToUse).."): "..tostring(dashboardKey), 2)
+			
+            local dashboard = {}
+            if self:loadDashboardFromXML(xmlFile, dashboardKey, dashboard, dashboardValueTypeToUse, components or self.components, i3dMappings or self.i3dMappings, parentNode) then
+                local typeData = Dashboard.TYPE_DATA[dashboard.displayTypeIndex]
+                local isCritical = typeData.isCritical
+                if dashboard.isCritical ~= nil then
+                    isCritical = dashboard.isCritical
+                end
+
+                if isCritical and ((dashboardValueTypeToUse ~= nil and dashboardValueTypeToUse.pollUpdate) or dashboard.doInterpolation) then
+                    table.insert(spec.criticalDashboards, dashboard)
+                else
+                    if (dashboardValueTypeToUse ~= nil and not dashboardValueTypeToUse.pollUpdate) and not dashboard.doInterpolation then
+                        local fullName = dashboardValueTypeToUse.fullName
+                        if spec.dashboardsByValueType[fullName] == nil then
+                            spec.dashboardsByValueType[fullName] = {}
+                            spec.dashboardsByValueTypeDirty[fullName] = false
+                        end
+                        table.insert(spec.dashboardsByValueType[fullName], dashboard)
+                    else
+                        if dashboardValueTypeToUse == nil then
+                            table.insert(spec.groupDashboards, dashboard)
+                        else
+                            table.insert(spec.tickDashboards, dashboard)
+                        end
+                    end
+                end
+
+                spec.numDashboards = spec.numDashboards + 1
+            end
+        end)
+    end
+end
+
 function DashboardLive.loadIsobusCompoundFromXML(self, xmlFile, key, compound)
 	dbgprint("loadIsobusCompoundFromXML: linkNode = "..tostring(compound.linkNode).." / key = "..tostring(key), 1)
 	local dashboardXMLFile = XMLFile.load("IsobusCompoundXML", compound.filename, Dashboard.compoundsXMLSchema)
@@ -444,7 +506,13 @@ function DashboardLive.loadIsobusCompoundFromXML(self, xmlFile, key, compound)
 			dbgprint("loadIsobusCompoundFromXML: loading I3DFile", 2)
 			local node = g_i3DManager:loadI3DFile(i3dFilename, false, false)
 			dbgprint("loadIsobusCompoundFromXML: node = "..tostring(node), 2)
-        
+			
+			print("Node debug: before:")
+			print("linkNode:")
+			print(I3DUtil.getNodeNameAndIndexPath(compound.linkNode))
+			print("node:")
+			print(I3DUtil.getNodeNameAndIndexPath(node))
+			
 			link(compound.linkNode, node)
 			setTranslation(node, 0, 0.002, 0)
 			setRotation(node, 0, 0, 0)
@@ -459,7 +527,20 @@ function DashboardLive.loadIsobusCompoundFromXML(self, xmlFile, key, compound)
 			compound.i3dMappings = I3DUtil.loadI3DMapping(dashboardXMLFile, "dashboardCompounds", components, compound.i3dMappings, nil)
 			local size = table.size(compound.i3dMappings)
 			dbgprint("loadIsobusCompoundFromXML: "..tostring(size).." i3dMappings loaded from "..tostring(dashboardXMLFile.filename), 2)
-			self:loadDashboardsFromXML(dashboardXMLFile, compoundKey, nil, components, compound.i3dMappings, node)
+			
+			print("Node debug: after:")
+			print("linkNode:")
+			print(I3DUtil.getNodeNameAndIndexPath(compound.linkNode))
+			print("node:")
+			print(I3DUtil.getNodeNameAndIndexPath(node))
+			print("dbl_brantnerDDTrailerScreenUT8_SC:") 
+			local testNode = I3DUtil.indexToObject(components, "dbl_brantnerDDTrailerScreenUT8_SC", compound.i3dMappings)
+			print(tostring(testNode))
+			print(I3DUtil.getNodeNameAndIndexPath(testNode))
+			
+			--   loadDashboardsFromXML(xmlFile,          key,         dashboardValueType, components, i3dMappings,          parentNode)
+			DashboardLive.loadDashboardsFromIsobus(self, dashboardXMLFile, compoundKey, components, compound.i3dMappings, node)
+			--DashboardLive.createDashboardPages(self)
 			
 			return true
 		else
@@ -2909,6 +2990,10 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 	end
 	
 	return false
+end
+
+function DashboardLive.getDashboardLiveIsobus(self, dashboard)
+	return true
 end
 
 function DashboardLive.getDashboardLiveMiniMap(self, dashboard)
