@@ -240,26 +240,3 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 	end
 --]]
 end
-Dashboard.onDashboardCompoundLoaded = Utils.prependedFunction(Dashboard.onDashboardCompoundLoaded, DashboardUtils.onDashboardCompoundLoaded)
-
-function DashboardUtils:addVehicle(superfunc, vehicle)
-	dbgprint("addVehicle: vehicle", 2)
-	dbgprint_r(vehicle, 2, 0)
-	printCallstack()
-	return superfunc(self, vehicle)
-end
---VehicleSystem.addVehicle = Utils.overwrittenFunction(VehicleSystem.addVehicle, DashboardUtils.addVehicle)
-
-function DashboardUtils:loadDashboardCompoundFromExternalXML(dashboardXMLFile, compound, compoundKey, components)
-	dbgprint("loadDashboardCompoundFromExternalXML: "..tostring(self.getFullName ~= nil and self:getFullName() or self:getName()), 1)
-	dbgprint("loadDashboardCompoundFromExternalXML: dashboardXMLFile: "..tostring(dashboardXMLFile.filename), 1)
-	dbgprint("loadDashboardCompoundFromExternalXML: compoundKey = "..tostring(compoundKey), 1)
-	dbgprint("loadDashboardCompoundFromExternalXML: compound: "..tostring(compound), 1)
-	dbgprint_r(compound, 1, 0)
-	
-	printCallstack()
-end
---Dashboard.loadDashboardCompoundFromExternalXML = Utils.prependedFunction(Dashboard.loadDashboardCompoundFromExternalXML, DashboardUtils.loadDashboardCompoundFromExternalXML)
-
-	
-
