@@ -56,10 +56,10 @@ function DashboardLive.initSpecialization()
 	schema:register(XMLValueType.STRING, Dashboard.GROUP_XML_KEY .. "#dblTrailer", "DBL Trailer")
 	dbgprint("initSpecialization : DashboardLive group options registered", 2)
 	
-	schema:register(XMLValueType.NODE_INDEX, "vehicle.dashboard.compounds.compound(?)#node")
+	--schema:register(XMLValueType.NODE_INDEX, "vehicle.dashboard.compounds.compound(?)#node")
 	
 	Dashboard.registerDashboardXMLPaths(schema, "vehicle.dashboard.dashboardLive", "dbl.base dbl.fillLevel dbl.fillType dbl.vca dbl.hlm dbl.gps dbl.gps_lane dbl.gps_width dbl.proseed dbl.selector")
-	schema:register(XMLValueType.NODE_INDEX, "vehicle.dashboard.dashboardLive.isobus.isobusTerminal(?)#node")
+	--schema:register(XMLValueType.NODE_INDEX, "vehicle.dashboard.dashboardLive.isobus.isobusTerminal(?)#node")
 
 	DashboardLive.DBL_XML_KEY = "vehicle.dashboard.dashboardLive.dashboard(?)"
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#cmd", "DashboardLive command")
