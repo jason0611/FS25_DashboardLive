@@ -196,6 +196,7 @@ function DashboardLive:onLoad(savegame)
 	spec.pageGroups[1].actPage = 1
 	spec.updateTimer = 0
 	spec.compoundGroupsLoaded = false
+	spec.isobusActive = false
 		
 	-- zoom data
 	spec.zoomPerm = {}
@@ -245,6 +246,13 @@ function DashboardLive:onRegisterDashboardValueTypes()
 	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
 	dblValueType:setValue(self, DashboardLive.getDashboardLiveBase)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesBase)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- isobus
+	dblValueType = DashboardValueType.new("dbl", "isobus")
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setValue(self, DashboardLive.getDashboardLiveIsobus)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesIsobus)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- miniMap
@@ -406,6 +414,61 @@ function DashboardLive:onPostLoad(savegame)
 	DashboardLive.createDashboardPages(self)
 end
 
+-- modified and adapted giants code
+function DashboardLive.loadIsobusCompoundFromXML(self, xmlFile, key, compound)
+	dbgprint("loadIsobusCompoundFromXML: linkNode = "..tostring(compound.linkNode).." / key = "..tostring(key), 1)
+	local dashboardXMLFile = XMLFile.load("IsobusCompoundXML", compound.filename, Dashboard.compoundsXMLSchema)
+	if dashboardXMLFile ~= nil then
+		local compoundKey
+		dashboardXMLFile:iterate(key, function(index, _compoundKey)
+			if dashboardXMLFile:getValue(_compoundKey .. "#name") == compound.name then
+				compoundKey = _compoundKey
+				return
+			end
+		end)
+
+		if compoundKey ~= nil then
+			dbgprint("loadIsobusCompoundFromXML: compoundKey = "..tostring(compoundKey), 2)
+			local i3dFilename = dashboardXMLFile:getValue(compoundKey .. "#filename")
+			if i3dFilename ~= nil then
+				i3dFilename = compound.filepath .. i3dFilename
+			else
+				Logging.xmlWarning(dashboardXMLFile, "Missing filename for compound '%s'", compound.name)
+				return false
+			end
+			
+			dbgprint("loadIsobusCompoundFromXML: loading I3DFile", 2)
+			local node = g_i3DManager:loadI3DFile(i3dFilename, false, false)
+			dbgprint("loadIsobusCompoundFromXML: node = "..tostring(node), 2)
+			
+			link(compound.linkNode, node)
+			setTranslation(node, 0, 0, 0)
+			setRotation(node, 0, 0, 0)
+			
+			local components = {}
+			for i=1, getNumOfChildren(node) do
+				table.insert(components, {node=getChildAt(node, i - 1)})
+			end
+			dbgprint("loadIsobusCompoundFromXML: "..tostring(#components).." components created", 2)
+			
+			compound.i3dMappings = {}
+			compound.i3dMappings = I3DUtil.loadI3DMapping(dashboardXMLFile, "dashboardCompounds", components, compound.i3dMappings, nil)
+			local size = table.size(compound.i3dMappings)
+			dbgprint("loadIsobusCompoundFromXML: "..tostring(size).." i3dMappings loaded from "..tostring(dashboardXMLFile.filename), 2)
+			
+			self:loadDashboardsFromXML(dashboardXMLFile, compoundKey, nil, components, compound.i3dMappings, node)
+			return true
+		else
+			Logging.xmlWarning(dashboardXMLFile, "Unable to find compound by name '%s'", compound.name)
+			dashboardXMLFile:delete()
+			return false
+		end
+	end
+
+    return false
+end
+-- modified and adapted giants code
+
 function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, jointDescIndex)
 	-- implement - attacherJoint
 	dbgprint("Implement "..implement:getFullName().." attached to "..self:getFullName().." at index "..tostring(jointDescIndex), 2)
@@ -422,39 +485,33 @@ function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, joi
 	local specDBL = self.spec_DashboardLive
 	local specDB  = self.spec_dashboard
 	local specISOBUS = implement.spec_DashboardIsobus
-	local linkNode = specDB.dblIsobusNode
 	
 	if specISOBUS ~= nil then
-		dbgprint("onPostAttachImplement: implement ISOBUS found", 1)
+		dbgprint("onPostAttachImplement: ISOBUS spec found!", 1)
 	end
-	if linkNode ~= nil then
-		dbgprint("onPostAttachImplement: vehicle is ISOBUS prepared", 1)
-	end
-	if specISOBUS ~= nil and linkNode ~= nil then
-		local isobusFilename = specISOBUS.xmlFilename	
-		local isobusFilepath = specISOBUS.xmlFilepath
-		assert(isobusFilename ~= nil, "Error: ISOBUS xmlFile is missing!")
-		
-		local isobusXmlKey = specDB.dblIsobusKey
-		assert(isobusXmlKey ~= nil, "Error: ISOBUS xmlKey missing!")
-		
-		dbgprint("onPostAttachImplement: isobusFile = "..tostring(isobusFilename), 1)
-		dbgprint("onPostAttachImplement: isobusPath = "..tostring(isobusFilepath), 1)
-		dbgprint("onPostAttachImplement: isobusNode = "..tostring(linkNode), 1)
-		dbgprint("onPostAttachImplement: isobusKey = "..tostring(isobusXmlKey), 1)
-		
-		local isobusCompound = {}
-		isobusCompound.isIsobus = true
-		if self:loadDashboardCompoundFromXML(self.xmlFile, isobusXmlKey, isobusCompound, isobusFilename, isobusFilepath) then
-			dbgprint("onPostAttachImplement: isobusCompound loaded: "..tostring(isobusFilepath)..tostring(isobusFilename), 2)
-			table.insert(specDB.dashboardCompounds, isobusCompound)
-		end
-		dbgprint("onPostAttachImplement: finished with isobus", 1)
-	else
-		dbgprint("onPostAttachImplement: implement without isobus", 1)
+	if specDBL.isobusNodes ~= nil then
+		dbgprint("onPostAttachImplement: ISOBUS preparation found!", 1)
 	end
 	
+	local active = false
+	if specISOBUS ~= nil and specDBL.isobusNodes ~= nil then
+		dbgprint("onPostAttachImplement: loading ISOBUS", 1)
+		for _, isobusNode in pairs(specDBL.isobusNodes) do
+			dbgprint("onPostAttachImplement: ISOBUS linkNode: "..tostring(isobusNode), 2)
 
+			-- get compoundKey
+			local compoundKey = "dashboardCompounds.dashboardCompound"
+			
+			-- build up compound
+			local compound = {}
+			compound.linkNode = isobusNode
+			compound.filename = specISOBUS.baseDirectory..specISOBUS.xmlFilename
+			compound.filepath = specISOBUS.baseDirectory
+			compound.name = "ISOBUS"
+			active = active or DashboardLive.loadIsobusCompoundFromXML(self, self.xmlFile, compoundKey, compound)
+		end
+		specDBL.isobusActive = active
+	end
 end
 
 function DashboardLive:onPreDetachImplement(implement)
@@ -1468,7 +1525,7 @@ local function getAttachedStatus(vehicle, element, mode, default)
             		end
             		dbgprint("AttacherJoint #"..tostring(jointIndex).."(trailer = "..tostring(t+1)..") connected: "..tostring(resultValue), 4)
             	end
-              	dbgprint("AttacherJoint #"..tostring(jointIndex).."connected: "..tostring(resultValue), 4)
+              	dbgprint("AttacherJoint #"..tostring(jointIndex).." connected: "..tostring(resultValue), 4)
             	
             elseif mode == "disconnected" then
             	dbgprint("AttacherJoint #"..tostring(jointIndex).." not disconnected", 4)
@@ -1859,6 +1916,10 @@ function DashboardLive:getIsDashboardGroupActive(superFunc, group)
 	if group.dblCommand == nil then 
 		return superFunc(self, group)
 
+	-- isobus not active
+	elseif group.dblCommand == "noisobus" then
+		returnValue = not spec.isobusActive
+	
 	-- page
 	elseif group.dblCommand == "page" and group.dblPage ~= nil and group.dblPageGroup ~= nil then 
 		if group.dblPage and group.dblPage > 0 then 
@@ -2111,6 +2172,20 @@ function DashboardLive.getDBLAttributesBase(self, xmlFile, key, dashboard, compo
 		end
 	end
 	return true
+end
+
+-- load ISOBUS connect node
+function DashboardLive.getDBLAttributesIsobus(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
+	dbgprint("getDBLAttributesIsobus: ISOBUS preparations found for vehicle: "..self:getFullName(), 2)
+	dbgprint("getDBLAttributesIsobus: ISOBUS preparations found with key: "..key, 2)
+	local spec = self.spec_DashboardLive
+	local node = dashboard.node
+	
+	if spec.isobusNodes == nil then spec.isobusNodes = {} end
+	local nodeAnz = #spec.isobusNodes
+	spec.isobusNodes[nodeAnz + 1] = node
+	dbgprint("getDBLAttributesIsobus: ISOBUS hub nodes found:", 2)
+	dbgprint_r(spec.isobusNodes, 2, 2)
 end
 
 -- minimap
@@ -2830,6 +2905,10 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 	end
 	
 	return false
+end
+
+function DashboardLive.getDashboardLiveIsobus(self, dashboard)
+	return true
 end
 
 function DashboardLive.getDashboardLiveMiniMap(self, dashboard)
