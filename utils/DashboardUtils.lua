@@ -240,3 +240,4 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 	end
 --]]
 end
+Dashboard.onDashboardCompoundLoaded = Utils.prependedFunction(Dashboard.onDashboardCompoundLoaded, DashboardUtils.onDashboardCompoundLoaded)
