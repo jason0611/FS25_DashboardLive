@@ -2617,7 +2617,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 						local dischargeNode = spec_di.currentDischargeNode
 						if dischargeNode ~= nil then
 							local target, unit = implement:getDischargeTargetObject(dischargeNode)
-							if target ~= nil then
+							if target ~= nil and target.spec_fillUnit ~= nil then
 								local fillUnit = target.spec_fillUnit.fillUnits[unit]
 								returnValue = getValue(o, target, fillUnit)
 								break -- only one discharging process has to be found
