@@ -2603,10 +2603,12 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 				dbgprint("targetFillLevel: specPI exists", 2)
 				local targetId = specPI.nearestObjectInTriggers.objectId
 				if targetId ~= nil then
-					local target = NetworkUtil.getObject(targetId)		
-					local unit = specPI.nearestObjectInTriggers.fillUnitIndex
-					local fillUnit = target.spec_fillUnit.fillUnits[unit]
-					returnValue = getValue(o, target, fillUnit)
+					local target = NetworkUtil.getObject(targetId)	
+					if target ~= nil and target.spec_fillUnit ~= nil then
+						local unit = specPI.nearestObjectInTriggers.fillUnitIndex
+						local fillUnit = target.spec_fillUnit.fillUnits[unit]
+						returnValue = getValue(o, target, fillUnit)
+					end
 				end
 			elseif specAJ ~= nil then
 				dbgprint("targetFillLevel: specAJ exists", 2)
