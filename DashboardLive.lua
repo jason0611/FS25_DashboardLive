@@ -2471,6 +2471,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		local specMO = self.spec_motorized
 		local specCS = self.spec_crabSteering
 		local specPI = self.spec_pipe
+		local specAJ = self.spec_attacherJoints
 		local cmds, j, s, o = dashboard.dblCommand, dashboard.dblAttacherJointIndices, dashboard.dblStateText or dashboard.dblState, dashboard.dblOption
 		local cmd = string.split(cmds, " ")
 		local returnValue = false
@@ -2576,6 +2577,24 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			
 		-- fillLevel of overload target
 		elseif cmds == "targetfilllevel" then
+			local function getValue(option, target, fillUnit)
+				if option == "abs" then
+					return math.floor(fillUnit.fillLevel)
+				elseif option == "max" then
+					return math.floor(fillUnit.capacity)
+				elseif option == "percent" then
+					local akt = math.floor(fillUnit.fillLevel)
+					local max = math.floor(fillUnit.capacity)
+					return max ~= 0 and math.floor((akt/max)*100)/100 or 0
+				elseif option == "name" then
+					return target.getFullName ~= nil and target:getFullName() or "unknown"
+				elseif option == "overloading" then
+					return specPI.nearestObjectInTriggers.isDischargeObject
+				else
+					return true
+				end
+			end
+			
 			if o ~= nil then
 				returnValue = 0
 			end
@@ -2584,26 +2603,30 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 				dbgprint("targetFillLevel: specPI exists", 2)
 				local targetId = specPI.nearestObjectInTriggers.objectId
 				if targetId ~= nil then
-					local target = NetworkUtil.getObject(targetId)		
-					local unit = specPI.nearestObjectInTriggers.fillUnitIndex
-					local fillUnit = target.spec_fillUnit.fillUnits[unit]
-					
-					if o == "abs" then
-						returnValue = math.floor(fillUnit.fillLevel)
-					elseif o == "max" then
-						returnValue = math.floor(fillUnit.capacity)
-					elseif o == "percent" then
-						local akt = math.floor(fillUnit.fillLevel)
-						local max = math.floor(fillUnit.capacity)
-						returnValue = max ~= 0 and math.floor((akt/max)*100)/100 or 0
-					elseif o == "name" then
-						returnValue = target.getFullName ~= nil and target:getFullName() or "unknown"
-					elseif o == "overloading" then
-						returnValue = specPI.nearestObjectInTriggers.isDischargeObject
-					else
-						returnValue = true
+					local target = NetworkUtil.getObject(targetId)	
+					if target ~= nil and target.spec_fillUnit ~= nil then
+						local unit = specPI.nearestObjectInTriggers.fillUnitIndex
+						local fillUnit = target.spec_fillUnit.fillUnits[unit]
+						returnValue = getValue(o, target, fillUnit)
 					end
 				end
+			elseif specAJ ~= nil then
+				dbgprint("targetFillLevel: specAJ exists", 2)
+				local implements = self:getRootVehicle():getChildVehicles()
+				for _, implement in pairs(implements) do
+					local spec_di = implement.spec_dischargeable
+					if spec_di ~= nil then
+						local dischargeNode = spec_di.currentDischargeNode
+						if dischargeNode ~= nil then
+							local target, unit = implement:getDischargeTargetObject(dischargeNode)
+							if target ~= nil and target.spec_fillUnit ~= nil then
+								local fillUnit = target.spec_fillUnit.fillUnits[unit]
+								returnValue = getValue(o, target, fillUnit)
+								break -- only one discharging process has to be found
+							end
+						end
+					end
+				end								
 			end	
 		
 		-- fillType (text or icon)
