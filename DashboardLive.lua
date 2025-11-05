@@ -2581,6 +2581,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			
 		-- fillLevel of overload target
 		elseif cmds == "targetfilllevel" then
+			local spec = self.spec_DashboardLive
 			local function getValue(option, target, fillUnit)
 				if option == "abs" then
 					return math.floor(fillUnit.fillLevel)
@@ -2599,8 +2600,10 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 				end
 			end
 			
-			if o ~= nil then
+			if o == "abs" or o == "max" or o == "percent" then
 				returnValue = 0
+			elseif o == "name" then
+				returnValue = ""
 			end
 			
 			if specPI ~= nil then
@@ -2611,7 +2614,6 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 					if target ~= nil and target.spec_fillUnit ~= nil then
 						local unit = specPI.nearestObjectInTriggers.fillUnitIndex
 						local fillUnit = target.spec_fillUnit.fillUnits[unit]
-						spec
 						returnValue = getValue(o, target, fillUnit)
 					end
 				end
@@ -2633,15 +2635,27 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 					end
 				end								
 			end	
+			print(tostring(spec.targetFillLevel))
 			if type(returnValue) == "number" then
-				local spec = self.spec_DashboardLive
 				if returnValue == 0 and spec.delayTime > 0 then
 					returnValue = spec.targetFillLevel or 0
 				elseif returnValue > 0 then
 					spec.targetFillLevel = returnValue
 					spec.delayTime = DashboardLive.DELAYTIME
+				elseif spec.delayTime == 0 and spec.targetFillLevel ~= nil then
+					spec.targetFillLevel = nil
 				end
 			end	
+			if type(returnValue) == "string" then
+				if returnValue == "" and spec.delayTime > 0 then
+					returnValue = spec.targetName or ""
+				elseif returnValue ~= "" then
+					spec.targetName = returnValue
+					spec.delayTime = DashboardLive.DELAYTIME
+				elseif spec.delayTime == 0 and spec.targetName ~= nil then
+					spec.targetName = nil
+				end
+			end
 		
 		-- fillType (text or icon)
 		elseif cmds == "filltype" then
