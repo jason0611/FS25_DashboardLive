@@ -19,17 +19,18 @@ GMSDebug:enableConsoleCommands("dblDebug")
 
 source(DashboardLive.MOD_PATH.."utils/DashboardUtils.lua")
 
-DashboardLive.scale = 0.1
-DashboardLive.minimapConfig = {}
+DashboardLive.DELAYTIME= 3000 -- 3 seconds
+DashboardLive.SCALE = 0.1
 
+DashboardLive.minimapConfig = {}
 DashboardLive.vis_partly = false
 
 -- Console
 
 function DashboardLive:editParameter(scale)
-	local scale = tonumber(scale) or DashboardLive.scale
+	local scale = tonumber(scale) or DashboardLive.SCALE
 	print("DBL Parameter: Scale = "..tostring(scale))
-	DashboardLive.scale = scale
+	DashboardLive.SCALE = scale
 end
 addConsoleCommand("dblParameter", "DBL: Change scale parameter", "editParameter", DashboardLive)
 
@@ -227,6 +228,9 @@ function DashboardLive:onLoad(savegame)
 	-- discharge state
 	spec.currentDischargeState = 0
 	spec.lastDischargeState = 0
+	
+	-- targetFillLevel
+	spec.delayTime = 0
 end
 
 function DashboardLive:onRegisterDashboardValueTypes()
@@ -2074,7 +2078,7 @@ end
 -- minimap
 function DashboardLive.getDBLAttributesMiniMap(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd")) or "map"
-	dashboard.scale = xmlFile:getValue(key .. "#scale") or DashboardLive.scale
+	dashboard.scale = xmlFile:getValue(key .. "#scale") or DashboardLive.SCALE
 	dashboard.node = xmlFile:getValue(key .. "#node", nil, components, i3dMappings, true)
 	dbgprint("getDBLAttributesMiniMap: node = "..tostring(dashboard.node).." / command = "..tostring(dashboard.dblCommand).." / scale = "..tostring(dashboard.scale), 2)
 
@@ -2607,6 +2611,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 					if target ~= nil and target.spec_fillUnit ~= nil then
 						local unit = specPI.nearestObjectInTriggers.fillUnitIndex
 						local fillUnit = target.spec_fillUnit.fillUnits[unit]
+						spec
 						returnValue = getValue(o, target, fillUnit)
 					end
 				end
@@ -2627,6 +2632,15 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 						end
 					end
 				end								
+			end	
+			if type(returnValue) == "number" then
+				local spec = self.spec_DashboardLive
+				if returnValue == 0 and spec.delayTime > 0 then
+					returnValue = spec.targetFillLevel or 0
+				elseif returnValue > 0 then
+					spec.targetFillLevel = returnValue
+					spec.delayTime = DashboardLive.DELAYTIME
+				end
 			end	
 		
 		-- fillType (text or icon)
@@ -2839,7 +2853,7 @@ function DashboardLive.getDashboardLiveMiniMap(self, dashboard)
 			-- zoom
 			local speed = self:getLastSpeed()
 			local width = g_currentMission.mapWidth
-			local scale = DashboardLive.scale
+			local scale = DashboardLive.SCALE
 			local zoomFactor = math.clamp(speed / 50, 0, 1)
 			local zoomTarget
 	
@@ -3778,14 +3792,19 @@ function DashboardLive:onUpdate(dt)
 	local dspec = self.spec_dashboard
 	local mspec = self.spec_motorized
 	
+	-- delayTime
+	if spec.delayTime > 0 then
+		spec.delayTime = spec.delayTime - dt
+	else
+		spec.delayTime = 0
+		spec.targetFillLevel = nil
+	end
 	
 	-- get active vehicle
 	if self:getIsActiveForInput(true) then
 		spec.selectorActive = getIndexOfActiveImplement(self:getRootVehicle())
 		spec.selectorGroup = self.currentSelection.subIndex or 0
 	end
-	
-
 	
 	-- sync server to client data
 	if self.isServer then
