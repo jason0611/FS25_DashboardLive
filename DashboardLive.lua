@@ -2635,25 +2635,27 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 					end
 				end								
 			end	
-			print(tostring(spec.targetFillLevel))
-			if type(returnValue) == "number" then
+			if spec.targetFillLevel == nil then
+				spec.targetFillLevel = {}
+			end
+			if type(returnValue) == "number" and o ~= nil then
 				if returnValue == 0 and spec.delayTime > 0 then
-					returnValue = spec.targetFillLevel or 0
+					returnValue = spec.targetFillLevel[o] or 0
 				elseif returnValue > 0 then
-					spec.targetFillLevel = returnValue
+					spec.targetFillLevel[o] = returnValue
 					spec.delayTime = DashboardLive.DELAYTIME
-				elseif spec.delayTime == 0 and spec.targetFillLevel ~= nil then
-					spec.targetFillLevel = nil
+				elseif spec.delayTime == 0 and spec.targetFillLevel[o] ~= nil then
+					spec.targetFillLevel[o] = nil
 				end
 			end	
-			if type(returnValue) == "string" then
+			if type(returnValue) == "string" and o ~= nil then
 				if returnValue == "" and spec.delayTime > 0 then
-					returnValue = spec.targetName or ""
+					returnValue = spec.targetFillLevel[o] or ""
 				elseif returnValue ~= "" then
-					spec.targetName = returnValue
+					spec.targetFillLevel[o] = returnValue
 					spec.delayTime = DashboardLive.DELAYTIME
-				elseif spec.delayTime == 0 and spec.targetName ~= nil then
-					spec.targetName = nil
+				elseif spec.delayTime == 0 and spec.targetFillLevel[o] ~= nil then
+					spec.targetFillLevel[o] = nil
 				end
 			end
 		
