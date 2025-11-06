@@ -2592,7 +2592,12 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 					local max = math.floor(fillUnit.capacity)
 					return max ~= 0 and math.floor((akt/max)*100)/100 or 0
 				elseif option == "name" then
-					return target.getFullName ~= nil and target:getFullName() or "unknown"
+					local len = dashboard.textMask ~= nil and string.len(dashboard.textMask) or 0
+					local name = target.getFullName ~= nil and target:getFullName() or ""
+					if string.len(name) > len then
+						name = target.getName ~= nil and target:getName() or ""
+					end
+					return name
 				elseif option == "overloading" then
 					return specPI.nearestObjectInTriggers.isDischargeObject
 				else
