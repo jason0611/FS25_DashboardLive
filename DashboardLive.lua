@@ -170,6 +170,7 @@ function DashboardLive.registerEventListeners(vehicleType)
 	SpecializationUtil.registerEventListener(vehicleType, "onUpdate", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onDraw", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onPostAttachImplement", DashboardLive)
+	SpecializationUtil.registerEventListener(vehicleType, "onPreDetachImplement", DashboardLive)
 end
 
 function DashboardLive.registerOverwrittenFunctions(vehicleType)
@@ -457,6 +458,7 @@ function DashboardLive.loadIsobusCompoundFromXML(self, xmlFile, key, compound)
 			dbgprint("loadIsobusCompoundFromXML: "..tostring(size).." i3dMappings loaded from "..tostring(dashboardXMLFile.filename), 2)
 			
 			self:loadDashboardsFromXML(dashboardXMLFile, compoundKey, nil, components, compound.i3dMappings, node)
+			dashboardXMLFile:delete()
 			return true
 		else
 			Logging.xmlWarning(dashboardXMLFile, "Unable to find compound by name '%s'", compound.name)
@@ -515,6 +517,7 @@ function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, joi
 end
 
 function DashboardLive:onPreDetachImplement(implement)
+	dbgprint("Implement "..implement.object:getFullName().." detached", 2)
 end
 
 function DashboardLive.createDashboardPages(self)
