@@ -529,7 +529,6 @@ function DashboardLive:onPreDetachImplement(implement)
 		for _, isobusNode in pairs(spec.isobusNodes) do
 			local node = getChildAt(isobusNode, 0)
 			unlink(node)
-			spec.isobusTerminalNode = nil
 			spec.isDirty = true
 		end
 	end
