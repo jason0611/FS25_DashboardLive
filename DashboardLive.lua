@@ -418,6 +418,7 @@ end
 -- modified and adapted giants code
 function DashboardLive.loadIsobusCompoundFromXML(self, xmlFile, key, compound)
 	dbgprint("loadIsobusCompoundFromXML: linkNode = "..tostring(compound.linkNode).." / key = "..tostring(key), 1)
+	local spec = self.spec_DashboardLive
 	local dashboardXMLFile = XMLFile.load("IsobusCompoundXML", compound.filename, Dashboard.compoundsXMLSchema)
 	if dashboardXMLFile ~= nil then
 		local compoundKey
@@ -439,16 +440,16 @@ function DashboardLive.loadIsobusCompoundFromXML(self, xmlFile, key, compound)
 			end
 			
 			dbgprint("loadIsobusCompoundFromXML: loading I3DFile", 2)
-			local node = g_i3DManager:loadI3DFile(i3dFilename, false, false)
-			dbgprint("loadIsobusCompoundFromXML: node = "..tostring(node), 2)
+			local isobusTerminalNode = g_i3DManager:loadI3DFile(i3dFilename, false, false)
+			dbgprint("loadIsobusCompoundFromXML: node = "..tostring(isobusTerminalNode), 2)
 			
-			link(compound.linkNode, node)
-			setTranslation(node, 0, 0, 0)
-			setRotation(node, 0, 0, 0)
-			
+			link(compound.linkNode, isobusTerminalNode)
+			setTranslation(isobusTerminalNode, 0, 0, 0)
+			setRotation(isobusTerminalNode, 0, 0, 0)
+
 			local components = {}
-			for i=1, getNumOfChildren(node) do
-				table.insert(components, {node=getChildAt(node, i - 1)})
+			for i=1, getNumOfChildren(isobusTerminalNode) do
+				table.insert(components, {node=getChildAt(isobusTerminalNode, i - 1)})
 			end
 			dbgprint("loadIsobusCompoundFromXML: "..tostring(#components).." components created", 2)
 			
@@ -457,7 +458,7 @@ function DashboardLive.loadIsobusCompoundFromXML(self, xmlFile, key, compound)
 			local size = table.size(compound.i3dMappings)
 			dbgprint("loadIsobusCompoundFromXML: "..tostring(size).." i3dMappings loaded from "..tostring(dashboardXMLFile.filename), 2)
 			
-			self:loadDashboardsFromXML(dashboardXMLFile, compoundKey, nil, components, compound.i3dMappings, node)
+			self:loadDashboardsFromXML(dashboardXMLFile, compoundKey, nil, components, compound.i3dMappings, isobusTerminalNode)
 			dashboardXMLFile:delete()
 			return true
 		else
@@ -510,14 +511,27 @@ function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, joi
 			compound.filename = specISOBUS.baseDirectory..specISOBUS.xmlFilename
 			compound.filepath = specISOBUS.baseDirectory
 			compound.name = "ISOBUS"
-			active = active or DashboardLive.loadIsobusCompoundFromXML(self, self.xmlFile, compoundKey, compound)
+			active = DashboardLive.loadIsobusCompoundFromXML(self, self.xmlFile, compoundKey, compound) or active
+		end
+		if active then
+			self:updateDashboards(specDB.tickDashboards, 0, true)
 		end
 		specDBL.isobusActive = active
+		specDBL.isDirty = true
 	end
 end
 
 function DashboardLive:onPreDetachImplement(implement)
+	local spec = self.spec_DashboardLive
 	dbgprint("Implement "..implement.object:getFullName().." detached", 2)
+	
+	if spec.isobusActive then
+		for _, isobusNode in pairs(spec.isobusNodes) do
+			local node = getChildAt(isobusNode, 0)
+			unlink(node)
+			spec.isDirty = true
+		end
+	end
 end
 
 function DashboardLive.createDashboardPages(self)
