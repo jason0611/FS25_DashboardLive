@@ -43,8 +43,9 @@ function DashboardIsobus:onLoad(savegame)
 		if isobusFilename ~= nil then
 			spec.xmlFilename = isobusFilename
 			spec.baseDirectory = self.baseDirectory
+			spec.implementIsobusPrepared = true
 		else
-			self.spec_DashboardIsobus = nil
+			spec.implementIsobusPrepared = false
 		end
 	end
 end
