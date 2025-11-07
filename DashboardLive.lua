@@ -496,8 +496,8 @@ function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, joi
 		dbgprint("onPostAttachImplement: Vehicle ISOBUS preparation found!", 1)
 	end
 	
-	local active = false
-	if specISOBUS ~= nil and specISOBUS.implementIsobusPrepared and specDBL.isobusNodes ~= nil then
+	if not specDBL.isobusActive and specISOBUS ~= nil and specISOBUS.implementIsobusPrepared and specDBL.isobusNodes ~= nil then
+		local active = false
 		dbgprint("onPostAttachImplement: loading ISOBUS terminals", 1)
 		for _, isobusNode in pairs(specDBL.isobusNodes) do
 			dbgprint("onPostAttachImplement: ISOBUS linkNode: "..tostring(isobusNode), 2)
@@ -516,6 +516,7 @@ function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, joi
 		if active then
 			self:updateDashboards(specDB.tickDashboards, 0, true)
 			specDBL.isobusActive = true
+			specISOBUS.isobusActive = true
 		end
 		specDBL.isDirty = true
 	end
@@ -524,13 +525,15 @@ end
 function DashboardLive:onPreDetachImplement(implement)
 	local spec = self.spec_DashboardLive
 	dbgprint("Implement "..implement.object:getFullName().." detached", 2)
+	local specISOBUS = implement.object.spec_DashboardIsobus
 	
-	if spec.isobusActive then
+	if spec.isobusActive and specISOBUS ~= nil and specISOBUS.isobusActive then	
 		for _, isobusNode in pairs(spec.isobusNodes) do
 			local node = getChildAt(isobusNode, 0)
 			unlink(node)
 			spec.isDirty = true
 			spec.isobusActive = false
+			specISOBUS.isobusActive = false
 		end
 	end
 end
