@@ -443,17 +443,9 @@ function DashboardLive.loadIsobusCompoundFromXML(self, xmlFile, key, compound)
 			local isobusTerminalNode = g_i3DManager:loadI3DFile(i3dFilename, false, false)
 			dbgprint("loadIsobusCompoundFromXML: node = "..tostring(isobusTerminalNode), 2)
 			
-			print("before:")
-			print(I3DUtil.getNodeNameAndIndexPath(compound.linkNode))
-			print(I3DUtil.getNodeNameAndIndexPath(isobusTerminalNode))
-			
 			link(compound.linkNode, isobusTerminalNode)
 			setTranslation(isobusTerminalNode, 0, 0, 0)
 			setRotation(isobusTerminalNode, 0, 0, 0)
-			
-			print("after:")
-			print(I3DUtil.getNodeNameAndIndexPath(compound.linkNode))
-			print(I3DUtil.getNodeNameAndIndexPath(isobusTerminalNode))
 
 			local components = {}
 			for i=1, getNumOfChildren(isobusTerminalNode) do
@@ -536,17 +528,7 @@ function DashboardLive:onPreDetachImplement(implement)
 	if spec.isobusActive then
 		for _, isobusNode in pairs(spec.isobusNodes) do
 			local node = getChildAt(isobusNode, 0)
-		
-			print("before:")
-			print(I3DUtil.getNodeNameAndIndexPath(isobusNode))
-			print(I3DUtil.getNodeNameAndIndexPath(node))
-			
 			unlink(node)
-			
-			print("after:")
-			print(I3DUtil.getNodeNameAndIndexPath(isobusNode))
-			print(I3DUtil.getNodeNameAndIndexPath(node))
-			
 			spec.isobusTerminalNode = nil
 			spec.isDirty = true
 		end
