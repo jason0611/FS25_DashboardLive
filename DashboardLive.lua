@@ -440,16 +440,24 @@ function DashboardLive.loadIsobusCompoundFromXML(self, xmlFile, key, compound)
 			end
 			
 			dbgprint("loadIsobusCompoundFromXML: loading I3DFile", 2)
-			spec.isobusTerminalNode = g_i3DManager:loadI3DFile(i3dFilename, false, false)
-			dbgprint("loadIsobusCompoundFromXML: node = "..tostring(node), 2)
+			local isobusTerminalNode = g_i3DManager:loadI3DFile(i3dFilename, false, false)
+			dbgprint("loadIsobusCompoundFromXML: node = "..tostring(isobusTerminalNode), 2)
 			
-			link(compound.linkNode, spec.isobusTerminalNode)
-			setTranslation(spec.isobusTerminalNode, 0, 0, 0)
-			setRotation(spec.isobusTerminalNode, 0, 0, 0)
+			print("before:")
+			print(I3DUtil.getNodeNameAndIndexPath(compound.linkNode))
+			print(I3DUtil.getNodeNameAndIndexPath(isobusTerminalNode))
 			
+			link(compound.linkNode, isobusTerminalNode)
+			setTranslation(isobusTerminalNode, 0, 0, 0)
+			setRotation(isobusTerminalNode, 0, 0, 0)
+			
+			print("after:")
+			print(I3DUtil.getNodeNameAndIndexPath(compound.linkNode))
+			print(I3DUtil.getNodeNameAndIndexPath(isobusTerminalNode))
+
 			local components = {}
-			for i=1, getNumOfChildren(spec.isobusTerminalNode) do
-				table.insert(components, {node=getChildAt(spec.isobusTerminalNode, i - 1)})
+			for i=1, getNumOfChildren(isobusTerminalNode) do
+				table.insert(components, {node=getChildAt(isobusTerminalNode, i - 1)})
 			end
 			dbgprint("loadIsobusCompoundFromXML: "..tostring(#components).." components created", 2)
 			
@@ -458,7 +466,7 @@ function DashboardLive.loadIsobusCompoundFromXML(self, xmlFile, key, compound)
 			local size = table.size(compound.i3dMappings)
 			dbgprint("loadIsobusCompoundFromXML: "..tostring(size).." i3dMappings loaded from "..tostring(dashboardXMLFile.filename), 2)
 			
-			self:loadDashboardsFromXML(dashboardXMLFile, compoundKey, nil, components, compound.i3dMappings, spec.isobusTerminalNode)
+			self:loadDashboardsFromXML(dashboardXMLFile, compoundKey, nil, components, compound.i3dMappings, isobusTerminalNode)
 			dashboardXMLFile:delete()
 			return true
 		else
@@ -513,7 +521,11 @@ function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, joi
 			compound.name = "ISOBUS"
 			active = DashboardLive.loadIsobusCompoundFromXML(self, self.xmlFile, compoundKey, compound) or active
 		end
+		if active then
+			self:updateDashboards(specDB.tickDashboards, 0, true)
+		end
 		specDBL.isobusActive = active
+		specDBL.isDirty = true
 	end
 end
 
@@ -521,24 +533,23 @@ function DashboardLive:onPreDetachImplement(implement)
 	local spec = self.spec_DashboardLive
 	dbgprint("Implement "..implement.object:getFullName().." detached", 2)
 	
-	--print(I3DUtil.getNodeNameAndIndexPath(compound.linkNode))
-	--print(I3DUtil.getNodeNameAndIndexPath(spec.isobusTerminalNode))
-	--local testNode = I3DUtil.indexToObject(components, "dbl_brantnerDDTrailerScreenUT8_SC", compound.i3dMappings)
-
-	if spec.isobusTerminalNode ~= nil then
+	if spec.isobusActive then
 		for _, isobusNode in pairs(spec.isobusNodes) do
 			local node = getChildAt(isobusNode, 0)
 		
-		
 			print("before:")
+			print(I3DUtil.getNodeNameAndIndexPath(isobusNode))
 			print(I3DUtil.getNodeNameAndIndexPath(node))
-			print(I3DUtil.getNodeNameAndIndexPath(spec.isobusTerminalNode))
-			unlink(node, spec.isobusTerminalNode)
+			
+			unlink(node)
+			
 			print("after:")
+			print(I3DUtil.getNodeNameAndIndexPath(isobusNode))
 			print(I3DUtil.getNodeNameAndIndexPath(node))
-			print(I3DUtil.getNodeNameAndIndexPath(spec.isobusTerminalNode))
+			
+			spec.isobusTerminalNode = nil
+			spec.isDirty = true
 		end
-		spec.isobusTerminalNode = nil
 	end
 end
 
