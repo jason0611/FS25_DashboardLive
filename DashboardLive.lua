@@ -2921,6 +2921,11 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 				returnValue = not returnValue
 			end
 		end
+		if dashboard.dblCond ~= nil and type(dashboard.dblCond) == "string" and type(returnValue) == "string" then
+			if dashboard.dblCond == "equal" then
+				returnValue = returnValue == dashboard.dblCond
+			end
+		end
 			
 		return returnValue
 	end
