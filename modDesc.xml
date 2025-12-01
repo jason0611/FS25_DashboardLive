@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="104">
 	<author>Glowins Modschmiede</author>
-	<version>2.D.3.2</version>
-	<contributors>SbSh, mister_mojo_AT, AgrarPlay und LUWZ, Farming Duds</contributors>
+	<version>2.D.3.3</version>
+	<contributors>SbSh, mister_mojo_AT, AgrarPlay und LUWZ, Farming Duds, BayernGamers</contributors>
 	<title>
 		<en>Dashboard Live</en>
     </title>
@@ -202,6 +202,9 @@ V2.0.1.0:
 
 V2.0.2.0:
 - Füllstand für Überladeziel ergänzt
+
+Vx
+- Korrektur für Dashboard-Fehler etc., verursacht durch das Def-ModPack
 
 Wichtig: Fahrzeuge müssen vorab für DashboardLive vorbereitet werden, um die Funktionen und Anzeigen nutzen zu können.
 Eine Einbauhilfe und Dokumentation sind enthalten, außerdem sind Video-Tutorials verfügbar.
