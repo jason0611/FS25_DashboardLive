@@ -491,6 +491,7 @@ function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, joi
 	
 	if specISOBUS ~= nil and specISOBUS.implementIsobusPrepared then
 		dbgprint("onPostAttachImplement: Implemt has ISOBUS terminal!", 1)
+		dbgprint_r(specISOBUS, 1, 1)
 	end
 	if specDBL.isobusNodes ~= nil then
 		dbgprint("onPostAttachImplement: Vehicle ISOBUS preparation found!", 1)
@@ -500,7 +501,7 @@ function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, joi
 		local active = false
 		dbgprint("onPostAttachImplement: loading ISOBUS terminals", 1)
 		for _, isobusNode in pairs(specDBL.isobusNodes) do
-			dbgprint("onPostAttachImplement: ISOBUS linkNode: "..tostring(isobusNode), 2)
+			dbgprint("onPostAttachImplement: ISOBUS linkNode: "..tostring(isobusNode), 1)
 
 			-- get compoundKey
 			local compoundKey = "dashboardCompounds.dashboardCompound"
@@ -511,7 +512,12 @@ function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, joi
 			compound.filename = specISOBUS.baseDirectory..specISOBUS.xmlFilename
 			compound.filepath = specISOBUS.baseDirectory
 			compound.name = "ISOBUS"
+			
+			--self.baseDirectoryBackup = self.baseDirectory
+			--self.baseDirectory = ""
 			active = DashboardLive.loadIsobusCompoundFromXML(self, self.xmlFile, compoundKey, compound) or active
+			--self.baseDirectory = self.baseDirectoryBackup
+			--self.baseDirectoryBackup = nil
 		end
 		if active then
 			self:updateDashboards(specDB.tickDashboards, 0, true)
