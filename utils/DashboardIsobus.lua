@@ -51,15 +51,14 @@ function DashboardIsobus:onLoad(savegame)
 		end
 	else
 		local filePath = Utils.getDirectory(self.xmlFile.filename)
-		print("Path: "..filePath)
 		local dirName = Utils.getDirectoryName(self.xmlFile.filename)
-		print("Name: "..dirName)
 		local searchPath = "isobus/" .. dirName
-		print("serach: "..DashboardLive.INT_PATH..filePath..searchPath)
 		if fileExists(DashboardLive.INT_PATH..filePath..searchPath) then
 			spec.xmlFilename = searchPath
 			spec.baseDirectory = DashboardLive.INT_PATH..filePath
 			spec.implementIsobusPrepared = true
+			dbgprint("onLoad: ISOBUS xmlFilename = "..tostring(spec.xmlFilename), 1)
+			dbgprint("onLoad: ISOBUS baseDirectory = "..tostring(self.baseDirectory), 1)
 		end	
 	end
 end
