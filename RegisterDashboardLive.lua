@@ -6,7 +6,7 @@
 --
 
 source(g_currentModDirectory.."tools/gmsDebug.lua")
-GMSDebug:init(g_currentModName, true, 4)
+GMSDebug:init(g_currentModName, false)
 GMSDebug:enableConsoleCommands()
 
 local specName = g_currentModName..".DashboardLive"
