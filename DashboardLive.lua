@@ -501,7 +501,7 @@ function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, joi
 		local active = false
 		dbgprint("onPostAttachImplement: loading ISOBUS terminals", 1)
 		for _, isobusNode in pairs(specDBL.isobusNodes) do
-			dbgprint("onPostAttachImplement: ISOBUS linkNode: "..tostring(isobusNode), 2)
+			dbgprint("onPostAttachImplement: ISOBUS linkNode: "..tostring(isobusNode), 1)
 
 			-- get compoundKey
 			local compoundKey = "dashboardCompounds.dashboardCompound"
@@ -512,6 +512,7 @@ function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, joi
 			compound.filename = specISOBUS.baseDirectory..specISOBUS.xmlFilename
 			compound.filepath = specISOBUS.baseDirectory
 			compound.name = "ISOBUS"
+			
 			active = DashboardLive.loadIsobusCompoundFromXML(self, self.xmlFile, compoundKey, compound) or active
 		end
 		if active then

@@ -1,5 +1,7 @@
 DashboardIsobus = {}
 
+--DashboardLive.INT_PATH = "notLoaded"
+
 if DashboardIsobus.MOD_NAME == nil then
 	DashboardIsobus.MOD_NAME = g_currentModName
 	DashboardIsobus.MOD_PATH = g_currentModDirectory
@@ -47,5 +49,16 @@ function DashboardIsobus:onLoad(savegame)
 		else
 			spec.implementIsobusPrepared = false
 		end
+	else
+		local filePath = Utils.getDirectory(self.xmlFile.filename)
+		local dirName = Utils.getDirectoryName(self.xmlFile.filename)
+		local searchPath = "isobus/" .. dirName
+		if fileExists(DashboardLive.INT_PATH..filePath..searchPath) then
+			spec.xmlFilename = searchPath
+			spec.baseDirectory = DashboardLive.INT_PATH..filePath
+			spec.implementIsobusPrepared = true
+			dbgprint("onLoad: ISOBUS xmlFilename = "..tostring(spec.xmlFilename), 1)
+			dbgprint("onLoad: ISOBUS baseDirectory = "..tostring(self.baseDirectory), 1)
+		end	
 	end
 end
