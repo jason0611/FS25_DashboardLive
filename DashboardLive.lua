@@ -23,6 +23,20 @@ source(DashboardLive.MOD_PATH.."utils/DashboardUtils.lua")
 DashboardLive.scale = 0.1
 DashboardLive.minimapConfig = {}
 
+DashboardLive.crosshairColor = string.getVector("0.5 0.5 0.5 0.5", 4)
+local crosshairFile = XMLFile.loadIfExists("CROSSHAIR", DashboardLive.MODSETTINGSDIR .. "crosshair.xml")
+if crosshairFile ~= nil then
+	DashboardLive.crosshairColor = crosshairFile:getVector("crosshair.color(0)", DashboardLive.crosshairColor, 4)
+	dbgprint("loaded color:", 1)
+	dbgprint_r(DashboardLive.crosshairColor, 1, 1)
+	crosshairFile:delete()
+else
+	local crosshairFile = XMLFile.create("CROSSHAIR", DashboardLive.MODSETTINGSDIR .. "crosshair.xml", "crosshair")
+	crosshairFile:setVector("crosshair.color(0)", DashboardLive.crosshairColor)
+	crosshairFile:save(true, false)
+	crosshairFile:delete()
+end
+
 DashboardLive.vis_partly = false
 
 -- Console
@@ -4014,7 +4028,7 @@ function DashboardLiveKeepActive:update(dt)
 	-- enable crosshair for InteractiveControl if it's present and the hud is invisible
 	if g_currentMission.interactiveControl ~= nil and not g_currentMission.hud:getIsVisible() then
 		if g_currentMission.interactiveControl:isInteractiveControlActivated() then
-			setTextColor(0.5, 0.5, 0.5, 0.5)
+			setTextColor(unpack(DashboardLive.crosshairColor))
 			renderText(0.496, 0.495, 0.018, "+")
 		end
 		

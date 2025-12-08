@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="104">
 	<author>Glowins Modschmiede</author>
-	<version>2.D.3.6</version>
+	<version>2.D.4.0</version>
 	<contributors>SbSh, mister_mojo_AT, AgrarPlay und LUWZ, Farming Duds</contributors>
 	<title>
 		<en>Dashboard Live</en>
@@ -94,13 +94,14 @@ Changelog:
 V2.0.1.0:
 - Zoom function improved and adapted to patch 1.10
 - Radio display and controls added
-- Improved support for FS25_interactiveControl
+- Improved support for FS25_interactiveControl (IC)
 - Compatibility with FS25_Rhoenplateu_crossplay
 - Fixed div/0 condition with fillLevel
 - Fixed audio path for mod vehicles
 
 V2.0.2.0:
 - FillLevel of overload target added
+- Color of crosshair (IC support) can be changed by file crosshair.xml in modSettings directory
 
 Important: Vehicles must be prepared for DashboardLive in advance in order to be able to use the functions and displays. 
 An installation guide and documentation are included, and video tutorials are also available.
