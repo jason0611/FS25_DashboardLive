@@ -24,17 +24,20 @@ DashboardLive.scale = 0.1
 DashboardLive.minimapConfig = {}
 
 DashboardLive.crosshairColor = string.getVector("0.5 0.5 0.5 0.5", 4)
-local crosshairFile = XMLFile.loadIfExists("CROSSHAIR", DashboardLive.MODSETTINGSDIR .. "crosshair.xml")
-if crosshairFile ~= nil then
-	DashboardLive.crosshairColor = crosshairFile:getVector("crosshair.color(0)", DashboardLive.crosshairColor, 4)
-	dbgprint("loaded color:", 1)
-	dbgprint_r(DashboardLive.crosshairColor, 1, 1)
-	crosshairFile:delete()
-else
-	local crosshairFile = XMLFile.create("CROSSHAIR", DashboardLive.MODSETTINGSDIR .. "crosshair.xml", "crosshair")
-	crosshairFile:setVector("crosshair.color(0)", DashboardLive.crosshairColor)
-	crosshairFile:save(true, false)
-	crosshairFile:delete()
+
+if g_client ~= nil then
+	local crosshairFile = XMLFile.loadIfExists("CROSSHAIR", DashboardLive.MODSETTINGSDIR .. "crosshair.xml")
+	if crosshairFile ~= nil then
+		DashboardLive.crosshairColor = crosshairFile:getVector("crosshair.color(0)", DashboardLive.crosshairColor, 4)
+		dbgprint("loaded color:", 1)
+		dbgprint_r(DashboardLive.crosshairColor, 1, 1)
+		crosshairFile:delete()
+	else
+		local crosshairFile = XMLFile.create("CROSSHAIR", DashboardLive.MODSETTINGSDIR .. "crosshair.xml", "crosshair")
+		crosshairFile:setVector("crosshair.color(0)", DashboardLive.crosshairColor)
+		crosshairFile:save(true, false)
+		crosshairFile:delete()
+	end
 end
 
 DashboardLive.vis_partly = false
