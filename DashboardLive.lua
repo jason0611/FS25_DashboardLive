@@ -673,10 +673,12 @@ function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 			spec.lastAirUsage = streamReadFloat32(streamId)
 			spec.currentDischargeState = streamReadInt8(streamId)
 			
-			for pg = 1, spec.maxPageGroup do
-				spec.pageGroups[pg].actPage = streamReadInt8(streamId)
+			if streamReadBool(streamId) then
+				for pg = 1, spec.maxPageGroup do
+					spec.pageGroups[pg].actPage = streamReadInt8(streamId)
+				end
+				spec.orientation = streamReadString(streamId)
 			end
-			spec.orientation = streamReadString(streamId)
 		end
 	end
 end
@@ -693,10 +695,14 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 			streamWriteInt8(streamId, spec.currentDischargeState)
 			self.spec_motorized.motorTemperature.valueSend = spec.motorTemperature
 			
-			for pg = 1, spec.maxPageGroup do
-				streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
+			streamWriteBool(streamId, spec.pageChange)
+			if spec.pageChange then 
+				for pg = 1, spec.maxPageGroup do
+					streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
+				end
+				streamWriteString(streamId, spec.orientation)
+				spec.pageChange = nil
 			end
-			streamWriteString(streamId, spec.orientation)
 		end
 	end
 end
@@ -748,8 +754,8 @@ end
 
 function DashboardLive:CHANGEPAGE(actionName, keyStatus)
 	dbgprint("CHANGEPAGE: "..tostring(actionName), 2)
-	--	local spec = self.spec_DashboardLive doesn't work reliably with actions, Giants alone knows why...
-	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
+	local spec = self.spec_DashboardLive --doesn't work reliably with actions, Giants alone knows why...
+	--local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
 	if actionName == "DBL_PAGEGRPUP" then
 		local pageGroupNum = spec.actPageGroup + 1
 		while spec.pageGroups[pageGroupNum] == nil do
@@ -787,6 +793,7 @@ function DashboardLive:CHANGEPAGE(actionName, keyStatus)
 		dbgprint("CHANGEPAGE : NewPage = "..tostring(spec.pageGroups[spec.actPageGroup].actPage), 2)
 	end
 	spec.isDirty = true
+	spec.pageChange = true
 	self:raiseDirtyFlags(spec.dirtyFlag)
 end
 
