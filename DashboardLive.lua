@@ -679,6 +679,7 @@ function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 					spec.pageGroups[pg].actPage = streamReadInt8(streamId)
 				end
 				spec.orientation = streamReadString(streamId)
+				dbgprint("onReadUpdateStream : Read data for "..self:getName(), 1)
 			end
 		end
 	end
@@ -702,6 +703,7 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 					streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
 				end
 				streamWriteString(streamId, spec.orientation)
+				dbgprint("onWriteUpdateStream : Sent data for "..self:getName(), 1)
 				spec.pageChange = false
 			end
 		end
