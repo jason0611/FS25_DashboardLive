@@ -459,6 +459,8 @@ function DashboardLive:onLoadFinished(savegame)
 		spec.isDirty = true
 		--self:raiseDirtyFlags(spec.dirtyFlag)
 		dbgprint("onLoadFinished : Loaded data for "..self:getName(), 1)
+	else
+		dbgprint("onLoadFinished : savegame == nil (new game or dedi client?)", 1)
 	end
 end
 
@@ -660,6 +662,7 @@ function DashboardLive:onWriteStream(streamId, connection)
 	for pg = 1, spec.maxPageGroup do
 		streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
 	end
+	streamWriteString(streamId, spec.orientation)
 end
 	
 function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
