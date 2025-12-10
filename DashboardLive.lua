@@ -14,7 +14,7 @@ if DashboardLive.MOD_NAME == nil then
 end
 
 source(DashboardLive.MOD_PATH.."tools/gmsDebug.lua")
-GMSDebug:init(DashboardLive.MOD_NAME, true, 2)
+GMSDebug:init(DashboardLive.MOD_NAME, true, 1)
 GMSDebug:enableConsoleCommands("dblDebug")
 
 source(DashboardLive.MOD_PATH.."utils/DefModPackFix.lua")
@@ -656,7 +656,7 @@ function DashboardLive:onWriteStream(streamId, connection)
 	
 	for pg = 1, spec.maxPageGroup do
 		if spec.pageGroups[pg] ~= nil then
-			xmlFile:streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
+			streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
 		end
 	end
 end
@@ -696,7 +696,7 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 			
 			for pg = 1, spec.maxPageGroup do
 				if spec.pageGroups[pg] ~= nil then
-					xmlFile:streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
+					streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
 				end
 			end
 			streamWriteString(streamId, spec.orientation)
