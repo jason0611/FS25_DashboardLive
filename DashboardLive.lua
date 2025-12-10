@@ -643,8 +643,8 @@ function DashboardLive:onReadStream(streamId, connection)
 	for pg = 1, spec.maxPageGroup do
 		spec.pageGroups[pg].actPage = streamReadInt8(streamId)
 	end
-	
 	spec.orientation = streamReadString(streamId)
+	spec.isDirty = true
 end
 
 function DashboardLive:onWriteStream(streamId, connection)
