@@ -241,6 +241,7 @@ function DashboardLive:onLoad(savegame)
 	spec.darkMode = false
 	spec.darkModeLast = false
 	spec.isDirty = false
+	spec.pageChange = false
 	
 	-- engine data
 	spec.motorTemperature = 20
@@ -701,7 +702,7 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 					streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
 				end
 				streamWriteString(streamId, spec.orientation)
-				spec.pageChange = nil
+				spec.pageChange = false
 			end
 		end
 	end
