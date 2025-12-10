@@ -641,9 +641,6 @@ function DashboardLive:onReadStream(streamId, connection)
 		
 	dbgprint("onReadStream : maxPageGroup = "..tostring(spec.maxPageGroup), 1)
 	for pg = 1, spec.maxPageGroup do
-		if spec.pageGroups[pg] ~= nil then
-			spec.pageGroups[pg] = {}
-		end
 		spec.pageGroups[pg].actPage = streamReadInt8(streamId)
 	end
 	
