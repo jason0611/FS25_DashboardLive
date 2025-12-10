@@ -14,7 +14,7 @@ if DashboardLive.MOD_NAME == nil then
 end
 
 source(DashboardLive.MOD_PATH.."tools/gmsDebug.lua")
-GMSDebug:init(DashboardLive.MOD_NAME, true, 1)
+GMSDebug:init(DashboardLive.MOD_NAME, true, 2)
 GMSDebug:enableConsoleCommands("dblDebug")
 
 source(DashboardLive.MOD_PATH.."utils/DefModPackFix.lua")
@@ -171,12 +171,20 @@ function DashboardLive.initSpecialization()
 		Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_XML_KEY .. "#distance", "hearable distance")
 	end
 	dbgprint("initSpecialization : DashboardLive compound options registered", 2)
+	
+	local schemaSavegame = Vehicle.xmlSchemaSavegame
+	local key = DashboardLive.MOD_NAME..".DashboardLive"
+	schemaSavegame:register(XMLValueType.INT, "vehicles.vehicle(?)."..key..".groups.group(?)#actPage", "Active page", 1)
+	schemaSavegame:register(XMLValueType.STRING, "vehicles.vehicle(?)."..key.."#orientation", "MiniMap orientation", "rotate")
+	dbgprint("initSpecialization : DashboardLive savegame entries registered", 2)
 end
 
 function DashboardLive.registerEventListeners(vehicleType)
 	SpecializationUtil.registerEventListener(vehicleType, "onLoad", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", DashboardLive)
     SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", DashboardLive)
+    SpecializationUtil.registerEventListener(vehicleType, "onLoadFinished", DashboardLive)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", DashboardLive)
     SpecializationUtil.registerEventListener(vehicleType, "onRegisterDashboardValueTypes", DashboardLive)
     SpecializationUtil.registerEventListener(vehicleType, "onRegisterActionEvents", DashboardLive)
  	SpecializationUtil.registerEventListener(vehicleType, "onReadStream", DashboardLive)
@@ -431,6 +439,42 @@ function DashboardLive:onPostLoad(savegame)
 	DashboardLive.createDashboardPages(self)
 end
 
+function DashboardLive:onLoadFinished(savegame)
+	local spec = self.spec_DashboardLive
+	if savegame ~= nil then	
+		dbgprint("onLoadFinished : loading saved data", 2)
+		local xmlFile = savegame.xmlFile
+		local key = savegame.key .."."..DashboardLive.MOD_NAME..".DashboardLive"		
+		dbgprint("onLoadFinished : key = "..tostring(key), 1)
+		dbgprint("onLoadFinished : maxPageGroup = "..tostring(spec.maxPageGroup), 1)
+		for pg = 1, spec.maxPageGroup do
+			local srchKey = key..string.format(".groups.group(%d)#actPage", pg - 1)
+			dbgprint("onLoadFinished : srchKey = "..tostring(srchKey), 1)
+			if spec.pageGroups[pg] ~= nil and spec.pageGroups[pg].actPage ~= nil then
+				spec.pageGroups[pg].actPage = xmlFile:getValue(key..string.format(".groups.group(%d)#actPage", pg - 1), spec.pageGroups[pg].actPage)
+				dbgprint("onLoadFinished : actPage set to "..tostring(spec.pageGroups[pg].actPage), 1)
+			end
+		end
+		spec.orientation = xmlFile:getValue(key.."#orientation", spec.orientation)
+		spec.isDirty = true
+		--self:raiseDirtyFlags(spec.dirtyFlag)
+		dbgprint("onLoadFinished : Loaded data for "..self:getName(), 1)
+	end
+end
+
+function DashboardLive:saveToXMLFile(xmlFile, key, usedModNames)
+	dbgprint("saveToXMLFile", 2)
+	local spec = self.spec_DashboardLive
+	for pg = 1, spec.maxPageGroup do
+		if spec.pageGroups[pg] ~= nil and spec.pageGroups[pg].actPage ~= nil then
+			xmlFile:setValue(string.format(key..".groups.group(%d)#actPage", pg - 1), spec.pageGroups[pg].actPage)
+		end
+	end
+	xmlFile:setValue(key.."#orientation", spec.orientation)
+
+	dbgprint("saveToXMLFile : saving data finished", 2)
+end
+
 -- modified and adapted giants code
 function DashboardLive.loadIsobusCompoundFromXML(self, xmlFile, key, compound)
 	dbgprint("loadIsobusCompoundFromXML: linkNode = "..tostring(compound.linkNode).." / key = "..tostring(key), 1)
@@ -592,6 +636,14 @@ function DashboardLive:onReadStream(streamId, connection)
 	spec.lastFuelUsage = streamReadFloat32(streamId)
 	spec.lastDefUsage = streamReadFloat32(streamId)
 	spec.lastAirUsage = streamReadFloat32(streamId)
+		
+	for pg = 1, spec.maxPageGroup do
+		if spec.pageGroups[pg] ~= nil then
+			spec.pageGroups[pg].actPage = streamReadInt8(streamId)
+		end
+	end
+	
+	spec.orientation = streamReadString(streamId)
 end
 
 function DashboardLive:onWriteStream(streamId, connection)
@@ -601,6 +653,12 @@ function DashboardLive:onWriteStream(streamId, connection)
 	streamWriteFloat32(streamId, spec.lastFuelUsage)
 	streamWriteFloat32(streamId, spec.lastDefUsage)
 	streamWriteFloat32(streamId, spec.lastAirUsage)
+	
+	for pg = 1, spec.maxPageGroup do
+		if spec.pageGroups[pg] ~= nil then
+			xmlFile:streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
+		end
+	end
 end
 	
 function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
@@ -613,6 +671,13 @@ function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 			spec.lastDefUsage = streamReadFloat32(streamId)
 			spec.lastAirUsage = streamReadFloat32(streamId)
 			spec.currentDischargeState = streamReadInt8(streamId)
+			
+			for pg = 1, spec.maxPageGroup do
+				if spec.pageGroups[pg] ~= nil then
+					spec.pageGroups[pg].actPage = streamReadInt8(streamId)
+				end
+			end
+			spec.orientation = streamReadString(streamId)
 		end
 	end
 end
@@ -628,6 +693,13 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 			streamWriteFloat32(streamId, spec.lastAirUsage)
 			streamWriteInt8(streamId, spec.currentDischargeState)
 			self.spec_motorized.motorTemperature.valueSend = spec.motorTemperature
+			
+			for pg = 1, spec.maxPageGroup do
+				if spec.pageGroups[pg] ~= nil then
+					xmlFile:streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
+				end
+			end
+			streamWriteString(streamId, spec.orientation)
 		end
 	end
 end
@@ -718,6 +790,7 @@ function DashboardLive:CHANGEPAGE(actionName, keyStatus)
 		dbgprint("CHANGEPAGE : NewPage = "..tostring(spec.pageGroups[spec.actPageGroup].actPage), 2)
 	end
 	spec.isDirty = true
+	self:raiseDirtyFlags(spec.dirtyFlag)
 end
 
 function DashboardLive:MAPORIENTATION(actionName, keyStatus)
@@ -736,6 +809,7 @@ function DashboardLive:MAPORIENTATION(actionName, keyStatus)
 	if spec.orientations[index] == nil then index = 1 end
 	spec.orientation = spec.orientations[index]
 	dbgprint("MAPORIENTATION: set to "..tostring(spec.orientation), 2)
+	self:raiseDirtyFlags(spec.dirtyFlag)
 end
 
 function DashboardLive:ZOOM(actionName, keyStatus)
@@ -3919,15 +3993,12 @@ function DashboardLive:onUpdate(dt)
 	local dspec = self.spec_dashboard
 	local mspec = self.spec_motorized
 	
-	
 	-- get active vehicle
 	if self:getIsActiveForInput(true) then
 		spec.selectorActive = getIndexOfActiveImplement(self:getRootVehicle())
 		spec.selectorGroup = self.currentSelection.subIndex or 0
 	end
-	
 
-	
 	-- sync server to client data
 	if self.isServer then
 		local setDirty = false
