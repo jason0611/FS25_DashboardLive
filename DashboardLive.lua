@@ -673,7 +673,6 @@ function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 			spec.lastAirUsage = streamReadFloat32(streamId)
 			spec.currentDischargeState = streamReadInt8(streamId)
 			
-			dbgprint("onReadUpdateStream : maxPageGroup = "..tostring(spec.maxPageGroup), 1)
 			for pg = 1, spec.maxPageGroup do
 				spec.pageGroups[pg].actPage = streamReadInt8(streamId)
 			end
@@ -694,7 +693,6 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 			streamWriteInt8(streamId, spec.currentDischargeState)
 			self.spec_motorized.motorTemperature.valueSend = spec.motorTemperature
 			
-			dbgprint("onWriteUpdateStream : maxPageGroup = "..tostring(spec.maxPageGroup), 1)
 			for pg = 1, spec.maxPageGroup do
 				streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
 			end
