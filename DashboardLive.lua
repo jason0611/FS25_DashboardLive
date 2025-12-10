@@ -460,8 +460,6 @@ function DashboardLive:onLoadFinished(savegame)
 		spec.isDirty = true
 		--self:raiseDirtyFlags(spec.dirtyFlag)
 		dbgprint("onLoadFinished : Loaded data for "..self:getName(), 1)
-	else
-		dbgprint("onLoadFinished : savegame == nil (new game or dedi client?)", 1)
 	end
 end
 
@@ -634,6 +632,7 @@ end
 
 function DashboardLive:onReadStream(streamId, connection)
 	local spec = self.spec_DashboardLive
+	dbgprint("onReadStream : Read data for "..self:getName(), 1)
 	spec.motorTemperature = streamReadFloat32(streamId)
 	spec.fanEnabled = streamReadBool(streamId)
 	spec.lastFuelUsage = streamReadFloat32(streamId)
@@ -650,6 +649,7 @@ end
 
 function DashboardLive:onWriteStream(streamId, connection)
 	local spec = self.spec_DashboardLive
+	dbgprint("onWriteStream : Sent data for "..self:getName(), 1)
 	streamWriteFloat32(streamId, spec.motorTemperature)
 	streamWriteBool(streamId, spec.fanEnabled)
 	streamWriteFloat32(streamId, spec.lastFuelUsage)
@@ -755,8 +755,8 @@ end
 
 function DashboardLive:CHANGEPAGE(actionName, keyStatus)
 	dbgprint("CHANGEPAGE: "..tostring(actionName), 2)
-	local spec = self.spec_DashboardLive --doesn't work reliably with actions, Giants alone knows why...
-	--local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
+	--local spec = self.spec_DashboardLive doesn't work reliably with actions, Giants alone knows why...
+	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
 	if actionName == "DBL_PAGEGRPUP" then
 		local pageGroupNum = spec.actPageGroup + 1
 		while spec.pageGroups[pageGroupNum] == nil do
