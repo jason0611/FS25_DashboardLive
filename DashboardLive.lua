@@ -637,6 +637,7 @@ function DashboardLive:onReadStream(streamId, connection)
 	spec.lastDefUsage = streamReadFloat32(streamId)
 	spec.lastAirUsage = streamReadFloat32(streamId)
 		
+	dbgprint("onReadStream : maxPageGroup = "..tostring(spec.naxPageGroup), 1)
 	for pg = 1, spec.maxPageGroup do
 		if spec.pageGroups[pg] ~= nil then
 			spec.pageGroups[pg].actPage = streamReadInt8(streamId)
@@ -654,6 +655,7 @@ function DashboardLive:onWriteStream(streamId, connection)
 	streamWriteFloat32(streamId, spec.lastDefUsage)
 	streamWriteFloat32(streamId, spec.lastAirUsage)
 	
+	dbgprint("onWriteStream : maxPageGroup = "..tostring(spec.naxPageGroup), 1)
 	for pg = 1, spec.maxPageGroup do
 		if spec.pageGroups[pg] ~= nil then
 			streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
@@ -672,6 +674,7 @@ function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 			spec.lastAirUsage = streamReadFloat32(streamId)
 			spec.currentDischargeState = streamReadInt8(streamId)
 			
+			dbgprint("onReadUpdateStream : maxPageGroup = "..tostring(spec.naxPageGroup), 1)
 			for pg = 1, spec.maxPageGroup do
 				if spec.pageGroups[pg] ~= nil then
 					spec.pageGroups[pg].actPage = streamReadInt8(streamId)
@@ -694,6 +697,7 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 			streamWriteInt8(streamId, spec.currentDischargeState)
 			self.spec_motorized.motorTemperature.valueSend = spec.motorTemperature
 			
+			dbgprint("onWriteUpdateStream : maxPageGroup = "..tostring(spec.naxPageGroup), 1)
 			for pg = 1, spec.maxPageGroup do
 				if spec.pageGroups[pg] ~= nil then
 					streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
