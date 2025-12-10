@@ -640,8 +640,9 @@ function DashboardLive:onReadStream(streamId, connection)
 	dbgprint("onReadStream : maxPageGroup = "..tostring(spec.maxPageGroup), 1)
 	for pg = 1, spec.maxPageGroup do
 		if spec.pageGroups[pg] ~= nil then
-			spec.pageGroups[pg].actPage = streamReadInt8(streamId)
+			spec.pageGroups[pg] = {}
 		end
+		spec.pageGroups[pg].actPage = streamReadInt8(streamId)
 	end
 	
 	spec.orientation = streamReadString(streamId)
@@ -657,9 +658,7 @@ function DashboardLive:onWriteStream(streamId, connection)
 	
 	dbgprint("onWriteStream : maxPageGroup = "..tostring(spec.maxPageGroup), 1)
 	for pg = 1, spec.maxPageGroup do
-		if spec.pageGroups[pg] ~= nil then
-			streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
-		end
+		streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
 	end
 end
 	
@@ -676,9 +675,7 @@ function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 			
 			dbgprint("onReadUpdateStream : maxPageGroup = "..tostring(spec.maxPageGroup), 1)
 			for pg = 1, spec.maxPageGroup do
-				if spec.pageGroups[pg] ~= nil then
-					spec.pageGroups[pg].actPage = streamReadInt8(streamId)
-				end
+				spec.pageGroups[pg].actPage = streamReadInt8(streamId)
 			end
 			spec.orientation = streamReadString(streamId)
 		end
@@ -699,9 +696,7 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 			
 			dbgprint("onWriteUpdateStream : maxPageGroup = "..tostring(spec.maxPageGroup), 1)
 			for pg = 1, spec.maxPageGroup do
-				if spec.pageGroups[pg] ~= nil then
-					streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
-				end
+				streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
 			end
 			streamWriteString(streamId, spec.orientation)
 		end
