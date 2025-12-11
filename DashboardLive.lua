@@ -664,8 +664,8 @@ function DashboardLive:onWriteStream(streamId, connection)
 end
 	
 function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
+	local spec = self.spec_DashboardLive
 	if connection:getIsServer() then
-		local spec = self.spec_DashboardLive
 		if streamReadBool(streamId) then
 			spec.motorTemperature = streamReadFloat32(streamId)
 			spec.fanEnabled = streamReadBool(streamId)
@@ -673,21 +673,22 @@ function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 			spec.lastDefUsage = streamReadFloat32(streamId)
 			spec.lastAirUsage = streamReadFloat32(streamId)
 			spec.currentDischargeState = streamReadInt8(streamId)
-			
-			if streamReadBool(streamId) then
-				for pg = 1, spec.maxPageGroup do
-					spec.pageGroups[pg].actPage = streamReadInt8(streamId)
-				end
-				spec.orientation = streamReadString(streamId)
-				dbgprint("onReadUpdateStream : Read data for "..self:getName(), 1)
+		end
+	end
+	if not connection:getIsServer() then		
+		if streamReadBool(streamId) then
+			for pg = 1, spec.maxPageGroup do
+				spec.pageGroups[pg].actPage = streamReadInt8(streamId)
 			end
+			spec.orientation = streamReadString(streamId)
+			dbgprint("onReadUpdateStream : Read data for "..self:getName(), 1)
 		end
 	end
 end
 
 function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
+	local spec = self.spec_DashboardLive
 	if not connection:getIsServer() then
-		local spec = self.spec_DashboardLive
 		if streamWriteBool(streamId, bitAND(dirtyMask, spec.dirtyFlag) ~= 0) then
 			streamWriteFloat32(streamId, spec.motorTemperature)
 			streamWriteBool(streamId, spec.fanEnabled)
@@ -696,16 +697,17 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 			streamWriteFloat32(streamId, spec.lastAirUsage)
 			streamWriteInt8(streamId, spec.currentDischargeState)
 			self.spec_motorized.motorTemperature.valueSend = spec.motorTemperature
-			
-			streamWriteBool(streamId, spec.pageChange)
-			if spec.pageChange then 
-				for pg = 1, spec.maxPageGroup do
-					streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
-				end
-				streamWriteString(streamId, spec.orientation)
-				dbgprint("onWriteUpdateStream : Sent data for "..self:getName(), 1)
-				spec.pageChange = false
+		end
+	end
+	if connection:getIsServer() then
+		streamWriteBool(streamId, spec.pageChange)
+		if spec.pageChange then 
+			for pg = 1, spec.maxPageGroup do
+				streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
 			end
+			streamWriteString(streamId, spec.orientation)
+			dbgprint("onWriteUpdateStream : Sent data for "..self:getName(), 1)
+			spec.pageChange = false
 		end
 	end
 end
@@ -816,6 +818,7 @@ function DashboardLive:MAPORIENTATION(actionName, keyStatus)
 	if spec.orientations[index] == nil then index = 1 end
 	spec.orientation = spec.orientations[index]
 	dbgprint("MAPORIENTATION: set to "..tostring(spec.orientation), 2)
+	spec.pageChange = true
 	self:raiseDirtyFlags(spec.dirtyFlag)
 end
 
