@@ -241,7 +241,6 @@ function DashboardLive:onLoad(savegame)
 	spec.darkMode = false
 	spec.darkModeLast = false
 	spec.isDirty = false
-	spec.pageChange = false
 	
 	-- engine data
 	spec.motorTemperature = 20
@@ -665,8 +664,8 @@ end
 	
 function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 	local spec = self.spec_DashboardLive
-	if connection:getIsServer() then
-		if streamReadBool(streamId) then
+	if streamReadBool(streamId) then
+		if connection:getIsServer() then		
 			spec.motorTemperature = streamReadFloat32(streamId)
 			spec.fanEnabled = streamReadBool(streamId)
 			spec.lastFuelUsage = streamReadFloat32(streamId)
@@ -674,9 +673,7 @@ function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 			spec.lastAirUsage = streamReadFloat32(streamId)
 			spec.currentDischargeState = streamReadInt8(streamId)
 		end
-	end
-	if not connection:getIsServer() then		
-		if streamReadBool(streamId) then
+		if not connection:getIsServer() then		
 			for pg = 1, spec.maxPageGroup do
 				spec.pageGroups[pg].actPage = streamReadInt8(streamId)
 			end
@@ -688,8 +685,8 @@ end
 
 function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 	local spec = self.spec_DashboardLive
-	if not connection:getIsServer() then
-		if streamWriteBool(streamId, bitAND(dirtyMask, spec.dirtyFlag) ~= 0) then
+	if streamWriteBool(streamId, bitAND(dirtyMask, spec.dirtyFlag) ~= 0) then
+		if not connection:getIsServer() then
 			streamWriteFloat32(streamId, spec.motorTemperature)
 			streamWriteBool(streamId, spec.fanEnabled)
 			streamWriteFloat32(streamId, spec.lastFuelUsage)
@@ -698,16 +695,12 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 			streamWriteInt8(streamId, spec.currentDischargeState)
 			self.spec_motorized.motorTemperature.valueSend = spec.motorTemperature
 		end
-	end
-	if connection:getIsServer() then
-		streamWriteBool(streamId, spec.pageChange)
-		if spec.pageChange then 
+		if connection:getIsServer() then
 			for pg = 1, spec.maxPageGroup do
 				streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
 			end
 			streamWriteString(streamId, spec.orientation)
 			dbgprint("onWriteUpdateStream : Sent data for "..self:getName(), 1)
-			spec.pageChange = false
 		end
 	end
 end
@@ -798,7 +791,6 @@ function DashboardLive:CHANGEPAGE(actionName, keyStatus)
 		dbgprint("CHANGEPAGE : NewPage = "..tostring(spec.pageGroups[spec.actPageGroup].actPage), 2)
 	end
 	spec.isDirty = true
-	spec.pageChange = true
 	self:raiseDirtyFlags(spec.dirtyFlag)
 end
 
