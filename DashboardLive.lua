@@ -2676,6 +2676,72 @@ function DashboardLive.getDBLAttributesRDS(self, xmlFile, key, dashboard, compon
 	return true
 end
 
+-- check returned dashboard values to avoid mismatch
+function DashboardLive:getValue(superfunc, dashboard)
+	local value, min, max, center, isNumber = superfunc(self, dashboard)
+	local displayType = dashboard.displayTypeIndex
+	
+	local function errorHandling(expected, value, dashboard)
+		Logging.warning("Type mismatch: "..tostring(expected).." expected but "..type(value).. " found!")
+		print("valueType = "..tostring(dashboard.valueType.fullName))
+		print("value = "..tostring(value))
+		if DashboardLive.errorHandlingDone == nil then
+			printCallstack()
+			print_r(dashboard, 0)
+			DashboardLive.errorHandlingDone = true
+		end
+	end
+	
+	if displayType == Dashboard.TYPES.EMITTER then
+		if type(value) ~= "boolean" and type(value) ~= "number" then
+			errorHandling("boolean or number", value, dashboard)
+			value = false
+		end
+	elseif displayType == Dashboard.TYPES.NUMBER then
+		if type(value) ~= "number" and type(value) ~= "string" then
+			errorHandling("number or String", value, dashboard)
+			value = 0
+		end
+	elseif displayType == Dashboard.TYPES.ANIMATION then
+		if type(value) ~= "boolean" and type(value) ~= "number" then
+			errorHandling("boolean or number", value, dashboard)
+			value = 0
+		end
+	elseif displayType == Dashboard.TYPES.ROT then
+		if type(value) ~= "boolean" and type(value) ~= "number" then
+			errorHandling("boolean or number", value, dashboard)
+			value = 0
+		end
+	elseif displayType == Dashboard.TYPES.TRANS then
+		if type(value) ~= "boolean" and type(value) ~= "number" then
+			errorHandling("boolean or number", value, dashboard)
+			value = 0
+		end
+	elseif displayType == Dashboard.TYPES.VISIBILITY then
+		if type(value) ~= "boolean" and type(value) ~= "number" then
+			errorHandling("boolean or number", value, dashboard)
+			value = 0
+		end
+	elseif displayType == Dashboard.TYPES.TEXT then
+		if type(value) ~= "string" and type(value) ~= "number" then
+			errorHandling("string or number", value, dashboard)
+			value = 0
+		end
+	elseif displayType == Dashboard.TYPES.SLIDER then
+		if type(value) ~= "boolean" and type(value) ~= "number" then
+			errorHandling("boolean or number", value, dashboard)
+			value = 0
+		end
+	elseif displayType == Dashboard.TYPES.MULTI_STATE then
+		if type(value) ~= "table" and type(value) ~= "number" and type(value) ~= "table" then
+			errorHandling("table, number or string", value, dashboard)
+			value = 0
+		end
+	end
+	return value, min, max, center, isNumber
+end
+DashboardValueType.getValue = Utils.overwrittenFunction(DashboardValueType.getValue, DashboardLive.getValue)
+
 -- get states
 function DashboardLive.getDashboardLivePage(self, dashboard)
 	dbgprint("getDashboardLivePage : dblPage: "..tostring(dashboard.dblPage)..", dblPageGroup: "..tostring(dashboard.dblPageGroup), 4)
@@ -2731,10 +2797,6 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 
 			elseif c == "pto" then
 				returnValue = returnValue or getAttachedStatus(self, dashboard, "pto", o == "default")
-				
-			elseif c == "ptorpm" then
-				if not dashboard.dblFactor then dashboard.dblFactor = 0.625 end
-				returnValue = returnValue or getAttachedStatus(self, dashboard, "ptorpm", o == "default")
 
 			elseif c == "foldable" then
 				returnValue = returnValue or getAttachedStatus(self, dashboard, "foldable", o == "default")
@@ -2765,7 +2827,6 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 				
 			elseif c == "coveropen" then
 				returnValue = returnValue or getAttachedStatus(self, dashboard, "coveropen")
-
 			end
 		end
 		
@@ -2775,6 +2836,11 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			local alignment = dashboard.textAlignment or "LEFT"
 	
 			returnValue = trim(g_currentMission.playerNickname, len, alignment)
+		end
+		
+		if cmds == "ptorpm" then
+			if not dashboard.dblFactor then dashboard.dblFactor = 0.625 end
+			returnValue = getAttachedStatus(self, dashboard, "ptorpm", 0)
 		end
 		
 		-- cultivator state
