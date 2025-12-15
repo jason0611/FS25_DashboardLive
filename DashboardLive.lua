@@ -2822,9 +2822,6 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			elseif c == "mpconditioner" then
 				returnValue = returnValue or getAttachedStatus(self, dashboard, "mpconditioner", o == "default")
 				
-			elseif c == "seedtype" then
-				returnValue = returnValue or getAttachedStatus(self, dashboard, "seedtype", o == "default")
-				
 			elseif c == "coveropen" then
 				returnValue = returnValue or getAttachedStatus(self, dashboard, "coveropen")
 			end
@@ -2838,6 +2835,12 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			returnValue = trim(g_currentMission.playerNickname, len, alignment)
 		end
 		
+		-- seedType
+		if cmds == "seedtype" then
+				returnValue = getAttachedStatus(self, dashboard, "seedtype", "")
+		end
+		
+		-- ptoRpm
 		if cmds == "ptorpm" then
 			if not dashboard.dblFactor then dashboard.dblFactor = 0.625 end
 			returnValue = getAttachedStatus(self, dashboard, "ptorpm", 0)
