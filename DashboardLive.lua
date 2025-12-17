@@ -2685,57 +2685,48 @@ function DashboardLive:getValue(superfunc, dashboard)
 		Logging.warning("Type mismatch: "..tostring(expected).." expected but "..type(value).. " found!")
 		print("valueType = "..tostring(dashboard.valueType.fullName))
 		print("value = "..tostring(value))
-		if DashboardLive.errorHandlingDone == nil then
+		if dashboard.errorHandlingDone == nil then
 			printCallstack()
 			print_r(dashboard, 0)
-			DashboardLive.errorHandlingDone = true
+			dashboard.errorHandlingDone = true
 		end
 	end
 	
 	if displayType == Dashboard.TYPES.EMITTER then
 		if type(value) ~= "boolean" and type(value) ~= "number" then
 			errorHandling("boolean or number", value, dashboard)
-			value = false
 		end
 	elseif displayType == Dashboard.TYPES.NUMBER then
 		if type(value) ~= "number" and type(value) ~= "string" then
 			errorHandling("number or String", value, dashboard)
-			value = 0
 		end
 	elseif displayType == Dashboard.TYPES.ANIMATION then
 		if type(value) ~= "boolean" and type(value) ~= "number" then
 			errorHandling("boolean or number", value, dashboard)
-			value = 0
 		end
 	elseif displayType == Dashboard.TYPES.ROT then
 		if type(value) ~= "boolean" and type(value) ~= "number" then
 			errorHandling("boolean or number", value, dashboard)
-			value = 0
 		end
 	elseif displayType == Dashboard.TYPES.TRANS then
 		if type(value) ~= "boolean" and type(value) ~= "number" then
 			errorHandling("boolean or number", value, dashboard)
-			value = 0
 		end
 	elseif displayType == Dashboard.TYPES.VISIBILITY then
 		if type(value) ~= "boolean" and type(value) ~= "number" then
 			errorHandling("boolean or number", value, dashboard)
-			value = 0
 		end
 	elseif displayType == Dashboard.TYPES.TEXT then
 		if type(value) ~= "string" and type(value) ~= "number" then
 			errorHandling("string or number", value, dashboard)
-			value = 0
 		end
 	elseif displayType == Dashboard.TYPES.SLIDER then
 		if type(value) ~= "boolean" and type(value) ~= "number" then
 			errorHandling("boolean or number", value, dashboard)
-			value = 0
 		end
 	elseif displayType == Dashboard.TYPES.MULTI_STATE then
-		if type(value) ~= "table" and type(value) ~= "number" and type(value) ~= "table" then
+		if type(value) ~= "table" and type(value) ~= "number" and type(value) ~= "string" then
 			errorHandling("table, number or string", value, dashboard)
-			value = 0
 		end
 	end
 	return value, min, max, center, isNumber
