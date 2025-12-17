@@ -2682,12 +2682,20 @@ function DashboardLive:getValue(superfunc, dashboard)
 	local displayType = dashboard.displayTypeIndex
 	
 	local function errorHandling(expected, value, dashboard)
-		Logging.warning("Type mismatch: "..tostring(expected).." expected but "..type(value).. " found!")
-		print("valueType = "..tostring(dashboard.valueType.fullName))
-		print("value = "..tostring(value))
 		if dashboard.errorHandlingDone == nil then
+			Logging.warning("Type mismatch: "..tostring(expected).." expected but "..type(value).. " found!")
+			print("*** value = "..tostring(value))
+			print("*** valueType = "..tostring(dashboard.valueType.fullName))
+			print("*** cmd = "..tostring(dashboard.dblCommand))
+			print("*** option = "..tostring(dashboard.dblOption))
+			print("*** state = "..tostring(dashboard.dblState))
+			print("*** trailer = "..tostring(dashboard.dblTrailer))
+			print("*** partition = "..tostring(dashboard.dblPartition))
+			print("*** cond = "..tostring(dashboard.dblCond))
+			print("*** condValue = "..tostring(dashboard.dblCondValue))		
+			print("================")
+			dbgprint_r(dashboard, 1, 0)
 			printCallstack()
-			print_r(dashboard, 0)
 			dashboard.errorHandlingDone = true
 		end
 	end
