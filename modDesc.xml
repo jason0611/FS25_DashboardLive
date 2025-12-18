@@ -204,7 +204,7 @@ V2.0.1.0:
 V2.0.2.0:
 - Füllstand für Überladeziel ergänzt
 
-Vx
+V2.1.0.0:
 - ISOBUS-Implementierung: Anhänger und Geräte können eigene Terminals oder Bildschirme für DashboardLive mitbringen
 - Korrektur der Schriftarten GENERIC und GENERIC_BOLD
 - Syntaxprüfung für Dashboard-Einträge
