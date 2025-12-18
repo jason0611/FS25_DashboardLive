@@ -59,7 +59,7 @@ function DashboardLive.initSpecialization()
     local schema = Vehicle.xmlSchema
     schema:register(XMLValueType.STRING, Dashboard.GROUP_XML_KEY .. "#dbl", "DashboardLive command")
     schema:register(XMLValueType.STRING, Dashboard.GROUP_XML_KEY .. "#op", "DashboardLive operator")
-	schema:register(XMLValueType.INT, Dashboard.GROUP_XML_KEY .. "#page", "DashboardLive page")
+	schema:register(XMLValueType.STRING, Dashboard.GROUP_XML_KEY .. "#page", "DashboardLive page")
 	schema:register(XMLValueType.INT, Dashboard.GROUP_XML_KEY .. "#group", "DashboardLive pages group")
 	schema:register(XMLValueType.BOOL, Dashboard.GROUP_XML_KEY .. "#dblActiveWithoutImplement", "return 'true' without implement")
 	schema:register(XMLValueType.VECTOR_N, Dashboard.GROUP_XML_KEY .. "#dblAttacherJointIndices")
@@ -109,7 +109,7 @@ function DashboardLive.initSpecialization()
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#name", "Dashboard group name")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dbl", "DashboardLive command")
     Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#op", "DashboardLive operator")
-	Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_GROUP_XML_KEY .. "#page", "DashboardLive page")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#page", "DashboardLive page")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_GROUP_XML_KEY .. "#group", "DashboardLive pages group")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.BOOL, COMPOUND_GROUP_XML_KEY .. "#dblActiveWithoutImplement", "return 'true' without implement")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.VECTOR_N, COMPOUND_GROUP_XML_KEY .. "#dblAttacherJointIndices")
@@ -151,7 +151,7 @@ function DashboardLive.initSpecialization()
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#stateText", "OBSOLETE: stateText")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_XML_KEY .. "#trailer", "trailer number")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_XML_KEY .. "#partition", "trailer partition")
-		Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_XML_KEY .. "#page", "choosen page")
+		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#page", "choosen page")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_XML_KEY .. "#group", "choosen page group")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#option", "Option")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_XML_KEY .. "#scale", "Minimap minimum scale factor")
@@ -617,7 +617,11 @@ function DashboardLive.createDashboardPages(self)
     for _, group in pairs(dashboard.groups) do
     	if group.dblPage ~= nil then
 			spec.maxPageGroup = math.max(spec.maxPageGroup, group.dblPageGroup)
-    		spec.maxPage = math.max(spec.maxPage, group.dblPage)
+			if type(group.dblPage) == "number" then
+				spec.maxPage = math.max(spec.maxPage, group.dblPage)
+			elseif type(group.dblPage) == "string" then
+				spec.maxPage = math.max(spec.maxPage, unpack(string.getVector(group.dblPage)))
+			end
     		if spec.pageGroups[group.dblPageGroup] == nil then 
     			spec.pageGroups[group.dblPageGroup] = {}
     		end
@@ -627,7 +631,13 @@ function DashboardLive.createDashboardPages(self)
     		if spec.pageGroups[group.dblPageGroup].actPage == nil then
     			spec.pageGroups[group.dblPageGroup].actPage = 1
     		end
-    		spec.pageGroups[group.dblPageGroup].pages[group.dblPage] = true
+    		if type(group.dblPage) == "number" then
+    			spec.pageGroups[group.dblPageGroup].pages[group.dblPage] = true
+    		elseif type(group.dblPage) == "string" then
+    			for _, page in pairs(string.getVector(group.dblPage)) do
+    				spec.pageGroups[group.dblPageGroup].pages[page] = true
+    			end
+    		end
     		dbgprint("createDashboardPages : pages found in group "..group.name, 2)
     		dbgprint("createDashboardPages : maxPageGroup set to "..tostring(spec.maxPageGroup), 2)
     		dbgprint("createDashboardPages : maxPage set to "..tostring(spec.maxPage), 2)
@@ -789,8 +799,8 @@ function DashboardLive:CHANGEPAGE(actionName, keyStatus)
 			pageNum = pageNum + 1
 			if pageNum > spec.maxPage then pageNum = 1 end
 		end
-		spec.pageGroups[spec.actPageGroup].actPage = pageNum
 		dbgprint("CHANGEPAGE : NewPage = "..tostring(spec.pageGroups[spec.actPageGroup].actPage), 2)
+		spec.pageGroups[spec.actPageGroup].actPage = pageNum
 	end
 	if actionName == "DBL_PAGEDN" then
 		local pageNum = spec.pageGroups[spec.actPageGroup].actPage - 1
@@ -2060,8 +2070,10 @@ function DashboardLive:getIsDashboardGroupActive(superFunc, group)
 	
 	-- page
 	elseif group.dblCommand == "page" and group.dblPage ~= nil and group.dblPageGroup ~= nil then 
-		if group.dblPage and group.dblPage > 0 then 
+		if group.dblPage and type(group.dblPage) == "number" and group.dblPage > 0 then 
 			returnValue = spec.pageGroups[group.dblPageGroup] ~= nil and group.dblPage == spec.pageGroups[group.dblPageGroup].actPage
+		elseif group.dblPage and type(group.dblPage) == "string" then
+			returnValue = spec.pageGroups[group.dblPageGroup] ~= nil and string.find(group.dblPage, tostring(spec.pageGroups[group.dblPageGroup].actPage)) ~= nil
 		else
 			returnValue = group.dblPageGroup == spec.actPageGroup
 		end
