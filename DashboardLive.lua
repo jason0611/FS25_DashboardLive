@@ -204,6 +204,10 @@ end
 
 function DashboardLive:onPreLoad(savegame)
 	self.spec_DashboardLive = self["spec_"..DashboardLive.MOD_NAME..".DashboardLive"]
+	if DashboardLive.fontFixApplied == nil then
+		DashboardLive.applyFontFix()
+		DashboardLive.fontFixApplied = true
+	end
 end
 
 function DashboardLive:onLoad(savegame)
@@ -1907,6 +1911,19 @@ function DashboardLive.defaultAudioStateFunc(self, dashboard, newValue, minValue
 end
 Dashboard.registerDisplayType(Dashboard.TYPES.AUDIO, false, DashboardLive.initAudioDashboardSchema, DashboardLive.loadAudioDashboardFromXML, DashboardLive.defaultAudioStateFunc)
 
+function DashboardLive.applyFontFix()
+	local fontsTable = g_materialManager.fontMaterialsByName
+	local fontsToFix = {"GENERIC", "GENERIC_BOLD"}
+	for _, fontToFix in pairs(fontsToFix) do
+		local characters = fontsTable[fontToFix].characters
+		for _, char in pairs(characters) do
+			if char.value == "i" then char.spacingX = 0.800 end
+			if char.value == "l" then char.spacingX = 0.800 end
+		end
+	end
+	Logging.info("DashboardLive: Font fix applied")
+end
+
 -- identify joints with mapping options
 local function jointMapping(vehicle, jointIndices, jointSide, jointType)
 	dbgprint("jointMapping : jointSide = "..tostring(jointSide).." / jointType = "..tostring(jointType), 2)
@@ -2694,8 +2711,7 @@ function DashboardLive:getValue(superfunc, dashboard)
 			print("*** cond = "..tostring(dashboard.dblCond))
 			print("*** condValue = "..tostring(dashboard.dblCondValue))		
 			print("================")
-			dbgprint_r(dashboard, 1, 0)
-			printCallstack()
+			dbgprintCallstack(1)
 			dashboard.errorHandlingDone = true
 		end
 	end

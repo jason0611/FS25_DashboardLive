@@ -47,6 +47,12 @@ function GMSDebug:print_r(table, prio, level)
 	GMSDebug:print("END OF "..tostring(table).." =================")
 end
 
+function GMSDebug:printCallstack(prio)
+	if prio == nil then prio = 1; end
+	if not GMSDebug.state or prio > GMSDebug.level then return; end
+	printCallstack()
+end
+
 function GMSDebug:render(text, pos, prio)
 	if prio == nil then prio = 3; end
 	if not GMSDebug.state or prio > GMSDebug.level then return; end
@@ -91,6 +97,10 @@ end
 
 function dbgprint(text, prio)
 	GMSDebug:print(text, prio)
+end
+
+function dbgprintCallstack(prio)
+	GMSDebug:printCallstack(prio)
 end
 
 function dbgprint_r(table, prio, level)
