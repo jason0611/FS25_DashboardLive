@@ -410,6 +410,13 @@ function DashboardLive:onRegisterDashboardValueTypes()
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesRDS)
 	self:registerDashboardValueType(dblValueType)
 	
+	-- realGPS (RGPS)
+	dblValueType = DashboardValueType.new("dbl", "realGPS")
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setValue(self, DashboardLive.getDashboardLiveRGPS)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesRGPS)
+	self:registerDashboardValueType(dblValueType)
+	
 	-- print
 	dblValueType = DashboardValueType.new("dbl", "print")
 	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
