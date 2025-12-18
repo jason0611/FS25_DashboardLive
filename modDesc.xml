@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="104">
 	<author>Glowins Modschmiede</author>
-	<version>2.D.5.4</version>
+	<version>2.D.5.5</version>
 	<contributors>SbSh, mister_mojo_AT, AgrarPlay und LUWZ, Farming Duds</contributors>
 	<title>
 		<en>Dashboard Live</en>
@@ -208,6 +208,8 @@ V2.1.0.0:
 - ISOBUS-Implementierung: Anhänger und Geräte können eigene Terminals oder Bildschirme für DashboardLive mitbringen
 - Korrektur der Schriftarten GENERIC und GENERIC_BOLD
 - Syntaxprüfung für Dashboard-Einträge
+- Conditions funktionieren nun auch mit valueType="dbl.cc"
+- Integration von realGPS
 
 Wichtig: Fahrzeuge müssen vorab für DashboardLive vorbereitet werden, um die Funktionen und Anzeigen nutzen zu können.
 Eine Einbauhilfe und Dokumentation sind enthalten, außerdem sind Video-Tutorials verfügbar.

@@ -2429,6 +2429,17 @@ function DashboardLive.getDBLAttributesCC(self, xmlFile, key, dashboard, compone
     
     dashboard.dblState = xmlFile:getValue(key .. "#state")
     dbgprint("getDBLAttributesECC : state: "..tostring(dashboard.dblState), 2)
+    
+    dashboard.dblCond = xmlFile:getValue(key .. "#cond")
+	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+
+	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
+	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+
+	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
+		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		return false
+	end
 
 	return true
 end
@@ -2685,6 +2696,26 @@ function DashboardLive.getDBLAttributesRDS(self, xmlFile, key, dashboard, compon
 	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
+		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		return false
+	end
+	
+	return true
+end
+
+-- realGPS
+function DashboardLive.getDBLAttributesRGPS(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
+	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", ""))
+    dbgprint("getDBLAttributesRGPS : command: "..tostring(dashboard.dblCommand), 2)
+    
+    dashboard.dblState = xmlFile:getValue(key .. "#state")
+	dbgprint("getDBLAttributesRGPS : state: "..tostring(dashboard.dblState), 2)
+	
+	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
+	dbgprint("getDBLAttributesRGPS : cond: "..tostring(dashboard.dblCond), 2)
+	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
+	dbgprint("getDBLAttributesRGPS : condValue: "..tostring(dashboard.dblCondValue), 2)
 	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
 		Logging.xmlError(self.xmlFile, "No value given for comparation")
 		return false
@@ -3366,6 +3397,7 @@ function DashboardLive.getDashboardLiveCC(self, dashboard)
 	local specECC = self.spec_extendedCruiseControl
 	local state = tonumber(dashboard.dblState)
 	local mode = 0
+	local returnValue = false
 	
 	if specECC ~= nil then 
 		mode = 1
@@ -3378,40 +3410,62 @@ function DashboardLive.getDashboardLiveCC(self, dashboard)
 	if dashboard.dblCommand == "active" then
 		if mode == 1 then
 			if state ~= nil then
-				return specECC.activeSpeedGroup == state
+				returnValue = specECC.activeSpeedGroup == state
 			else 
-				return specECC.activeSpeedGroup
+				returnValue = specECC.activeSpeedGroup
 			end		
 		elseif mode == 2 then
 			local specCC = self.speedControl
 			if state ~= nil then
-				return specCC.currentKey == state
+				returnValue = specCC.currentKey == state
 			else
-				return specCC.currentKey
+				returnValue = specCC.currentKey
 			end
 		elseif mode == 3 then
 			local specCC = self.spec_drivable.cruiseControl
 			if state ~= nil then 
-				return specCC.state and state == 3
+				returnValue = specCC.state and state == 3
 			else
-				return specCC.state and 3
+				returnValue = specCC.state and 3
 			end
 		end
 	end	
 	
 	if dashboard.dblCommand == "speed" and state ~= nil then
 		if mode == 1 then
-			return specECC.cruiseSpeedGroups[state].forward
+			returnValue = specECC.cruiseSpeedGroups[state].forward
 		elseif mode == 2 then
 			local specCC = self.speedControl
-			return specCC.keys[state].speed
+			returnValue = specCC.keys[state].speed
 		elseif mode == 3 then
 			local specCC = self.spec_drivable.cruiseControl
-			return state == 3 and specCC.speed
+			returnValue = state == 3 and specCC.speed
 		end
 	end
 	
-	return false
+	if dashboard.dblCond ~= nil and type(returnValue) == "boolean" then
+		if dashboard.dblCond == "not" then
+			returnValue = not returnValue
+		end
+	end
+	
+	if dashboard.dblCond ~= nil and type(returnValue) == "number" and type(dashboard.dblCondValue) == "number" then
+		local cond = dashboard.dblCond
+		local value = dashboard.dblCondValue
+		if cond == "less" then
+			returnValue = (returnValue < value)
+		elseif cond == "lessequal" then
+			returnValue = (returnValue <= value)
+		elseif cond == "more" then
+			returnValue = (returnValue > value)
+		elseif cond == "moreequal" then
+			returnValue = (returnValue >= value)
+		elseif cond == "equal" then
+			returnValue = (returnValue == value)
+		end
+	end
+	
+	return returnValue
 end
 
 function DashboardLive.getDashboardLiveHLM(self, dashboard)
@@ -4070,6 +4124,58 @@ function DashboardLive.getDashboardLiveRDS(self, dashboard)
 	end
 	
 	dbgprint("getDashboardLiveRDS : returnValue: "..tostring(returnValue), 4)
+	return returnValue
+end
+
+function DashboardLive.getDashboardLiveRGPS(self, dashboard)
+	dbgprint("getDashboardLiveRGPS : dblCommand: "..tostring(dashboard.dblCommand), 4)
+	dbgprint("getDashboardLiveRGPS : dblState: "..tostring(dashboard.dblState), 4)
+	local c = dashboard.dblCommand
+	local s = dashboard.dblState
+	local returnValue = false
+	
+	local spec = self.spec_realGPS
+	if spec ~= nil and type(c)=="string" then
+		local valueFunc = "forDBL_"..c
+		local value = spec[valueFunc]
+		if s ~= nil then
+			if tonumber(s) ~= nil then
+				returnValue = tostring(value) == tostring(s)
+			else
+				local states = string.split(tostring(s), " ")
+				if states ~= nil and type(states) == "table" then
+					for _, state in pairs(states) do
+						returnValue = returnValue or (tostring(value) == tostring(state))
+					end
+				end
+			end
+		else 
+			returnValue = value or false
+		end
+		
+		if dashboard.dblCond ~= nil and type(returnValue) == "number" and type(dashboard.dblCondValue) == "number" then
+			local cond = dashboard.dblCond
+			local value = dashboard.dblCondValue
+			if cond == "less" then
+				returnValue = (returnValue < value)
+			elseif cond == "lessequal" then
+				returnValue = (returnValue <= value)
+			elseif cond == "more" then
+				returnValue = (returnValue > value)
+			elseif cond == "moreequal" then
+				returnValue = (returnValue >= value)
+			elseif cond == "equal" then
+				returnValue = (returnValue == value)
+			end
+		end
+		if dashboard.dblCond ~= nil and type(returnValue) == "boolean" then
+			if dashboard.dblCond == "not" then
+				returnValue = not returnValue
+			end
+		end
+	end
+	
+	dbgprint("getDashboardLiveRGPS : returnValue: "..tostring(returnValue), 4)
 	return returnValue
 end
 
