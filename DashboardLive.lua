@@ -2807,6 +2807,39 @@ function DashboardLive:getValue(superfunc, dashboard)
 end
 DashboardValueType.getValue = Utils.overwrittenFunction(DashboardValueType.getValue, DashboardLive.getValue)
 
+-- conditions
+local function checkCondition(returnValue, cond, condValue)
+	if cond ~= nil then
+		if type(returnValue) == "number" and type(condValue) == "number" then
+			if cond == "less" then
+				returnValue = (returnValue < condValue)
+			elseif cond == "lessequal" then
+				returnValue = (returnValue <= condValue)
+			elseif cond == "more" then
+				returnValue = (returnValue > condValue)
+			elseif cond == "moreequal" then
+				returnValue = (returnValue >= condValue)
+			elseif cond == "equal" then
+				returnValue = (returnValue == condValue)
+			end
+		end
+
+		if type(returnValue) == "boolean" and cond == "not" then
+			returnValue = not returnValue
+		end
+
+		if type(returnValue) == "string" and type(condValue) == "string" then
+			if cond == "equal" then
+				returnValue = returnValue == dashboard.dblCondValue
+			elseif cond == "contains" then
+				returnValue = string.find(returnValue, condValue) ~= nil
+			end
+		end
+	end
+	dbgprint("checkCondition: returnValue = "..tostring(returnValue), 1)
+	return returnValue
+end
+
 -- get states
 function DashboardLive.getDashboardLivePage(self, dashboard)
 	dbgprint("getDashboardLivePage : dblPage: "..tostring(dashboard.dblPage)..", dblPageGroup: "..tostring(dashboard.dblPageGroup), 4)
@@ -2822,7 +2855,7 @@ function DashboardLive.getDashboardLivePage(self, dashboard)
 		returnValue = pageNum == spec.pageGroups[groupNum].actPage
 	end
 	
-	return returnValue
+	return checkCondition(resultValue, cond, condValue)
 end
 
 function DashboardLive.getDashboardLiveBase(self, dashboard)
@@ -3128,36 +3161,8 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		if dashboard.dblMax ~= nil and type(returnValue) == "number" then
 			returnValue = math.min(returnValue, dashboard.dblMax)
 		end
-		if dashboard.dblCond ~= nil and type(returnValue) == "number" and type(dashboard.dblCondValue) == "number" then
-			local cond = dashboard.dblCond
-			local value = dashboard.dblCondValue
-			if cond == "less" then
-				returnValue = (returnValue < value)
-			elseif cond == "lessequal" then
-				returnValue = (returnValue <= value)
-			elseif cond == "more" then
-				returnValue = (returnValue > value)
-			elseif cond == "moreequal" then
-				returnValue = (returnValue >= value)
-			elseif cond == "equal" then
-				returnValue = (returnValue == value)
-			end
-		end
-		if dashboard.dblCond ~= nil and type(returnValue) == "boolean" then
-			if dashboard.dblCond == "not" then
-				returnValue = not returnValue
-			end
-		end
-		if dashboard.dblCond ~= nil and type(dashboard.dblCondValue) == "string" and type(returnValue) == "string" then
-			if dashboard.dblCond == "equal" then
-				dbgprint("cond.string: returnValue = "..tostring(returnValue), 1)
-				dbgprint("cond.string: condValue = "..tostring(dashboard.dblCondValue), 1)
-				returnValue = returnValue == dashboard.dblCondValue
-				dbgprint("cond.string: result: returnValue = "..tostring(returnValue), 1)
-			end
-		end
-			
-		return returnValue
+					
+		return checkCondition(returnValue, dashboard.dblCond, dashboard.dblCondValue)
 	end
 	
 	return false
@@ -3387,30 +3392,8 @@ function DashboardLive.getDashboardLiveVCA(self, dashboard)
 		end
 	end
 	
-	if dashboard.dblCond ~= nil and type(returnValue) == "number" and type(dashboard.dblCondValue) == "number" then
-		local cond = dashboard.dblCond
-		local value = dashboard.dblCondValue
-		if cond == "less" then
-			returnValue = (returnValue < value)
-		elseif cond == "lessequal" then
-			returnValue = (returnValue <= value)
-		elseif cond == "more" then
-			returnValue = (returnValue > value)
-		elseif cond == "moreequal" then
-			returnValue = (returnValue >= value)
-		elseif cond == "equal" then
-			returnValue = (returnValue == value)
-		end
-	end
-		
-	if dashboard.dblCond ~= nil and type(returnValue) == "boolean" then
-		if dashboard.dblCond == "not" then
-			returnValue = not returnValue
-		end
-	end
-	
 	dbgprint("getDashboardLiveVCA : result: "..tostring(returnValue), 4)
-	return returnValue
+	return checkCondition(returnValue, dashboard.dblCond, dashboard.dblCondValue)
 end
 
 function DashboardLive.getDashboardLiveCC(self, dashboard)
@@ -3465,29 +3448,7 @@ function DashboardLive.getDashboardLiveCC(self, dashboard)
 		end
 	end
 	
-	if dashboard.dblCond ~= nil and type(returnValue) == "boolean" then
-		if dashboard.dblCond == "not" then
-			returnValue = not returnValue
-		end
-	end
-	
-	if dashboard.dblCond ~= nil and type(returnValue) == "number" and type(dashboard.dblCondValue) == "number" then
-		local cond = dashboard.dblCond
-		local value = dashboard.dblCondValue
-		if cond == "less" then
-			returnValue = (returnValue < value)
-		elseif cond == "lessequal" then
-			returnValue = (returnValue <= value)
-		elseif cond == "more" then
-			returnValue = (returnValue > value)
-		elseif cond == "moreequal" then
-			returnValue = (returnValue >= value)
-		elseif cond == "equal" then
-			returnValue = (returnValue == value)
-		end
-	end
-	
-	return returnValue
+	return checkCondition(returnValue, dashboard.dblCond, dashboard.dblCondValue)
 end
 
 function DashboardLive.getDashboardLiveHLM(self, dashboard)
@@ -4071,30 +4032,10 @@ function DashboardLive.getDashboardLiveCVT(self, dashboard)
 			returnValue = cvtValue or false
 		end
 		
-		if dashboard.dblCond ~= nil and type(returnValue) == "number" and type(dashboard.dblCondValue) == "number" then
-			local cond = dashboard.dblCond
-			local value = dashboard.dblCondValue
-			if cond == "less" then
-				returnValue = (returnValue < value)
-			elseif cond == "lessequal" then
-				returnValue = (returnValue <= value)
-			elseif cond == "more" then
-				returnValue = (returnValue > value)
-			elseif cond == "moreequal" then
-				returnValue = (returnValue >= value)
-			elseif cond == "equal" then
-				returnValue = (returnValue == value)
-			end
-		end
-		if dashboard.dblCond ~= nil and type(returnValue) == "boolean" then
-			if dashboard.dblCond == "not" then
-				returnValue = not returnValue
-			end
-		end
 	end
 	
 	dbgprint("getDashboardLiveCVT : returnValue: "..tostring(returnValue), 4)
-	return returnValue
+	return checkCondition(returnValue, dashboard.dblCond, dashboard.dblCondValue)
 end
 
 function DashboardLive.getDashboardLiveRDS(self, dashboard)
@@ -4122,31 +4063,10 @@ function DashboardLive.getDashboardLiveRDS(self, dashboard)
 		else 
 			returnValue = rdsValue or false
 		end
-		
-		if dashboard.dblCond ~= nil and type(returnValue) == "number" and type(dashboard.dblCondValue) == "number" then
-			local cond = dashboard.dblCond
-			local value = dashboard.dblCondValue
-			if cond == "less" then
-				returnValue = (returnValue < value)
-			elseif cond == "lessequal" then
-				returnValue = (returnValue <= value)
-			elseif cond == "more" then
-				returnValue = (returnValue > value)
-			elseif cond == "moreequal" then
-				returnValue = (returnValue >= value)
-			elseif cond == "equal" then
-				returnValue = (returnValue == value)
-			end
-		end
-		if dashboard.dblCond ~= nil and type(returnValue) == "boolean" then
-			if dashboard.dblCond == "not" then
-				returnValue = not returnValue
-			end
-		end
 	end
 	
 	dbgprint("getDashboardLiveRDS : returnValue: "..tostring(returnValue), 4)
-	return returnValue
+	return checkCondition(returnValue, dashboard.dblCond, dashboard.dblCondValue)
 end
 
 function DashboardLive.getDashboardLiveRGPS(self, dashboard)
@@ -4174,31 +4094,10 @@ function DashboardLive.getDashboardLiveRGPS(self, dashboard)
 		else 
 			returnValue = value or false
 		end
-		
-		if dashboard.dblCond ~= nil and type(returnValue) == "number" and type(dashboard.dblCondValue) == "number" then
-			local cond = dashboard.dblCond
-			local value = dashboard.dblCondValue
-			if cond == "less" then
-				returnValue = (returnValue < value)
-			elseif cond == "lessequal" then
-				returnValue = (returnValue <= value)
-			elseif cond == "more" then
-				returnValue = (returnValue > value)
-			elseif cond == "moreequal" then
-				returnValue = (returnValue >= value)
-			elseif cond == "equal" then
-				returnValue = (returnValue == value)
-			end
-		end
-		if dashboard.dblCond ~= nil and type(returnValue) == "boolean" then
-			if dashboard.dblCond == "not" then
-				returnValue = not returnValue
-			end
-		end
 	end
 	
 	dbgprint("getDashboardLiveRGPS : returnValue: "..tostring(returnValue), 4)
-	return returnValue
+	return checkCondition(returnValue, dashboard.dblCond, dashboard.dblCondValue)
 end
 
 function DashboardLive:onUpdate(dt)
