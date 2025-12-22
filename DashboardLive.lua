@@ -3148,9 +3148,12 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 				returnValue = not returnValue
 			end
 		end
-		if dashboard.dblCond ~= nil and type(dashboard.dblCond) == "string" and type(returnValue) == "string" then
+		if dashboard.dblCond ~= nil and type(dashboard.dblCondValue) == "string" and type(returnValue) == "string" then
 			if dashboard.dblCond == "equal" then
-				returnValue = returnValue == dashboard.dblCond
+				dbgprint("cond.string: returnValue = "..tostring(returnValue), 1)
+				dbgprint("cond.string: condValue = "..tostring(dashboard.dblCondValue), 1)
+				returnValue = returnValue == dashboard.dblCondValue
+				dbgprint("cond.string: result: returnValue = "..tostring(returnValue), 1)
 			end
 		end
 			
