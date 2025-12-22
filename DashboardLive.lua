@@ -2830,13 +2830,13 @@ local function checkCondition(returnValue, cond, condValue)
 
 		if type(returnValue) == "string" and type(condValue) == "string" then
 			if cond == "equal" then
-				returnValue = returnValue == dashboard.dblCondValue
+				returnValue = string.lower(returnValue) == string.lower(dashboard.dblCondValue)
 			elseif cond == "contains" then
-				returnValue = string.find(returnValue, condValue) ~= nil
+				returnValue = string.find(string.lower(returnValue), string.lower(condValue)) ~= nil
 			end
 		end
 	end
-	dbgprint("checkCondition: returnValue = "..tostring(returnValue), 1)
+	dbgprint("checkCondition: returnValue = "..tostring(returnValue), 4)
 	return returnValue
 end
 
