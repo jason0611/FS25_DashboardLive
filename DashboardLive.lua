@@ -2868,7 +2868,7 @@ local function checkCondition(returnValue, cond, condValue)
 
 		if type(returnValue) == "string" and type(condValue) == "string" then
 			if cond == "equal" then
-				returnValue = string.lower(returnValue) == string.lower(dashboard.dblCondValue)
+				returnValue = string.lower(returnValue) == string.lower(condValue)
 			elseif cond == "contains" then
 				returnValue = string.find(string.lower(returnValue), string.lower(condValue)) ~= nil
 			end
@@ -3182,7 +3182,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 				local alignment = dashboard.textAlignment or "LEFT"
 				returnValue = trim(senderName, len, alignment)
 			else
-				returnValue = g_soundPlayer.isPlaying
+				returnValue = g_soundPlayer.isPlaying or false
 			end
 			
 		-- empty command is allowed here to add symbols (EMITTER) in off-state, too
@@ -3316,7 +3316,7 @@ function DashboardLive.getDashboardLiveCombine(self, dashboard)
 		elseif c == "cutheight" then
 			local specCutter = findSpecialization(self, "spec_cutter")
 			if specCutter ~= nil then
-				return specCutter.currentCutHeight
+				return specCutter.currentCutHeight or ""
 			end
 		
 		elseif c == "pipestate" then
