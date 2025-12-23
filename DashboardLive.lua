@@ -92,7 +92,7 @@ function DashboardLive.initSpecialization()
 	schema:register(XMLValueType.INT, DashboardLive.DBL_XML_KEY .. "#min", "Minimum")
 	schema:register(XMLValueType.INT, DashboardLive.DBL_XML_KEY .. "#max", "Maximum")
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#cond", "condition command")
-	schema:register(XMLValueType.FLOAT, DashboardLive.DBL_XML_KEY .. "#condValue", "condition value")
+	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#condValue", "condition value")
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#baseColorDarkMode", "Base color for dark mode")
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#emitColorDarkMode", "Emit color for dark mode")
 	schema:register(XMLValueType.FLOAT, DashboardLive.DBL_XML_KEY .. "#intensityDarkMode", "Intensity for dark mode")
@@ -159,7 +159,7 @@ function DashboardLive.initSpecialization()
 		Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_XML_KEY .. "#min", "Minimum")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_XML_KEY .. "#max", "Maximum")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#cond", "condition command")
-		Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_XML_KEY .. "#condValue", "condition value")
+		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#condValue", "condition value")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#baseColorDarkMode", "Base color for dark mode")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#emitColorDarkMode", "Emit color for dark mode")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_XML_KEY .. "#intensityDarkMode", "Intensity for dark mode")
@@ -2297,10 +2297,17 @@ function DashboardLive.getDBLAttributesBase(self, xmlFile, key, dashboard, compo
 	
 	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
 	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+	
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	
+	local valueNumber = tonumber(dashboard.dblCondValue)
+	if valueNumber ~= nil then
+		dashboard.dblCondValue = valueNumber
+	end
+	
 	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
-		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		Logging.xmlError(self.xmlFile, "No value given for comparation: cond = "..tostring(dashboard.dblCond)..", condValue = "..tostring(dashboard.dblCondValue))
 		return false
 	end
 	
@@ -2429,7 +2436,7 @@ function DashboardLive.getDBLAttributesVCA(self, xmlFile, key, dashboard, compon
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
 	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
-		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		Logging.xmlError(self.xmlFile, "No value given for comparation: cond = "..tostring(dashboard.dblCond)..", condValue = "..tostring(dashboard.dblCondValue))
 		return false
 	end
 
@@ -2454,6 +2461,11 @@ function DashboardLive.getDBLAttributesCC(self, xmlFile, key, dashboard, compone
 
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	
+	local valueNumber = tonumber(dashboard.dblCondValue)
+	if valueNumber ~= nil then
+		dashboard.dblCondValue = valueNumber
+	end
 
 	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
 		Logging.xmlError(self.xmlFile, "No value given for comparation")
@@ -2476,8 +2488,14 @@ function DashboardLive.getDBLAttributesHLM(self, xmlFile, key, dashboard, compon
 	
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	
+	local valueNumber = tonumber(dashboard.dblCondValue)
+	if valueNumber ~= nil then
+		dashboard.dblCondValue = valueNumber
+	end
+	
 	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
-		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		Logging.xmlError(self.xmlFile, "No value given for comparation: cond = "..tostring(dashboard.dblCond)..", condValue = "..tostring(dashboard.dblCondValue))
 		return false
 	end
     
@@ -2499,10 +2517,17 @@ function DashboardLive.getDBLAttributesGPS(self, xmlFile, key, dashboard, compon
 	
 	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
 	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+	
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	
+	local valueNumber = tonumber(dashboard.dblCondValue)
+	if valueNumber ~= nil then
+		dashboard.dblCondValue = valueNumber
+	end
+	
 	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
-		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		Logging.xmlError(self.xmlFile, "No value given for comparation: cond = "..tostring(dashboard.dblCond)..", condValue = "..tostring(dashboard.dblCondValue))
 		return false
 	end
 
@@ -2577,7 +2602,6 @@ function DashboardLive.getDBLAttributesBaler(self, xmlFile, key, dashboard, comp
 	dbgprint("getDBLAttributesBaler : jointType: "..tostring(jointType), 2)
 	dashboard.dblAttacherJointIndices = jointMapping(self, dashboard.dblAttacherJointIndices, jointSide, jointType)
 	dbgprint("getDBLAttributesBaler : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
-	
 	
 	dashboard.dblOption = lower(xmlFile:getValue(key .. "#option", "selected")) -- 'selected' or 'current'
 	
@@ -2693,10 +2717,17 @@ function DashboardLive.getDBLAttributesCVT(self, xmlFile, key, dashboard, compon
 	
 	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
 	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+	
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	
+	local valueNumber = tonumber(dashboard.dblCondValue)
+	if valueNumber ~= nil then
+		dashboard.dblCondValue = valueNumber
+	end
+	
 	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
-		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		Logging.xmlError(self.xmlFile, "No value given for comparation: cond = "..tostring(dashboard.dblCond)..", condValue = "..tostring(dashboard.dblCondValue))
 		return false
 	end
 	
@@ -2713,10 +2744,17 @@ function DashboardLive.getDBLAttributesRDS(self, xmlFile, key, dashboard, compon
 	
 	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
 	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+	
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	
+	local valueNumber = tonumber(dashboard.dblCondValue)
+	if valueNumber ~= nil then
+		dashboard.dblCondValue = valueNumber
+	end
+	
 	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
-		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		Logging.xmlError(self.xmlFile, "No value given for comparation: cond = "..tostring(dashboard.dblCond)..", condValue = "..tostring(dashboard.dblCondValue))
 		return false
 	end
 	
@@ -2736,7 +2774,7 @@ function DashboardLive.getDBLAttributesRGPS(self, xmlFile, key, dashboard, compo
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint("getDBLAttributesRGPS : condValue: "..tostring(dashboard.dblCondValue), 2)
 	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
-		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		Logging.xmlError(self.xmlFile, "No value given for comparation: cond = "..tostring(dashboard.dblCond)..", condValue = "..tostring(dashboard.dblCondValue))
 		return false
 	end
 	
