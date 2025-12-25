@@ -3137,20 +3137,45 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			returnValue = getDate("%T")
 			
 		-- heading
-		elseif cmds == "heading" or cmds == "headingtext1" or cmds == "headingtext2" then
+		elseif cmds == "heading" or cmds == "headingtext1" or cmds == "headingtext2" or cmds == "headingtext3" 
+		 or cmds == "headingtext1de" or cmds == "headingtext2de" or cmds == "headingtext3de" then
 			local x1, y1, z1 = localToWorld(self.rootNode, 0, 0, 0)
 			local x2, y2, z2 = localToWorld(self.rootNode, 0, 0, 1)
 			local dx, dz = x2 - x1, z2 - z1
 			local heading = math.floor(180 - (180 / math.pi) * math.atan2(dx, dz))
 			if cmds == "heading" then
 				returnValue = heading
-			elseif cmds == "headingtext2" then
+			elseif cmds == "headingtext2" or cmds == "headingtext2de"  then
 				local headingTexts = {"N", "NE", "E", "SE", "S", "SW", "W", "NW"}
+				if cmds == "headingtext2de" then
+					headingTexts = {"N", "NO", "O", "SO", "S", "SW", "W", "NW"}
+				end
 				local index = math.floor(((heading + 22.5) % 360) * 8 / 360) + 1
 				dbgprint("heading: "..tostring(heading).." / index: "..tostring(index), 4)
 				returnValue = headingTexts[index]
+			elseif cmds == "headingtext3" or cmds == "headingtext3de" then
+                local headingTexts = {
+                    "N", "NNE", "NE", "ENE",
+                    "E", "ESE", "SE", "SSE",
+                    "S", "SSW", "SW", "WSW",
+                    "W", "WNW", "NW", "NNW"
+                }
+				if cmds == "headingtext2de" then
+					headingTexts = {
+                    "N", "NNO", "NO", "ONO",
+                    "O", "OSO", "SO", "SSO",
+                    "S", "SSW", "SW", "WSW",
+                    "W", "WNW", "NW", "NNW"
+                	}
+				end
+                local index = math.floor(((heading + 11.25) % 360) / 22.5) + 1
+                dbgprint("heading: "..tostring(heading).." / index: "..tostring(index), 4)
+                returnValue = headingTexts[index]
 			else
 				local headingTexts = {"N", "E", "S", "W"}
+				if cmds == "headingtext1de" then
+					headingTexts = {"N", "O", "S", "W"}
+				end
 				local index = math.floor(((heading + 45) % 360) * 4 / 360) + 1
 				returnValue = headingTexts[index]
 			end
