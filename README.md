@@ -24,6 +24,10 @@ Here you will find the most actual documentation of DBL: https://github.com/jaso
 + tipSide (boolean / text)
 + headingText1 (text): N/E/S/W
 + headingText2 (text): N/NE/E/SE/S/SW/W/NE
++ headingText3 (text): N/NNE/NE/ENE/E/ESE/SE/SSE/S/SSW/SW/WSW/W/WNW/NW/NNW
++ headingText1de (text): N/O/S/W
++ headingText2de (text): N/NO/O/SO/S/SW/W/NO
++ headingText3de (text): N/NNO/NO/ONO/O/OSO/SO/SSO/S/SSW/SW/WSW/W/WNW/NW/NNW
 + fieldNumber (text/number)
 + baleSize (number/text)
 + baleCount (number/text, needs )
