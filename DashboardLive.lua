@@ -3160,7 +3160,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
                     "S", "SSW", "SW", "WSW",
                     "W", "WNW", "NW", "NNW"
                 }
-				if cmds == "headingtext2de" then
+				if cmds == "headingtext3de" then
 					headingTexts = {
                     "N", "NNO", "NO", "ONO",
                     "O", "OSO", "SO", "SSO",
