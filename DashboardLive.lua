@@ -2868,13 +2868,15 @@ local function checkCondition(returnValue, cond, condValue)
 
 		if type(returnValue) == "string" and type(condValue) == "string" then
 			if cond == "equal" then
+				dbgprint("checkCondition: returnValue = "..tostring(returnValue), 4)
 				returnValue = string.lower(returnValue) == string.lower(condValue)
 			elseif cond == "contains" then
+				dbgprint("checkCondition: returnValue = "..tostring(returnValue), 4)
 				returnValue = string.find(string.lower(returnValue), string.lower(condValue)) ~= nil
 			end
 		end
 	end
-	dbgprint("checkCondition: returnValue = "..tostring(returnValue), 4)
+	dbgprint("checkCondition: resulting returnValue = "..tostring(returnValue), 4)
 	return returnValue
 end
 
