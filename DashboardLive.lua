@@ -2925,18 +2925,18 @@ local function checkCondition(returnValue, cond, condValue)
 			end
 		end
 
-		if type(returnValue) == "boolean" and cond == "not" then
-			returnValue = not returnValue
-		end
-
 		if type(returnValue) == "string" and type(condValue) == "string" then
-			if cond == "equal" then
+			if cond == "equal" or cond == "notequal" then
 				dbgprint("checkCondition: returnValue = "..tostring(returnValue), 4)
 				returnValue = string.lower(returnValue) == string.lower(condValue)
 			elseif cond == "contains" then
 				dbgprint("checkCondition: returnValue = "..tostring(returnValue), 4)
 				returnValue = string.find(string.lower(returnValue), string.lower(condValue)) ~= nil
 			end
+		end
+		
+		if type(returnValue) == "boolean" and (cond == "not" or cond == "notequal") then
+			returnValue = not returnValue
 		end
 	end
 	dbgprint("checkCondition: resulting returnValue = "..tostring(returnValue), 4)
