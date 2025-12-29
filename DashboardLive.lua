@@ -4134,7 +4134,8 @@ function DashboardLive.getDashboardLiveCVT(self, dashboard)
 		else 
 			returnValue = cvtValue or false
 		end
-		
+	else
+		returnValue = ""
 	end
 	
 	dbgprint("getDashboardLiveCVT : returnValue: "..tostring(returnValue), 4)
