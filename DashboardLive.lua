@@ -2900,8 +2900,8 @@ function DashboardLive:getValue(superfunc, dashboard)
 			errorHandling("boolean or number", value, dashboard)
 		end
 	elseif displayType == Dashboard.TYPES.MULTI_STATE then
-		if type(value) ~= "table" and type(value) ~= "number" and type(value) ~= "string" then
-			errorHandling("table, number or string", value, dashboard)
+		if type(value) ~= "table" and type(value) ~= "number" and type(value) ~= "string" and type(value) ~= "boolean" then
+			errorHandling("boolean, table, number or string", value, dashboard)
 		end
 	end
 	return value, min, max, center, isNumber
@@ -3444,6 +3444,12 @@ function DashboardLive.getDashboardLiveRDA(self, dashboard)
 			
 		elseif c == "maxSpeed" then
 			return specRDA.maxSpeed
+		end
+	elseif specRDA == nil then
+		if dashboard.dblCommand == "inflating" then
+			return false
+		else
+			return 0
 		end
 	end
 end
