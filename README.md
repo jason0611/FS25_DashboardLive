@@ -51,6 +51,10 @@ Here you will find the most actual documentation of DBL: https://github.com/jaso
 ? cutter turn rate
 - ISO-Bus: Use dashboards provided by implements
 - Generic spec access (functions/values)
++ headingText3 (text): N/NNE/NE/ENE/E/ESE/SE/SSE/S/SSW/SW/WSW/W/WNW/NW/NNW
++ headingText1de (text): N/O/S/W
++ headingText2de (text): N/NO/O/SO/S/SW/W/NO
++ headingText3de (text): N/NNO/NO/ONO/O/OSO/SO/SSO/S/SSW/SW/WSW/W/WNW/NW/NNW
 
 -- VanillaIntegration-Backlog:
 + Rigitrac SKE50
