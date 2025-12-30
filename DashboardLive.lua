@@ -2149,7 +2149,7 @@ function DashboardLive:getIsDashboardGroupActive(superFunc, group)
 	elseif specCS ~= nil and group.dblCommand == "base_steering" then
 		local dblOpt = group.dblOption
 		if dblOpt == "" or tonumber(dblOpt) == nil then
-			Logging.xmlWarning(vehicle.xmlFile, "No steering mode number given for DashboardLive steering command")
+			Logging.xmlDevWarning(vehicle.xmlFile, "No steering mode number given for DashboardLive steering command")
 			return false
 		end
 		returnValue = specCS.state == tonumber(dblOpt)
@@ -2157,7 +2157,7 @@ function DashboardLive:getIsDashboardGroupActive(superFunc, group)
 	elseif specWM ~= nil and group.dblCommand == "base_swath" then
 		local dblOpt = group.dblOption
 		if dblOpt == "" or tonumber(dblOpt) == nil then
-			Logging.xmlWarning(vehicle.xmlFile, "No work mode number given for DashboardLive swath command")
+			Logging.xmlDevWarning(vehicle.xmlFile, "No work mode number given for DashboardLive swath command")
 			return false
 		end
 		returnValue = specWM.state == tonumber(dblOpt)
@@ -2325,10 +2325,10 @@ function DashboardLive.getDBLAttributesBase(self, xmlFile, key, dashboard, compo
 		if dashboard.dblAttacherJointIndices ~= nil then 
 			local joints = jointsToTable(dashboard.dblAttacherJointIndices)
 			if #joints > 1 then
-				Logging.xmlInfo(self.xmlFile, "command `liftstate` to show state of 3P-Joint should apply to only one attacherJoint at a time, please ensure that this condition is met")
+				Logging.xmlDevInfo(self.xmlFile, "command `liftstate` to show state of 3P-Joint should apply to only one attacherJoint at a time, please ensure that this condition is met")
 			end
 		else
-			Logging.xmlInfo(self.xmlFile, "command `liftstate` without given attacherJoint")
+			Logging.xmlDevInfo(self.xmlFile, "command `liftstate` without given attacherJoint")
 			return false
 		end
 	end
@@ -3068,7 +3068,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			if dblState ~= nil and tonumber(dblState) ~= nil then
 				returnValue = specCS.state == tonumber(dblState)
 			else
-				Logging.xmlWarning(self.xmlFile, "No steering mode number given for DashboardLive crabSteering command")
+				Logging.xmlDevWarning(self.xmlFile, "No steering mode number given for DashboardLive crabSteering command")
 			end
 		end
 		
@@ -3158,7 +3158,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		-- ridgeMarker
 		elseif cmds == "ridgemarker" then
 			if s == "" or tonumber(s) == nil then
-				Logging.xmlWarning(self.xmlFile, "No ridgeMarker state given for DashboardLive ridgeMarker command")
+				Logging.xmlDevWarning(self.xmlFile, "No ridgeMarker state given for DashboardLive ridgeMarker command")
 				returnValue = false
 			end
 			returnValue = getAttachedStatus(self, dashboard, "ridgemarker") == tonumber(s)
