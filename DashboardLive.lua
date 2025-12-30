@@ -19,8 +19,8 @@ GMSDebug:enableConsoleCommands("dblDebug")
 
 source(DashboardLive.MOD_PATH.."utils/DashboardUtils.lua")
 
-DashboardLive.scale = 0.1
-DashboardLive.minimapConfig = {}
+DashboardLive.DELAYTIME= 3000 -- 3 seconds
+DashboardLive.SCALE = 0.1
 
 -- Crosshair color
 
@@ -37,14 +37,15 @@ else
 	crosshairFile:delete()
 end
 
+DashboardLive.minimapConfig = {}
 DashboardLive.vis_partly = false
 
 -- Console
 
 function DashboardLive:editParameter(scale)
-	local scale = tonumber(scale) or DashboardLive.scale
+	local scale = tonumber(scale) or DashboardLive.SCALE
 	print("DBL Parameter: Scale = "..tostring(scale))
-	DashboardLive.scale = scale
+	DashboardLive.SCALE = scale
 end
 addConsoleCommand("dblParameter", "DBL: Change scale parameter", "editParameter", DashboardLive)
 
@@ -256,6 +257,9 @@ function DashboardLive:onLoad(savegame)
 	-- discharge state
 	spec.currentDischargeState = 0
 	spec.lastDischargeState = 0
+	
+	-- targetFillLevel
+	spec.delayTime = 0
 end
 
 function DashboardLive:onRegisterDashboardValueTypes()
@@ -2351,7 +2355,7 @@ end
 -- minimap
 function DashboardLive.getDBLAttributesMiniMap(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd")) or "map"
-	dashboard.scale = xmlFile:getValue(key .. "#scale") or DashboardLive.scale
+	dashboard.scale = xmlFile:getValue(key .. "#scale") or DashboardLive.SCALE
 	dashboard.node = xmlFile:getValue(key .. "#node", nil, components, i3dMappings, true)
 	dbgprint("getDBLAttributesMiniMap: node = "..tostring(dashboard.node).." / command = "..tostring(dashboard.dblCommand).." / scale = "..tostring(dashboard.scale), 2)
 
@@ -2969,6 +2973,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		local specMO = self.spec_motorized
 		local specCS = self.spec_crabSteering
 		local specPI = self.spec_pipe
+		local specAJ = self.spec_attacherJoints
 		local cmds, j, s, o = dashboard.dblCommand, dashboard.dblAttacherJointIndices, dashboard.dblStateText or dashboard.dblState, dashboard.dblOption
 		local cmd = string.split(cmds, " ")
 		local returnValue = false
@@ -3077,35 +3082,88 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			
 		-- fillLevel of overload target
 		elseif cmds == "targetfilllevel" then
-			if o ~= nil then
+			local spec = self.spec_DashboardLive
+			local function getValue(option, target, fillUnit)
+				if option == "abs" then
+					return math.floor(fillUnit.fillLevel)
+				elseif option == "max" then
+					return math.floor(fillUnit.capacity)
+				elseif option == "percent" then
+					local akt = math.floor(fillUnit.fillLevel)
+					local max = math.floor(fillUnit.capacity)
+					return max ~= 0 and math.floor((akt/max)*100)/100 or 0
+				elseif option == "name" then
+					local len = dashboard.textMask ~= nil and string.len(dashboard.textMask) or 0
+					local name = target.getFullName ~= nil and target:getFullName() or ""
+					if string.len(name) > len then
+						name = target.getName ~= nil and target:getName() or ""
+					end
+					return name
+				elseif option == "overloading" then
+					return specPI.nearestObjectInTriggers.isDischargeObject
+				else
+					return true
+				end
+			end
+			
+			if o == "abs" or o == "max" or o == "percent" then
 				returnValue = 0
+			elseif o == "name" then
+				returnValue = ""
 			end
 			
 			if specPI ~= nil then
 				dbgprint("targetFillLevel: specPI exists", 2)
 				local targetId = specPI.nearestObjectInTriggers.objectId
 				if targetId ~= nil then
-					local target = NetworkUtil.getObject(targetId)		
-					local unit = specPI.nearestObjectInTriggers.fillUnitIndex
-					local fillUnit = target.spec_fillUnit.fillUnits[unit]
-					
-					if o == "abs" then
-						returnValue = math.floor(fillUnit.fillLevel)
-					elseif o == "max" then
-						returnValue = math.floor(fillUnit.capacity)
-					elseif o == "percent" then
-						local akt = math.floor(fillUnit.fillLevel)
-						local max = math.floor(fillUnit.capacity)
-						returnValue = max ~= 0 and math.floor((akt/max)*100)/100 or 0
-					elseif o == "name" then
-						returnValue = target.getFullName ~= nil and target:getFullName() or "unknown"
-					elseif o == "overloading" then
-						returnValue = specPI.nearestObjectInTriggers.isDischargeObject
-					else
-						returnValue = true
+					local target = NetworkUtil.getObject(targetId)	
+					if target ~= nil and target.spec_fillUnit ~= nil then
+						local unit = specPI.nearestObjectInTriggers.fillUnitIndex
+						local fillUnit = target.spec_fillUnit.fillUnits[unit]
+						returnValue = getValue(o, target, fillUnit)
 					end
 				end
+			elseif specAJ ~= nil then
+				dbgprint("targetFillLevel: specAJ exists", 2)
+				local implements = self:getRootVehicle():getChildVehicles()
+				for _, implement in pairs(implements) do
+					local spec_di = implement.spec_dischargeable
+					if spec_di ~= nil then
+						local dischargeNode = spec_di.currentDischargeNode
+						if dischargeNode ~= nil then
+							local target, unit = implement:getDischargeTargetObject(dischargeNode)
+							if target ~= nil and target.spec_fillUnit ~= nil then
+								local fillUnit = target.spec_fillUnit.fillUnits[unit]
+								returnValue = getValue(o, target, fillUnit)
+								break -- only one discharging process has to be found
+							end
+						end
+					end
+				end								
 			end	
+			if spec.targetFillLevel == nil then
+				spec.targetFillLevel = {}
+			end
+			if type(returnValue) == "number" and o ~= nil then
+				if returnValue == 0 and spec.delayTime > 0 then
+					returnValue = spec.targetFillLevel[o] or 0
+				elseif returnValue > 0 then
+					spec.targetFillLevel[o] = returnValue
+					spec.delayTime = DashboardLive.DELAYTIME
+				elseif spec.delayTime == 0 and spec.targetFillLevel[o] ~= nil then
+					spec.targetFillLevel[o] = nil
+				end
+			end	
+			if type(returnValue) == "string" and o ~= nil then
+				if returnValue == "" and spec.delayTime > 0 then
+					returnValue = spec.targetFillLevel[o] or ""
+				elseif returnValue ~= "" then
+					spec.targetFillLevel[o] = returnValue
+					spec.delayTime = DashboardLive.DELAYTIME
+				elseif spec.delayTime == 0 and spec.targetFillLevel[o] ~= nil then
+					spec.targetFillLevel[o] = nil
+				end
+			end
 		
 		-- fillType (text or icon)
 		elseif cmds == "filltype" then
@@ -3326,7 +3384,7 @@ function DashboardLive.getDashboardLiveMiniMap(self, dashboard)
 			-- zoom
 			local speed = self:getLastSpeed()
 			local width = g_currentMission.mapWidth
-			local scale = DashboardLive.scale
+			local scale = DashboardLive.SCALE
 			local zoomFactor = math.clamp(speed / 50, 0, 1)
 			local zoomTarget
 	
@@ -4241,12 +4299,20 @@ function DashboardLive:onUpdate(dt)
 	local dspec = self.spec_dashboard
 	local mspec = self.spec_motorized
 	
+	-- delayTime
+	if spec.delayTime > 0 then
+		spec.delayTime = spec.delayTime - dt
+	else
+		spec.delayTime = 0
+		spec.targetFillLevel = nil
+	end
+	
 	-- get active vehicle
 	if self:getIsActiveForInput(true) then
 		spec.selectorActive = getIndexOfActiveImplement(self:getRootVehicle())
 		spec.selectorGroup = self.currentSelection.subIndex or 0
 	end
-
+	
 	-- sync server to client data
 	if self.isServer then
 		local setDirty = false
