@@ -1504,6 +1504,7 @@ local function getAttachedStatus(vehicle, element, mode, default)
 				local specBaler = findSpecialization(implement.object,"spec_baler")
 				local options = lower(element.dblOption)
 				if options == nil then options = "selected" end
+				resultValue = default
 				local baleTypeDef  
 				if specBaler ~= nil and specBaler.currentBaleTypeIndex ~= nil and options == "current" then
 					baleTypeDef = specBaler.baleTypes[specBaler.currentBaleTypeIndex]
@@ -1524,7 +1525,7 @@ local function getAttachedStatus(vehicle, element, mode, default)
 				end
 			elseif mode == "balecountanz" or mode == "balecounttotal" then
 				local specBaleCounter = findSpecialization(implement.object,"spec_baleCounter")	
-				resultValue = 0
+				resultValue = default or 0
 				if specBaleCounter ~= nil then 
 					if mode == "balecountanz" then
 						resultValue = specBaleCounter.sessionCounter
@@ -1534,20 +1535,20 @@ local function getAttachedStatus(vehicle, element, mode, default)
 						dbgprint(implement.object:getFullName().." baleCountTotal: "..tostring(resultValue), 4)
 					end
 				end
---[[
+
 			elseif mode == "wrappedbalecountanz" or mode == "wrappedbalecounttotal" then
 				local specBaleCounter = findSpecialization(implement.object,"spec_wrappedBaleCounter")	
-				resultValue = 0
+				resultValue = default or 0
 				if specBaleCounter ~= nil then 
 					if mode == "wrappedbalecountanz" then
-						resultValue = specBaleCounter.sessionCounter
+						resultValue = specBaleCounter.sessionCounter or 0
 						dbgprint(implement.object:getFullName().." wrappedBaleCountAnz: "..tostring(resultValue), 4)	
 					else
-						resultValue = specBaleCounter.lifetimeCounter
+						resultValue = specBaleCounter.lifetimeCounter or 0
 						dbgprint(implement.object:getFullName().." wrappedBaleCountTotal: "..tostring(resultValue), 4)
 					end
 				end
---]]
+
 			elseif mode == "locksteeringaxle" then --lockSteeringAxles by Ifko|nator, www.lsfarming-mods.com
 				local c = element.dblCommand
 				local specLSA = findSpecialization(implement.object, "spec_lockSteeringAxles", t)
@@ -3863,7 +3864,7 @@ function DashboardLive.getDashboardLiveBaler(self, dashboard)
 	local spec = self.spec_DashboardLive
 	local c = dashboard.dblCommand
 	if c == "isroundbale" then
-		return getAttachedStatus(self, dashboard, "isroundbale", 0)
+		return getAttachedStatus(self, dashboard, "isroundbale", false)
 	elseif c == "balesize" then
 		return getAttachedStatus(self, dashboard, "balesize", 0)
 	elseif c == "balecountanz" then
