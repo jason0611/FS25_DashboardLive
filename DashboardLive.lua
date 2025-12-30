@@ -22,6 +22,21 @@ source(DashboardLive.MOD_PATH.."utils/DashboardUtils.lua")
 DashboardLive.DELAYTIME= 3000 -- 3 seconds
 DashboardLive.SCALE = 0.1
 
+-- Crosshair color
+
+DashboardLive.crosshairColor = string.getVector("0.5 0.5 0.5 0.5", 4)
+
+local crosshairFile = XMLFile.loadIfExists("CROSSHAIR", DashboardLive.MODSETTINGSDIR .. "crosshair.xml")
+if crosshairFile ~= nil then
+	DashboardLive.crosshairColor = crosshairFile:getVector("crosshair.color(0)", DashboardLive.crosshairColor, 4)
+	crosshairFile:delete()
+else
+	local crosshairFile = XMLFile.create("CROSSHAIR", DashboardLive.MODSETTINGSDIR .. "crosshair.xml", "crosshair")
+	crosshairFile:setVector("crosshair.color(0)", DashboardLive.crosshairColor)
+	crosshairFile:save(true, false)
+	crosshairFile:delete()
+end
+
 DashboardLive.minimapConfig = {}
 DashboardLive.vis_partly = false
 
@@ -44,7 +59,7 @@ function DashboardLive.initSpecialization()
     local schema = Vehicle.xmlSchema
     schema:register(XMLValueType.STRING, Dashboard.GROUP_XML_KEY .. "#dbl", "DashboardLive command")
     schema:register(XMLValueType.STRING, Dashboard.GROUP_XML_KEY .. "#op", "DashboardLive operator")
-	schema:register(XMLValueType.INT, Dashboard.GROUP_XML_KEY .. "#page", "DashboardLive page")
+	schema:register(XMLValueType.STRING, Dashboard.GROUP_XML_KEY .. "#page", "DashboardLive page")
 	schema:register(XMLValueType.INT, Dashboard.GROUP_XML_KEY .. "#group", "DashboardLive pages group")
 	schema:register(XMLValueType.BOOL, Dashboard.GROUP_XML_KEY .. "#dblActiveWithoutImplement", "return 'true' without implement")
 	schema:register(XMLValueType.VECTOR_N, Dashboard.GROUP_XML_KEY .. "#dblAttacherJointIndices")
@@ -77,7 +92,7 @@ function DashboardLive.initSpecialization()
 	schema:register(XMLValueType.INT, DashboardLive.DBL_XML_KEY .. "#min", "Minimum")
 	schema:register(XMLValueType.INT, DashboardLive.DBL_XML_KEY .. "#max", "Maximum")
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#cond", "condition command")
-	schema:register(XMLValueType.FLOAT, DashboardLive.DBL_XML_KEY .. "#condValue", "condition value")
+	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#condValue", "condition value")
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#baseColorDarkMode", "Base color for dark mode")
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#emitColorDarkMode", "Emit color for dark mode")
 	schema:register(XMLValueType.FLOAT, DashboardLive.DBL_XML_KEY .. "#intensityDarkMode", "Intensity for dark mode")
@@ -94,7 +109,7 @@ function DashboardLive.initSpecialization()
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#name", "Dashboard group name")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#dbl", "DashboardLive command")
     Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#op", "DashboardLive operator")
-	Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_GROUP_XML_KEY .. "#page", "DashboardLive page")
+	Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_GROUP_XML_KEY .. "#page", "DashboardLive page")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_GROUP_XML_KEY .. "#group", "DashboardLive pages group")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.BOOL, COMPOUND_GROUP_XML_KEY .. "#dblActiveWithoutImplement", "return 'true' without implement")
 	Dashboard.compoundsXMLSchema:register(XMLValueType.VECTOR_N, COMPOUND_GROUP_XML_KEY .. "#dblAttacherJointIndices")
@@ -136,7 +151,7 @@ function DashboardLive.initSpecialization()
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#stateText", "OBSOLETE: stateText")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_XML_KEY .. "#trailer", "trailer number")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_XML_KEY .. "#partition", "trailer partition")
-		Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_XML_KEY .. "#page", "choosen page")
+		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#page", "choosen page")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_XML_KEY .. "#group", "choosen page group")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#option", "Option")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_XML_KEY .. "#scale", "Minimap minimum scale factor")
@@ -144,7 +159,7 @@ function DashboardLive.initSpecialization()
 		Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_XML_KEY .. "#min", "Minimum")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_XML_KEY .. "#max", "Maximum")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#cond", "condition command")
-		Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_XML_KEY .. "#condValue", "condition value")
+		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#condValue", "condition value")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#baseColorDarkMode", "Base color for dark mode")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#emitColorDarkMode", "Emit color for dark mode")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_XML_KEY .. "#intensityDarkMode", "Intensity for dark mode")
@@ -156,12 +171,20 @@ function DashboardLive.initSpecialization()
 		Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_XML_KEY .. "#distance", "hearable distance")
 	end
 	dbgprint("initSpecialization : DashboardLive compound options registered", 2)
+	
+	local schemaSavegame = Vehicle.xmlSchemaSavegame
+	local key = DashboardLive.MOD_NAME..".DashboardLive"
+	schemaSavegame:register(XMLValueType.INT, "vehicles.vehicle(?)."..key..".groups.group(?)#actPage", "Active page", 1)
+	schemaSavegame:register(XMLValueType.STRING, "vehicles.vehicle(?)."..key.."#orientation", "MiniMap orientation", "rotate")
+	dbgprint("initSpecialization : DashboardLive savegame entries registered", 2)
 end
 
 function DashboardLive.registerEventListeners(vehicleType)
 	SpecializationUtil.registerEventListener(vehicleType, "onLoad", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onPreLoad", DashboardLive)
     SpecializationUtil.registerEventListener(vehicleType, "onPostLoad", DashboardLive)
+    SpecializationUtil.registerEventListener(vehicleType, "onLoadFinished", DashboardLive)
+    SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile", DashboardLive)
     SpecializationUtil.registerEventListener(vehicleType, "onRegisterDashboardValueTypes", DashboardLive)
     SpecializationUtil.registerEventListener(vehicleType, "onRegisterActionEvents", DashboardLive)
  	SpecializationUtil.registerEventListener(vehicleType, "onReadStream", DashboardLive)
@@ -171,6 +194,7 @@ function DashboardLive.registerEventListeners(vehicleType)
 	SpecializationUtil.registerEventListener(vehicleType, "onUpdate", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onDraw", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onPostAttachImplement", DashboardLive)
+	SpecializationUtil.registerEventListener(vehicleType, "onPreDetachImplement", DashboardLive)
 end
 
 function DashboardLive.registerOverwrittenFunctions(vehicleType)
@@ -180,6 +204,10 @@ end
 
 function DashboardLive:onPreLoad(savegame)
 	self.spec_DashboardLive = self["spec_"..DashboardLive.MOD_NAME..".DashboardLive"]
+	if DashboardLive.fontFixApplied == nil then
+		DashboardLive.applyFontFix()
+		DashboardLive.fontFixApplied = true
+	end
 end
 
 function DashboardLive:onLoad(savegame)
@@ -197,6 +225,7 @@ function DashboardLive:onLoad(savegame)
 	spec.pageGroups[1].actPage = 1
 	spec.updateTimer = 0
 	spec.compoundGroupsLoaded = false
+	spec.isobusActive = false
 		
 	-- zoom data
 	spec.zoomPerm = {}
@@ -249,6 +278,13 @@ function DashboardLive:onRegisterDashboardValueTypes()
 	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
 	dblValueType:setValue(self, DashboardLive.getDashboardLiveBase)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesBase)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- isobus
+	dblValueType = DashboardValueType.new("dbl", "isobus")
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setValue(self, DashboardLive.getDashboardLiveIsobus)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesIsobus)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- miniMap
@@ -377,6 +413,13 @@ function DashboardLive:onRegisterDashboardValueTypes()
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesRDS)
 	self:registerDashboardValueType(dblValueType)
 	
+	-- realGPS (RGPS)
+	dblValueType = DashboardValueType.new("dbl", "realGPS")
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setValue(self, DashboardLive.getDashboardLiveRGPS)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesRGPS)
+	self:registerDashboardValueType(dblValueType)
+	
 	-- print
 	dblValueType = DashboardValueType.new("dbl", "print")
 	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
@@ -410,6 +453,166 @@ function DashboardLive:onPostLoad(savegame)
 	DashboardLive.createDashboardPages(self)
 end
 
+function DashboardLive:onLoadFinished(savegame)
+	local spec = self.spec_DashboardLive
+	if savegame ~= nil then	
+		dbgprint("onLoadFinished : loading saved data", 2)
+		local xmlFile = savegame.xmlFile
+		local key = savegame.key .."."..DashboardLive.MOD_NAME..".DashboardLive"		
+		dbgprint("onLoadFinished : key = "..tostring(key), 1)
+		dbgprint("onLoadFinished : maxPageGroup = "..tostring(spec.maxPageGroup), 1)
+		for pg = 1, spec.maxPageGroup do
+			local srchKey = key..string.format(".groups.group(%d)#actPage", pg - 1)
+			dbgprint("onLoadFinished : srchKey = "..tostring(srchKey), 1)
+			if spec.pageGroups[pg] ~= nil and spec.pageGroups[pg].actPage ~= nil then
+				spec.pageGroups[pg].actPage = xmlFile:getValue(key..string.format(".groups.group(%d)#actPage", pg - 1), spec.pageGroups[pg].actPage)
+				dbgprint("onLoadFinished : actPage set to "..tostring(spec.pageGroups[pg].actPage), 1)
+			end
+		end
+		spec.orientation = xmlFile:getValue(key.."#orientation", spec.orientation)
+		spec.isDirty = true
+		--self:raiseDirtyFlags(spec.dirtyFlag)
+		dbgprint("onLoadFinished : Loaded data for "..self:getName(), 1)
+	end
+end
+
+function DashboardLive:saveToXMLFile(xmlFile, key, usedModNames)
+	dbgprint("saveToXMLFile", 2)
+	local spec = self.spec_DashboardLive
+	for pg = 1, spec.maxPageGroup do
+		if spec.pageGroups[pg] ~= nil and spec.pageGroups[pg].actPage ~= nil then
+			xmlFile:setValue(string.format(key..".groups.group(%d)#actPage", pg - 1), spec.pageGroups[pg].actPage)
+		end
+	end
+	xmlFile:setValue(key.."#orientation", spec.orientation)
+
+	dbgprint("saveToXMLFile : saving data finished", 2)
+end
+
+-- modified and adapted giants code
+function DashboardLive.loadIsobusCompoundFromXML(self, xmlFile, key, compound)
+	dbgprint("loadIsobusCompoundFromXML: linkNode = "..tostring(compound.linkNode).." / key = "..tostring(key), 1)
+	local spec = self.spec_DashboardLive
+	local dashboardXMLFile = XMLFile.load("IsobusCompoundXML", compound.filename, Dashboard.compoundsXMLSchema)
+	if dashboardXMLFile ~= nil then
+		local compoundKey
+		dashboardXMLFile:iterate(key, function(index, _compoundKey)
+			if dashboardXMLFile:getValue(_compoundKey .. "#name") == compound.name then
+				compoundKey = _compoundKey
+				return
+			end
+		end)
+
+		if compoundKey ~= nil then
+			dbgprint("loadIsobusCompoundFromXML: compoundKey = "..tostring(compoundKey), 2)
+			local i3dFilename = dashboardXMLFile:getValue(compoundKey .. "#filename")
+			if i3dFilename ~= nil then
+				i3dFilename = compound.filepath .. i3dFilename
+			else
+				Logging.xmlWarning(dashboardXMLFile, "Missing filename for compound '%s'", compound.name)
+				return false
+			end
+			
+			dbgprint("loadIsobusCompoundFromXML: loading I3DFile", 2)
+			local isobusTerminalNode = g_i3DManager:loadI3DFile(i3dFilename, false, false)
+			dbgprint("loadIsobusCompoundFromXML: node = "..tostring(isobusTerminalNode), 2)
+			
+			link(compound.linkNode, isobusTerminalNode)
+			setTranslation(isobusTerminalNode, 0, 0, 0)
+			setRotation(isobusTerminalNode, 0, 0, 0)
+
+			local components = {}
+			for i=1, getNumOfChildren(isobusTerminalNode) do
+				table.insert(components, {node=getChildAt(isobusTerminalNode, i - 1)})
+			end
+			dbgprint("loadIsobusCompoundFromXML: "..tostring(#components).." components created", 2)
+			
+			compound.i3dMappings = {}
+			compound.i3dMappings = I3DUtil.loadI3DMapping(dashboardXMLFile, "dashboardCompounds", components, compound.i3dMappings, nil)
+			local size = table.size(compound.i3dMappings)
+			dbgprint("loadIsobusCompoundFromXML: "..tostring(size).." i3dMappings loaded from "..tostring(dashboardXMLFile.filename), 2)
+			
+			self:loadDashboardsFromXML(dashboardXMLFile, compoundKey, nil, components, compound.i3dMappings, isobusTerminalNode)
+			dashboardXMLFile:delete()
+			return true
+		else
+			Logging.xmlWarning(dashboardXMLFile, "Unable to find compound by name '%s'", compound.name)
+			dashboardXMLFile:delete()
+			return false
+		end
+	end
+
+    return false
+end
+-- modified and adapted giants code
+
+function DashboardLive:onPostAttachImplement(implement, inputJointDescIndex, jointDescIndex)
+	-- implement - attacherJoint
+	dbgprint("Implement "..implement:getFullName().." attached to "..self:getFullName().." at index "..tostring(jointDescIndex), 2)
+	if implement.getAllowsLowering ~= nil then
+		dbgprint("Implement is lowerable: "..tostring(implement:getAllowsLowering()), 2)
+	end
+	
+	-- debug print
+	if implement.spec_pickup ~= nil then
+		dbgprint("Implement has pickup", 2)
+	end
+	
+	-- ISOBUS
+	local specDBL = self.spec_DashboardLive
+	local specDB  = self.spec_dashboard
+	local specISOBUS = implement.spec_DashboardIsobus
+	
+	if specISOBUS ~= nil and specISOBUS.implementIsobusPrepared then
+		dbgprint("onPostAttachImplement: Implemt has ISOBUS terminal!", 1)
+	end
+	if specDBL.isobusNodes ~= nil then
+		dbgprint("onPostAttachImplement: Vehicle ISOBUS preparation found!", 1)
+	end
+	
+	if not specDBL.isobusActive and specISOBUS ~= nil and specISOBUS.implementIsobusPrepared and specDBL.isobusNodes ~= nil then
+		local active = false
+		dbgprint("onPostAttachImplement: loading ISOBUS terminals", 1)
+		for _, isobusNode in pairs(specDBL.isobusNodes) do
+			dbgprint("onPostAttachImplement: ISOBUS linkNode: "..tostring(isobusNode), 1)
+
+			-- get compoundKey
+			local compoundKey = "dashboardCompounds.dashboardCompound"
+			
+			-- build up compound
+			local compound = {}
+			compound.linkNode = isobusNode
+			compound.filename = specISOBUS.baseDirectory..specISOBUS.xmlFilename
+			compound.filepath = specISOBUS.baseDirectory
+			compound.name = "ISOBUS"
+			
+			active = DashboardLive.loadIsobusCompoundFromXML(self, self.xmlFile, compoundKey, compound) or active
+		end
+		if active then
+			self:updateDashboards(specDB.tickDashboards, 0, true)
+			specDBL.isobusActive = true
+			specISOBUS.isobusActive = true
+		end
+		specDBL.isDirty = true
+	end
+end
+
+function DashboardLive:onPreDetachImplement(implement)
+	local spec = self.spec_DashboardLive
+	dbgprint("Implement "..implement.object:getFullName().." detached", 2)
+	local specISOBUS = implement.object.spec_DashboardIsobus
+	
+	if spec.isobusActive and specISOBUS ~= nil and specISOBUS.isobusActive then	
+		for _, isobusNode in pairs(spec.isobusNodes) do
+			local node = getChildAt(isobusNode, 0)
+			unlink(node)
+			spec.isDirty = true
+			spec.isobusActive = false
+			specISOBUS.isobusActive = false
+		end
+	end
+end
+
 function DashboardLive.createDashboardPages(self)
 	local spec = self.spec_DashboardLive
     local dashboard = self.spec_dashboard
@@ -417,7 +620,11 @@ function DashboardLive.createDashboardPages(self)
     for _, group in pairs(dashboard.groups) do
     	if group.dblPage ~= nil then
 			spec.maxPageGroup = math.max(spec.maxPageGroup, group.dblPageGroup)
-    		spec.maxPage = math.max(spec.maxPage, group.dblPage)
+			if type(group.dblPage) == "number" then
+				spec.maxPage = math.max(spec.maxPage, group.dblPage)
+			elseif type(group.dblPage) == "string" then
+				spec.maxPage = math.max(spec.maxPage, unpack(string.getVector(group.dblPage)))
+			end
     		if spec.pageGroups[group.dblPageGroup] == nil then 
     			spec.pageGroups[group.dblPageGroup] = {}
     		end
@@ -427,7 +634,13 @@ function DashboardLive.createDashboardPages(self)
     		if spec.pageGroups[group.dblPageGroup].actPage == nil then
     			spec.pageGroups[group.dblPageGroup].actPage = 1
     		end
-    		spec.pageGroups[group.dblPageGroup].pages[group.dblPage] = true
+    		if type(group.dblPage) == "number" then
+    			spec.pageGroups[group.dblPageGroup].pages[group.dblPage] = true
+    		elseif type(group.dblPage) == "string" then
+    			for _, page in pairs(string.getVector(group.dblPage)) do
+    				spec.pageGroups[group.dblPageGroup].pages[page] = true
+    			end
+    		end
     		dbgprint("createDashboardPages : pages found in group "..group.name, 2)
     		dbgprint("createDashboardPages : maxPageGroup set to "..tostring(spec.maxPageGroup), 2)
     		dbgprint("createDashboardPages : maxPage set to "..tostring(spec.maxPage), 2)
@@ -442,26 +655,41 @@ end
 
 function DashboardLive:onReadStream(streamId, connection)
 	local spec = self.spec_DashboardLive
+	dbgprint("onReadStream : Read data for "..self:getName(), 2)
 	spec.motorTemperature = streamReadFloat32(streamId)
 	spec.fanEnabled = streamReadBool(streamId)
 	spec.lastFuelUsage = streamReadFloat32(streamId)
 	spec.lastDefUsage = streamReadFloat32(streamId)
 	spec.lastAirUsage = streamReadFloat32(streamId)
+		
+	dbgprint("onReadStream : maxPageGroup = "..tostring(spec.maxPageGroup), 2)
+	for pg = 1, spec.maxPageGroup do
+		spec.pageGroups[pg].actPage = streamReadInt8(streamId)
+	end
+	spec.orientation = streamReadString(streamId)
+	spec.isDirty = true
 end
 
 function DashboardLive:onWriteStream(streamId, connection)
 	local spec = self.spec_DashboardLive
+	dbgprint("onWriteStream : Sent data for "..self:getName(), 2)
 	streamWriteFloat32(streamId, spec.motorTemperature)
 	streamWriteBool(streamId, spec.fanEnabled)
 	streamWriteFloat32(streamId, spec.lastFuelUsage)
 	streamWriteFloat32(streamId, spec.lastDefUsage)
 	streamWriteFloat32(streamId, spec.lastAirUsage)
+	
+	dbgprint("onWriteStream : maxPageGroup = "..tostring(spec.maxPageGroup), 2)
+	for pg = 1, spec.maxPageGroup do
+		streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
+	end
+	streamWriteString(streamId, spec.orientation)
 end
 	
 function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
-	if connection:getIsServer() then
-		local spec = self.spec_DashboardLive
-		if streamReadBool(streamId) then
+	local spec = self.spec_DashboardLive
+	if streamReadBool(streamId) then
+		if connection:getIsServer() then		
 			spec.motorTemperature = streamReadFloat32(streamId)
 			spec.fanEnabled = streamReadBool(streamId)
 			spec.lastFuelUsage = streamReadFloat32(streamId)
@@ -469,13 +697,20 @@ function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 			spec.lastAirUsage = streamReadFloat32(streamId)
 			spec.currentDischargeState = streamReadInt8(streamId)
 		end
+		if not connection:getIsServer() then		
+			for pg = 1, spec.maxPageGroup do
+				spec.pageGroups[pg].actPage = streamReadInt8(streamId)
+			end
+			spec.orientation = streamReadString(streamId)
+			dbgprint("onReadUpdateStream : Read data for "..self:getName(), 2)
+		end
 	end
 end
 
 function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
-	if not connection:getIsServer() then
-		local spec = self.spec_DashboardLive
-		if streamWriteBool(streamId, bitAND(dirtyMask, spec.dirtyFlag) ~= 0) then
+	local spec = self.spec_DashboardLive
+	if streamWriteBool(streamId, bitAND(dirtyMask, spec.dirtyFlag) ~= 0) then
+		if not connection:getIsServer() then
 			streamWriteFloat32(streamId, spec.motorTemperature)
 			streamWriteBool(streamId, spec.fanEnabled)
 			streamWriteFloat32(streamId, spec.lastFuelUsage)
@@ -483,6 +718,13 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 			streamWriteFloat32(streamId, spec.lastAirUsage)
 			streamWriteInt8(streamId, spec.currentDischargeState)
 			self.spec_motorized.motorTemperature.valueSend = spec.motorTemperature
+		end
+		if connection:getIsServer() then
+			for pg = 1, spec.maxPageGroup do
+				streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
+			end
+			streamWriteString(streamId, spec.orientation)
+			dbgprint("onWriteUpdateStream : Sent data for "..self:getName(), 2)
 		end
 	end
 end
@@ -534,7 +776,7 @@ end
 
 function DashboardLive:CHANGEPAGE(actionName, keyStatus)
 	dbgprint("CHANGEPAGE: "..tostring(actionName), 2)
-	--	local spec = self.spec_DashboardLive doesn't work reliably with actions, Giants alone knows why...
+	--local spec = self.spec_DashboardLive doesn't work reliably with actions, Giants alone knows why...
 	local spec = g_currentMission.hud.controlledVehicle.spec_DashboardLive
 	if actionName == "DBL_PAGEGRPUP" then
 		local pageGroupNum = spec.actPageGroup + 1
@@ -560,8 +802,8 @@ function DashboardLive:CHANGEPAGE(actionName, keyStatus)
 			pageNum = pageNum + 1
 			if pageNum > spec.maxPage then pageNum = 1 end
 		end
-		spec.pageGroups[spec.actPageGroup].actPage = pageNum
 		dbgprint("CHANGEPAGE : NewPage = "..tostring(spec.pageGroups[spec.actPageGroup].actPage), 2)
+		spec.pageGroups[spec.actPageGroup].actPage = pageNum
 	end
 	if actionName == "DBL_PAGEDN" then
 		local pageNum = spec.pageGroups[spec.actPageGroup].actPage - 1
@@ -573,6 +815,7 @@ function DashboardLive:CHANGEPAGE(actionName, keyStatus)
 		dbgprint("CHANGEPAGE : NewPage = "..tostring(spec.pageGroups[spec.actPageGroup].actPage), 2)
 	end
 	spec.isDirty = true
+	self:raiseDirtyFlags(spec.dirtyFlag)
 end
 
 function DashboardLive:MAPORIENTATION(actionName, keyStatus)
@@ -591,6 +834,8 @@ function DashboardLive:MAPORIENTATION(actionName, keyStatus)
 	if spec.orientations[index] == nil then index = 1 end
 	spec.orientation = spec.orientations[index]
 	dbgprint("MAPORIENTATION: set to "..tostring(spec.orientation), 2)
+	spec.pageChange = true
+	self:raiseDirtyFlags(spec.dirtyFlag)
 end
 
 function DashboardLive:ZOOM(actionName, keyStatus)
@@ -688,18 +933,6 @@ end
 -- ===========
 
 -- Debug stuff
-
-function DashboardLive:onPostAttachImplement(implement, x, jointDescIndex)
-	-- implement - attacherJoint
-	dbgprint("Implement "..implement:getFullName().." attached to "..self:getFullName().." at index "..tostring(jointDescIndex), 2)
-	if implement.getAllowsLowering ~= nil then
-		dbgprint("Implement is lowerable: "..tostring(implement:getAllowsLowering()), 2)
-	end
-	if implement.spec_pickup ~= nil then
-		dbgprint("Implement has pickup", 2)
-	end
-	--dbgprint_r(implement, 4, 0)
-end
 
 -- Supporting functions
 
@@ -1274,6 +1507,7 @@ local function getAttachedStatus(vehicle, element, mode, default)
 				local specBaler = findSpecialization(implement.object,"spec_baler")
 				local options = lower(element.dblOption)
 				if options == nil then options = "selected" end
+				resultValue = default
 				local baleTypeDef  
 				if specBaler ~= nil and specBaler.currentBaleTypeIndex ~= nil and options == "current" then
 					baleTypeDef = specBaler.baleTypes[specBaler.currentBaleTypeIndex]
@@ -1294,7 +1528,7 @@ local function getAttachedStatus(vehicle, element, mode, default)
 				end
 			elseif mode == "balecountanz" or mode == "balecounttotal" then
 				local specBaleCounter = findSpecialization(implement.object,"spec_baleCounter")	
-				resultValue = 0
+				resultValue = default or 0
 				if specBaleCounter ~= nil then 
 					if mode == "balecountanz" then
 						resultValue = specBaleCounter.sessionCounter
@@ -1304,20 +1538,20 @@ local function getAttachedStatus(vehicle, element, mode, default)
 						dbgprint(implement.object:getFullName().." baleCountTotal: "..tostring(resultValue), 4)
 					end
 				end
---[[
+
 			elseif mode == "wrappedbalecountanz" or mode == "wrappedbalecounttotal" then
 				local specBaleCounter = findSpecialization(implement.object,"spec_wrappedBaleCounter")	
-				resultValue = 0
+				resultValue = default or 0
 				if specBaleCounter ~= nil then 
 					if mode == "wrappedbalecountanz" then
-						resultValue = specBaleCounter.sessionCounter
+						resultValue = specBaleCounter.sessionCounter or 0
 						dbgprint(implement.object:getFullName().." wrappedBaleCountAnz: "..tostring(resultValue), 4)	
 					else
-						resultValue = specBaleCounter.lifetimeCounter
+						resultValue = specBaleCounter.lifetimeCounter or 0
 						dbgprint(implement.object:getFullName().." wrappedBaleCountTotal: "..tostring(resultValue), 4)
 					end
 				end
---]]
+
 			elseif mode == "locksteeringaxle" then --lockSteeringAxles by Ifko|nator, www.lsfarming-mods.com
 				local c = element.dblCommand
 				local specLSA = findSpecialization(implement.object, "spec_lockSteeringAxles", t)
@@ -1430,7 +1664,7 @@ local function getAttachedStatus(vehicle, element, mode, default)
             		end
             		dbgprint("AttacherJoint #"..tostring(jointIndex).."(trailer = "..tostring(t+1)..") connected: "..tostring(resultValue), 4)
             	end
-              	dbgprint("AttacherJoint #"..tostring(jointIndex).."connected: "..tostring(resultValue), 4)
+              	dbgprint("AttacherJoint #"..tostring(jointIndex).." connected: "..tostring(resultValue), 4)
             	
             elseif mode == "disconnected" then
             	dbgprint("AttacherJoint #"..tostring(jointIndex).." not disconnected", 4)
@@ -1698,6 +1932,19 @@ function DashboardLive.defaultAudioStateFunc(self, dashboard, newValue, minValue
 end
 Dashboard.registerDisplayType(Dashboard.TYPES.AUDIO, false, DashboardLive.initAudioDashboardSchema, DashboardLive.loadAudioDashboardFromXML, DashboardLive.defaultAudioStateFunc)
 
+function DashboardLive.applyFontFix()
+	local fontsTable = g_materialManager.fontMaterialsByName
+	local fontsToFix = {"GENERIC", "GENERIC_BOLD"}
+	for _, fontToFix in pairs(fontsToFix) do
+		local characters = fontsTable[fontToFix].characters
+		for _, char in pairs(characters) do
+			if char.value == "i" then char.spacingX = 0.800 end
+			if char.value == "l" then char.spacingX = 0.800 end
+		end
+	end
+	Logging.info("DashboardLive: Font fix applied")
+end
+
 -- identify joints with mapping options
 local function jointMapping(vehicle, jointIndices, jointSide, jointType)
 	dbgprint("jointMapping : jointSide = "..tostring(jointSide).." / jointType = "..tostring(jointType), 2)
@@ -1821,10 +2068,16 @@ function DashboardLive:getIsDashboardGroupActive(superFunc, group)
 	if group.dblCommand == nil then 
 		return superFunc(self, group)
 
+	-- isobus not active
+	elseif group.dblCommand == "noisobus" then
+		returnValue = not spec.isobusActive
+	
 	-- page
 	elseif group.dblCommand == "page" and group.dblPage ~= nil and group.dblPageGroup ~= nil then 
-		if group.dblPage and group.dblPage > 0 then 
+		if group.dblPage and type(group.dblPage) == "number" and group.dblPage > 0 then 
 			returnValue = spec.pageGroups[group.dblPageGroup] ~= nil and group.dblPage == spec.pageGroups[group.dblPageGroup].actPage
+		elseif group.dblPage and type(group.dblPage) == "string" then
+			returnValue = spec.pageGroups[group.dblPageGroup] ~= nil and string.find(group.dblPage, tostring(spec.pageGroups[group.dblPageGroup].actPage)) ~= nil
 		else
 			returnValue = group.dblPageGroup == spec.actPageGroup
 		end
@@ -1899,7 +2152,7 @@ function DashboardLive:getIsDashboardGroupActive(superFunc, group)
 	elseif specCS ~= nil and group.dblCommand == "base_steering" then
 		local dblOpt = group.dblOption
 		if dblOpt == "" or tonumber(dblOpt) == nil then
-			Logging.xmlWarning(vehicle.xmlFile, "No steering mode number given for DashboardLive steering command")
+			Logging.xmlDevWarning(vehicle.xmlFile, "No steering mode number given for DashboardLive steering command")
 			return false
 		end
 		returnValue = specCS.state == tonumber(dblOpt)
@@ -1907,7 +2160,7 @@ function DashboardLive:getIsDashboardGroupActive(superFunc, group)
 	elseif specWM ~= nil and group.dblCommand == "base_swath" then
 		local dblOpt = group.dblOption
 		if dblOpt == "" or tonumber(dblOpt) == nil then
-			Logging.xmlWarning(vehicle.xmlFile, "No work mode number given for DashboardLive swath command")
+			Logging.xmlDevWarning(vehicle.xmlFile, "No work mode number given for DashboardLive swath command")
 			return false
 		end
 		returnValue = specWM.state == tonumber(dblOpt)
@@ -2022,6 +2275,9 @@ function DashboardLive.getDBLAttributesBase(self, xmlFile, key, dashboard, compo
 		dbgprint("getDBLAttributesBase : cmd is empty", 2)
     	return true
     end
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
 	
     dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
 	local jointSide = xmlFile:getValue(key .. "#jointSide")
@@ -2048,10 +2304,17 @@ function DashboardLive.getDBLAttributesBase(self, xmlFile, key, dashboard, compo
 	
 	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
 	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+	
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	
+	local valueNumber = tonumber(dashboard.dblCondValue)
+	if valueNumber ~= nil then
+		dashboard.dblCondValue = valueNumber
+	end
+	
 	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
-		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		Logging.xmlError(self.xmlFile, "No value given for comparation: cond = "..tostring(dashboard.dblCond)..", condValue = "..tostring(dashboard.dblCondValue))
 		return false
 	end
 	
@@ -2065,14 +2328,28 @@ function DashboardLive.getDBLAttributesBase(self, xmlFile, key, dashboard, compo
 		if dashboard.dblAttacherJointIndices ~= nil then 
 			local joints = jointsToTable(dashboard.dblAttacherJointIndices)
 			if #joints > 1 then
-				Logging.xmlInfo(self.xmlFile, "command `liftstate` to show state of 3P-Joint should apply to only one attacherJoint at a time, please ensure that this condition is met")
+				Logging.xmlDevInfo(self.xmlFile, "command `liftstate` to show state of 3P-Joint should apply to only one attacherJoint at a time, please ensure that this condition is met")
 			end
 		else
-			Logging.xmlInfo(self.xmlFile, "command `liftstate` without given attacherJoint")
+			Logging.xmlDevInfo(self.xmlFile, "command `liftstate` without given attacherJoint")
 			return false
 		end
 	end
 	return true
+end
+
+-- load ISOBUS connect node
+function DashboardLive.getDBLAttributesIsobus(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
+	dbgprint("getDBLAttributesIsobus: ISOBUS preparations found for vehicle: "..self:getFullName(), 2)
+	dbgprint("getDBLAttributesIsobus: ISOBUS preparations found with key: "..key, 2)
+	local spec = self.spec_DashboardLive
+	local node = dashboard.node
+	
+	if spec.isobusNodes == nil then spec.isobusNodes = {} end
+	local nodeAnz = #spec.isobusNodes
+	spec.isobusNodes[nodeAnz + 1] = node
+	dbgprint("getDBLAttributesIsobus: ISOBUS hub nodes found:", 2)
+	dbgprint_r(spec.isobusNodes, 2, 2)
 end
 
 -- minimap
@@ -2119,6 +2396,9 @@ function DashboardLive.getDBLAttributesCombine(self, xmlFile, key, dashboard, co
 	
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd"))
     dbgprint("getDBLAttributesBase : command: "..tostring(dashboard.dblCommand), 2)
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
 
 	dashboard.dblState = xmlFile:getValue(key .. "#state") -- swath state, ridgemarker state, ...
 	dbgprint("getDBLAttributesBase : state: "..tostring(dashboard.dblState), 2)
@@ -2141,6 +2421,9 @@ function DashboardLive.getDBLAttributesRDA(self, xmlFile, key, dashboard, compon
     	return false
     end
     
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
     dashboard.dblOption = lower(xmlFile:getValue(key .. "#option"))
     dbgprint("getDBLAttributesRDA : option: "..tostring(dashboard.dblOption), 2)
     
@@ -2160,13 +2443,16 @@ function DashboardLive.getDBLAttributesVCA(self, xmlFile, key, dashboard, compon
     	return false
     end
     
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
     dashboard.dblCond = xmlFile:getValue(key .. "#cond")
 	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
 	
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
 	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
-		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		Logging.xmlError(self.xmlFile, "No value given for comparation: cond = "..tostring(dashboard.dblCond)..", condValue = "..tostring(dashboard.dblCondValue))
 		return false
 	end
 
@@ -2183,8 +2469,27 @@ function DashboardLive.getDBLAttributesCC(self, xmlFile, key, dashboard, compone
     	return false
     end
     
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
     dashboard.dblState = xmlFile:getValue(key .. "#state")
     dbgprint("getDBLAttributesECC : state: "..tostring(dashboard.dblState), 2)
+    
+    dashboard.dblCond = xmlFile:getValue(key .. "#cond")
+	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+
+	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
+	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	
+	local valueNumber = tonumber(dashboard.dblCondValue)
+	if valueNumber ~= nil then
+		dashboard.dblCondValue = valueNumber
+	end
+
+	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
+		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		return false
+	end
 
 	return true
 end
@@ -2193,6 +2498,9 @@ end
 function DashboardLive.getDBLAttributesHLM(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", ""))
     dbgprint("getDBLAttributesHLM : cmd: "..tostring(dashboard.dblCommand), 2)
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
 	
 	dashboard.dblOption = lower(xmlFile:getValue(key .. "#option"))
     dbgprint("getDBLAttributesHLM : option: "..tostring(dashboard.dblOption), 2)
@@ -2202,8 +2510,14 @@ function DashboardLive.getDBLAttributesHLM(self, xmlFile, key, dashboard, compon
 	
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	
+	local valueNumber = tonumber(dashboard.dblCondValue)
+	if valueNumber ~= nil then
+		dashboard.dblCondValue = valueNumber
+	end
+	
 	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
-		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		Logging.xmlError(self.xmlFile, "No value given for comparation: cond = "..tostring(dashboard.dblCond)..", condValue = "..tostring(dashboard.dblCondValue))
 		return false
 	end
     
@@ -2220,15 +2534,25 @@ function DashboardLive.getDBLAttributesGPS(self, xmlFile, key, dashboard, compon
     if max ~= nil then dashboard.dblMax = max end
     if factor ~= nil then dashboard.dblFactor = factor end
     
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
 	dashboard.dblOption = lower(xmlFile:getValue(key .. "#option", "on")) -- 'on' or 'active'
     dbgprint("getDBLAttributesGPS : option: "..tostring(dashboard.dblOption), 2)
 	
 	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
 	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+	
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	
+	local valueNumber = tonumber(dashboard.dblCondValue)
+	if valueNumber ~= nil then
+		dashboard.dblCondValue = valueNumber
+	end
+	
 	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
-		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		Logging.xmlError(self.xmlFile, "No value given for comparation: cond = "..tostring(dashboard.dblCond)..", condValue = "..tostring(dashboard.dblCondValue))
 		return false
 	end
 
@@ -2243,6 +2567,9 @@ function DashboardLive.getDBLAttributesGPSNumbers(self, xmlFile, key, dashboard,
 	if min ~= nil then dashboard.dblMin = min end
     if max ~= nil then dashboard.dblMax = max end
     if factor ~= nil then dashboard.dblFactor = factor end
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
     
 	dashboard.dblFactor = xmlFile:getValue(key .. "#factor", "1")
     dbgprint("getDBLAttributesNumbers : factor: "..tostring(dashboard.dblFactor), 2)
@@ -2262,6 +2589,9 @@ function DashboardLive.getDBLAttributesPS(self, xmlFile, key, dashboard, compone
 	if min ~= nil then dashboard.dblMin = min end
     if max ~= nil then dashboard.dblMax = max end
     if factor ~= nil then dashboard.dblFactor = factor end
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
     
 	dashboard.dblOption = lower(xmlFile:getValue(key .. "#option", "mode"))
 	dashboard.dblState = xmlFile:getValue(key .. "#state", "")
@@ -2296,6 +2626,9 @@ function DashboardLive.getDBLAttributesBaler(self, xmlFile, key, dashboard, comp
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd"))
     dbgprint("getDBLAttributesBaler : command: "..tostring(dashboard.dblCommand), 2)
     
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
 	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
 	local jointSide = xmlFile:getValue(key .. "#jointSide")
 	dbgprint("getDBLAttributesBaler : jointSide: "..tostring(jointSide), 2)
@@ -2303,7 +2636,6 @@ function DashboardLive.getDBLAttributesBaler(self, xmlFile, key, dashboard, comp
 	dbgprint("getDBLAttributesBaler : jointType: "..tostring(jointType), 2)
 	dashboard.dblAttacherJointIndices = jointMapping(self, dashboard.dblAttacherJointIndices, jointSide, jointType)
 	dbgprint("getDBLAttributesBaler : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
-	
 	
 	dashboard.dblOption = lower(xmlFile:getValue(key .. "#option", "selected")) -- 'selected' or 'current'
 	
@@ -2315,6 +2647,9 @@ function DashboardLive.getDBLAttributesLSA(self, xmlFile, key, dashboard, compon
 	
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd"))
 	dbgprint("getDBLAttributesLSA : command: "..tostring(dashboard.dblCommand), 2)
+	
+	dashboard.dblKey = key
+	dashboard.dblXmlFilename = xmlFile.filename
 	
 	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
 	local jointSide = xmlFile:getValue(key .. "#jointSide")
@@ -2336,6 +2671,9 @@ function DashboardLive.getDBLAttributesCXP(self, xmlFile, key, dashboard, compon
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd"))
 	dbgprint("getDBLAttributesCXP : command: "..tostring(dashboard.dblCommand), 2)
 	
+	dashboard.dblKey = key
+	dashboard.dblXmlFilename = xmlFile.filename
+	
 	dashboard.dblFactor = xmlFile:getValue(key .. "#factor", 100)
 	dbgprint("getDBLAttributesCXP : factor: "..tostring(dashboard.dblFactor), 2)
 	
@@ -2355,6 +2693,9 @@ function DashboardLive.getDBLAttributesFrontloader(self, xmlFile, key, dashboard
 	
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", "toolrotation")) -- rotation,  minmax
     dbgprint("getDBLAttributesFrontloader : command: "..tostring(dashboard.dblCommand), 2)
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
     
 	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
 	local jointSide = xmlFile:getValue(key .. "#jointSide")
@@ -2386,6 +2727,9 @@ function DashboardLive.getDBLAttributesPrecisionFarming(self, xmlFile, key, dash
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", "")) -- rotation,  minmax
     dbgprint("getDBLAttributesPrecisionFarming : command: "..tostring(dashboard.dblCommand), 2)
     
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
 	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
 	local jointSide = xmlFile:getValue(key .. "#jointSide")
 	dbgprint("getDBLAttributesPrecisionFarming : jointSide: "..tostring(jointSide), 2)
@@ -2414,15 +2758,25 @@ function DashboardLive.getDBLAttributesCVT(self, xmlFile, key, dashboard, compon
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", ""))
     dbgprint("getDBLAttributesCVT : command: "..tostring(dashboard.dblCommand), 2)
     
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
     dashboard.dblState = xmlFile:getValue(key .. "#state")
 	dbgprint("getDBLAttributesCVT : state: "..tostring(dashboard.dblState), 2)
 	
 	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
 	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+	
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	
+	local valueNumber = tonumber(dashboard.dblCondValue)
+	if valueNumber ~= nil then
+		dashboard.dblCondValue = valueNumber
+	end
+	
 	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
-		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		Logging.xmlError(self.xmlFile, "No value given for comparation: cond = "..tostring(dashboard.dblCond)..", condValue = "..tostring(dashboard.dblCondValue))
 		return false
 	end
 	
@@ -2434,19 +2788,163 @@ function DashboardLive.getDBLAttributesRDS(self, xmlFile, key, dashboard, compon
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", ""))
     dbgprint("getDBLAttributesRDS : command: "..tostring(dashboard.dblCommand), 2)
     
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
     dashboard.dblState = xmlFile:getValue(key .. "#state")
 	dbgprint("getDBLAttributesRDS : state: "..tostring(dashboard.dblState), 2)
 	
 	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
 	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+	
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	
+	local valueNumber = tonumber(dashboard.dblCondValue)
+	if valueNumber ~= nil then
+		dashboard.dblCondValue = valueNumber
+	end
+	
 	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
-		Logging.xmlError(self.xmlFile, "No value given for comparation")
+		Logging.xmlError(self.xmlFile, "No value given for comparation: cond = "..tostring(dashboard.dblCond)..", condValue = "..tostring(dashboard.dblCondValue))
 		return false
 	end
 	
 	return true
+end
+
+-- realGPS
+function DashboardLive.getDBLAttributesRGPS(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
+	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", ""))
+    dbgprint("getDBLAttributesRGPS : command: "..tostring(dashboard.dblCommand), 2)
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
+    dashboard.dblState = xmlFile:getValue(key .. "#state")
+	dbgprint("getDBLAttributesRGPS : state: "..tostring(dashboard.dblState), 2)
+	
+	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
+	dbgprint("getDBLAttributesRGPS : cond: "..tostring(dashboard.dblCond), 2)
+	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
+	dbgprint("getDBLAttributesRGPS : condValue: "..tostring(dashboard.dblCondValue), 2)
+	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
+		Logging.xmlError(self.xmlFile, "No value given for comparation: cond = "..tostring(dashboard.dblCond)..", condValue = "..tostring(dashboard.dblCondValue))
+		return false
+	end
+	
+	return true
+end
+
+-- check returned dashboard values to avoid mismatch
+function DashboardLive:getValue(superfunc, dashboard)
+	local value, min, max, center, isNumber = superfunc(self, dashboard)
+	local displayType = dashboard.displayTypeIndex
+	
+	local function getDisplayType(index)
+		for displayType, displayTypeIndex in pairs(Dashboard.TYPES) do
+			if displayTypeIndex == index then
+				return displayType
+			end
+		end
+		return
+	end
+	
+	local function errorHandling(expected, value, dashboard)
+		if dashboard.errorHandlingDone == nil then
+			Logging.warning("Type mismatch: "..tostring(expected).." expected but "..type(value).. " found!")
+			print("*** value = "..tostring(value))
+			print("*** xmlFilename = "..tostring(dashboard.dblXmlFilename))
+			print("*** xmlKey = "..tostring(dashboard.dblKey))
+			print("*** displayType = "..tostring(getDisplayType(dashboard.displayTypeIndex)))
+			print("*** valueType = "..tostring(dashboard.valueType.fullName))
+			print("*** cmd = "..tostring(dashboard.dblCommand))
+			print("*** option = "..tostring(dashboard.dblOption))
+			print("*** state = "..tostring(dashboard.dblState))
+			print("*** trailer = "..tostring(dashboard.dblTrailer))
+			print("*** partition = "..tostring(dashboard.dblPartition))
+			print("*** cond = "..tostring(dashboard.dblCond))
+			print("*** condValue = "..tostring(dashboard.dblCondValue))		
+			print("================")
+			dbgprintCallstack(2)
+			dashboard.errorHandlingDone = true
+		end
+	end
+	
+	if displayType == Dashboard.TYPES.EMITTER then
+		if type(value) ~= "boolean" and type(value) ~= "number" then
+			errorHandling("boolean or number", value, dashboard)
+		end
+	elseif displayType == Dashboard.TYPES.NUMBER then
+		if type(value) ~= "number" and type(value) ~= "string" then
+			errorHandling("number or String", value, dashboard)
+		end
+	elseif displayType == Dashboard.TYPES.ANIMATION then
+		if type(value) ~= "boolean" and type(value) ~= "number" then
+			errorHandling("boolean or number", value, dashboard)
+		end
+	elseif displayType == Dashboard.TYPES.ROT then
+		if type(value) ~= "boolean" and type(value) ~= "number" then
+			errorHandling("boolean or number", value, dashboard)
+		end
+	elseif displayType == Dashboard.TYPES.TRANS then
+		if type(value) ~= "boolean" and type(value) ~= "number" then
+			errorHandling("boolean or number", value, dashboard)
+		end
+	elseif displayType == Dashboard.TYPES.VISIBILITY then
+		if type(value) ~= "boolean" and type(value) ~= "number" then
+			errorHandling("boolean or number", value, dashboard)
+		end
+	elseif displayType == Dashboard.TYPES.TEXT then
+		if type(value) ~= "string" and type(value) ~= "number" then
+			errorHandling("string or number", value, dashboard)
+		end
+	elseif displayType == Dashboard.TYPES.SLIDER then
+		if type(value) ~= "boolean" and type(value) ~= "number" then
+			errorHandling("boolean or number", value, dashboard)
+		end
+	elseif displayType == Dashboard.TYPES.MULTI_STATE then
+		if type(value) ~= "table" and type(value) ~= "number" and type(value) ~= "string" and type(value) ~= "boolean" then
+			errorHandling("boolean, table, number or string", value, dashboard)
+		end
+	end
+	return value, min, max, center, isNumber
+end
+DashboardValueType.getValue = Utils.overwrittenFunction(DashboardValueType.getValue, DashboardLive.getValue)
+
+-- conditions
+local function checkCondition(returnValue, cond, condValue)
+	if cond ~= nil then
+		if type(returnValue) == "number" and type(condValue) == "number" then
+			if cond == "less" then
+				returnValue = (returnValue < condValue)
+			elseif cond == "lessequal" then
+				returnValue = (returnValue <= condValue)
+			elseif cond == "more" then
+				returnValue = (returnValue > condValue)
+			elseif cond == "moreequal" then
+				returnValue = (returnValue >= condValue)
+			elseif cond == "equal" then
+				returnValue = (returnValue == condValue)
+			end
+		end
+
+		if type(returnValue) == "string" and type(condValue) == "string" then
+			if cond == "equal" or cond == "notequal" then
+				dbgprint("checkCondition: returnValue = "..tostring(returnValue), 4)
+				returnValue = string.lower(returnValue) == string.lower(condValue)
+			elseif cond == "contains" then
+				dbgprint("checkCondition: returnValue = "..tostring(returnValue), 4)
+				returnValue = string.find(string.lower(returnValue), string.lower(condValue)) ~= nil
+			end
+		end
+		
+		if type(returnValue) == "boolean" and (cond == "not" or cond == "notequal") then
+			returnValue = not returnValue
+		end
+	end
+	dbgprint("checkCondition: resulting returnValue = "..tostring(returnValue), 4)
+	return returnValue
 end
 
 -- get states
@@ -2464,7 +2962,7 @@ function DashboardLive.getDashboardLivePage(self, dashboard)
 		returnValue = pageNum == spec.pageGroups[groupNum].actPage
 	end
 	
-	return returnValue
+	return checkCondition(resultValue, cond, condValue)
 end
 
 function DashboardLive.getDashboardLiveBase(self, dashboard)
@@ -2505,10 +3003,6 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 
 			elseif c == "pto" then
 				returnValue = returnValue or getAttachedStatus(self, dashboard, "pto", o == "default")
-				
-			elseif c == "ptorpm" then
-				if not dashboard.dblFactor then dashboard.dblFactor = 0.625 end
-				returnValue = returnValue or getAttachedStatus(self, dashboard, "ptorpm", o == "default")
 
 			elseif c == "foldable" then
 				returnValue = returnValue or getAttachedStatus(self, dashboard, "foldable", o == "default")
@@ -2534,12 +3028,8 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			elseif c == "mpconditioner" then
 				returnValue = returnValue or getAttachedStatus(self, dashboard, "mpconditioner", o == "default")
 				
-			elseif c == "seedtype" then
-				returnValue = returnValue or getAttachedStatus(self, dashboard, "seedtype", o == "default")
-				
 			elseif c == "coveropen" then
 				returnValue = returnValue or getAttachedStatus(self, dashboard, "coveropen")
-
 			end
 		end
 		
@@ -2549,6 +3039,17 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			local alignment = dashboard.textAlignment or "LEFT"
 	
 			returnValue = trim(g_currentMission.playerNickname, len, alignment)
+		end
+		
+		-- seedType
+		if cmds == "seedtype" then
+				returnValue = getAttachedStatus(self, dashboard, "seedtype", "")
+		end
+		
+		-- ptoRpm
+		if cmds == "ptorpm" then
+			if not dashboard.dblFactor then dashboard.dblFactor = 0.625 end
+			returnValue = getAttachedStatus(self, dashboard, "ptorpm", 0)
 		end
 		
 		-- cultivator state
@@ -2571,7 +3072,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			if dblState ~= nil and tonumber(dblState) ~= nil then
 				returnValue = specCS.state == tonumber(dblState)
 			else
-				Logging.xmlWarning(self.xmlFile, "No steering mode number given for DashboardLive crabSteering command")
+				Logging.xmlDevWarning(self.xmlFile, "No steering mode number given for DashboardLive crabSteering command")
 			end
 		end
 		
@@ -2714,7 +3215,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		-- ridgeMarker
 		elseif cmds == "ridgemarker" then
 			if s == "" or tonumber(s) == nil then
-				Logging.xmlWarning(self.xmlFile, "No ridgeMarker state given for DashboardLive ridgeMarker command")
+				Logging.xmlDevWarning(self.xmlFile, "No ridgeMarker state given for DashboardLive ridgeMarker command")
 				returnValue = false
 			end
 			returnValue = getAttachedStatus(self, dashboard, "ridgemarker") == tonumber(s)
@@ -2759,20 +3260,45 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			returnValue = getDate("%T")
 			
 		-- heading
-		elseif cmds == "heading" or cmds == "headingtext1" or cmds == "headingtext2" then
+		elseif cmds == "heading" or cmds == "headingtext1" or cmds == "headingtext2" or cmds == "headingtext3" 
+		 or cmds == "headingtext1de" or cmds == "headingtext2de" or cmds == "headingtext3de" then
 			local x1, y1, z1 = localToWorld(self.rootNode, 0, 0, 0)
 			local x2, y2, z2 = localToWorld(self.rootNode, 0, 0, 1)
 			local dx, dz = x2 - x1, z2 - z1
 			local heading = math.floor(180 - (180 / math.pi) * math.atan2(dx, dz))
 			if cmds == "heading" then
 				returnValue = heading
-			elseif cmds == "headingtext2" then
+			elseif cmds == "headingtext2" or cmds == "headingtext2de"  then
 				local headingTexts = {"N", "NE", "E", "SE", "S", "SW", "W", "NW"}
+				if cmds == "headingtext2de" then
+					headingTexts = {"N", "NO", "O", "SO", "S", "SW", "W", "NW"}
+				end
 				local index = math.floor(((heading + 22.5) % 360) * 8 / 360) + 1
 				dbgprint("heading: "..tostring(heading).." / index: "..tostring(index), 4)
 				returnValue = headingTexts[index]
+			elseif cmds == "headingtext3" or cmds == "headingtext3de" then
+                local headingTexts = {
+                    "N", "NNE", "NE", "ENE",
+                    "E", "ESE", "SE", "SSE",
+                    "S", "SSW", "SW", "WSW",
+                    "W", "WNW", "NW", "NNW"
+                }
+				if cmds == "headingtext3de" then
+					headingTexts = {
+                    "N", "NNO", "NO", "ONO",
+                    "O", "OSO", "SO", "SSO",
+                    "S", "SSW", "SW", "WSW",
+                    "W", "WNW", "NW", "NNW"
+                	}
+				end
+                local index = math.floor(((heading + 11.25) % 360) / 22.5) + 1
+                dbgprint("heading: "..tostring(heading).." / index: "..tostring(index), 4)
+                returnValue = headingTexts[index]
 			else
 				local headingTexts = {"N", "E", "S", "W"}
+				if cmds == "headingtext1de" then
+					headingTexts = {"N", "O", "S", "W"}
+				end
 				local index = math.floor(((heading + 45) % 360) * 4 / 360) + 1
 				returnValue = headingTexts[index]
 			end
@@ -2804,7 +3330,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 				local alignment = dashboard.textAlignment or "LEFT"
 				returnValue = trim(senderName, len, alignment)
 			else
-				returnValue = g_soundPlayer.isPlaying
+				returnValue = g_soundPlayer.isPlaying or false
 			end
 			
 		-- empty command is allowed here to add symbols (EMITTER) in off-state, too
@@ -2821,31 +3347,15 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		if dashboard.dblMax ~= nil and type(returnValue) == "number" then
 			returnValue = math.min(returnValue, dashboard.dblMax)
 		end
-		if dashboard.dblCond ~= nil and type(returnValue) == "number" and type(dashboard.dblCondValue) == "number" then
-			local cond = dashboard.dblCond
-			local value = dashboard.dblCondValue
-			if cond == "less" then
-				returnValue = (returnValue < value)
-			elseif cond == "lessequal" then
-				returnValue = (returnValue <= value)
-			elseif cond == "more" then
-				returnValue = (returnValue > value)
-			elseif cond == "moreequal" then
-				returnValue = (returnValue >= value)
-			elseif cond == "equal" then
-				returnValue = (returnValue == value)
-			end
-		end
-		if dashboard.dblCond ~= nil and type(returnValue) == "boolean" then
-			if dashboard.dblCond == "not" then
-				returnValue = not returnValue
-			end
-		end
-			
-		return returnValue
+					
+		return checkCondition(returnValue, dashboard.dblCond, dashboard.dblCondValue)
 	end
 	
 	return false
+end
+
+function DashboardLive.getDashboardLiveIsobus(self, dashboard)
+	return true
 end
 
 function DashboardLive.getDashboardLiveMiniMap(self, dashboard)
@@ -2954,7 +3464,7 @@ function DashboardLive.getDashboardLiveCombine(self, dashboard)
 		elseif c == "cutheight" then
 			local specCutter = findSpecialization(self, "spec_cutter")
 			if specCutter ~= nil then
-				return specCutter.currentCutHeight
+				return specCutter.currentCutHeight or ""
 			end
 		
 		elseif c == "pipestate" then
@@ -3018,6 +3528,12 @@ function DashboardLive.getDashboardLiveRDA(self, dashboard)
 		elseif c == "maxSpeed" then
 			return specRDA.maxSpeed
 		end
+	elseif specRDA == nil then
+		if dashboard.dblCommand == "inflating" then
+			return false
+		else
+			return 0
+		end
 	end
 end
 
@@ -3068,30 +3584,8 @@ function DashboardLive.getDashboardLiveVCA(self, dashboard)
 		end
 	end
 	
-	if dashboard.dblCond ~= nil and type(returnValue) == "number" and type(dashboard.dblCondValue) == "number" then
-		local cond = dashboard.dblCond
-		local value = dashboard.dblCondValue
-		if cond == "less" then
-			returnValue = (returnValue < value)
-		elseif cond == "lessequal" then
-			returnValue = (returnValue <= value)
-		elseif cond == "more" then
-			returnValue = (returnValue > value)
-		elseif cond == "moreequal" then
-			returnValue = (returnValue >= value)
-		elseif cond == "equal" then
-			returnValue = (returnValue == value)
-		end
-	end
-		
-	if dashboard.dblCond ~= nil and type(returnValue) == "boolean" then
-		if dashboard.dblCond == "not" then
-			returnValue = not returnValue
-		end
-	end
-	
 	dbgprint("getDashboardLiveVCA : result: "..tostring(returnValue), 4)
-	return returnValue
+	return checkCondition(returnValue, dashboard.dblCond, dashboard.dblCondValue)
 end
 
 function DashboardLive.getDashboardLiveCC(self, dashboard)
@@ -3100,6 +3594,7 @@ function DashboardLive.getDashboardLiveCC(self, dashboard)
 	local specECC = self.spec_extendedCruiseControl
 	local state = tonumber(dashboard.dblState)
 	local mode = 0
+	local returnValue = false
 	
 	if specECC ~= nil then 
 		mode = 1
@@ -3112,40 +3607,40 @@ function DashboardLive.getDashboardLiveCC(self, dashboard)
 	if dashboard.dblCommand == "active" then
 		if mode == 1 then
 			if state ~= nil then
-				return specECC.activeSpeedGroup == state
+				returnValue = specECC.activeSpeedGroup == state
 			else 
-				return specECC.activeSpeedGroup
+				returnValue = specECC.activeSpeedGroup
 			end		
 		elseif mode == 2 then
 			local specCC = self.speedControl
 			if state ~= nil then
-				return specCC.currentKey == state
+				returnValue = specCC.currentKey == state
 			else
-				return specCC.currentKey
+				returnValue = specCC.currentKey
 			end
 		elseif mode == 3 then
 			local specCC = self.spec_drivable.cruiseControl
 			if state ~= nil then 
-				return specCC.state and state == 3
+				returnValue = specCC.state and state == 3
 			else
-				return specCC.state and 3
+				returnValue = specCC.state and 3
 			end
 		end
 	end	
 	
 	if dashboard.dblCommand == "speed" and state ~= nil then
 		if mode == 1 then
-			return specECC.cruiseSpeedGroups[state].forward
+			returnValue = specECC.cruiseSpeedGroups[state].forward
 		elseif mode == 2 then
 			local specCC = self.speedControl
-			return specCC.keys[state].speed
+			returnValue = specCC.keys[state].speed
 		elseif mode == 3 then
 			local specCC = self.spec_drivable.cruiseControl
-			return state == 3 and specCC.speed
+			returnValue = state == 3 and specCC.speed
 		end
 	end
 	
-	return false
+	return checkCondition(returnValue, dashboard.dblCond, dashboard.dblCondValue)
 end
 
 function DashboardLive.getDashboardLiveHLM(self, dashboard)
@@ -3451,7 +3946,7 @@ function DashboardLive.getDashboardLiveBaler(self, dashboard)
 	local spec = self.spec_DashboardLive
 	local c = dashboard.dblCommand
 	if c == "isroundbale" then
-		return getAttachedStatus(self, dashboard, "isroundbale", 0)
+		return getAttachedStatus(self, dashboard, "isroundbale", false)
 	elseif c == "balesize" then
 		return getAttachedStatus(self, dashboard, "balesize", 0)
 	elseif c == "balecountanz" then
@@ -3728,31 +4223,12 @@ function DashboardLive.getDashboardLiveCVT(self, dashboard)
 		else 
 			returnValue = cvtValue or false
 		end
-		
-		if dashboard.dblCond ~= nil and type(returnValue) == "number" and type(dashboard.dblCondValue) == "number" then
-			local cond = dashboard.dblCond
-			local value = dashboard.dblCondValue
-			if cond == "less" then
-				returnValue = (returnValue < value)
-			elseif cond == "lessequal" then
-				returnValue = (returnValue <= value)
-			elseif cond == "more" then
-				returnValue = (returnValue > value)
-			elseif cond == "moreequal" then
-				returnValue = (returnValue >= value)
-			elseif cond == "equal" then
-				returnValue = (returnValue == value)
-			end
-		end
-		if dashboard.dblCond ~= nil and type(returnValue) == "boolean" then
-			if dashboard.dblCond == "not" then
-				returnValue = not returnValue
-			end
-		end
+	else
+		returnValue = ""
 	end
 	
 	dbgprint("getDashboardLiveCVT : returnValue: "..tostring(returnValue), 4)
-	return returnValue
+	return checkCondition(returnValue, dashboard.dblCond, dashboard.dblCondValue)
 end
 
 function DashboardLive.getDashboardLiveRDS(self, dashboard)
@@ -3780,31 +4256,41 @@ function DashboardLive.getDashboardLiveRDS(self, dashboard)
 		else 
 			returnValue = rdsValue or false
 		end
-		
-		if dashboard.dblCond ~= nil and type(returnValue) == "number" and type(dashboard.dblCondValue) == "number" then
-			local cond = dashboard.dblCond
-			local value = dashboard.dblCondValue
-			if cond == "less" then
-				returnValue = (returnValue < value)
-			elseif cond == "lessequal" then
-				returnValue = (returnValue <= value)
-			elseif cond == "more" then
-				returnValue = (returnValue > value)
-			elseif cond == "moreequal" then
-				returnValue = (returnValue >= value)
-			elseif cond == "equal" then
-				returnValue = (returnValue == value)
-			end
-		end
-		if dashboard.dblCond ~= nil and type(returnValue) == "boolean" then
-			if dashboard.dblCond == "not" then
-				returnValue = not returnValue
-			end
-		end
 	end
 	
 	dbgprint("getDashboardLiveRDS : returnValue: "..tostring(returnValue), 4)
-	return returnValue
+	return checkCondition(returnValue, dashboard.dblCond, dashboard.dblCondValue)
+end
+
+function DashboardLive.getDashboardLiveRGPS(self, dashboard)
+	dbgprint("getDashboardLiveRGPS : dblCommand: "..tostring(dashboard.dblCommand), 4)
+	dbgprint("getDashboardLiveRGPS : dblState: "..tostring(dashboard.dblState), 4)
+	local c = dashboard.dblCommand
+	local s = dashboard.dblState
+	local returnValue = false
+	
+	local spec = self.spec_realGPS
+	if spec ~= nil and type(c)=="string" then
+		local valueFunc = "forDBL_"..c
+		local value = spec[valueFunc]
+		if s ~= nil then
+			if tonumber(s) ~= nil then
+				returnValue = tostring(value) == tostring(s)
+			else
+				local states = string.split(tostring(s), " ")
+				if states ~= nil and type(states) == "table" then
+					for _, state in pairs(states) do
+						returnValue = returnValue or (tostring(value) == tostring(state))
+					end
+				end
+			end
+		else 
+			returnValue = value or false
+		end
+	end
+	
+	dbgprint("getDashboardLiveRGPS : returnValue: "..tostring(returnValue), 4)
+	return checkCondition(returnValue, dashboard.dblCond, dashboard.dblCondValue)
 end
 
 function DashboardLive:onUpdate(dt)
@@ -3928,7 +4414,7 @@ function DashboardLiveKeepActive:update(dt)
 	-- enable crosshair for InteractiveControl if it's present and the hud is invisible
 	if g_currentMission.interactiveControl ~= nil and not g_currentMission.hud:getIsVisible() then
 		if g_currentMission.interactiveControl:isInteractiveControlActivated() then
-			setTextColor(0.5, 0.5, 0.5, 0.5)
+			setTextColor(unpack(DashboardLive.crosshairColor))
 			renderText(0.496, 0.495, 0.018, "+")
 		end
 		
