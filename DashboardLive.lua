@@ -652,14 +652,14 @@ end
 
 function DashboardLive:onReadStream(streamId, connection)
 	local spec = self.spec_DashboardLive
-	dbgprint("onReadStream : Read data for "..self:getName(), 1)
+	dbgprint("onReadStream : Read data for "..self:getName(), 2)
 	spec.motorTemperature = streamReadFloat32(streamId)
 	spec.fanEnabled = streamReadBool(streamId)
 	spec.lastFuelUsage = streamReadFloat32(streamId)
 	spec.lastDefUsage = streamReadFloat32(streamId)
 	spec.lastAirUsage = streamReadFloat32(streamId)
 		
-	dbgprint("onReadStream : maxPageGroup = "..tostring(spec.maxPageGroup), 1)
+	dbgprint("onReadStream : maxPageGroup = "..tostring(spec.maxPageGroup), 2)
 	for pg = 1, spec.maxPageGroup do
 		spec.pageGroups[pg].actPage = streamReadInt8(streamId)
 	end
@@ -669,14 +669,14 @@ end
 
 function DashboardLive:onWriteStream(streamId, connection)
 	local spec = self.spec_DashboardLive
-	dbgprint("onWriteStream : Sent data for "..self:getName(), 1)
+	dbgprint("onWriteStream : Sent data for "..self:getName(), 2)
 	streamWriteFloat32(streamId, spec.motorTemperature)
 	streamWriteBool(streamId, spec.fanEnabled)
 	streamWriteFloat32(streamId, spec.lastFuelUsage)
 	streamWriteFloat32(streamId, spec.lastDefUsage)
 	streamWriteFloat32(streamId, spec.lastAirUsage)
 	
-	dbgprint("onWriteStream : maxPageGroup = "..tostring(spec.maxPageGroup), 1)
+	dbgprint("onWriteStream : maxPageGroup = "..tostring(spec.maxPageGroup), 2)
 	for pg = 1, spec.maxPageGroup do
 		streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
 	end
@@ -699,7 +699,7 @@ function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 				spec.pageGroups[pg].actPage = streamReadInt8(streamId)
 			end
 			spec.orientation = streamReadString(streamId)
-			dbgprint("onReadUpdateStream : Read data for "..self:getName(), 1)
+			dbgprint("onReadUpdateStream : Read data for "..self:getName(), 2)
 		end
 	end
 end
@@ -721,7 +721,7 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 				streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
 			end
 			streamWriteString(streamId, spec.orientation)
-			dbgprint("onWriteUpdateStream : Sent data for "..self:getName(), 1)
+			dbgprint("onWriteUpdateStream : Sent data for "..self:getName(), 2)
 		end
 	end
 end
