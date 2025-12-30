@@ -1504,6 +1504,7 @@ local function getAttachedStatus(vehicle, element, mode, default)
 				local specBaler = findSpecialization(implement.object,"spec_baler")
 				local options = lower(element.dblOption)
 				if options == nil then options = "selected" end
+				resultValue = default
 				local baleTypeDef  
 				if specBaler ~= nil and specBaler.currentBaleTypeIndex ~= nil and options == "current" then
 					baleTypeDef = specBaler.baleTypes[specBaler.currentBaleTypeIndex]
@@ -1524,7 +1525,7 @@ local function getAttachedStatus(vehicle, element, mode, default)
 				end
 			elseif mode == "balecountanz" or mode == "balecounttotal" then
 				local specBaleCounter = findSpecialization(implement.object,"spec_baleCounter")	
-				resultValue = 0
+				resultValue = default or 0
 				if specBaleCounter ~= nil then 
 					if mode == "balecountanz" then
 						resultValue = specBaleCounter.sessionCounter
@@ -1534,20 +1535,20 @@ local function getAttachedStatus(vehicle, element, mode, default)
 						dbgprint(implement.object:getFullName().." baleCountTotal: "..tostring(resultValue), 4)
 					end
 				end
---[[
+
 			elseif mode == "wrappedbalecountanz" or mode == "wrappedbalecounttotal" then
 				local specBaleCounter = findSpecialization(implement.object,"spec_wrappedBaleCounter")	
-				resultValue = 0
+				resultValue = default or 0
 				if specBaleCounter ~= nil then 
 					if mode == "wrappedbalecountanz" then
-						resultValue = specBaleCounter.sessionCounter
+						resultValue = specBaleCounter.sessionCounter or 0
 						dbgprint(implement.object:getFullName().." wrappedBaleCountAnz: "..tostring(resultValue), 4)	
 					else
-						resultValue = specBaleCounter.lifetimeCounter
+						resultValue = specBaleCounter.lifetimeCounter or 0
 						dbgprint(implement.object:getFullName().." wrappedBaleCountTotal: "..tostring(resultValue), 4)
 					end
 				end
---]]
+
 			elseif mode == "locksteeringaxle" then --lockSteeringAxles by Ifko|nator, www.lsfarming-mods.com
 				local c = element.dblCommand
 				local specLSA = findSpecialization(implement.object, "spec_lockSteeringAxles", t)
@@ -2271,6 +2272,9 @@ function DashboardLive.getDBLAttributesBase(self, xmlFile, key, dashboard, compo
 		dbgprint("getDBLAttributesBase : cmd is empty", 2)
     	return true
     end
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
 	
     dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
 	local jointSide = xmlFile:getValue(key .. "#jointSide")
@@ -2389,6 +2393,9 @@ function DashboardLive.getDBLAttributesCombine(self, xmlFile, key, dashboard, co
 	
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd"))
     dbgprint("getDBLAttributesBase : command: "..tostring(dashboard.dblCommand), 2)
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
 
 	dashboard.dblState = xmlFile:getValue(key .. "#state") -- swath state, ridgemarker state, ...
 	dbgprint("getDBLAttributesBase : state: "..tostring(dashboard.dblState), 2)
@@ -2411,6 +2418,9 @@ function DashboardLive.getDBLAttributesRDA(self, xmlFile, key, dashboard, compon
     	return false
     end
     
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
     dashboard.dblOption = lower(xmlFile:getValue(key .. "#option"))
     dbgprint("getDBLAttributesRDA : option: "..tostring(dashboard.dblOption), 2)
     
@@ -2429,6 +2439,9 @@ function DashboardLive.getDBLAttributesVCA(self, xmlFile, key, dashboard, compon
     	Logging.xmlWarning(self.xmlFile, "No '#cmd' given for valueType 'vca'")
     	return false
     end
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
     
     dashboard.dblCond = xmlFile:getValue(key .. "#cond")
 	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
@@ -2452,6 +2465,9 @@ function DashboardLive.getDBLAttributesCC(self, xmlFile, key, dashboard, compone
     	Logging.xmlWarning(self.xmlFile, "No '#cmd' given for valueType 'cc'")
     	return false
     end
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
     
     dashboard.dblState = xmlFile:getValue(key .. "#state")
     dbgprint("getDBLAttributesECC : state: "..tostring(dashboard.dblState), 2)
@@ -2479,6 +2495,9 @@ end
 function DashboardLive.getDBLAttributesHLM(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", ""))
     dbgprint("getDBLAttributesHLM : cmd: "..tostring(dashboard.dblCommand), 2)
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
 	
 	dashboard.dblOption = lower(xmlFile:getValue(key .. "#option"))
     dbgprint("getDBLAttributesHLM : option: "..tostring(dashboard.dblOption), 2)
@@ -2512,6 +2531,9 @@ function DashboardLive.getDBLAttributesGPS(self, xmlFile, key, dashboard, compon
     if max ~= nil then dashboard.dblMax = max end
     if factor ~= nil then dashboard.dblFactor = factor end
     
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
 	dashboard.dblOption = lower(xmlFile:getValue(key .. "#option", "on")) -- 'on' or 'active'
     dbgprint("getDBLAttributesGPS : option: "..tostring(dashboard.dblOption), 2)
 	
@@ -2543,6 +2565,9 @@ function DashboardLive.getDBLAttributesGPSNumbers(self, xmlFile, key, dashboard,
     if max ~= nil then dashboard.dblMax = max end
     if factor ~= nil then dashboard.dblFactor = factor end
     
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
 	dashboard.dblFactor = xmlFile:getValue(key .. "#factor", "1")
     dbgprint("getDBLAttributesNumbers : factor: "..tostring(dashboard.dblFactor), 2)
     
@@ -2561,6 +2586,9 @@ function DashboardLive.getDBLAttributesPS(self, xmlFile, key, dashboard, compone
 	if min ~= nil then dashboard.dblMin = min end
     if max ~= nil then dashboard.dblMax = max end
     if factor ~= nil then dashboard.dblFactor = factor end
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
     
 	dashboard.dblOption = lower(xmlFile:getValue(key .. "#option", "mode"))
 	dashboard.dblState = xmlFile:getValue(key .. "#state", "")
@@ -2595,6 +2623,9 @@ function DashboardLive.getDBLAttributesBaler(self, xmlFile, key, dashboard, comp
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd"))
     dbgprint("getDBLAttributesBaler : command: "..tostring(dashboard.dblCommand), 2)
     
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
 	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
 	local jointSide = xmlFile:getValue(key .. "#jointSide")
 	dbgprint("getDBLAttributesBaler : jointSide: "..tostring(jointSide), 2)
@@ -2613,6 +2644,9 @@ function DashboardLive.getDBLAttributesLSA(self, xmlFile, key, dashboard, compon
 	
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd"))
 	dbgprint("getDBLAttributesLSA : command: "..tostring(dashboard.dblCommand), 2)
+	
+	dashboard.dblKey = key
+	dashboard.dblXmlFilename = xmlFile.filename
 	
 	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
 	local jointSide = xmlFile:getValue(key .. "#jointSide")
@@ -2634,6 +2668,9 @@ function DashboardLive.getDBLAttributesCXP(self, xmlFile, key, dashboard, compon
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd"))
 	dbgprint("getDBLAttributesCXP : command: "..tostring(dashboard.dblCommand), 2)
 	
+	dashboard.dblKey = key
+	dashboard.dblXmlFilename = xmlFile.filename
+	
 	dashboard.dblFactor = xmlFile:getValue(key .. "#factor", 100)
 	dbgprint("getDBLAttributesCXP : factor: "..tostring(dashboard.dblFactor), 2)
 	
@@ -2653,6 +2690,9 @@ function DashboardLive.getDBLAttributesFrontloader(self, xmlFile, key, dashboard
 	
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", "toolrotation")) -- rotation,  minmax
     dbgprint("getDBLAttributesFrontloader : command: "..tostring(dashboard.dblCommand), 2)
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
     
 	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
 	local jointSide = xmlFile:getValue(key .. "#jointSide")
@@ -2684,6 +2724,9 @@ function DashboardLive.getDBLAttributesPrecisionFarming(self, xmlFile, key, dash
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", "")) -- rotation,  minmax
     dbgprint("getDBLAttributesPrecisionFarming : command: "..tostring(dashboard.dblCommand), 2)
     
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
 	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
 	local jointSide = xmlFile:getValue(key .. "#jointSide")
 	dbgprint("getDBLAttributesPrecisionFarming : jointSide: "..tostring(jointSide), 2)
@@ -2712,6 +2755,9 @@ function DashboardLive.getDBLAttributesCVT(self, xmlFile, key, dashboard, compon
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", ""))
     dbgprint("getDBLAttributesCVT : command: "..tostring(dashboard.dblCommand), 2)
     
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
     dashboard.dblState = xmlFile:getValue(key .. "#state")
 	dbgprint("getDBLAttributesCVT : state: "..tostring(dashboard.dblState), 2)
 	
@@ -2738,6 +2784,9 @@ end
 function DashboardLive.getDBLAttributesRDS(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", ""))
     dbgprint("getDBLAttributesRDS : command: "..tostring(dashboard.dblCommand), 2)
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
     
     dashboard.dblState = xmlFile:getValue(key .. "#state")
 	dbgprint("getDBLAttributesRDS : state: "..tostring(dashboard.dblState), 2)
@@ -2766,6 +2815,9 @@ function DashboardLive.getDBLAttributesRGPS(self, xmlFile, key, dashboard, compo
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", ""))
     dbgprint("getDBLAttributesRGPS : command: "..tostring(dashboard.dblCommand), 2)
     
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
     dashboard.dblState = xmlFile:getValue(key .. "#state")
 	dbgprint("getDBLAttributesRGPS : state: "..tostring(dashboard.dblState), 2)
 	
@@ -2786,10 +2838,22 @@ function DashboardLive:getValue(superfunc, dashboard)
 	local value, min, max, center, isNumber = superfunc(self, dashboard)
 	local displayType = dashboard.displayTypeIndex
 	
+	local function getDisplayType(index)
+		for displayType, displayTypeIndex in pairs(Dashboard.TYPES) do
+			if displayTypeIndex == index then
+				return displayType
+			end
+		end
+		return
+	end
+	
 	local function errorHandling(expected, value, dashboard)
 		if dashboard.errorHandlingDone == nil then
 			Logging.warning("Type mismatch: "..tostring(expected).." expected but "..type(value).. " found!")
 			print("*** value = "..tostring(value))
+			print("*** xmlFilename = "..tostring(dashboard.dblXmlFilename))
+			print("*** xmlKey = "..tostring(dashboard.dblKey))
+			print("*** displayType = "..tostring(getDisplayType(dashboard.displayTypeIndex)))
 			print("*** valueType = "..tostring(dashboard.valueType.fullName))
 			print("*** cmd = "..tostring(dashboard.dblCommand))
 			print("*** option = "..tostring(dashboard.dblOption))
@@ -2799,7 +2863,7 @@ function DashboardLive:getValue(superfunc, dashboard)
 			print("*** cond = "..tostring(dashboard.dblCond))
 			print("*** condValue = "..tostring(dashboard.dblCondValue))		
 			print("================")
-			dbgprintCallstack(1)
+			dbgprintCallstack(2)
 			dashboard.errorHandlingDone = true
 		end
 	end
@@ -2837,8 +2901,8 @@ function DashboardLive:getValue(superfunc, dashboard)
 			errorHandling("boolean or number", value, dashboard)
 		end
 	elseif displayType == Dashboard.TYPES.MULTI_STATE then
-		if type(value) ~= "table" and type(value) ~= "number" and type(value) ~= "string" then
-			errorHandling("table, number or string", value, dashboard)
+		if type(value) ~= "table" and type(value) ~= "number" and type(value) ~= "string" and type(value) ~= "boolean" then
+			errorHandling("boolean, table, number or string", value, dashboard)
 		end
 	end
 	return value, min, max, center, isNumber
@@ -2862,19 +2926,21 @@ local function checkCondition(returnValue, cond, condValue)
 			end
 		end
 
-		if type(returnValue) == "boolean" and cond == "not" then
-			returnValue = not returnValue
-		end
-
 		if type(returnValue) == "string" and type(condValue) == "string" then
-			if cond == "equal" then
+			if cond == "equal" or cond == "notequal" then
+				dbgprint("checkCondition: returnValue = "..tostring(returnValue), 4)
 				returnValue = string.lower(returnValue) == string.lower(condValue)
 			elseif cond == "contains" then
+				dbgprint("checkCondition: returnValue = "..tostring(returnValue), 4)
 				returnValue = string.find(string.lower(returnValue), string.lower(condValue)) ~= nil
 			end
 		end
+		
+		if type(returnValue) == "boolean" and (cond == "not" or cond == "notequal") then
+			returnValue = not returnValue
+		end
 	end
-	dbgprint("checkCondition: returnValue = "..tostring(returnValue), 4)
+	dbgprint("checkCondition: resulting returnValue = "..tostring(returnValue), 4)
 	return returnValue
 end
 
@@ -3405,6 +3471,12 @@ function DashboardLive.getDashboardLiveRDA(self, dashboard)
 		elseif c == "maxSpeed" then
 			return specRDA.maxSpeed
 		end
+	elseif specRDA == nil then
+		if dashboard.dblCommand == "inflating" then
+			return false
+		else
+			return 0
+		end
 	end
 end
 
@@ -3817,7 +3889,7 @@ function DashboardLive.getDashboardLiveBaler(self, dashboard)
 	local spec = self.spec_DashboardLive
 	local c = dashboard.dblCommand
 	if c == "isroundbale" then
-		return getAttachedStatus(self, dashboard, "isroundbale", 0)
+		return getAttachedStatus(self, dashboard, "isroundbale", false)
 	elseif c == "balesize" then
 		return getAttachedStatus(self, dashboard, "balesize", 0)
 	elseif c == "balecountanz" then
@@ -4094,7 +4166,8 @@ function DashboardLive.getDashboardLiveCVT(self, dashboard)
 		else 
 			returnValue = cvtValue or false
 		end
-		
+	else
+		returnValue = ""
 	end
 	
 	dbgprint("getDashboardLiveCVT : returnValue: "..tostring(returnValue), 4)
