@@ -664,7 +664,11 @@ function DashboardLive:onReadStream(streamId, connection)
 		
 	dbgprint("onReadStream : maxPageGroup = "..tostring(spec.maxPageGroup), 2)
 	for pg = 1, spec.maxPageGroup do
-		spec.pageGroups[pg].actPage = streamReadInt8(streamId)
+		local actPage = streamReadInt8(streamId)
+		if actPage ~= 0 then 
+			assert(spec.pageGroups[pg] == nil, "onReadStream : page group mismatch detected")
+			spec.pageGroups[pg].actPage = actPage
+		end
 	end
 	spec.orientation = streamReadString(streamId)
 	spec.isDirty = true
@@ -681,7 +685,8 @@ function DashboardLive:onWriteStream(streamId, connection)
 	
 	dbgprint("onWriteStream : maxPageGroup = "..tostring(spec.maxPageGroup), 2)
 	for pg = 1, spec.maxPageGroup do
-		streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
+		local actPage = spec.pageGroups[pg] ~= nil and spec.pageGroups[pg].actPage ~= nil and spec.pageGroups[pg].actPage or 0
+		streamWriteInt8(streamId, actPage)
 	end
 	streamWriteString(streamId, spec.orientation)
 end
@@ -699,7 +704,11 @@ function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 		end
 		if not connection:getIsServer() then		
 			for pg = 1, spec.maxPageGroup do
-				spec.pageGroups[pg].actPage = streamReadInt8(streamId)
+			    local actPage = streamReadInt8(streamId)
+			    if actPage ~= 0 then 
+			    	assert(spec.pageGroups[pg] == nil, "onReadUpdateStream : page group mismatch detected")
+			    	spec.pageGroups[pg].actPage = actPage
+			    end
 			end
 			spec.orientation = streamReadString(streamId)
 			dbgprint("onReadUpdateStream : Read data for "..self:getName(), 2)
@@ -721,7 +730,8 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 		end
 		if connection:getIsServer() then
 			for pg = 1, spec.maxPageGroup do
-				streamWriteInt8(streamId, spec.pageGroups[pg].actPage)
+				local actPage = spec.pageGroups[pg] ~= nil and spec.pageGroups[pg].actPage ~= nil and spec.pageGroups[pg].actPage or 0
+				streamWriteInt8(streamId, actPage)
 			end
 			streamWriteString(streamId, spec.orientation)
 			dbgprint("onWriteUpdateStream : Sent data for "..self:getName(), 2)
