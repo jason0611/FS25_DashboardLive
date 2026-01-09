@@ -2942,13 +2942,18 @@ local function checkCondition(returnValue, cond, condValue)
 				returnValue = (returnValue >= condValue)
 			elseif cond == "equal" then
 				returnValue = (returnValue == condValue)
+			elseif cond == "notequal" then
+				returnValue = (returnValue ~= condValue)
 			end
 		end
 
 		if type(returnValue) == "string" and type(condValue) == "string" then
-			if cond == "equal" or cond == "notequal" then
+			if cond == "equal" then
 				dbgprint("checkCondition: returnValue = "..tostring(returnValue), 4)
 				returnValue = string.lower(returnValue) == string.lower(condValue)
+			elseif cond == "notequal" then
+				dbgprint("checkCondition: returnValue = "..tostring(returnValue), 4)
+				returnValue = string.lower(returnValue) ~= string.lower(condValue)
 			elseif cond == "contains" then
 				dbgprint("checkCondition: returnValue = "..tostring(returnValue), 4)
 				returnValue = string.find(string.lower(returnValue), string.lower(condValue)) ~= nil
@@ -4240,7 +4245,7 @@ function DashboardLive.getDashboardLiveCVT(self, dashboard)
 			returnValue = cvtValue or false
 		end
 	else
-		returnValue = ""
+		returnValue = " "
 	end
 	
 	dbgprint("getDashboardLiveCVT : returnValue: "..tostring(returnValue), 4)
