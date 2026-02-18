@@ -176,6 +176,7 @@ function DashboardLive.initSpecialization()
 	local key = DashboardLive.MOD_NAME..".DashboardLive"
 	schemaSavegame:register(XMLValueType.INT, "vehicles.vehicle(?)."..key..".groups.group(?)#actPage", "Active page", 1)
 	schemaSavegame:register(XMLValueType.STRING, "vehicles.vehicle(?)."..key.."#orientation", "MiniMap orientation", "rotate")
+	schemaSavegame:register(XMLValueType.FLOAT, "vehicles.vehicle(?)."..key.."#motorTemperature", "Motor Temperature", "20.0")
 	dbgprint("initSpecialization : DashboardLive savegame entries registered", 2)
 end
 
@@ -470,6 +471,11 @@ function DashboardLive:onLoadFinished(savegame)
 			end
 		end
 		spec.orientation = xmlFile:getValue(key.."#orientation", spec.orientation)
+		spec.motorTemperature = xmlFile:getValue(key.."#motorTemperature", spec.motorTemperature)
+		local mspec = self.spec_motorized
+		if mspec ~= nil then
+			mspec.motorTemperature.value = spec.motorTemperature
+		end
 		spec.isDirty = true
 		--self:raiseDirtyFlags(spec.dirtyFlag)
 		dbgprint("onLoadFinished : Loaded data for "..self:getName(), 1)
@@ -485,6 +491,7 @@ function DashboardLive:saveToXMLFile(xmlFile, key, usedModNames)
 		end
 	end
 	xmlFile:setValue(key.."#orientation", spec.orientation)
+	xmlFile:setValue(key.."#motorTemperature", spec.motorTemperature)
 
 	dbgprint("saveToXMLFile : saving data finished", 2)
 end
