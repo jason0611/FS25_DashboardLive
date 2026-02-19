@@ -93,6 +93,7 @@ function DashboardLive.initSpecialization()
 	schema:register(XMLValueType.INT, DashboardLive.DBL_XML_KEY .. "#max", "Maximum")
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#cond", "condition command")
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#condValue", "condition value")
+	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#default", "condition value")
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#baseColorDarkMode", "Base color for dark mode")
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#emitColorDarkMode", "Emit color for dark mode")
 	schema:register(XMLValueType.FLOAT, DashboardLive.DBL_XML_KEY .. "#intensityDarkMode", "Intensity for dark mode")
@@ -160,6 +161,7 @@ function DashboardLive.initSpecialization()
 		Dashboard.compoundsXMLSchema:register(XMLValueType.INT, COMPOUND_XML_KEY .. "#max", "Maximum")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#cond", "condition command")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#condValue", "condition value")
+		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#default", "condition value")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#baseColorDarkMode", "Base color for dark mode")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#emitColorDarkMode", "Emit color for dark mode")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_XML_KEY .. "#intensityDarkMode", "Intensity for dark mode")
@@ -2788,14 +2790,27 @@ function DashboardLive.getDBLAttributesCVT(self, xmlFile, key, dashboard, compon
 	dbgprint("getDBLAttributesCVT : state: "..tostring(dashboard.dblState), 2)
 	
 	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
-	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+	dbgprint("getDBLAttributesCVT : cond: "..tostring(dashboard.dblCond), 2)
 	
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
-	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	dbgprint("getDBLAttributesCVT : condValue: "..tostring(dashboard.dblCondValue), 2)
+	
+	dashboard.dblDefault = xmlFile:getValue(key .. "#default")
+	dbgprint("getDBLAttributesCVT : default: "..tostring(dashboard.dblDefault), 2)
 	
 	local valueNumber = tonumber(dashboard.dblCondValue)
 	if valueNumber ~= nil then
 		dashboard.dblCondValue = valueNumber
+	end
+	
+	local isBoolean = dashboard.dblDefault == "true" or dashboard.dblDefault == "false"
+	if isBoolean then
+		dashboard.dblDefault = dashboard.dblDefault == "true"
+	end
+	
+	local defaultValue = tonumber(dashboard.dblDefault)
+	if defaultValue ~= nil then
+		dashboard.dblDefault = defaultValue
 	end
 	
 	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
@@ -2822,6 +2837,9 @@ function DashboardLive.getDBLAttributesRDS(self, xmlFile, key, dashboard, compon
 	
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	
+	dashboard.dblDefault = xmlFile:getValue(key .. "#default")
+	dbgprint("getDBLAttributesCVT : default: "..tostring(dashboard.dblDefault), 2)
 	
 	local valueNumber = tonumber(dashboard.dblCondValue)
 	if valueNumber ~= nil then
@@ -2934,6 +2952,35 @@ function DashboardLive:getValue(superfunc, dashboard)
 	return value, min, max, center, isNumber
 end
 DashboardValueType.getValue = Utils.overwrittenFunction(DashboardValueType.getValue, DashboardLive.getValue)
+
+function DashboardLive:getDefaultValue(dashboard)
+	local displayType = dashboard.displayTypeIndex
+	local returnValue = dashboard.dblDefault
+	if returnValue == nil then
+		if displayType == Dashboard.TYPES.EMITTER then
+			returnValue = false
+		elseif displayType == Dashboard.TYPES.NUMBER then
+			returnValue = 0
+		elseif displayType == Dashboard.TYPES.ANIMATION then
+			returnValue = 0
+		elseif displayType == Dashboard.TYPES.ROT then
+			returnValue = 0
+		elseif displayType == Dashboard.TYPES.TRANS then
+			returnValue = 0
+		elseif displayType == Dashboard.TYPES.VISIBILITY then
+			returnValue = false
+		elseif displayType == Dashboard.TYPES.TEXT then
+			returnValue = ""
+		elseif displayType == Dashboard.TYPES.SLIDER then
+			returnValue = 0
+		elseif displayType == Dashboard.TYPES.MULTI_STATE then
+			returnValue = 0
+		elseif displayType == Dashboard.TYPES.AUDIO then
+			returnValue = false
+		end
+	end
+	return returnValue
+end
 
 -- conditions
 local function checkCondition(returnValue, cond, condValue)
@@ -4252,7 +4299,7 @@ function DashboardLive.getDashboardLiveCVT(self, dashboard)
 			returnValue = cvtValue or false
 		end
 	else
-		returnValue = " "
+		returnValue = DashboardLive:getDefaultValue(dashboard)
 	end
 	
 	dbgprint("getDashboardLiveCVT : returnValue: "..tostring(returnValue), 4)
@@ -4284,6 +4331,8 @@ function DashboardLive.getDashboardLiveRDS(self, dashboard)
 		else 
 			returnValue = rdsValue or false
 		end
+	else
+		returnValue = DashboardLive:getDefaultValue(dashboard)
 	end
 	
 	dbgprint("getDashboardLiveRDS : returnValue: "..tostring(returnValue), 4)
