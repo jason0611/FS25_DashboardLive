@@ -4364,6 +4364,8 @@ function DashboardLive.getDashboardLiveRGPS(self, dashboard)
 		else 
 			returnValue = value or false
 		end
+	else
+		returnValue = DashboardLive:getDefaultValue(dashboard)
 	end
 	
 	dbgprint("getDashboardLiveRGPS : returnValue: "..tostring(returnValue), 4)
