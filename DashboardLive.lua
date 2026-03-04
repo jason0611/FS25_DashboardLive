@@ -729,7 +729,7 @@ function DashboardLive:onReadStream(streamId, connection)
 		end
 	end
 	spec.orientation = streamReadString(streamId)
-	spec.leaveTime = streamReadFloat(streamId)
+	spec.leaveTime = streamReadFloat32(streamId)
 	spec.isDirty = true
 end
 
@@ -749,7 +749,7 @@ function DashboardLive:onWriteStream(streamId, connection)
 		dbgprint("onWriteStream : actPage sent = "..tostring(actPage), 2)
 	end
 	streamWriteString(streamId, spec.orientation)
-	streamWriteFloat(streamId, spec.leaveTime)
+	streamWriteFloat32(streamId, spec.leaveTime)
 end
 	
 function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
@@ -774,7 +774,7 @@ function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 			    end
 			end
 			spec.orientation = streamReadString(streamId)
-			spec.leaveTime = streamReadFloat(streamId)
+			spec.leaveTime = streamReadFloat32(streamId)
 			dbgprint("onReadUpdateStream : Read data for "..self:getName(), 2)
 		end
 	end
@@ -800,7 +800,7 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 			end
 			streamWriteString(streamId, spec.orientation)
 			dbgprint("onWriteUpdateStream : Sent data for "..self:getName(), 2)
-			streamWriteFloat(streamId, spec.leaveTime)
+			streamWriteFloat32(streamId, spec.leaveTime)
 		end
 	end
 end
