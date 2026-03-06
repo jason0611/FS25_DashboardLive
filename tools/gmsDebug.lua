@@ -32,15 +32,34 @@ function GMSDebug:enableConsoleCommands(command)
 	GMSDebug:print("Debug Console Commands added: "..command)
 end
 
-function GMSDebug:print(text, prio)
-	if prio == nil then prio = 1; end
+local function printToLog(level, text)
+	if level == 1 then
+		Logging.devInfo(text)
+	elseif level == 2 then
+		Logging.devWarning(text)
+	elseif level == 3 then
+		Logging.devError(text)
+	elseif level == -1 then
+		Logging.info(text)
+	elseif level == -2 then
+		Logging.warning(text)
+	elseif loevel == -3 then
+		Logging.error(text)
+	else
+		print(text)
+	end
+end
+
+function GMSDebug:print(text, prio, level)
+	if prio == nil then prio = 1 end
 	if not GMSDebug.state or prio > GMSDebug.level then return; end
 	if GMSDebug.filter ~= nil and string.find(text, GMSDebug.filter) == nil then return; end
-	print(GMSDebug.modName.." :: Prio "..tostring(prio).." :: "..tostring(text))
+	printToLog(level, GMSDebug.modName.." :: Prio "..tostring(prio).." :: "..tostring(text))
 end
 
 function GMSDebug:print_r(table, prio, level)
-	if prio == nil then prio = 1; end
+	if prio == nil then prio = 1 end
+	if level == nil then level = 0 end
 	if not GMSDebug.state or prio > GMSDebug.level then return; end
 	GMSDebug:print("BEGIN OF "..tostring(table).." (Prio "..tostring(prio)..") =================")
 	print_r(table, level)
