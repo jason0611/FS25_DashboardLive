@@ -2833,13 +2833,13 @@ function DashboardLive.getDBLAttributesRDS(self, xmlFile, key, dashboard, compon
 	dbgprint("getDBLAttributesRDS : state: "..tostring(dashboard.dblState), 2)
 	
 	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
-	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+	dbgprint("getDBLAttributesRDS : cond: "..tostring(dashboard.dblCond), 2)
 	
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
-	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	dbgprint("getDBLAttributesRDS : condValue: "..tostring(dashboard.dblCondValue), 2)
 	
 	dashboard.dblDefault = xmlFile:getValue(key .. "#default")
-	dbgprint("getDBLAttributesCVT : default: "..tostring(dashboard.dblDefault), 2)
+	dbgprint("getDBLAttributesRDS : default: "..tostring(dashboard.dblDefault), 2)
 	
 	local valueNumber = tonumber(dashboard.dblCondValue)
 	if valueNumber ~= nil then
@@ -4296,7 +4296,7 @@ function DashboardLive.getDashboardLiveCVT(self, dashboard)
 				end
 			end
 		else 
-			returnValue = cvtValue or false
+			returnValue = cvtValue or DashboardLive:getDefaultValue(dashboard)
 		end
 	else
 		returnValue = DashboardLive:getDefaultValue(dashboard)
@@ -4329,7 +4329,7 @@ function DashboardLive.getDashboardLiveRDS(self, dashboard)
 				end
 			end
 		else 
-			returnValue = rdsValue or false
+			returnValue = rdsValue or DashboardLive:getDefaultValue(dashboard)
 		end
 	else
 		returnValue = DashboardLive:getDefaultValue(dashboard)
@@ -4362,7 +4362,7 @@ function DashboardLive.getDashboardLiveRGPS(self, dashboard)
 				end
 			end
 		else 
-			returnValue = value or false
+			returnValue = value or DashboardLive:getDefaultValue(dashboard)
 		end
 	else
 		returnValue = DashboardLive:getDefaultValue(dashboard)
