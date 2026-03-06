@@ -644,6 +644,7 @@ function DashboardLive:onEnterVehicle()
 	dbgprint("onPlayerEnterVehicle", 2)
 	local spec = self.spec_DashboardLive
 	local mspec = self.spec_motorized
+	local coolingPerMS = 0.00001944 -- 70°C in one hour
 	if mspec ~= nil then
 		local enterTime = g_currentMission.environment.dayTime
 		local leaveTime = spec.leaveTime ~= 0 and spec.leaveTime or enterTime
@@ -663,7 +664,7 @@ function DashboardLive:onEnterVehicle()
 		if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then -- motor is on --> heating up
 			mspec.motorTemperature.value = math.min(lastTemp + mspec.motorTemperature.heatingPerMS * diffTime, mspec.motorFan.enableTemperature + math.random(0, 5))
 		else -- motor is off --> cooling down
-			mspec.motorTemperature.value = math.max(lastTemp - 0.05 * mspec.motorTemperature.heatingPerMS * diffTime, outsideTemp)
+			mspec.motorTemperature.value = math.max(lastTemp - coolingPerMS * diffTime, outsideTemp)
 		end
 		dbgprint("onPlayerEnterVehicle: newTemp = "..tostring(mspec.motorTemperature.value), 2)
 	end	
