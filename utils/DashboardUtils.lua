@@ -68,7 +68,7 @@ function DashboardUtils:loadDashboardGroupsFromXML(superfunc, savegame)
 		superfunc(self, savegame)
 	end
 end
-Dashboard.onLoad = Utils.overwrittenFunction(Dashboard.onLoad, DashboardUtils.loadDashboardGroupsFromXML)
+Dashboard.onLoad = Utils.overwrittenFunction(Dashboard.onLoad, DashboardUtils.loadDashboardGroupsFromXML) -- groups will be loaded first in 'onLoad'
 
 -- look for alternative xml-file for vehicle and use it for loading dashboard entries
 function DashboardUtils:loadDashboardsFromXML(superfunc, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
@@ -163,32 +163,44 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 	local dashboardXMLFile = args.dashboardXMLFile
 	local compound = args.compound
 	local compoundKey = args.compoundKey
+	print("***** "..tostring(compoundKey).." *****")
 	
 	dbgprint("onDashboardCompoundLoaded :: dashboardXMLFile: "..tostring(dashboardXMLFile.filename), 2)
 	
 -- compound extension: dashboard groups
-	local i = 0
-	while true do
-		local baseKey = string.format("%s.group(%d)", "dashboardCompounds", i)
-		dbgprint("onDashboardCompoundLoaded :: groups :: looking for key "..baseKey, 2)
-		if not dashboardXMLFile:hasProperty(baseKey) then
-			break
-		end
-
-		local group = {}
-		if self:loadDashboardGroupFromXML(dashboardXMLFile, baseKey, group) then
-			if spec.groups[group.name] ~= nil then
-				Logging.xmlDevInfo(dashboardXMLFile, "Skipping already existing group "..tostring(group.name).."!")
-			else
-				spec.groups[group.name] = group			
-				table.insert(spec.sortedGroups, group)
-				dbgprint("onDashboardCompoundLoaded :: group "..tostring(group.name).." added", 2)
-				spec.hasGroups = true
-				spec.compoundGroupsLoaded = true
+	local compoundKeyBackup = compoundKey
+	if spec.globalCompoundGroupsRead == nil then spec.globalCompoundGroupsRead = {} end
+	
+	for n = 1,2 do
+		local i = 0
+		print("Round "..tostring(n))
+		if n == 1 then compoundKey = "dashboardCompounds" end
+		while not spec.globalCompoundGroupsRead[dashboardXMLFile.filename] or n == 2 do
+			local baseKey = string.format("%s.group(%d)", compoundKey, i)
+			dbgprint("onDashboardCompoundLoaded :: groups :: looking for key "..baseKey, 2)
+			if not dashboardXMLFile:hasProperty(baseKey) then
+				break
 			end
+	
+			local group = {}
+			if self:loadDashboardGroupFromXML(dashboardXMLFile, baseKey, group) then
+				if spec.groups[group.name] ~= nil then
+					Logging.xmlDevInfo(dashboardXMLFile, "Skipping already existing group "..tostring(group.name).."!")
+				else
+					spec.groups[group.name] = group			
+					table.insert(spec.sortedGroups, group)
+					dbgprint("onDashboardCompoundLoaded :: group "..tostring(group.name).." added", 2)
+					spec.hasGroups = true
+					spec.compoundGroupsLoaded = true
+				end
+			end
+			dbgprint("onDashboardCompoundLoaded: Next group:", 2)
+			i = i + 1
 		end
-		dbgprint("onDashboardCompoundLoaded: Next group:", 2)
-		i = i + 1
+		if n == 1 then 
+			spec.globalCompoundGroupsRead[dashboardXMLFile.filename] = true
+			compoundKey = compoundKeyBackup
+		end
 	end
 	DashboardLive.createDashboardPages(self)
 	
