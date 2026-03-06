@@ -179,6 +179,7 @@ function DashboardLive.initSpecialization()
 	schemaSavegame:register(XMLValueType.INT, "vehicles.vehicle(?)."..key..".groups.group(?)#actPage", "Active page", 1)
 	schemaSavegame:register(XMLValueType.STRING, "vehicles.vehicle(?)."..key.."#orientation", "MiniMap orientation", "rotate")
 	schemaSavegame:register(XMLValueType.FLOAT, "vehicles.vehicle(?)."..key.."#motorTemperature", "Motor Temperature", "20.0")
+	schemaSavegame:register(XMLValueType.FLOAT, "vehicles.vehicle(?)."..key.."#leaveTime", "Timestamp when vehicle was left", "0.0")
 	dbgprint("initSpecialization : DashboardLive savegame entries registered", 2)
 end
 
@@ -198,6 +199,8 @@ function DashboardLive.registerEventListeners(vehicleType)
 	SpecializationUtil.registerEventListener(vehicleType, "onDraw", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onPostAttachImplement", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onPreDetachImplement", DashboardLive)
+	SpecializationUtil.registerEventListener(vehicleType, "onEnterVehicle", DashboardLive)
+	SpecializationUtil.registerEventListener(vehicleType, "onLeaveVehicle", DashboardLive)
 end
 
 function DashboardLive.registerOverwrittenFunctions(vehicleType)
@@ -256,6 +259,7 @@ function DashboardLive:onLoad(savegame)
 	spec.lastFuelUsage = 0
 	spec.lastDefUsage = 0
 	spec.lastAirUsage = 0
+	spec.leaveTime = 0.0
 	
 	-- discharge state
 	spec.currentDischargeState = 0
@@ -474,6 +478,7 @@ function DashboardLive:onLoadFinished(savegame)
 		end
 		spec.orientation = xmlFile:getValue(key.."#orientation", spec.orientation)
 		spec.motorTemperature = xmlFile:getValue(key.."#motorTemperature", spec.motorTemperature)
+		spec.leaveTime = xmlFile:getValue(key.."#leaveTime", spec.leaveTime)
 		local mspec = self.spec_motorized
 		if mspec ~= nil then
 			mspec.motorTemperature.value = spec.motorTemperature
@@ -494,6 +499,7 @@ function DashboardLive:saveToXMLFile(xmlFile, key, usedModNames)
 	end
 	xmlFile:setValue(key.."#orientation", spec.orientation)
 	xmlFile:setValue(key.."#motorTemperature", spec.motorTemperature)
+	xmlFile:setValue(key.."#leaveTime", spec.leaveTime)
 
 	dbgprint("saveToXMLFile : saving data finished", 2)
 end
@@ -622,6 +628,47 @@ function DashboardLive:onPreDetachImplement(implement)
 	end
 end
 
+function DashboardLive:onLeaveVehicle()
+	dbgprint("onPlayerLeaveVehicle", 2)
+	local spec = self.spec_DashboardLive
+	local mspec = self.spec_motorized
+	if mspec ~= nil then
+		local leaveTime = g_currentMission.environment.dayTime
+		spec.leaveTime = leaveTime
+		dbgprint("onPlayerLeaveVehicle: leaveTime = "..tostring(leaveTime), 2)
+		self:raiseDirtyFlags(spec.dirtyFlag)
+	end
+end
+
+function DashboardLive:onEnterVehicle()
+	dbgprint("onPlayerEnterVehicle", 2)
+	local spec = self.spec_DashboardLive
+	local mspec = self.spec_motorized
+	local coolingPerMS = 0.00001944 -- 70°C in one hour
+	if mspec ~= nil then
+		local enterTime = g_currentMission.environment.dayTime
+		local leaveTime = spec.leaveTime ~= 0 and spec.leaveTime or enterTime
+		
+		local diffTime = enterTime - leaveTime
+		if diffTime < 0 then
+			diffTime = diffTime + (24 * 60 * 60 * 1000)
+		end
+		
+		local lastTemp = mspec.motorTemperature.value
+		local outsideTemp = g_currentMission.environment.weather:getCurrentTemperature()
+		dbgprint("onPlayerEnterVehicle: outsideTemp = "..tostring(outsideTemp), 2)
+		dbgprint("onPlayerEnterVehicle: lastTemp = "..tostring(lastTemp), 2)
+		dbgprint("onPlayerEnterVehicle: diffTime = "..tostring(diffTime), 2)
+		
+		if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then -- motor is on --> heating up
+			mspec.motorTemperature.value = math.min(lastTemp + mspec.motorTemperature.heatingPerMS * diffTime, mspec.motorFan.enableTemperature + math.random(0, 5))
+		else -- motor is off --> cooling down
+			mspec.motorTemperature.value = math.max(lastTemp - coolingPerMS * diffTime, outsideTemp)
+		end
+		dbgprint("onPlayerEnterVehicle: newTemp = "..tostring(mspec.motorTemperature.value), 2)
+	end	
+end	
+	
 function DashboardLive.createDashboardPages(self)
 	local spec = self.spec_DashboardLive
     local dashboard = self.spec_dashboard
@@ -682,6 +729,7 @@ function DashboardLive:onReadStream(streamId, connection)
 		end
 	end
 	spec.orientation = streamReadString(streamId)
+	spec.leaveTime = streamReadFloat32(streamId)
 	spec.isDirty = true
 end
 
@@ -701,6 +749,7 @@ function DashboardLive:onWriteStream(streamId, connection)
 		dbgprint("onWriteStream : actPage sent = "..tostring(actPage), 2)
 	end
 	streamWriteString(streamId, spec.orientation)
+	streamWriteFloat32(streamId, spec.leaveTime)
 end
 	
 function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
@@ -725,6 +774,7 @@ function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 			    end
 			end
 			spec.orientation = streamReadString(streamId)
+			spec.leaveTime = streamReadFloat32(streamId)
 			dbgprint("onReadUpdateStream : Read data for "..self:getName(), 2)
 		end
 	end
@@ -750,6 +800,7 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 			end
 			streamWriteString(streamId, spec.orientation)
 			dbgprint("onWriteUpdateStream : Sent data for "..self:getName(), 2)
+			streamWriteFloat32(streamId, spec.leaveTime)
 		end
 	end
 end
@@ -2841,6 +2892,9 @@ function DashboardLive.getDBLAttributesRDS(self, xmlFile, key, dashboard, compon
 	dashboard.dblDefault = xmlFile:getValue(key .. "#default")
 	dbgprint("getDBLAttributesRDS : default: "..tostring(dashboard.dblDefault), 2)
 	
+	dashboard.dblDefault = xmlFile:getValue(key .. "#default")
+	dbgprint("getDBLAttributesCVT : default: "..tostring(dashboard.dblDefault), 2)
+	
 	local valueNumber = tonumber(dashboard.dblCondValue)
 	if valueNumber ~= nil then
 		dashboard.dblCondValue = valueNumber
@@ -4406,14 +4460,15 @@ function DashboardLive:onUpdate(dt)
 		end
 	
 		-- sync motor temperature
-		if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
+--		if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
+		if mspec ~= nil then
 			spec.motorTemperature = mspec.motorTemperature.value
 			spec.fanEnabled = mspec.motorFan.enabled
 			spec.lastFuelUsage = mspec.lastFuelUsage
 			spec.lastDefUsage = mspec.lastDefUsage
 			spec.lastAirUsage = mspec.lastAirUsage
 			
-			if spec.motorTemperature ~= self.spec_motorized.motorTemperature.valueSend then
+			if spec.motorTemperature ~= mspec.motorTemperature.valueSend then
 				setDirty = true
 			end
 			
@@ -4432,7 +4487,8 @@ function DashboardLive:onUpdate(dt)
 	if self.isClient and not self.isServer then
 	
 		-- sync motor data
-		if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
+--		if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
+		if mspec ~= nil then
 			mspec.motorTemperature.value = spec.motorTemperature
 			mspec.motorFan.enabled = spec.fanEnabled
 			mspec.lastFuelUsage = spec.lastFuelUsage

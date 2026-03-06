@@ -114,6 +114,8 @@ V2.1.0.0:
 - Integration of realGPS
 - Items can be active on multiple pages
 - HeadingText expanded
+- Engine temperature will be saved
+- Engine will heat up and cool down without being entered
 
 Important: Vehicles must be prepared for DashboardLive in advance in order to be able to use the functions and displays. 
 An installation guide and documentation are included, and video tutorials are also available.
