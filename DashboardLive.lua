@@ -2884,13 +2884,13 @@ function DashboardLive.getDBLAttributesRDS(self, xmlFile, key, dashboard, compon
 	dbgprint("getDBLAttributesRDS : state: "..tostring(dashboard.dblState), 2)
 	
 	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
-	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+	dbgprint("getDBLAttributesRDS : cond: "..tostring(dashboard.dblCond), 2)
 	
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
-	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	dbgprint("getDBLAttributesRDS : condValue: "..tostring(dashboard.dblCondValue), 2)
 	
 	dashboard.dblDefault = xmlFile:getValue(key .. "#default")
-	dbgprint("getDBLAttributesCVT : default: "..tostring(dashboard.dblDefault), 2)
+	dbgprint("getDBLAttributesRDS : default: "..tostring(dashboard.dblDefault), 2)
 	
 	local valueNumber = tonumber(dashboard.dblCondValue)
 	if valueNumber ~= nil then
