@@ -660,7 +660,6 @@ function DashboardLive:onEnterVehicle()
 		dbgprint("onPlayerEnterVehicle: lastTemp = "..tostring(lastTemp), 2)
 		dbgprint("onPlayerEnterVehicle: diffTime = "..tostring(diffTime), 2)
 		
-		--spec.motorTemperature.heatingPerMS * 1000 -- heating
 		if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then -- motor is on --> heating up
 			mspec.motorTemperature.value = math.min(lastTemp + mspec.motorTemperature.heatingPerMS * diffTime, mspec.motorFan.enableTemperature + math.random(0, 5))
 		else -- motor is off --> cooling down
