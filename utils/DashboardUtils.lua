@@ -163,7 +163,6 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 	local dashboardXMLFile = args.dashboardXMLFile
 	local compound = args.compound
 	local compoundKey = args.compoundKey
-	print("***** "..tostring(compoundKey).." *****")
 	
 	dbgprint("onDashboardCompoundLoaded :: dashboardXMLFile: "..tostring(dashboardXMLFile.filename), 2)
 	
@@ -173,7 +172,6 @@ function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 	
 	for n = 1,2 do
 		local i = 0
-		print("Round "..tostring(n))
 		if n == 1 then compoundKey = "dashboardCompounds" end
 		while not spec.globalCompoundGroupsRead[dashboardXMLFile.filename] or n == 2 do
 			local baseKey = string.format("%s.group(%d)", compoundKey, i)
