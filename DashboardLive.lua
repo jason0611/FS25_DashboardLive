@@ -3029,7 +3029,11 @@ function DashboardLive:getDefaultValue(dashboard)
 	local returnValue = dashboard.dblDefault
 	if returnValue == nil then
 		if displayType == Dashboard.TYPES.EMITTER then
-			returnValue = false
+			if dashboard.minActiveValue ~= nil or dashboard.maxActiveValue ~= nil then
+				returnValue = 0
+			else
+				returnValue = false
+			end
 		elseif displayType == Dashboard.TYPES.NUMBER then
 			returnValue = 0
 		elseif displayType == Dashboard.TYPES.ANIMATION then
@@ -3039,7 +3043,11 @@ function DashboardLive:getDefaultValue(dashboard)
 		elseif displayType == Dashboard.TYPES.TRANS then
 			returnValue = 0
 		elseif displayType == Dashboard.TYPES.VISIBILITY then
-			returnValue = false
+			if dashboard.minActiveValue ~= nil or dashboard.maxActiveValue ~= nil then
+				returnValue = 0
+			else
+				returnValue = false
+			end
 		elseif displayType == Dashboard.TYPES.TEXT then
 			returnValue = ""
 		elseif displayType == Dashboard.TYPES.SLIDER then
