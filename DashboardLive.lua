@@ -3064,6 +3064,10 @@ end
 -- conditions
 local function checkCondition(returnValue, cond, condValue)
 	if cond ~= nil then
+		if type(returnValue) == "boolean" and (cond == "not" or cond == "notequal") then
+			returnValue = not returnValue
+		end
+		
 		if type(returnValue) == "number" and type(condValue) == "number" then
 			if cond == "less" then
 				returnValue = (returnValue < condValue)
@@ -3091,10 +3095,6 @@ local function checkCondition(returnValue, cond, condValue)
 				dbgprint("checkCondition: returnValue = "..tostring(returnValue), 4)
 				returnValue = string.find(string.lower(returnValue), string.lower(condValue)) ~= nil
 			end
-		end
-		
-		if type(returnValue) == "boolean" and (cond == "not" or cond == "notequal") then
-			returnValue = not returnValue
 		end
 	end
 	dbgprint("checkCondition: resulting returnValue = "..tostring(returnValue), 4)
