@@ -18,6 +18,7 @@ GMSDebug:init(DashboardLive.MOD_NAME, true, 1)
 GMSDebug:enableConsoleCommands("dblDebug")
 
 source(DashboardLive.MOD_PATH.."utils/DashboardUtils.lua")
+source(DashboardLive.MOD_PATH.."tools/fix_AIAutomaticSteering.lua")
 
 DashboardLive.DELAYTIME= 3000 -- 3 seconds
 DashboardLive.SCALE = 0.1
@@ -4527,19 +4528,19 @@ function DashboardLive:onUpdate(dt)
 	end
 		
 	-- switch light/dark mode
---	if spec.isDirty then
---	
---		-- force update of all dashboards
---		self:updateDashboards(dspec.groupDashboards, dt, true)
---		self:updateDashboards(dspec.tickDashboards, dt, true)
---		self:updateDashboards(dspec.criticalDashboards, dt, true)
---		for _, dashboards in pairs(dspec.dashboardsByValueType) do
---			self:updateDashboards(dashboards, dt, true)
---		end
---	
---		spec.isDirty = false
---		spec.darkModeLast = spec.darkMode
---	end
+	if spec.isDirty then
+	
+		-- force update of all dashboards
+		self:updateDashboards(dspec.groupDashboards, dt, true)
+		self:updateDashboards(dspec.tickDashboards, dt, true)
+		self:updateDashboards(dspec.criticalDashboards, dt, true)
+		for _, dashboards in pairs(dspec.dashboardsByValueType) do
+			self:updateDashboards(dashboards, dt, true)
+		end
+	
+		spec.isDirty = false
+		spec.darkModeLast = spec.darkMode
+	end
 end
 
 function DashboardLive:onDraw()
