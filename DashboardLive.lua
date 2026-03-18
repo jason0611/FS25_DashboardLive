@@ -4452,7 +4452,6 @@ function DashboardLive.getDashboardLiveRGPS(self, dashboard)
 end
 
 function DashboardLive:onUpdate(dt)
-print("onUpdate")
 	local spec = self.spec_DashboardLive
 	local specDis = self.spec_dischargeable
 	local dspec = self.spec_dashboard
@@ -4474,7 +4473,6 @@ print("onUpdate")
 	
 	-- sync server to client data
 	if self.isServer then
-print("server -> client")
 		local setDirty = false
 		
 		-- sync currentDischargeState with server
@@ -4512,7 +4510,6 @@ print("server -> client")
 		
 	-- sync client from server data
 	if self.isClient and not self.isServer then
-print("client -> server")
 		-- sync motor data
 --		if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
 		if mspec ~= nil then
@@ -4530,19 +4527,19 @@ print("client -> server")
 	end
 		
 	-- switch light/dark mode
-	if spec.isDirty then
-	
-		-- force update of all dashboards
-		self:updateDashboards(dspec.groupDashboards, dt, true)
-		self:updateDashboards(dspec.tickDashboards, dt, true)
-		self:updateDashboards(dspec.criticalDashboards, dt, true)
-		for _, dashboards in pairs(dspec.dashboardsByValueType) do
-			self:updateDashboards(dashboards, dt, true)
-		end
-	
-		spec.isDirty = false
-		spec.darkModeLast = spec.darkMode
-	end
+--	if spec.isDirty then
+--	
+--		-- force update of all dashboards
+--		self:updateDashboards(dspec.groupDashboards, dt, true)
+--		self:updateDashboards(dspec.tickDashboards, dt, true)
+--		self:updateDashboards(dspec.criticalDashboards, dt, true)
+--		for _, dashboards in pairs(dspec.dashboardsByValueType) do
+--			self:updateDashboards(dashboards, dt, true)
+--		end
+--	
+--		spec.isDirty = false
+--		spec.darkModeLast = spec.darkMode
+--	end
 end
 
 function DashboardLive:onDraw()
