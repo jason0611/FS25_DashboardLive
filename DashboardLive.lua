@@ -4452,6 +4452,7 @@ function DashboardLive.getDashboardLiveRGPS(self, dashboard)
 end
 
 function DashboardLive:onUpdate(dt)
+print("onUpdate")
 	local spec = self.spec_DashboardLive
 	local specDis = self.spec_dischargeable
 	local dspec = self.spec_dashboard
@@ -4473,6 +4474,7 @@ function DashboardLive:onUpdate(dt)
 	
 	-- sync server to client data
 	if self.isServer then
+print("server -> client")
 		local setDirty = false
 		
 		-- sync currentDischargeState with server
@@ -4510,7 +4512,7 @@ function DashboardLive:onUpdate(dt)
 		
 	-- sync client from server data
 	if self.isClient and not self.isServer then
-	
+print("client -> server")
 		-- sync motor data
 --		if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
 		if mspec ~= nil then
