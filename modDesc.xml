@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="104">
 	<author>Glowins Modschmiede</author>
-	<version>2.D.0.0-</version>
-	<devStatus>DEBUG</devStatus>
+	<version>2.1.0.B-21-</version>
+	<devStatus>BETA</devStatus>
 	<contributors>SbSh, mister_mojo_AT, AgrarPlay und LUWZ, Farming Duds</contributors>
 	<title>
 		<en>Dashboard Live</en>
@@ -226,6 +226,7 @@ V2.1.0.0:
 - Integration von realGPS
 - Anzeigen können auf mehreren Seiten aktiv sein
 - HeadingText erweitert
+- nil-condition fix in der Server-Synchronisation von AISteering ergänzt
 
 Wichtig: Fahrzeuge müssen vorab für DashboardLive vorbereitet werden, um die Funktionen und Anzeigen nutzen zu können.
 Eine Einbauhilfe und Dokumentation sind enthalten, außerdem sind Video-Tutorials verfügbar.
