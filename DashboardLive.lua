@@ -4511,6 +4511,7 @@ function DashboardLive:onUpdate(dt)
 		
 	-- sync client from server data
 	if self.isClient and not self.isServer then
+	
 		-- sync motor data
 --		if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
 		if mspec ~= nil then
