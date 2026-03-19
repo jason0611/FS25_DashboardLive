@@ -766,7 +766,7 @@ function DashboardLive:onWriteStream(streamId, connection)
 		streamWriteInt8(streamId, actPage)
 		dbgprint("onWriteStream : actPage sent = "..tostring(actPage), 2)
 	end
-	streamWriteString(streamId, spec.orientation)
+	streamWriteString(streamId, spec.orientation or "rotate")
 	streamWriteFloat32(streamId, spec.leaveTime)
 end
 	
@@ -816,7 +816,7 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 				streamWriteInt8(streamId, actPage)
 				dbgprint("onWriteStream : actPage sent = "..tostring(actPage), 2)
 			end
-			streamWriteString(streamId, spec.orientation)
+			streamWriteString(streamId, spec.orientation or "rotate")
 			dbgprint("onWriteUpdateStream : Sent data for "..self:getName(), 2)
 			streamWriteFloat32(streamId, spec.leaveTime)
 		end
