@@ -18,7 +18,7 @@ GMSDebug:init(DashboardLive.MOD_NAME, true, 1)
 GMSDebug:enableConsoleCommands("dblDebug")
 
 source(DashboardLive.MOD_PATH.."utils/DashboardUtils.lua")
-source(DashboardLive.MOD_PATH.."tools/fix_AIAutomaticSteering.lua")
+--source(DashboardLive.MOD_PATH.."tools/fix_AIAutomaticSteering.lua")
 
 DashboardLive.DELAYTIME= 3000 -- 3 seconds
 DashboardLive.SCALE = 0.1
