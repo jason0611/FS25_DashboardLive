@@ -38,7 +38,7 @@ function SyncClient2ServerEvent:run(connection)
 		local spec = self.object.spec_DashboardLive
 		spec.pageGroups = self.pageGroups
 		spec.orientation = self.orientation
-		spec.leaveTime = self.timestamp
+		spec.leaveTime = self.leaveTime
 	end
 	if not connection:getIsServer() then
 		g_server:broadcastEvent(SyncClient2ServerEvent.new(self.object, self.object.spec_DashboardLive.orientation, self.object.spec_DashboardLive.leaveTime), nil, connection, self.object)
