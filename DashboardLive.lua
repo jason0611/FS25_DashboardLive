@@ -4535,15 +4535,9 @@ function DashboardLive:onUpdateTick(dt)
 			self:raiseDirtyFlags(spec.dirtyFlagS2C)
 			spec.needsSyncServerToClient = false
 		end
-		if spec.needsSyncClientToServer then
-			local name = self.getFullName ~= nil and self:getFullName() or "unknown"
-			dbgprint("C2S sync triggered for: "..name)
-			SyncClient2ServerEvent.sendEvent(self, spec.orientation, spec.leaveTime)
-			spec.needsSyncClientToServer = false
-		end
 	end
 	
-	-- sync client from server data
+	-- sync client with or to server data
 	if self.isClient and not self.isServer then
 	
 		-- sync motor data
@@ -4559,6 +4553,14 @@ function DashboardLive:onUpdateTick(dt)
 		-- sync currentDischargeState from server
 		if specDis ~= nil then
 			specDis.currentDischargeState = spec.currentDischargeState
+		end
+		
+		-- trigger syncClient2Server event
+		if spec.needsSyncClientToServer then
+			local name = self.getFullName ~= nil and self:getFullName() or "unknown"
+			dbgprint("C2S sync triggered for: "..name)
+			SyncClient2ServerEvent.sendEvent(self, spec.orientation, spec.leaveTime)
+			spec.needsSyncClientToServer = false
 		end
 	end
 		
