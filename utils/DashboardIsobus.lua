@@ -10,7 +10,7 @@ end
 DashboardIsobus.XMLkey = "vehicle.dashboard.dashboardLive.isobus"
 
 source(DashboardIsobus.MOD_PATH.."tools/gmsDebug.lua")
-GMSDebug:init(DashboardIsobus.MOD_NAME, true, 2)
+GMSDebug:init(DashboardIsobus.MOD_NAME, true, 1)
 --GMSDebug:enableConsoleCommands("dblDebug")
 
 function DashboardIsobus.prerequisitesPresent(specializations)

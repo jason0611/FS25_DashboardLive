@@ -14,13 +14,13 @@ if DashboardLive.MOD_NAME == nil then
 end
 
 source(DashboardLive.MOD_PATH.."tools/gmsDebug.lua")
-GMSDebug:init(DashboardLive.MOD_NAME, true, 2)
+GMSDebug:init(DashboardLive.MOD_NAME, true, 1)
 GMSDebug:enableConsoleCommands("dblDebug")
 
 source(DashboardLive.MOD_PATH.."events/SyncClient2Server.lua")
 source(DashboardLive.MOD_PATH.."events/SyncServer2Client.lua")
 source(DashboardLive.MOD_PATH.."utils/DashboardUtils.lua")
-source(DashboardLive.MOD_PATH.."tools/fix_AIAutomaticSteering.lua")
+--source(DashboardLive.MOD_PATH.."tools/fix_AIAutomaticSteering.lua")
 
 DashboardLive.DELAYTIME= 3000 -- 3 seconds
 DashboardLive.SCALE = 0.1
@@ -215,8 +215,6 @@ function DashboardLive.registerEventListeners(vehicleType)
 	SpecializationUtil.registerEventListener(vehicleType, "onRegisterActionEvents", DashboardLive)
  	SpecializationUtil.registerEventListener(vehicleType, "onReadStream", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onWriteStream", DashboardLive)
---	SpecializationUtil.registerEventListener(vehicleType, "onReadUpdateStream", DashboardLive)
---	SpecializationUtil.registerEventListener(vehicleType, "onWriteUpdateStream", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onUpdate", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onUpdateTick", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onDraw", DashboardLive)
@@ -782,68 +780,6 @@ function DashboardLive:onWriteStream(streamId, connection)
 	streamWriteFloat32(streamId, spec.leaveTime)
 end
 	
-function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
-	local spec = self.spec_DashboardLive
-	
-	if connection:getIsServer() then	
-		if streamReadBool(streamId) then
-			spec.motorTemperature = streamReadFloat32(streamId)
-			spec.fanEnabled = streamReadBool(streamId)
-			spec.lastFuelUsage = streamReadFloat32(streamId)
-			spec.lastDefUsage = streamReadFloat32(streamId)
-			spec.lastAirUsage = streamReadFloat32(streamId)
-			spec.currentDischargeState = streamReadInt8(streamId)
-		end
---	else
-----	if not connection:getIsServer() then		
---		if streamReadBool(streamId) then
---			for pg = 1, spec.maxPageGroup do
---			    local actPage = streamReadInt8(streamId)
---			    dbgprint("onReadStream : actPage read = "..tostring(actPage), 2)
---			    if actPage ~= 0 then 
---			    	if spec.pageGroups[pg] ~= nil then			    		
---						spec.pageGroups[pg].actPage = actPage
---					end
---			    end
---			end
---			spec.orientation = streamReadString(streamId)
---			spec.leaveTime = streamReadFloat32(streamId)
---			dbgprint("onReadUpdateStream : Read data for "..self:getName(), 2)
---		end
-	end
-end
-
-function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
-	if not connection:getIsServer() then
-		dbgprint("onWriteUpdateStream : Sent S2C data for "..self:getName(), 1)
-		if streamWriteBool(streamId, bitAND(dirtyMask, self.spec_DashboardLive.dirtyFlagS2C) ~= 0) then
-			dbgprint("onWriteUpdateStream : DBL S2C Sync", 1)
-			local specDBL = self.spec_DashboardLive
-			streamWriteFloat32(streamId, specDBL.motorTemperature)
-			streamWriteBool(streamId, specDBL.fanEnabled)
-			streamWriteFloat32(streamId, specDBL.lastFuelUsage)
-			streamWriteFloat32(streamId, specDBL.lastDefUsage)
-			streamWriteFloat32(streamId, specDBL.lastAirUsage)
-			streamWriteInt8(streamId, specDBL.currentDischargeState)
-			self.spec_motorized.motorTemperature.valueSend = specDBL.motorTemperature
-		end
---	else
-----	if connection:getIsServer() then
---		dbgprint("onWriteUpdateStream : Sent C2S data for "..self:getName(), 2)
---		if streamWriteBool(streamId, bitAND(dirtyMask, self.spec_DashboardLive.dirtyFlagC2S) ~= 0) then
---			dbgprint("onWriteUpdateStream : DBL C2S Sync", 2)
---			local specDBL = self.spec_DashboardLive
---			for pg = 1, specDBL.maxPageGroup do
---				local actPage = specDBL.pageGroups[pg] ~= nil and specDBL.pageGroups[pg].actPage ~= nil and specDBL.pageGroups[pg].actPage or 0
---				streamWriteInt8(streamId, actPage)
---				dbgprint("onWriteUpdateStream : actPage sent = "..tostring(actPage), 2)
---			end
---			streamWriteString(streamId, specDBL.orientation or "rotate")
---			streamWriteFloat32(streamId, specDBL.leaveTime)
---		end
-	end
-end
-
 -- inputBindings / inputActions
 	
 function DashboardLive:onRegisterActionEvents(isActiveForInput, isActiveForInputIgnoreSelection)

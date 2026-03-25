@@ -13,8 +13,6 @@ function SyncClient2ServerEvent.new(object, maxPageGroup, pageGroups, orientatio
 	self.pageGroups = pageGroups
 	self.orientation = orientation
 	self.leaveTime = leaveTime
-print("new:")
-print_r(pageGroups)
 	return self
 end
 
@@ -56,8 +54,6 @@ function SyncClient2ServerEvent:run(connection)
 		self.object.spec_DashboardLive.leaveTime = self.leaveTime
 	end
 	if not connection:getIsServer() then
-print("broadcast:")
-print_r(self.pageGroups)
 		g_server:broadcastEvent(SyncClient2ServerEvent.new(self.object, self.maxPageGroup, self.pageGroups, self.orientation, self.leaveTime), nil, connection, self.object)
 	end
 end
