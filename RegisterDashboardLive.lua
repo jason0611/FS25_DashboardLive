@@ -30,6 +30,8 @@ for typeName, typeEntry in pairs(g_vehicleTypeManager.types) do
 		SpecializationUtil.hasSpecialization(Dashboard, typeEntry.specializations)
 		and
 		SpecializationUtil.hasSpecialization(Motorized, typeEntry.specializations)
+		and 
+		not SpecializationUtil.hasSpecialization(Locomotive, typeEntry.specializations)
     then
      	g_vehicleTypeManager:addSpecialization(typeName, specName)
 		dbgprint(specName.." registered for "..typeName)
@@ -37,6 +39,8 @@ for typeName, typeEntry in pairs(g_vehicleTypeManager.types) do
     
     if
 		SpecializationUtil.hasSpecialization(Attachable, typeEntry.specializations)
+		and 
+		not SpecializationUtil.hasSpecialization(Locomotive, typeEntry.specializations)
     then
      	g_vehicleTypeManager:addSpecialization(typeName, specNameIsobus)
 		dbgprint(specNameIsobus.." registered for "..typeName)
