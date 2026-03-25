@@ -18,8 +18,9 @@ GMSDebug:init(DashboardLive.MOD_NAME, true, 1)
 GMSDebug:enableConsoleCommands("dblDebug")
 
 source(DashboardLive.MOD_PATH.."events/SyncClient2Server.lua")
+source(DashboardLive.MOD_PATH.."events/SyncServer2Client.lua")
 source(DashboardLive.MOD_PATH.."utils/DashboardUtils.lua")
-source(DashboardLive.MOD_PATH.."tools/fix_AIAutomaticSteering.lua")
+--source(DashboardLive.MOD_PATH.."tools/fix_AIAutomaticSteering.lua")
 
 DashboardLive.DELAYTIME= 3000 -- 3 seconds
 DashboardLive.SCALE = 0.1
@@ -214,8 +215,6 @@ function DashboardLive.registerEventListeners(vehicleType)
 	SpecializationUtil.registerEventListener(vehicleType, "onRegisterActionEvents", DashboardLive)
  	SpecializationUtil.registerEventListener(vehicleType, "onReadStream", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onWriteStream", DashboardLive)
-	SpecializationUtil.registerEventListener(vehicleType, "onReadUpdateStream", DashboardLive)
-	SpecializationUtil.registerEventListener(vehicleType, "onWriteUpdateStream", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onUpdate", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onUpdateTick", DashboardLive)
 	SpecializationUtil.registerEventListener(vehicleType, "onDraw", DashboardLive)
@@ -678,8 +677,10 @@ function DashboardLive:onEnterVehicle()
 		if diffTime < 0 then
 			diffTime = diffTime + (24 * 60 * 60 * 1000)
 		end
-		
-		local lastTemp = mspec.motorTemperature.value
+
+		dbgprint("onEnterVehicle: mspec.motorTemperature.value = "..tostring(mspec.motorTemperature.value), 2)
+		dbgprint("onEnterVehicle: spec.motorTemperature = "..tostring(spec.motorTemperature), 2)
+		local lastTemp = mspec.motorTemperature.value or spec.motorTemperature
 		local outsideTemp = g_currentMission.environment.weather:getCurrentTemperature()
 		dbgprint("onEnterVehicle: outsideTemp = "..tostring(outsideTemp), 2)
 		dbgprint("onEnterVehicle: lastTemp = "..tostring(lastTemp), 2)
@@ -742,6 +743,7 @@ function DashboardLive:onReadStream(streamId, connection)
 	spec.lastFuelUsage = streamReadFloat32(streamId)
 	spec.lastDefUsage = streamReadFloat32(streamId)
 	spec.lastAirUsage = streamReadFloat32(streamId)
+	dbgprint("onReadStream: spec.motorTemperature = "..tostring(spec.motorTemperature), 2)
 		
 	dbgprint("onReadStream : maxPageGroup = "..tostring(spec.maxPageGroup), 2)
 	for pg = 1, spec.maxPageGroup do
@@ -766,6 +768,7 @@ function DashboardLive:onWriteStream(streamId, connection)
 	streamWriteFloat32(streamId, spec.lastFuelUsage)
 	streamWriteFloat32(streamId, spec.lastDefUsage)
 	streamWriteFloat32(streamId, spec.lastAirUsage)
+	dbgprint("onWriteStream: spec.motorTemperature = "..tostring(spec.motorTemperature), 2)
 	
 	dbgprint("onWriteStream : maxPageGroup = "..tostring(spec.maxPageGroup), 2)
 	for pg = 1, spec.maxPageGroup do
@@ -777,68 +780,6 @@ function DashboardLive:onWriteStream(streamId, connection)
 	streamWriteFloat32(streamId, spec.leaveTime)
 end
 	
-function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
-	local spec = self.spec_DashboardLive
-	
-	if connection:getIsServer() then	
-		if streamReadBool(streamId) then
-			spec.motorTemperature = streamReadFloat32(streamId)
-			spec.fanEnabled = streamReadBool(streamId)
-			spec.lastFuelUsage = streamReadFloat32(streamId)
-			spec.lastDefUsage = streamReadFloat32(streamId)
-			spec.lastAirUsage = streamReadFloat32(streamId)
-			spec.currentDischargeState = streamReadInt8(streamId)
-		end
---	else
-----	if not connection:getIsServer() then		
---		if streamReadBool(streamId) then
---			for pg = 1, spec.maxPageGroup do
---			    local actPage = streamReadInt8(streamId)
---			    dbgprint("onReadStream : actPage read = "..tostring(actPage), 2)
---			    if actPage ~= 0 then 
---			    	if spec.pageGroups[pg] ~= nil then			    		
---						spec.pageGroups[pg].actPage = actPage
---					end
---			    end
---			end
---			spec.orientation = streamReadString(streamId)
---			spec.leaveTime = streamReadFloat32(streamId)
---			dbgprint("onReadUpdateStream : Read data for "..self:getName(), 2)
---		end
-	end
-end
-
-function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
-	if not connection:getIsServer() then
-		dbgprint("onWriteUpdateStream : Sent S2C data for "..self:getName(), 2)
-		if streamWriteBool(streamId, bitAND(dirtyMask, self.spec_DashboardLive.dirtyFlagS2C) ~= 0) then
-			dbgprint("onWriteUpdateStream : DBL S2C Sync", 2)
-			local specDBL = self.spec_DashboardLive
-			streamWriteFloat32(streamId, specDBL.motorTemperature)
-			streamWriteBool(streamId, specDBL.fanEnabled)
-			streamWriteFloat32(streamId, specDBL.lastFuelUsage)
-			streamWriteFloat32(streamId, specDBL.lastDefUsage)
-			streamWriteFloat32(streamId, specDBL.lastAirUsage)
-			streamWriteInt8(streamId, specDBL.currentDischargeState)
-			self.spec_motorized.motorTemperature.valueSend = specDBL.motorTemperature
-		end
---	else
-----	if connection:getIsServer() then
---		dbgprint("onWriteUpdateStream : Sent C2S data for "..self:getName(), 2)
---		if streamWriteBool(streamId, bitAND(dirtyMask, self.spec_DashboardLive.dirtyFlagC2S) ~= 0) then
---			dbgprint("onWriteUpdateStream : DBL C2S Sync", 2)
---			local specDBL = self.spec_DashboardLive
---			for pg = 1, specDBL.maxPageGroup do
---				local actPage = specDBL.pageGroups[pg] ~= nil and specDBL.pageGroups[pg].actPage ~= nil and specDBL.pageGroups[pg].actPage or 0
---				streamWriteInt8(streamId, actPage)
---				dbgprint("onWriteUpdateStream : actPage sent = "..tostring(actPage), 2)
---			end
---			streamWriteString(streamId, specDBL.orientation or "rotate")
---			streamWriteFloat32(streamId, specDBL.leaveTime)
---		end
-	end
-end
-
 -- inputBindings / inputActions
 	
 function DashboardLive:onRegisterActionEvents(isActiveForInput, isActiveForInputIgnoreSelection)
@@ -4532,7 +4473,9 @@ function DashboardLive:onUpdateTick(dt)
 		if spec.needsSyncServerToClient and syncAllowed then
 			local name = self.getFullName ~= nil and self:getFullName() or "unknown"
 			dbgprint("S2C sync triggered for: "..name, 2)
-			self:raiseDirtyFlags(spec.dirtyFlagS2C)
+			SyncServer2ClientEvent.sendEvent(self, spec.motorTemperature, spec.fanEnabled, spec.lastFuelUsage, spec.lastDefUsage, spec.lastAirUsage, spec.currentDischargeState)
+			mspec.motorTemperature.valueSend = spec.motorTemperature
+			--self:raiseDirtyFlags(spec.dirtyFlagS2C)
 			spec.needsSyncServerToClient = false
 		end
 	end
@@ -4554,12 +4497,12 @@ function DashboardLive:onUpdateTick(dt)
 		if specDis ~= nil then
 			specDis.currentDischargeState = spec.currentDischargeState
 		end
-		
+
 		-- trigger syncClient2Server event
 		if spec.needsSyncClientToServer then
 			local name = self.getFullName ~= nil and self:getFullName() or "unknown"
 			dbgprint("C2S sync triggered for: "..name)
-			SyncClient2ServerEvent.sendEvent(self, spec.orientation, spec.leaveTime)
+			SyncClient2ServerEvent.sendEvent(self, spec.maxPageGroup, spec.pageGroups, spec.orientation, spec.leaveTime)
 			spec.needsSyncClientToServer = false
 		end
 	end
@@ -4597,7 +4540,6 @@ function DashboardLive:onDraw()
 		dbgrenderTable(self.spec_globalPositioningSystem.guidanceData, 1, 3)
 	end
 	if g_currentMission.hud.controlledVehicle == self then
-		--local spec = self.spec_DashboardLive
 		dbgrender("fovLast: "..tostring(spec.fovLast), 20, 3)
 		dbgrender("zoomPerm: "..tostring(spec.zoomPerm), 21, 3)
 	end
