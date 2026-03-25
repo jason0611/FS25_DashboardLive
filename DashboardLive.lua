@@ -241,8 +241,6 @@ function DashboardLive:onLoad(savegame)
 	local spec = self.spec_DashboardLive
 	
 	-- management data
-	spec.dirtyFlagS2C = self:getNextDirtyFlag()
-	spec.dirtyFlagC2S = self:getNextDirtyFlag()
 	spec.needsSyncServerToClient = false
 	spec.needsSyncClientToServer = false
 	spec.syncTimer = 0
@@ -521,7 +519,7 @@ function DashboardLive:saveToXMLFile(xmlFile, key, usedModNames)
 			xmlFile:setValue(string.format(key..".groups.group(%d)#actPage", pg - 1), spec.pageGroups[pg].actPage)
 		end
 	end
-	xmlFile:setValue(key.."#orientation", spec.orientation or "rotate")
+	xmlFile:setValue(key.."#orientation", spec.orientation)
 	xmlFile:setValue(key.."#motorTemperature", spec.motorTemperature)
 	xmlFile:setValue(key.."#leaveTime", spec.leaveTime)
 
