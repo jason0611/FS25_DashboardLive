@@ -3,10 +3,11 @@
 
 function fixAIAutomaticSteering_onWriteUpdateStream(self, superfunc, streamId, connection, dirtyMask)
 	if not connection:getIsServer() then
-		if self.spec_aiAutomaticSteering.steeringFieldCourse == nil then
-			streamWriteBool(streamId, false)
-		else
+		if self.spec_aiAutomaticSteering.steeringFieldCourse ~= nil then
 			superfunc(self, streamId, connection, dirtyMask)
+		else
+			streamWriteBool(streamId, false)
+			dbgprint("AIAutomaticSteering.onWriteUpdateStream: error condition catched for "..tostring(self.getName ~= nil and self:getName() or "unknown vehicle"), 2)
 		end
 	end
 end
