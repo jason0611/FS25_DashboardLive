@@ -7,7 +7,9 @@ function fixAIAutomaticSteering_onWriteUpdateStream(self, superfunc, streamId, c
 			superfunc(self, streamId, connection, dirtyMask)
 		else
 			streamWriteBool(streamId, false)
-			dbgprint("AIAutomaticSteering.onWriteUpdateStream: error condition catched for "..tostring(self.getName ~= nil and self:getName() or "unknown vehicle"), 2)
+			if bit32.band(dirtyMask, self.spec_aiAutomaticSteering.dirtyFlag) ~= 0 then
+				dbgprint("AIAutomaticSteering.onWriteUpdateStream: error condition catched for "..tostring(self.getName ~= nil and self:getName() or "unknown vehicle"), 1)
+			end
 		end
 	end
 end
