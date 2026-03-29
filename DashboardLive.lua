@@ -4500,9 +4500,9 @@ function DashboardLive:onUpdateTick(dt)
 		if spec.needsSyncServerToClient and syncAllowed then
 			local name = self.getFullName ~= nil and self:getFullName() or "unknown"
 			dbgprint("S2C sync triggered for: "..name, 2)
-			SyncServer2ClientEvent.sendEvent(self, spec.motorTemperature, spec.fanEnabled, spec.lastFuelUsage, spec.lastDefUsage, spec.lastAirUsage, spec.currentDischargeState)
+			--SyncServer2ClientEvent.sendEvent(self, spec.motorTemperature, spec.fanEnabled, spec.lastFuelUsage, spec.lastDefUsage, spec.lastAirUsage, spec.currentDischargeState)
 			mspec.motorTemperature.valueSend = spec.motorTemperature
-			--self:raiseDirtyFlags(spec.dirtyFlagS2C)
+			self:raiseDirtyFlags(spec.dirtyFlagS2C)
 			spec.needsSyncServerToClient = false
 		end
 	end
