@@ -777,6 +777,35 @@ function DashboardLive:onWriteStream(streamId, connection)
 	streamWriteString(streamId, spec.orientation or "rotate")
 	streamWriteFloat32(streamId, spec.leaveTime)
 end
+
+function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
+	if connection:getIsServer() then
+		local spec = self.spec_DashboardLive
+		if streamReadBool(streamId) then
+			spec.motorTemperature = streamReadFloat32(streamId)
+			spec.fanEnabled = streamReadBool(streamId)
+			spec.lastFuelUsage = streamReadFloat32(streamId)
+			spec.lastDefUsage = streamReadFloat32(streamId)
+			spec.lastAirUsage = streamReadFloat32(streamId)
+			spec.currentDischargeState = streamReadInt8(streamId)
+		end
+	end
+end
+
+function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
+	if not connection:getIsServer() then
+		local spec = self.spec_DashboardLive
+		if streamWriteBool(streamId, bitAND(dirtyMask, spec.dirtyFlag) ~= 0) then
+			streamWriteFloat32(streamId, spec.motorTemperature)
+			streamWriteBool(streamId, spec.fanEnabled)
+			streamWriteFloat32(streamId, spec.lastFuelUsage)
+			streamWriteFloat32(streamId, spec.lastDefUsage)
+			streamWriteFloat32(streamId, spec.lastAirUsage)
+			streamWriteInt8(streamId, spec.currentDischargeState)
+			self.spec_motorized.motorTemperature.valueSend = spec.motorTemperature
+		end
+	end
+end
 	
 -- inputBindings / inputActions
 	
