@@ -243,6 +243,7 @@ function DashboardLive:onLoad(savegame)
 	-- management data
 	spec.needsSyncServerToClient = false
 	spec.needsSyncClientToServer = false
+	spec.dirtyFlag = self:getNextDirtyFlag()
 	spec.syncTimer = 0
 	spec.maxPage = 1
 	spec.actPageGroup = 1
@@ -4502,7 +4503,7 @@ function DashboardLive:onUpdateTick(dt)
 			dbgprint("S2C sync triggered for: "..name, 2)
 			--SyncServer2ClientEvent.sendEvent(self, spec.motorTemperature, spec.fanEnabled, spec.lastFuelUsage, spec.lastDefUsage, spec.lastAirUsage, spec.currentDischargeState)
 			mspec.motorTemperature.valueSend = spec.motorTemperature
-			self:raiseDirtyFlags(spec.dirtyFlagS2C)
+			self:raiseDirtyFlags(spec.dirtyFlag)
 			spec.needsSyncServerToClient = false
 		end
 	end
