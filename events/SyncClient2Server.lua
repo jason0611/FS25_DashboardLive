@@ -20,7 +20,7 @@ function SyncClient2ServerEvent:writeStream(streamId, _)
 	NetworkUtil.writeNodeObject(streamId, self.object)
 	streamWriteInt8(streamId, self.maxPageGroup)
 	for pg = 1, self.maxPageGroup do
-		streamWriteInt8(streamId, self.pageGroups[pg].actPage)
+		streamWriteInt8(streamId, self.pageGroups[pg] ~= nil and self.pageGroups[pg].actPage or 1)
 		dbgprint("SyncClient2ServerEvent:writeStream : actPage sent = "..tostring(actPage), 2)
 	end
 	streamWriteString(streamId, self.orientation)
