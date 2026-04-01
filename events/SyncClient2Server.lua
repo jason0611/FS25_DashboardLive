@@ -36,7 +36,7 @@ function SyncClient2ServerEvent:readStream(streamId, connection)
 		local actPage = streamReadInt8(streamId)
 		if actPage ~= 0 then
 			self.pageGroups[pg] = {}
-			self.pageGroups[pg].actPage = streamReadInt8(streamId)
+			self.pageGroups[pg].actPage = actPage
 		end
 		dbgprint("SyncClient2ServerEvent:readStream : actPage "..tostring(pg).." read = "..tostring(self.pageGroups[pg]), 2)
 	end
@@ -51,7 +51,9 @@ function SyncClient2ServerEvent:run(connection)
 	if self.object ~= nil and self.object:getIsSynchronized() then
 		self.object.spec_DashboardLive.maxPageGroup = self.maxPageGroup
 		for pg = 1, self.maxPageGroup do
-			self.object.spec_DashboardLive.pageGroups[pg].actPage = self.pageGroups[pg].actPages
+			if self.object.spec_DashboardLive.pageGroups[pg] ~= nil and self.pageGroups[pg] ~= nil then
+				self.object.spec_DashboardLive.pageGroups[pg].actPage = self.pageGroups[pg].actPages
+			end
 		end
 		self.object.spec_DashboardLive.orientation = self.orientation
 		self.object.spec_DashboardLive.leaveTime = self.leaveTime
