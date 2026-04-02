@@ -4460,6 +4460,7 @@ end
 function DashboardLive:onUpdateTick(dt)
 	local spec = self.spec_DashboardLive
 	local specDis = self.spec_dischargeable
+	local specADS = self.spec_AdvancedDamageSystem
 	local dspec = self.spec_dashboard
 	local mspec = self.spec_motorized
 	local syncAllowed = false
@@ -4484,7 +4485,11 @@ function DashboardLive:onUpdateTick(dt)
 	
 		-- sync motor temperature
 --		if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
+
 		if mspec ~= nil then
+			if specADS ~= nil then
+				mspec.motorTemperature.value = specADS.engineTemperature
+			end
 			spec.motorTemperature = mspec.motorTemperature.value
 			spec.fanEnabled = mspec.motorFan.enabled
 			spec.lastFuelUsage = mspec.lastFuelUsage
