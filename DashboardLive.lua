@@ -4487,9 +4487,6 @@ function DashboardLive:onUpdateTick(dt)
 --		if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
 
 		if mspec ~= nil then
-			if specADS ~= nil then
-				mspec.motorTemperature.value = specADS.engineTemperature
-			end
 			spec.motorTemperature = mspec.motorTemperature.value
 			spec.fanEnabled = mspec.motorFan.enabled
 			spec.lastFuelUsage = mspec.lastFuelUsage
