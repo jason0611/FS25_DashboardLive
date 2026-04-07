@@ -452,6 +452,13 @@ function DashboardLive:onRegisterDashboardValueTypes()
 	dblValueType:setValue(self, DashboardLive.getDashboardLiveRGPS)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesRGPS)
 	self:registerDashboardValueType(dblValueType)
+
+	-- Advanced Damage System (ADS)
+	dblValueType = DashboardValueType.new("dbl", "ads")
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setValue(self, DashboardLive.getDashboardLiveADS)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesADS)
+	self:registerDashboardValueType(dblValueType)
 	
 	-- print
 	dblValueType = DashboardValueType.new("dbl", "print")
@@ -2936,6 +2943,29 @@ function DashboardLive.getDBLAttributesRGPS(self, xmlFile, key, dashboard, compo
 	return true
 end
 
+-- ADS
+function DashboardLive.getDBLAttributesADS(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
+	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", ""))
+    dbgprint("getDBLAttributesADS : command: "..tostring(dashboard.dblCommand), 2)
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
+    dashboard.dblState = xmlFile:getValue(key .. "#state")
+	dbgprint("getDBLAttributesADS : state: "..tostring(dashboard.dblState), 2)
+	
+	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
+	dbgprint("getDBLAttributesADS : cond: "..tostring(dashboard.dblCond), 2)
+	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
+	dbgprint("getDBLAttributesADS : condValue: "..tostring(dashboard.dblCondValue), 2)
+	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
+		Logging.xmlError(self.xmlFile, "No value given for comparation: cond = "..tostring(dashboard.dblCond)..", condValue = "..tostring(dashboard.dblCondValue))
+		return false
+	end
+	
+	return true
+end
+
 -- check returned dashboard values to avoid mismatch
 function DashboardLive:getValue(superfunc, dashboard)
 	local value, min, max, center, isNumber = superfunc(self, dashboard)
@@ -4436,6 +4466,39 @@ function DashboardLive.getDashboardLiveRGPS(self, dashboard)
 	end
 	
 	dbgprint("getDashboardLiveRGPS : returnValue: "..tostring(returnValue), 4)
+	return checkCondition(returnValue, dashboard.dblCond, dashboard.dblCondValue)
+end
+
+function DashboardLive.getDashboardLiveADS(self, dashboard)
+	dbgprint("getDashboardLiveADS : dblCommand: "..tostring(dashboard.dblCommand), 4)
+	dbgprint("getDashboardLiveADS : dblState: "..tostring(dashboard.dblState), 4)
+	local c = dashboard.dblCommand
+	local s = dashboard.dblState
+	local returnValue = false
+	
+	local spec = self.spec_realGPS
+	if spec ~= nil and type(c)=="string" then
+		local valueFunc = "forDBL_"..c
+		local value = spec[valueFunc]
+		if s ~= nil then
+			if tonumber(s) ~= nil then
+				returnValue = tostring(value) == tostring(s)
+			else
+				local states = string.split(tostring(s), " ")
+				if states ~= nil and type(states) == "table" then
+					for _, state in pairs(states) do
+						returnValue = returnValue or (tostring(value) == tostring(state))
+					end
+				end
+			end
+		else 
+			returnValue = value or DashboardLive:getDefaultValue(dashboard)
+		end
+	else
+		returnValue = DashboardLive:getDefaultValue(dashboard)
+	end
+	
+	dbgprint("getDashboardLiveADS : returnValue: "..tostring(returnValue), 4)
 	return checkCondition(returnValue, dashboard.dblCond, dashboard.dblCondValue)
 end
 
