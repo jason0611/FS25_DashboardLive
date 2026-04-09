@@ -227,6 +227,8 @@ V2.1.0.0:
 - Anzeigen können auf mehreren Seiten aktiv sein
 - HeadingText erweitert
 - nil-condition fix in der Server-Synchronisation von AISteering ergänzt
+- Server-Client-Synchronisation überarbeitet
+- Fehlermeldungen und Warnungen teilweise nach devError und devWarning verschoben
 
 Wichtig: Fahrzeuge müssen vorab für DashboardLive vorbereitet werden, um die Funktionen und Anzeigen nutzen zu können.
 Eine Einbauhilfe und Dokumentation sind enthalten, außerdem sind Video-Tutorials verfügbar.
