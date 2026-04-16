@@ -2951,8 +2951,8 @@ function DashboardLive.getDBLAttributesADS(self, xmlFile, key, dashboard, compon
     dashboard.dblKey = key
     dashboard.dblXmlFilename = xmlFile.filename
     
-    dashboard.dblState = xmlFile:getValue(key .. "#state")
-	dbgprint("getDBLAttributesADS : state: "..tostring(dashboard.dblState), 2)
+--	dashboard.dblState = xmlFile:getValue(key .. "#state")
+--	dbgprint("getDBLAttributesADS : state: "..tostring(dashboard.dblState), 2)
 	
 	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
 	dbgprint("getDBLAttributesADS : cond: "..tostring(dashboard.dblCond), 2)
@@ -4473,29 +4473,14 @@ function DashboardLive.getDashboardLiveADS(self, dashboard)
 	dbgprint("getDashboardLiveADS : dblCommand: "..tostring(dashboard.dblCommand), 4)
 	dbgprint("getDashboardLiveADS : dblState: "..tostring(dashboard.dblState), 4)
 	local c = dashboard.dblCommand
-	local s = dashboard.dblState
+	--local s = dashboard.dblState
 	local returnValue = false
 	
-	local spec = self.spec_realGPS
+	local spec = self.spec_AdvancedDamageSystem
+	
 	if spec ~= nil and type(c)=="string" then
-		local valueFunc = "forDBL_"..c
-		local value = spec[valueFunc]
-		if s ~= nil then
-			if tonumber(s) ~= nil then
-				returnValue = tostring(value) == tostring(s)
-			else
-				local states = string.split(tostring(s), " ")
-				if states ~= nil and type(states) == "table" then
-					for _, state in pairs(states) do
-						returnValue = returnValue or (tostring(value) == tostring(state))
-					end
-				end
-			end
-		else 
-			returnValue = value or DashboardLive:getDefaultValue(dashboard)
-		end
-	else
-		returnValue = DashboardLive:getDefaultValue(dashboard)
+		local indicator = spec.activeIndicators ~= nil and spec.activeIndicators[c] or nil
+		returnValue = indicator ~= nil and indicator.isActive or false
 	end
 	
 	dbgprint("getDashboardLiveADS : returnValue: "..tostring(returnValue), 4)
