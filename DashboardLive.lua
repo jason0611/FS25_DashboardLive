@@ -425,6 +425,20 @@ function DashboardLive:onRegisterDashboardValueTypes()
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesFrontloader)
 	self:registerDashboardValueType(dblValueType)
 	
+	-- movingTool
+	dblValueType = DashboardValueType.new("dbl", "movingTool")
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setValue(self, DashboardLive.getDashboardLiveMovingTool)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesMovingTool)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- animation
+	dblValueType = DashboardValueType.new("dbl", "animation")
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setValue(self, DashboardLive.getDashboardLiveAnimation)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesAnimation)
+	self:registerDashboardValueType(dblValueType)
+	
 	-- precision Farming
 	dblValueType = DashboardValueType.new("dbl", "precfarming")
 	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
@@ -1655,7 +1669,7 @@ local function getAttachedStatus(vehicle, element, mode, default)
 			-- frontloader
 			elseif mode == "toolrotation" or mode=="istoolrotation" then
 				local factor = element.dblFactor or 1
-				local specCyl = findSpecialization(implement.object, "spec_cylindered",t)
+				local specCyl = findSpecialization(implement.object, "spec_cylindered", t)
 				local s = element.dblStateText or element.dblState
 				dbgprint(implement.object:getFullName().." : frontLoader - " .. mode .. " - " .. s,3)
 				resultValue = 0
@@ -2806,6 +2820,73 @@ function DashboardLive.getDBLAttributesFrontloader(self, xmlFile, key, dashboard
 	if min ~= nil then dashboard.dblMin = min end
     if max ~= nil then dashboard.dblMax = max end
     
+	
+	return true
+end
+
+-- movingTool
+function DashboardLive.getDBLAttributesMovingTool(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
+	
+	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", "toolrotation")) -- rotation,  minmax
+    dbgprint("getDBLAttributesFrontloader : command: "..tostring(dashboard.dblCommand), 2)
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
+	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
+	local jointSide = xmlFile:getValue(key .. "#jointSide")
+	dbgprint("getDBLAttributesFrontloader : jointSide: "..tostring(jointSide), 2)
+	local jointType = xmlFile:getValue(key .. "#jointType")
+	dbgprint("getDBLAttributesFrontloader : jointType: "..tostring(jointType), 2)
+	dashboard.dblAttacherJointIndices = jointMapping(self, dashboard.dblAttacherJointIndices, jointSide, jointType)
+	dbgprint("getDBLAttributesFrontloader : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
+
+	dashboard.dblOption = xmlFile:getValue(key .. "#option", "1") -- number of tool
+
+	dashboard.dblFactor = xmlFile:getValue(key .. "#factor", "1") -- factor
+
+	dashboard.dblStateText = xmlFile:getValue(key .. "#stateText","origin")
+	dashboard.dblState = xmlFile:getValue(key .. "#state","origin")
+
+	local min = xmlFile:getValue(key .. "#min")
+	local max = xmlFile:getValue(key .. "#max")
+	
+	if min ~= nil then dashboard.dblMin = min end
+    if max ~= nil then dashboard.dblMax = max end
+    
+	
+	return true
+end
+
+-- animation
+function DashboardLive.getDBLAttributesAnimation(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
+	
+	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", "toolrotation")) -- rotation,  minmax
+    dbgprint("getDBLAttributesFrontloader : command: "..tostring(dashboard.dblCommand), 2)
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
+--	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
+--	local jointSide = xmlFile:getValue(key .. "#jointSide")
+--	dbgprint("getDBLAttributesFrontloader : jointSide: "..tostring(jointSide), 2)
+--	local jointType = xmlFile:getValue(key .. "#jointType")
+--	dbgprint("getDBLAttributesFrontloader : jointType: "..tostring(jointType), 2)
+--	dashboard.dblAttacherJointIndices = jointMapping(self, dashboard.dblAttacherJointIndices, jointSide, jointType)
+--	dbgprint("getDBLAttributesFrontloader : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
+--
+--	dashboard.dblOption = xmlFile:getValue(key .. "#option", "1") -- number of tool
+
+	dashboard.dblFactor = xmlFile:getValue(key .. "#factor", "1") -- factor
+
+--	dashboard.dblStateText = xmlFile:getValue(key .. "#stateText","origin")
+--	dashboard.dblState = xmlFile:getValue(key .. "#state","origin")
+
+--	local min = xmlFile:getValue(key .. "#min")
+--	local max = xmlFile:getValue(key .. "#max")
+	
+--	if min ~= nil then dashboard.dblMin = min end
+--  if max ~= nil then dashboard.dblMax = max end
 	
 	return true
 end
@@ -4184,6 +4265,67 @@ function DashboardLive.getDashboardLiveFrontloader(self, dashboard)
 		dbgprint("getDashboardLiveFrontloader : "..c..": returnValue: "..tostring(returnValue), 4)
 	end
 	return returnValue
+end
+
+function DashboardLive.getDashboardLiveMovingTool(self, dashboard)
+	dbgprint("getDashboardLiveMovingTool : dblCommand: "..tostring(dashboard.dblCommand), 4)
+	local c = dashboard.dblCommand
+	local s = dashboard.dblStateText or dashboard.dblState
+	local o = dashboard.dblOption
+	
+	local factor = element.dblFactor or 1
+	local returnValue = 0
+	
+	local specCyl = self.spec_cylindered
+	if specCyl ~= nil then
+	
+		if c == "toolrotation" or c == "istoolrotation" then
+			dbgprint(self:getFullName().." : movingTool - " .. c .. " - " .. s, 3)
+			for toolIndex, tool in ipairs(specCyl.movingTools) do
+				if toolIndex == tonumber(o) then
+					local origin = tool.rotMax or 0
+					local originDeg = math.deg(origin) * -1
+					local rot = math.deg(tool.curRot[tool.rotationAxis]) * factor * -1 -- - originDeg
+					if s == "origin" then rot = rot - originDeg end
+					if c == "toolrotation" then
+						returnValue = rot
+					elseif c == "istoolrotation" then
+						if element.dblMin ~= nil and element.dblMax ~= nil then
+							returnValue = rot >= element.dblMin and rot <=element.dblMax
+						else
+							print("Warning: valueType=\"dbl.base\" cmd=\"isToolRotation\": Missing value for min or max")
+							returnValue = 0
+						end
+					end
+				end
+			end
+		elseif c == "tooltranslation" or c == "istooltranslation" then
+			dbgprint(implement.object:getFullName().." : movingTool - " .. c .. " - " .. s,3)
+			for toolIndex, tool in ipairs(specCyl.movingTools) do
+				if toolIndex == tonumber(element.dblOption) then
+					local origin = tool.transMax or 0
+					local trans = tool.curTrans[tool.translationAxis] * factor
+					if element.dblCommand == "tooltranslation" then
+						movingTool = trans
+					elseif element.dblCommand == "istooltranslation" then
+						if element.dblMin ~= nil and element.dblMax ~= nil then
+							movingTool = trans >= element.dblMin and trans <=element.dblMax
+						else
+							print("Warning: valueType=\"base\" cmd=\"istooltranslation\": Missing value for min or max")
+							movingTool = 0
+						end
+					end
+				end
+			end
+			dbgprint("getDashboardLiveMovingTool : "..c..": returnValue: "..tostring(returnValue), 4)
+		end
+	end
+	return returnValue
+end
+
+function DashboardLive.getDashboardLiveAnimation(self, dashboard)
+	dbgprint("getDashboardLiveAnimation : dblCommand: "..tostring(dashboard.dblCommand), 4)
+	return (self.getAnimationTime ~= nil and self:getAnimationTime(dashboard.dblCommand) or 0) * dashboard.dblFactor
 end
 
 function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
