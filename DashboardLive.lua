@@ -3709,12 +3709,13 @@ function DashboardLive.getDashboardLiveVCA(self, dashboard)
 		local c = dashboard.dblCommand
 
 		if c == "park" then
-			if (spec.modVCAFound and self:vcaGetState("handbrake")) 
-			or (spec.modEVFound and self.vData.is[13]) 
-			or (spec.modRAGBFound and self.spec_realismAddon_gearbox.handbrakeStateME) then 
-				returnValue = self.spec_motorized ~= nil and FS25_realismAddon_gearbox ~= nil 
+			if (spec.modVCAFound and self:vcaGetState("handbrake")) or (spec.modEVFound and self.vData.is[13]) then
+				returnValue = true
+			end
+			if (spec.modRAGBFound and self.spec_realismAddon_gearbox.handbrakeStateME) then 
+				returnValue = returnValue or self.spec_motorized ~= nil and FS25_realismAddon_gearbox ~= nil 
 				and FS25_realismAddon_gearbox.realismAddon_gearbox_overrides ~= nil 
-				and FS25_realismAddon_gearbox.checkIsManual(self.spec_motorized.motor) 
+				and FS25_realismAddon_gearbox.realismAddon_gearbox_overrides.checkIsManual(self.spec_motorized.motor) 
 			end
 		elseif c == "diff_front" then
 			returnValue = (spec.modVCAFound and self:vcaGetState("diffLockFront")) or (spec.modEVFound and self.vData.is[1])
