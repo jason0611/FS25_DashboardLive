@@ -1689,7 +1689,7 @@ local function getAttachedStatus(vehicle, element, mode, default)
 			
 			-- animation
 			elseif mode == "animation" then
-				resultValue = (implement.object ~= nil and implement.object.getAnimationTime ~= nil and implement.object:getAnimationTime(element.dblCommand) or false) --* element.dblFactor
+				resultValue = (implement.object ~= nil and implement.object.getAnimationTime ~= nil and implement.object:getAnimationTime(element.dblCommand) or 0) * element.dblFactor
 			
 			-- frontloader
 			elseif mode == "toolrotation" or mode=="istoolrotation" then
