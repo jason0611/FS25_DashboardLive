@@ -501,6 +501,9 @@ function DashboardLive:onPostLoad(savegame)
 	--Check if Mod HeadlandManagement exists
 	spec.modHLMFound = self.spec_HeadlandManagement ~= nil
 	
+	--Check if Mod realismAddonGearbox exists
+	spec.modRAGBFound = self.processHandbrakeInput ~= nil and self.spec_realismAddon_gearbox ~= nil
+	
 	-- solve mod conflict with CameraZoomExtension by Ifko: detect if mod exists in the game
 	spec.CZEexists = self.spec_cameraZoomExtension ~= nil
 	
@@ -870,6 +873,7 @@ function DashboardLive:onRegisterActionEvents(isActiveForInput, isActiveForInput
 		self:addActionEvent(spec.actionEvents, 'DBL_MAPORIENTATION', self, DashboardLive.MAPORIENTATION, false, true, false, true)	
 		self:addActionEvent(spec.actionEvents, 'DBL_RADIO_VOL_UP', self, DashboardLive.RADIO, false, true, false, true)
 		self:addActionEvent(spec.actionEvents, 'DBL_RADIO_VOL_DOWN', self, DashboardLive.RADIO, false, true, false, true)
+		self:addActionEvent(spec.actionEvents, 'DBL_RESETPARKBRAKE', self, DashboardLive.RESETPARKBRAKE, false, true, false, true)
 		if spec.darkModeExists then
 			self:addActionEvent(spec.actionEvents, 'DBL_DARKMODE', self, DashboardLive.DARKMODE, false, true, false, true)		
 		end
@@ -1029,6 +1033,23 @@ function DashboardLive:RADIO(actionName, keyStatus)
 	g_gameSettings:setValue("radioVolume", volume, true)
 	g_soundMixer:setAudioGroupVolumeFactor(4, volume)
 	dbgprint("RADIO: Volume set to "..tostring(volume), 1)
+end
+
+function DashboardLive:RESETPARKBRAKE(actionName, keyStatus)
+	dbgprint("RESETPARKBRAKE", 2)
+	local spec = self.spec_DashboardLive
+	if spec.modVCAFound then
+		dbgprint("RESETPARKBRAKE: VCA", 2)
+		self:vcaSetState("handbrake", false)
+	end
+	if spec.modEVFound then
+		dbgprint("RESETPARKBRAKE: EV", 2)
+		self.vData.want[13] = false
+	end
+	if spec.modRAGBFound then
+		dbgprint("RESETPARKBRAKE: RAGB", 2)
+		self:processHandbrakeInput(false)
+	end
 end
 	
 -- Main script
@@ -3802,8 +3823,13 @@ function DashboardLive.getDashboardLiveVCA(self, dashboard)
 		local c = dashboard.dblCommand
 
 		if c == "park" then
-			if (spec.modVCAFound and self:vcaGetState("handbrake")) or (spec.modEVFound and self.vData.is[13]) then 
+			if (spec.modVCAFound and self:vcaGetState("handbrake")) or (spec.modEVFound and self.vData.is[13]) then
 				returnValue = true
+			end
+			if (spec.modRAGBFound and self.spec_realismAddon_gearbox.handbrakeStateME) then 
+				returnValue = returnValue or self.spec_motorized ~= nil and FS25_realismAddon_gearbox ~= nil 
+				and FS25_realismAddon_gearbox.realismAddon_gearbox_overrides ~= nil 
+				and FS25_realismAddon_gearbox.realismAddon_gearbox_overrides.checkIsManual(self.spec_motorized.motor) 
 			end
 		elseif c == "diff_front" then
 			returnValue = (spec.modVCAFound and self:vcaGetState("diffLockFront")) or (spec.modEVFound and self.vData.is[1])
