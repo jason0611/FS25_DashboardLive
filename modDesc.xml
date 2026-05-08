@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="107">
 	<author>Glowins Modschmiede</author>
-	<version>2.1.0.D-03</version>
+	<version>2.1.0.D-04</version>
 	<devStatus>BETA-35</devStatus>
 	<contributors>SbSh, mister_mojo_AT, AgrarPlay und LUWZ, Farming Duds</contributors>
 	<title>
@@ -115,6 +115,9 @@ V2.1.0.0:
 - HeadingText expanded
 - Engine temperature will be saved
 - Engine will heat up and cool down without being entered
+- Compatibility with realismAddonGearBox (parking brake)
+- Added a button to release all engaged parking brakes
+
 
 Important: Vehicles must be prepared for DashboardLive in advance in order to be able to use the functions and displays. 
 An installation guide and documentation are included, and video tutorials are also available.
@@ -227,6 +230,10 @@ V2.1.0.0:
 - Anzeigen können auf mehreren Seiten aktiv sein
 - HeadingText erweitert
 - nil-condition fix in der Server-Synchronisation von AISteering ergänzt
+- Server-Client-Synchronisation überarbeitet
+- Fehlermeldungen und Warnungen teilweise nach devError und devWarning verschoben
+- Kompatibilität mit realismAddonGearBox (Parkbremse)
+- Taste zum Lösen aller vorhandenen Parkbremsen ergänzt
 
 Wichtig: Fahrzeuge müssen vorab für DashboardLive vorbereitet werden, um die Funktionen und Anzeigen nutzen zu können.
 Eine Einbauhilfe und Dokumentation sind enthalten, außerdem sind Video-Tutorials verfügbar.
@@ -241,18 +248,19 @@ Weitere Ideen oder Wünsche werden gerne unter <a href="https://github.com/jason
     	<sourceFile filename="RegisterDashboardLive.lua" />
     </extraSourceFiles>
  	<actions>
-		<action name="DBL_PAGEUP" 		category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_PAGEDN" 		category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_PAGEGRPUP" 	category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_PAGEGRPDN" 	category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_ZOOM"   		category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_ZOOM_PERM"	category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_MAPORIENTATION" category="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_DARKMODE"		category="VEHICLE"	ignoreComboMask="false" />
-		<action name="DBL_HUDVISIBILITY_FULL" category="VEHICLE"	ignoreComboMask="false" />
-		<action name="DBL_HUDVISIBILITY_PART" category="VEHICLE"	ignoreComboMask="false" />
-		<action name="DBL_RADIO_VOL_UP" categoy="VEHICLE" ignoreComboMask="false" />
-		<action name="DBL_RADIO_VOL_DOWN" categoy="VEHICLE" ignoreComboMask="false" />
+		<action name="DBL_PAGEUP" 				category="VEHICLE" 	ignoreComboMask="false" />
+		<action name="DBL_PAGEDN" 				category="VEHICLE" 	ignoreComboMask="false" />
+		<action name="DBL_PAGEGRPUP" 			category="VEHICLE" 	ignoreComboMask="false" />
+		<action name="DBL_PAGEGRPDN" 			category="VEHICLE" 	ignoreComboMask="false" />
+		<action name="DBL_ZOOM"   				category="VEHICLE" 	ignoreComboMask="false" />
+		<action name="DBL_ZOOM_PERM"			category="VEHICLE" 	ignoreComboMask="false" />
+		<action name="DBL_MAPORIENTATION" 		category="VEHICLE" 	ignoreComboMask="false" />
+		<action name="DBL_DARKMODE"				category="VEHICLE"	ignoreComboMask="false" />
+		<action name="DBL_HUDVISIBILITY_FULL" 	category="VEHICLE"	ignoreComboMask="false" />
+		<action name="DBL_HUDVISIBILITY_PART" 	category="VEHICLE"	ignoreComboMask="false" />
+		<action name="DBL_RADIO_VOL_UP" 		categoy="VEHICLE" 	ignoreComboMask="false" />
+		<action name="DBL_RADIO_VOL_DOWN" 		categoy="VEHICLE" 	ignoreComboMask="false" />
+		<action name="DBL_RESETPARKBRAKE" 		category="VEHICLE"	ignoreComboMask="false" />
 	</actions>
 	<inputBinding>	
 		<actionBinding action="DBL_PAGEGRPUP">
@@ -285,6 +293,7 @@ Weitere Ideen oder Wünsche werden gerne unter <a href="https://github.com/jason
 		<actionBinding action="DBL_DARKMODE">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_0" neutralInput="0" index="1" />
 		</actionBinding>
+		<actionBinding action="DBL_RESETPARKBRAKE"/>
 	</inputBinding>
 	<l10n>
         <text name="input_DBL_PAGEUP">
@@ -364,6 +373,13 @@ Weitere Ideen oder Wünsche werden gerne unter <a href="https://github.com/jason
             <de>Radio leiser</de>
             <br>Baixe o volume do rádio</br>
             <ru>Уменьшить громкость радио</ru>
+        </text>
+        <text name="input_DBL_RESETPARKBRAKE">
+            <en>Release the handbrake</en>
+            <cz>Uvolnit parkovací brzdu</cz>
+            <de>Parkbremse lösen</de>
+            <br>Solte o freio de mão</br>
+            <ru>Отпустить стояночный тормоз</ru>
         </text>
 	</l10n>
 </modDesc>
