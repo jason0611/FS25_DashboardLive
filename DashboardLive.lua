@@ -1666,6 +1666,10 @@ local function getAttachedStatus(vehicle, element, mode, default)
 				end
 				dbgprint(implement.object:getFullName().." : lockSteeringAxles ("..tostring(c).."), trailer "..tostring(t)..": "..tostring(resultValue), 4)
 			
+			-- animation
+			elseif mode == "animation" then
+				resultValue = (implement.object ~= nil and implement.object.getAnimationTime ~= nil and implement.object:getAnimationTime(element.dblCommand) or false) --* element.dblFactor
+			
 			-- frontloader
 			elseif mode == "toolrotation" or mode=="istoolrotation" then
 				local factor = element.dblFactor or 1
@@ -2862,21 +2866,20 @@ end
 function DashboardLive.getDBLAttributesAnimation(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", "toolrotation")) -- rotation,  minmax
-    dbgprint("getDBLAttributesFrontloader : command: "..tostring(dashboard.dblCommand), 2)
+    dbgprint("getDBLAttributesAnimation : command: "..tostring(dashboard.dblCommand), 2)
     
     dashboard.dblKey = key
     dashboard.dblXmlFilename = xmlFile.filename
     
---	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
---	local jointSide = xmlFile:getValue(key .. "#jointSide")
---	dbgprint("getDBLAttributesFrontloader : jointSide: "..tostring(jointSide), 2)
---	local jointType = xmlFile:getValue(key .. "#jointType")
---	dbgprint("getDBLAttributesFrontloader : jointType: "..tostring(jointType), 2)
---	dashboard.dblAttacherJointIndices = jointMapping(self, dashboard.dblAttacherJointIndices, jointSide, jointType)
---	dbgprint("getDBLAttributesFrontloader : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
---
+	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
+	local jointSide = xmlFile:getValue(key .. "#jointSide")
+	dbgprint("getDBLAttributesAnimation : jointSide: "..tostring(jointSide), 2)
+	local jointType = xmlFile:getValue(key .. "#jointType")
+	dbgprint("getDBLAttributesAnimation : jointType: "..tostring(jointType), 2)
+	dashboard.dblAttacherJointIndices = jointMapping(self, dashboard.dblAttacherJointIndices, jointSide, jointType)
+	dbgprint("getDBLAttributesAnimation : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
+	
 --	dashboard.dblOption = xmlFile:getValue(key .. "#option", "1") -- number of tool
-
 	dashboard.dblFactor = xmlFile:getValue(key .. "#factor", "1") -- factor
 
 --	dashboard.dblStateText = xmlFile:getValue(key .. "#stateText","origin")
@@ -4324,8 +4327,12 @@ function DashboardLive.getDashboardLiveMovingTool(self, dashboard)
 end
 
 function DashboardLive.getDashboardLiveAnimation(self, dashboard)
-	dbgprint("getDashboardLiveAnimation : dblCommand: "..tostring(dashboard.dblCommand), 4)
-	return (self.getAnimationTime ~= nil and self:getAnimationTime(dashboard.dblCommand) or 0) * dashboard.dblFactor
+	dbgprint("getDashboardLiveAnimation : dblCommand: "..tostring(dashboard.dblCommand), 1)
+	if dashboard.dblAttacherJointIndices ~= nil then
+		return getAttachedStatus(self, dashboard, "animation", 0)
+	else
+		return (self.getAnimationTime ~= nil and self:getAnimationTime(dashboard.dblCommand) or 0) * dashboard.dblFactor
+	end
 end
 
 function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
