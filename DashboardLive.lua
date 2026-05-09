@@ -1689,8 +1689,10 @@ local function getAttachedStatus(vehicle, element, mode, default)
 			
 			-- animation
 			elseif mode == "animation" then
-				resultValue = (implement.object ~= nil and implement.object.getAnimationTime ~= nil and implement.object:getAnimationTime(element.dblCommand) or 0) * element.dblFactor
-			
+				resultValue = (implement.object ~= nil and implement.object.getAnimationTime ~= nil and implement.object:getAnimationTime(element.dblCommand) or false) --* element.dblFactor
+				print(resultValue)
+--				if resultValue == false or resultValue > 0 and resultValue < 1 then print(resultValue) end
+				
 			-- frontloader
 			elseif mode == "toolrotation" or mode=="istoolrotation" then
 				local factor = element.dblFactor or 1
@@ -2886,7 +2888,7 @@ end
 -- animation
 function DashboardLive.getDBLAttributesAnimation(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	
-	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", "toolrotation")) -- rotation,  minmax
+	dashboard.dblCommand = xmlFile:getValue(key .. "#cmd", "none")
     dbgprint("getDBLAttributesAnimation : command: "..tostring(dashboard.dblCommand), 2)
     
     dashboard.dblKey = key
@@ -4353,7 +4355,7 @@ function DashboardLive.getDashboardLiveMovingTool(self, dashboard)
 end
 
 function DashboardLive.getDashboardLiveAnimation(self, dashboard)
-	dbgprint("getDashboardLiveAnimation : dblCommand: "..tostring(dashboard.dblCommand), 1)
+	dbgprint("getDashboardLiveAnimation : dblCommand: "..tostring(dashboard.dblCommand), 2)
 	if dashboard.dblAttacherJointIndices ~= nil then
 		return getAttachedStatus(self, dashboard, "animation", 0)
 	else
