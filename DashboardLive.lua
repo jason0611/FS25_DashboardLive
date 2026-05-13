@@ -2906,11 +2906,17 @@ function DashboardLive.getDBLAttributesAnimation(self, xmlFile, key, dashboard, 
 --	dashboard.dblStateText = xmlFile:getValue(key .. "#stateText","origin")
 --	dashboard.dblState = xmlFile:getValue(key .. "#state","origin")
 
---	local min = xmlFile:getValue(key .. "#min")
---	local max = xmlFile:getValue(key .. "#max")
+	local min = xmlFile:getValue(key .. "#min")
+	local max = xmlFile:getValue(key .. "#max")
 	
---	if min ~= nil then dashboard.dblMin = min end
---  if max ~= nil then dashboard.dblMax = max end
+	if min ~= nil then dashboard.dblMin = min end
+	if max ~= nil then dashboard.dblMax = max end
+	
+	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
+	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+	
+	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
+	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
 	
 	return true
 end
@@ -4302,7 +4308,7 @@ function DashboardLive.getDashboardLiveMovingTool(self, dashboard)
 	local s = dashboard.dblStateText or dashboard.dblState
 	local o = dashboard.dblOption
 	
-	local factor = element.dblFactor or 1
+	local factor = dashboard.dblFactor or 1
 	local returnValue = 0
 	
 	local specCyl = self.spec_cylindered
@@ -4319,8 +4325,8 @@ function DashboardLive.getDashboardLiveMovingTool(self, dashboard)
 					if c == "toolrotation" then
 						returnValue = rot
 					elseif c == "istoolrotation" then
-						if element.dblMin ~= nil and element.dblMax ~= nil then
-							returnValue = rot >= element.dblMin and rot <=element.dblMax
+						if dashboard.dblMin ~= nil and dashboard.dblMax ~= nil then
+							returnValue = rot >= dashboard.dblMin and rot <=dashboard.dblMax
 						else
 							print("Warning: valueType=\"dbl.base\" cmd=\"isToolRotation\": Missing value for min or max")
 							returnValue = 0
@@ -4331,14 +4337,14 @@ function DashboardLive.getDashboardLiveMovingTool(self, dashboard)
 		elseif c == "tooltranslation" or c == "istooltranslation" then
 			dbgprint(implement.object:getFullName().." : movingTool - " .. c .. " - " .. s,3)
 			for toolIndex, tool in ipairs(specCyl.movingTools) do
-				if toolIndex == tonumber(element.dblOption) then
+				if toolIndex == tonumber(dashboard.dblOption) then
 					local origin = tool.transMax or 0
 					local trans = tool.curTrans[tool.translationAxis] * factor
-					if element.dblCommand == "tooltranslation" then
+					if dashboard.dblCommand == "tooltranslation" then
 						movingTool = trans
-					elseif element.dblCommand == "istooltranslation" then
-						if element.dblMin ~= nil and element.dblMax ~= nil then
-							movingTool = trans >= element.dblMin and trans <=element.dblMax
+					elseif dashboard.dblCommand == "istooltranslation" then
+						if dashboard.dblMin ~= nil and dashboard.dblMax ~= nil then
+							movingTool = trans >= dashboard.dblMin and trans <=dashboard.dblMax
 						else
 							print("Warning: valueType=\"base\" cmd=\"istooltranslation\": Missing value for min or max")
 							movingTool = 0
@@ -4354,11 +4360,22 @@ end
 
 function DashboardLive.getDashboardLiveAnimation(self, dashboard)
 	dbgprint("getDashboardLiveAnimation : dblCommand: "..tostring(dashboard.dblCommand), 2)
+	local returnValue = 0
 	if dashboard.dblAttacherJointIndices ~= nil then
-		return getAttachedStatus(self, dashboard, "animation", 0)
+		returnValue = getAttachedStatus(self, dashboard, "animation", 0)
 	else
-		return (self.getAnimationTime ~= nil and self:getAnimationTime(dashboard.dblCommand) or 0) * dashboard.dblFactor
+		returnValue = (self.getAnimationTime ~= nil and self:getAnimationTime(dashboard.dblCommand) or 0) * dashboard.dblFactor
 	end
+	if dashboard.dblMin ~= nil and type(returnValue) == "number" then
+		returnValue = math.max(returnValue, dashboard.dblMin)
+	end
+	if dashboard.dblMax ~= nil and type(returnValue) == "number" then
+		returnValue = math.min(returnValue, dashboard.dblMax)
+	end
+	if dashboard.dblCond ~= nil and dashboard.dblCondValue ~= nil then
+		returnValue = checkCondition(returnValue, dashboard.dblCond, dashboard.dblCondValue)
+	end
+	return returnValue
 end
 
 function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
