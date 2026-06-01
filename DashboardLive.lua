@@ -161,9 +161,12 @@ function DashboardLive.initSpecialization()
 	Dashboard.compoundsXMLSchema:register(XMLValueType.NODE_INDEX, COMPOUND_ANIMATION_XML_KEY .. ".part(?)#endReferencePoint", "End reference point")
 	dbgprint("initSpecialization : DashboardLive animation options registered", 2)
 	
-	local COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).dashboard(?)"
-	for i = 1,2 do
-		if i == 2 then COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).configuration(?).dashboard(?)" end
+	local COMPOUND_XML_KEY
+	for i = 1,4 do
+		if i == 1 then COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).dashboard(?)" end
+		if i == 2 then COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).dashboardLive.dashboard(?)" end
+		if i == 3 then COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).configuration(?).dashboard(?)" end
+		if i == 4 then COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).configuration(?).dashboardLive.dashboard(?)" end
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#cmd", "DashboardLive command")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#joints")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#jointSide", "joint filter: front or back")
@@ -425,6 +428,20 @@ function DashboardLive:onRegisterDashboardValueTypes()
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesFrontloader)
 	self:registerDashboardValueType(dblValueType)
 	
+	-- movingTool
+	dblValueType = DashboardValueType.new("dbl", "movingTool")
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setValue(self, DashboardLive.getDashboardLiveMovingTool)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesMovingTool)
+	self:registerDashboardValueType(dblValueType)
+	
+	-- animation
+	dblValueType = DashboardValueType.new("dbl", "animation")
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setValue(self, DashboardLive.getDashboardLiveAnimation)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesAnimation)
+	self:registerDashboardValueType(dblValueType)
+	
 	-- precision Farming
 	dblValueType = DashboardValueType.new("dbl", "precfarming")
 	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
@@ -451,6 +468,13 @@ function DashboardLive:onRegisterDashboardValueTypes()
 	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
 	dblValueType:setValue(self, DashboardLive.getDashboardLiveRGPS)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesRGPS)
+	self:registerDashboardValueType(dblValueType)
+
+	-- Advanced Damage System (ADS)
+	dblValueType = DashboardValueType.new("dbl", "ads")
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setValue(self, DashboardLive.getDashboardLiveADS)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesADS)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- print
@@ -479,6 +503,9 @@ function DashboardLive:onPostLoad(savegame)
 	
 	--Check if Mod HeadlandManagement exists
 	spec.modHLMFound = self.spec_HeadlandManagement ~= nil
+	
+	--Check if Mod realismAddonGearbox exists
+	spec.modRAGBFound = self.processHandbrakeInput ~= nil and self.spec_realismAddon_gearbox ~= nil
 	
 	-- solve mod conflict with CameraZoomExtension by Ifko: detect if mod exists in the game
 	spec.CZEexists = self.spec_cameraZoomExtension ~= nil
@@ -849,6 +876,7 @@ function DashboardLive:onRegisterActionEvents(isActiveForInput, isActiveForInput
 		self:addActionEvent(spec.actionEvents, 'DBL_MAPORIENTATION', self, DashboardLive.MAPORIENTATION, false, true, false, true)	
 		self:addActionEvent(spec.actionEvents, 'DBL_RADIO_VOL_UP', self, DashboardLive.RADIO, false, true, false, true)
 		self:addActionEvent(spec.actionEvents, 'DBL_RADIO_VOL_DOWN', self, DashboardLive.RADIO, false, true, false, true)
+		self:addActionEvent(spec.actionEvents, 'DBL_RESETPARKBRAKE', self, DashboardLive.RESETPARKBRAKE, false, true, false, true)
 		if spec.darkModeExists then
 			self:addActionEvent(spec.actionEvents, 'DBL_DARKMODE', self, DashboardLive.DARKMODE, false, true, false, true)		
 		end
@@ -1008,6 +1036,23 @@ function DashboardLive:RADIO(actionName, keyStatus)
 	g_gameSettings:setValue("radioVolume", volume, true)
 	g_soundMixer:setAudioGroupVolumeFactor(4, volume)
 	dbgprint("RADIO: Volume set to "..tostring(volume), 1)
+end
+
+function DashboardLive:RESETPARKBRAKE(actionName, keyStatus)
+	dbgprint("RESETPARKBRAKE", 2)
+	local spec = self.spec_DashboardLive
+	if spec.modVCAFound then
+		dbgprint("RESETPARKBRAKE: VCA", 2)
+		self:vcaSetState("handbrake", false)
+	end
+	if spec.modEVFound then
+		dbgprint("RESETPARKBRAKE: EV", 2)
+		self.vData.want[13] = false
+	end
+	if spec.modRAGBFound then
+		dbgprint("RESETPARKBRAKE: RAGB", 2)
+		self:processHandbrakeInput(false)
+	end
 end
 	
 -- Main script
@@ -1645,10 +1690,14 @@ local function getAttachedStatus(vehicle, element, mode, default)
 				end
 				dbgprint(implement.object:getFullName().." : lockSteeringAxles ("..tostring(c).."), trailer "..tostring(t)..": "..tostring(resultValue), 4)
 			
+			-- animation
+			elseif mode == "animation" then
+				resultValue = (implement.object ~= nil and implement.object.getAnimationTime ~= nil and implement.object:getAnimationTime(element.dblCommand) or false) * element.dblFactor
+				
 			-- frontloader
 			elseif mode == "toolrotation" or mode=="istoolrotation" then
 				local factor = element.dblFactor or 1
-				local specCyl = findSpecialization(implement.object, "spec_cylindered",t)
+				local specCyl = findSpecialization(implement.object, "spec_cylindered", t)
 				local s = element.dblStateText or element.dblState
 				dbgprint(implement.object:getFullName().." : frontLoader - " .. mode .. " - " .. s,3)
 				resultValue = 0
@@ -1771,17 +1820,40 @@ local function getAttachedStatus(vehicle, element, mode, default)
     return result
 end
 
--- Append schema definitions to registerDashboardXMLPath function 
-function DashboardLive.addDarkModeToRegisterDashboardXMLPaths(schema, basePath, availableValueTypes)
-	dbgprint("addDarkModeToRegisterDashboardXMLPaths : registerDashboardXMLPaths appended to "..basePath, 2)
-	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#baseColorDarkMode", "Base color for dark mode")
-	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#emitColorDarkMode", "Emit color for dark mode")
-	schema:register(XMLValueType.FLOAT, basePath .. ".dashboard(?)#intensityDarkMode", "Intensity for dark mode")
-	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#textColorDarkMode", "Text color for dark mode")
-	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#hiddenColorDarkMode", "Hidden color for dark mode")
-	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#numberColorDarkMode", "Number color for dark mode")
+---- Add schema definitions to registerDashboardXMLPath function 
+--function DashboardLive.addDarkModeToRegisterDashboardXMLPaths(schema, basePath, availableValueTypes)
+--	print("addDarkModeToRegisterDashboardXMLPaths: basePath = "..tostring(basePath))
+--	dbgprint("addDarkModeToRegisterDashboardXMLPaths : registerDashboardXMLPaths appended to "..basePath, 2)
+--	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#baseColorDarkMode", "Base color for dark mode")
+--	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#emitColorDarkMode", "Emit color for dark mode")
+--	schema:register(XMLValueType.FLOAT, basePath .. ".dashboard(?)#intensityDarkMode", "Intensity for dark mode")
+--	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#textColorDarkMode", "Text color for dark mode")
+--	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#hiddenColorDarkMode", "Hidden color for dark mode")
+--	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#numberColorDarkMode", "Number color for dark mode")
+--end
+--Dashboard.registerDashboardXMLPaths = Utils.appendedFunction(Dashboard.registerDashboardXMLPaths, DashboardLive.addDarkModeToRegisterDashboardXMLPaths)
+
+function DashboardLive.registerDashboardXMLPaths(schema, superfunc, basePath, availableValueTypes)
+	dbgprint("registerDashboardXMLPaths : registerDashboardXMLPaths added to "..basePath, 2)
+	
+	local rounds = 1
+	if string.sub(basePath, 1, 18) == "dashboardCompounds" then
+		rounds = 2
+	end
+	
+	local path = basePath
+	for i=1,rounds do
+		if i == 2 then path = path ..".dashboardLive" end
+		superfunc(schema, path, availableValueTypes)
+		schema:register(XMLValueType.STRING, path .. ".dashboard(?)#baseColorDarkMode", "Base color for dark mode")
+		schema:register(XMLValueType.STRING, path .. ".dashboard(?)#emitColorDarkMode", "Emit color for dark mode")
+		schema:register(XMLValueType.FLOAT, path .. ".dashboard(?)#intensityDarkMode", "Intensity for dark mode")
+		schema:register(XMLValueType.STRING, path .. ".dashboard(?)#textColorDarkMode", "Text color for dark mode")
+		schema:register(XMLValueType.STRING, path .. ".dashboard(?)#hiddenColorDarkMode", "Hidden color for dark mode")
+		schema:register(XMLValueType.STRING, path .. ".dashboard(?)#numberColorDarkMode", "Number color for dark mode")
+	end
 end
-Dashboard.registerDashboardXMLPaths = Utils.appendedFunction(Dashboard.registerDashboardXMLPaths, DashboardLive.addDarkModeToRegisterDashboardXMLPaths)
+Dashboard.registerDashboardXMLPaths = Utils.overwrittenFunction(Dashboard.registerDashboardXMLPaths, DashboardLive.registerDashboardXMLPaths)
 
 -- Overwritten function loadEmitterDashboardFromXML to enable dark mode setting
 function DashboardLive.addDarkModeToLoadEmitterDashboardFromXML(self, superfunc, xmlFile, key, dashboard, ...)
@@ -2326,6 +2398,16 @@ end
 
 -- ELEMENTS
 
+-- Read compound entries from vanilla path and "dashboardLive.dashboard(?)", too
+function DashboardLive:loadDashboardsFromXML(superfunc, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
+	local result = superfunc(self, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
+	if string.sub(key, 1, 18) == "dashboardCompounds" then
+		result = result and superfunc(self, xmlFile, key..".dashboardLive", dashboardValueType, components, i3dMappings, parentNode)
+	end
+	return result
+end
+Dashboard.loadDashboardsFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardsFromXML, DashboardLive.loadDashboardsFromXML)
+
 -- readAttributes
 -- page
 function DashboardLive.getDBLAttributesPage(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
@@ -2803,6 +2885,78 @@ function DashboardLive.getDBLAttributesFrontloader(self, xmlFile, key, dashboard
 	return true
 end
 
+-- movingTool
+function DashboardLive.getDBLAttributesMovingTool(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
+	
+	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", "toolrotation")) -- rotation,  minmax
+    dbgprint("getDBLAttributesFrontloader : command: "..tostring(dashboard.dblCommand), 2)
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
+	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
+	local jointSide = xmlFile:getValue(key .. "#jointSide")
+	dbgprint("getDBLAttributesFrontloader : jointSide: "..tostring(jointSide), 2)
+	local jointType = xmlFile:getValue(key .. "#jointType")
+	dbgprint("getDBLAttributesFrontloader : jointType: "..tostring(jointType), 2)
+	dashboard.dblAttacherJointIndices = jointMapping(self, dashboard.dblAttacherJointIndices, jointSide, jointType)
+	dbgprint("getDBLAttributesFrontloader : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
+
+	dashboard.dblOption = xmlFile:getValue(key .. "#option", "1") -- number of tool
+
+	dashboard.dblFactor = xmlFile:getValue(key .. "#factor", "1") -- factor
+
+	dashboard.dblStateText = xmlFile:getValue(key .. "#stateText","origin")
+	dashboard.dblState = xmlFile:getValue(key .. "#state","origin")
+
+	local min = xmlFile:getValue(key .. "#min")
+	local max = xmlFile:getValue(key .. "#max")
+	
+	if min ~= nil then dashboard.dblMin = min end
+    if max ~= nil then dashboard.dblMax = max end
+    
+	
+	return true
+end
+
+-- animation
+function DashboardLive.getDBLAttributesAnimation(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
+	
+	dashboard.dblCommand = xmlFile:getValue(key .. "#cmd", "none")
+    dbgprint("getDBLAttributesAnimation : command: "..tostring(dashboard.dblCommand), 2)
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
+	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
+	local jointSide = xmlFile:getValue(key .. "#jointSide")
+	dbgprint("getDBLAttributesAnimation : jointSide: "..tostring(jointSide), 2)
+	local jointType = xmlFile:getValue(key .. "#jointType")
+	dbgprint("getDBLAttributesAnimation : jointType: "..tostring(jointType), 2)
+	dashboard.dblAttacherJointIndices = jointMapping(self, dashboard.dblAttacherJointIndices, jointSide, jointType)
+	dbgprint("getDBLAttributesAnimation : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
+	
+--	dashboard.dblOption = xmlFile:getValue(key .. "#option", "1") -- number of tool
+	dashboard.dblFactor = xmlFile:getValue(key .. "#factor", "1") -- factor
+
+--	dashboard.dblStateText = xmlFile:getValue(key .. "#stateText","origin")
+--	dashboard.dblState = xmlFile:getValue(key .. "#state","origin")
+
+	local min = xmlFile:getValue(key .. "#min")
+	local max = xmlFile:getValue(key .. "#max")
+	
+	if min ~= nil then dashboard.dblMin = min end
+	if max ~= nil then dashboard.dblMax = max end
+	
+	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
+	dbgprint("getDBLAttributesBase : cond: "..tostring(dashboard.dblCond), 2)
+	
+	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
+	dbgprint("getDBLAttributesBase : condValue: "..tostring(dashboard.dblCondValue), 2)
+	
+	return true
+end
+
 -- precisionFarming
 function DashboardLive.getDBLAttributesPrecisionFarming(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", "")) -- rotation,  minmax
@@ -2928,6 +3082,29 @@ function DashboardLive.getDBLAttributesRGPS(self, xmlFile, key, dashboard, compo
 	dbgprint("getDBLAttributesRGPS : cond: "..tostring(dashboard.dblCond), 2)
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint("getDBLAttributesRGPS : condValue: "..tostring(dashboard.dblCondValue), 2)
+	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
+		Logging.xmlError(self.xmlFile, "No value given for comparation: cond = "..tostring(dashboard.dblCond)..", condValue = "..tostring(dashboard.dblCondValue))
+		return false
+	end
+	
+	return true
+end
+
+-- ADS
+function DashboardLive.getDBLAttributesADS(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
+	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd", ""))
+    dbgprint("getDBLAttributesADS : command: "..tostring(dashboard.dblCommand), 2)
+    
+    dashboard.dblKey = key
+    dashboard.dblXmlFilename = xmlFile.filename
+    
+--	dashboard.dblState = xmlFile:getValue(key .. "#state")
+--	dbgprint("getDBLAttributesADS : state: "..tostring(dashboard.dblState), 2)
+	
+	dashboard.dblCond = xmlFile:getValue(key .. "#cond")
+	dbgprint("getDBLAttributesADS : cond: "..tostring(dashboard.dblCond), 2)
+	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
+	dbgprint("getDBLAttributesADS : condValue: "..tostring(dashboard.dblCondValue), 2)
 	if dashboard.dblCond ~= nil and dashboard.dblCond ~= "not" and dashboard.dblCondValue == nil then
 		Logging.xmlError(self.xmlFile, "No value given for comparation: cond = "..tostring(dashboard.dblCond)..", condValue = "..tostring(dashboard.dblCondValue))
 		return false
@@ -3688,8 +3865,13 @@ function DashboardLive.getDashboardLiveVCA(self, dashboard)
 		local c = dashboard.dblCommand
 
 		if c == "park" then
-			if (spec.modVCAFound and self:vcaGetState("handbrake")) or (spec.modEVFound and self.vData.is[13]) then 
+			if (spec.modVCAFound and self:vcaGetState("handbrake")) or (spec.modEVFound and self.vData.is[13]) then
 				returnValue = true
+			end
+			if (spec.modRAGBFound and self.spec_realismAddon_gearbox.handbrakeStateME) then 
+				returnValue = returnValue or self.spec_motorized ~= nil and FS25_realismAddon_gearbox ~= nil 
+				and FS25_realismAddon_gearbox.realismAddon_gearbox_overrides ~= nil 
+				and FS25_realismAddon_gearbox.realismAddon_gearbox_overrides.checkIsManual(self.spec_motorized.motor) 
 			end
 		elseif c == "diff_front" then
 			returnValue = (spec.modVCAFound and self:vcaGetState("diffLockFront")) or (spec.modEVFound and self.vData.is[1])
@@ -4156,6 +4338,82 @@ function DashboardLive.getDashboardLiveFrontloader(self, dashboard)
 	return returnValue
 end
 
+function DashboardLive.getDashboardLiveMovingTool(self, dashboard)
+	dbgprint("getDashboardLiveMovingTool : dblCommand: "..tostring(dashboard.dblCommand), 4)
+	local c = dashboard.dblCommand
+	local s = dashboard.dblStateText or dashboard.dblState
+	local o = dashboard.dblOption
+	
+	local factor = dashboard.dblFactor or 1
+	local returnValue = 0
+	
+	local specCyl = self.spec_cylindered
+	if specCyl ~= nil then
+	
+		if c == "toolrotation" or c == "istoolrotation" then
+			dbgprint(self:getFullName().." : movingTool - " .. c .. " - " .. s, 3)
+			for toolIndex, tool in ipairs(specCyl.movingTools) do
+				if toolIndex == tonumber(o) then
+					local origin = tool.rotMax or 0
+					local originDeg = math.deg(origin) * -1
+					local rot = math.deg(tool.curRot[tool.rotationAxis]) * factor * -1 -- - originDeg
+					if s == "origin" then rot = rot - originDeg end
+					if c == "toolrotation" then
+						returnValue = rot
+					elseif c == "istoolrotation" then
+						if dashboard.dblMin ~= nil and dashboard.dblMax ~= nil then
+							returnValue = rot >= dashboard.dblMin and rot <=dashboard.dblMax
+						else
+							print("Warning: valueType=\"dbl.base\" cmd=\"isToolRotation\": Missing value for min or max")
+							returnValue = 0
+						end
+					end
+				end
+			end
+		elseif c == "tooltranslation" or c == "istooltranslation" then
+			dbgprint(implement.object:getFullName().." : movingTool - " .. c .. " - " .. s,3)
+			for toolIndex, tool in ipairs(specCyl.movingTools) do
+				if toolIndex == tonumber(dashboard.dblOption) then
+					local origin = tool.transMax or 0
+					local trans = tool.curTrans[tool.translationAxis] * factor
+					if dashboard.dblCommand == "tooltranslation" then
+						movingTool = trans
+					elseif dashboard.dblCommand == "istooltranslation" then
+						if dashboard.dblMin ~= nil and dashboard.dblMax ~= nil then
+							movingTool = trans >= dashboard.dblMin and trans <=dashboard.dblMax
+						else
+							print("Warning: valueType=\"base\" cmd=\"istooltranslation\": Missing value for min or max")
+							movingTool = 0
+						end
+					end
+				end
+			end
+			dbgprint("getDashboardLiveMovingTool : "..c..": returnValue: "..tostring(returnValue), 4)
+		end
+	end
+	return returnValue
+end
+
+function DashboardLive.getDashboardLiveAnimation(self, dashboard)
+	dbgprint("getDashboardLiveAnimation : dblCommand: "..tostring(dashboard.dblCommand), 2)
+	local returnValue = 0
+	if dashboard.dblAttacherJointIndices ~= nil then
+		returnValue = getAttachedStatus(self, dashboard, "animation", 0)
+	else
+		returnValue = (self.getAnimationTime ~= nil and self:getAnimationTime(dashboard.dblCommand) or 0) * dashboard.dblFactor
+	end
+	if dashboard.dblMin ~= nil and type(returnValue) == "number" then
+		returnValue = math.max(returnValue, dashboard.dblMin)
+	end
+	if dashboard.dblMax ~= nil and type(returnValue) == "number" then
+		returnValue = math.min(returnValue, dashboard.dblMax)
+	end
+	if dashboard.dblCond ~= nil and dashboard.dblCondValue ~= nil then
+		returnValue = checkCondition(returnValue, dashboard.dblCond, dashboard.dblCondValue)
+	end
+	return returnValue
+end
+
 function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
 	dbgprint("getDashboardLivePrecisionFarming : dblCommand: "..tostring(dashboard.dblCommand), 4)
 	
@@ -4439,6 +4697,24 @@ function DashboardLive.getDashboardLiveRGPS(self, dashboard)
 	return checkCondition(returnValue, dashboard.dblCond, dashboard.dblCondValue)
 end
 
+function DashboardLive.getDashboardLiveADS(self, dashboard)
+	dbgprint("getDashboardLiveADS : dblCommand: "..tostring(dashboard.dblCommand), 4)
+	dbgprint("getDashboardLiveADS : dblState: "..tostring(dashboard.dblState), 4)
+	local c = dashboard.dblCommand
+	--local s = dashboard.dblState
+	local returnValue = false
+	
+	local spec = self.spec_AdvancedDamageSystem
+	
+	if spec ~= nil and type(c)=="string" then
+		local indicator = spec.activeIndicators ~= nil and spec.activeIndicators[c] or nil
+		returnValue = indicator ~= nil and indicator.isActive or false
+	end
+	
+	dbgprint("getDashboardLiveADS : returnValue: "..tostring(returnValue), 4)
+	return checkCondition(returnValue, dashboard.dblCond, dashboard.dblCondValue)
+end
+
 function DashboardLive:onUpdate(dt)
 	local spec = self.spec_DashboardLive
 	
@@ -4460,6 +4736,7 @@ end
 function DashboardLive:onUpdateTick(dt)
 	local spec = self.spec_DashboardLive
 	local specDis = self.spec_dischargeable
+	local specADS = self.spec_AdvancedDamageSystem
 	local dspec = self.spec_dashboard
 	local mspec = self.spec_motorized
 	local syncAllowed = false
@@ -4484,6 +4761,7 @@ function DashboardLive:onUpdateTick(dt)
 	
 		-- sync motor temperature
 --		if self.getIsMotorStarted ~= nil and self:getIsMotorStarted() then
+
 		if mspec ~= nil then
 			spec.motorTemperature = mspec.motorTemperature.value
 			spec.fanEnabled = mspec.motorFan.enabled
