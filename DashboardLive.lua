@@ -201,9 +201,9 @@ function DashboardLive.initSpecialization()
 		Dashboard.compoundsXMLSchema:register(XMLValueType.BOOL, COMPOUND_XML_KEY .. "#outside", "hearable from outside?")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.FLOAT, COMPOUND_XML_KEY .. "#distance", "hearable distance")
 		
-		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#toStack", "save value to stack")
-		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#calculate", "add stack value")
-		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#fromStack", "subtract stack value")
+		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#toStack", "save value to stack")
+		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#calculate", "add stack value")
+		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#fromStack", "subtract stack value")
 	end
 	dbgprint("initSpecialization : DashboardLive compound options registered", 2)
 	
