@@ -2400,12 +2400,9 @@ end
 
 -- Read compound entries from vanilla path and "dashboardLive.dashboard(?)", too
 function DashboardLive:loadDashboardsFromXML(superfunc, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
-	print("loadDashboardsFromXML: key = "..tostring(key))
 	local result = superfunc(self, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
 	if string.sub(key, 1, 18) == "dashboardCompounds" then
-		print("step 1: "..tostring(result))
 		result = result and superfunc(self, xmlFile, key..".dashboardLive", dashboardValueType, components, i3dMappings, parentNode)
-		print("step 2: "..tostring(result))
 	end
 	return result
 end
