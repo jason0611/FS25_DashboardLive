@@ -161,9 +161,12 @@ function DashboardLive.initSpecialization()
 	Dashboard.compoundsXMLSchema:register(XMLValueType.NODE_INDEX, COMPOUND_ANIMATION_XML_KEY .. ".part(?)#endReferencePoint", "End reference point")
 	dbgprint("initSpecialization : DashboardLive animation options registered", 2)
 	
-	local COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).dashboard(?)"
-	for i = 1,2 do
-		if i == 2 then COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).configuration(?).dashboard(?)" end
+	local COMPOUND_XML_KEY
+	for i = 1,4 do
+		if i == 1 then COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).dashboard(?)" end
+		if i == 2 then COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).dashboardLive.dashboard(?)" end
+		if i == 3 then COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).configuration(?).dashboard(?)" end
+		if i == 4 then COMPOUND_XML_KEY = "dashboardCompounds.dashboardCompound(?).configuration(?).dashboardLive.dashboard(?)" end
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#cmd", "DashboardLive command")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#joints")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#jointSide", "joint filter: front or back")
@@ -1817,17 +1820,40 @@ local function getAttachedStatus(vehicle, element, mode, default)
     return result
 end
 
--- Append schema definitions to registerDashboardXMLPath function 
-function DashboardLive.addDarkModeToRegisterDashboardXMLPaths(schema, basePath, availableValueTypes)
-	dbgprint("addDarkModeToRegisterDashboardXMLPaths : registerDashboardXMLPaths appended to "..basePath, 2)
-	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#baseColorDarkMode", "Base color for dark mode")
-	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#emitColorDarkMode", "Emit color for dark mode")
-	schema:register(XMLValueType.FLOAT, basePath .. ".dashboard(?)#intensityDarkMode", "Intensity for dark mode")
-	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#textColorDarkMode", "Text color for dark mode")
-	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#hiddenColorDarkMode", "Hidden color for dark mode")
-	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#numberColorDarkMode", "Number color for dark mode")
+---- Add schema definitions to registerDashboardXMLPath function 
+--function DashboardLive.addDarkModeToRegisterDashboardXMLPaths(schema, basePath, availableValueTypes)
+--	print("addDarkModeToRegisterDashboardXMLPaths: basePath = "..tostring(basePath))
+--	dbgprint("addDarkModeToRegisterDashboardXMLPaths : registerDashboardXMLPaths appended to "..basePath, 2)
+--	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#baseColorDarkMode", "Base color for dark mode")
+--	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#emitColorDarkMode", "Emit color for dark mode")
+--	schema:register(XMLValueType.FLOAT, basePath .. ".dashboard(?)#intensityDarkMode", "Intensity for dark mode")
+--	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#textColorDarkMode", "Text color for dark mode")
+--	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#hiddenColorDarkMode", "Hidden color for dark mode")
+--	schema:register(XMLValueType.STRING, basePath .. ".dashboard(?)#numberColorDarkMode", "Number color for dark mode")
+--end
+--Dashboard.registerDashboardXMLPaths = Utils.appendedFunction(Dashboard.registerDashboardXMLPaths, DashboardLive.addDarkModeToRegisterDashboardXMLPaths)
+
+function DashboardLive.registerDashboardXMLPaths(schema, superfunc, basePath, availableValueTypes)
+	dbgprint("registerDashboardXMLPaths : registerDashboardXMLPaths added to "..basePath, 2)
+	
+	local rounds = 1
+	if string.sub(basePath, 1, 18) == "dashboardCompounds" then
+		rounds = 2
+	end
+	
+	local path = basePath
+	for i=1,rounds do
+		if i == 2 then path = path ..".dashboardLive" end
+		superfunc(schema, path, availableValueTypes)
+		schema:register(XMLValueType.STRING, path .. ".dashboard(?)#baseColorDarkMode", "Base color for dark mode")
+		schema:register(XMLValueType.STRING, path .. ".dashboard(?)#emitColorDarkMode", "Emit color for dark mode")
+		schema:register(XMLValueType.FLOAT, path .. ".dashboard(?)#intensityDarkMode", "Intensity for dark mode")
+		schema:register(XMLValueType.STRING, path .. ".dashboard(?)#textColorDarkMode", "Text color for dark mode")
+		schema:register(XMLValueType.STRING, path .. ".dashboard(?)#hiddenColorDarkMode", "Hidden color for dark mode")
+		schema:register(XMLValueType.STRING, path .. ".dashboard(?)#numberColorDarkMode", "Number color for dark mode")
+	end
 end
-Dashboard.registerDashboardXMLPaths = Utils.appendedFunction(Dashboard.registerDashboardXMLPaths, DashboardLive.addDarkModeToRegisterDashboardXMLPaths)
+Dashboard.registerDashboardXMLPaths = Utils.overwrittenFunction(Dashboard.registerDashboardXMLPaths, DashboardLive.registerDashboardXMLPaths)
 
 -- Overwritten function loadEmitterDashboardFromXML to enable dark mode setting
 function DashboardLive.addDarkModeToLoadEmitterDashboardFromXML(self, superfunc, xmlFile, key, dashboard, ...)
@@ -2371,6 +2397,16 @@ function DashboardLive:getIsDashboardGroupActive(superFunc, group)
 end
 
 -- ELEMENTS
+
+-- Read compound entries from vanilla path and "dashboardLive.dashboard(?)", too
+function DashboardLive:loadDashboardsFromXML(superfunc, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
+	local result = superfunc(self, xmlFile, key, dashboardValueType, components, i3dMappings, parentNode)
+	if string.sub(key, 1, 18) == "dashboardCompounds" then
+		result = result and superfunc(self, xmlFile, key..".dashboardLive", dashboardValueType, components, i3dMappings, parentNode)
+	end
+	return result
+end
+Dashboard.loadDashboardsFromXML = Utils.overwrittenFunction(Dashboard.loadDashboardsFromXML, DashboardLive.loadDashboardsFromXML)
 
 -- readAttributes
 -- page
