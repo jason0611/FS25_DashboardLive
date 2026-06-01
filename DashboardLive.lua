@@ -2875,21 +2875,23 @@ local function calculate(returnValue, stack, dashboard)
 	local condValue = dashboard.dblCondValue
 	
 	if type(returnValue) == "number" and type(stack) == "table" then
-		local value = stack[tostring(dashboard.dblFromStack)]
-		local op = dashboard.dblOperator
-		if op == "add" then
-			returnValue = returnValue + (tonumber(value) or 0)
-		elseif op == "sub1" then
-			returnValue = returnValue - (tonumber(value) or 0)
-		elseif op == "sub2" then
-			returnValue = (tonumber(value) or 0) - returnValue
-		elseif op == "mul" then
-			returnValue = returnValue * (tonumber(value) or 1)
-		elseif op == "div1" then
-			returnValue = returnValue / (tonumber(value) or 1)
-		elseif op == "div2" then
-			local quotient = returnValue ~= 0 and returnValue or 1
-			returnValue = (tonumber(value) or 0) / quotient
+		local value = stack[tostring(dashboard.dblStackSource)]
+		if value ~= nil then
+			local op = dashboard.dblStackOperation
+			if op == "add" then
+				returnValue = returnValue + (tonumber(value) or 0)
+			elseif op == "sub1" then
+				returnValue = returnValue - (tonumber(value) or 0)
+			elseif op == "sub2" then
+				returnValue = (tonumber(value) or 0) - returnValue
+			elseif op == "mul" then
+				returnValue = returnValue * (tonumber(value) or 1)
+			elseif op == "div1" then
+				returnValue = returnValue / (tonumber(value) or 1)
+			elseif op == "div2" then
+				local quotient = returnValue ~= 0 and returnValue or 1
+				returnValue = (tonumber(value) or 0) / quotient
+			end
 		end
 	end
 	
@@ -2928,8 +2930,8 @@ local function calculate(returnValue, stack, dashboard)
 		end
 	end
 	
-	if dashboard.dblToStack ~= nil then
-		stack[tostring(dashboard.dblToStack)] = returnValue
+	if dashboard.dblStackTarget ~= nil then
+		stack[tostring(dashboard.dblStackTarget)] = returnValue
 	end
 	
 	dbgprint("checkCondition: resulting returnValue = "..tostring(returnValue), 4)
