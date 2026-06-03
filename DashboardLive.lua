@@ -1703,7 +1703,8 @@ local function getAttachedStatus(vehicle, element, mode, default)
 			
 			-- animation
 			elseif mode == "animation" then
-				resultValue = (implement.object ~= nil and implement.object.getAnimationTime ~= nil and implement.object:getAnimationTime(element.dblCommand) or false) * element.dblFactor
+				local animName = element.dblOption or "none"
+				resultValue = (implement.object ~= nil and implement.object.getAnimationTime ~= nil and implement.object:getAnimationTime(animName) or false) * element.dblFactor
 				
 			-- frontloader
 			elseif mode == "toolrotation" or mode=="istoolrotation" then
@@ -2433,7 +2434,7 @@ end
 
 -- global entries
 local function getDBLGlobalAttributes(self, xmlFile, key, dashboard, calledBy)	
-	dashboard.dblCommand = lower(xmlFile:getValue(key .. "#cmd"))
+	dashboard.dblCommand = xmlFile:getValue(key .. "#cmd")
     dbgprint(tostring(calledBy).." : command: "..tostring(dashboard.dblCommand), 2)
 
 	dashboard.dblKey = key
@@ -2450,11 +2451,11 @@ local function getDBLGlobalAttributes(self, xmlFile, key, dashboard, calledBy)
 	-- attacher joints
 	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
 	local jointSide = xmlFile:getValue(key .. "#jointSide")
-	dbgprint(tostring(calledBy).." : jointSide: "..tostring(jointSide), 2)
+	dbgprint(tostring(calledBy).." : jointSide: "..tostring(jointSide), 1)
 	local jointType = xmlFile:getValue(key .. "#jointType")
-	dbgprint(tostring(calledBy).." : jointType: "..tostring(jointType), 2)
+	dbgprint(tostring(calledBy).." : jointType: "..tostring(jointType), 1)
 	dashboard.dblAttacherJointIndices = jointMapping(self, dashboard.dblAttacherJointIndices, jointSide, jointType)
-	dbgprint(tostring(calledBy).." : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
+	dbgprint(tostring(calledBy).." : joints: "..tostring(dashboard.dblAttacherJointIndices), 1)
 	
 	-- state
 	dashboard.dblState = xmlFile:getValue(key .. "#state") -- swath state, ridgemarker state, crabsteering state...
@@ -2965,7 +2966,8 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		local specCS = self.spec_crabSteering
 		local specPI = self.spec_pipe
 		local specAJ = self.spec_attacherJoints
-		local cmds, j, s, o = dashboard.dblCommand, dashboard.dblAttacherJointIndices, dashboard.dblStateText or dashboard.dblState, dashboard.dblOption
+		local cmds   = lower(dashboard.dblCommand)
+		local j, s, o = dashboard.dblAttacherJointIndices, dashboard.dblStateText or dashboard.dblState, dashboard.dblOption
 		local cmd = string.split(cmds, " ")
 		local returnValue = false
 		
@@ -3221,7 +3223,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		-- lowering state
 		elseif cmds == "liftstate" and self.spec_attacherJoints ~= nil then
 			dbgprint("getDashboardLiveBase : liftstate:", 4)
-			local joints = jointsToTable(j)
+			local joints = jointsToTable(j) or {}
 			returnValue = 0
 			for i, jointIndex in ipairs(joints) do
 				local attacherJoint = self.spec_attacherJoints.attacherJoints[tonumber(jointIndex)]
@@ -3359,7 +3361,7 @@ function DashboardLive.getDashboardLiveMiniMap(self, dashboard)
 		return false 
 	end
 	
-	local cmd = dashboard.dblCommand
+	local cmd = lower(dashboard.dblCommand)
 	
 	-- position
 	local node = self.steeringAxleNode or self.rootNode
@@ -3430,7 +3432,7 @@ function DashboardLive.getDashboardLiveCombine(self, dashboard)
 	local spec = self.spec_combine
 	if dashboard.dblCommand ~= nil and spec ~= nil then
 		
-		local c = dashboard.dblCommand
+		local c = lower(dashboard.dblCommand)
 		local s = dashboard.dblStateText or dashboard.dblState
 		
 		if c == "chopper" then
@@ -3499,7 +3501,7 @@ function DashboardLive.getDashboardLiveRDA(self, dashboard)
 	local specRDA = self.spec_tirePressure
 	
 	if specRDA ~= nil and dashboard.dblCommand ~= nil then
-		local c = dashboard.dblCommand
+		local c = lower(dashboard.dblCommand)
 		local o = dashboard.dblOption
 		local factor = dashboard.dblFactor
 		
@@ -3536,7 +3538,7 @@ function DashboardLive.getDashboardLiveVCA(self, dashboard)
 	local spec = self.spec_DashboardLive
 	
 	if dashboard.dblCommand ~= nil then
-		local c = dashboard.dblCommand
+		local c = lower(dashboard.dblCommand)
 
 		if c == "park" then
 			if (spec.modVCAFound and self:vcaGetState("handbrake")) or (spec.modEVFound and self.vData.is[13]) then
@@ -3590,6 +3592,7 @@ function DashboardLive.getDashboardLiveCC(self, dashboard)
 	dbgprint("getDashboardLiveCC : dblCommand: "..tostring(dashboard.dblCommand).." / dblState: "..tostring(dashboard.dblState), 4)
 	local spec = self.spec_DashboardLive
 	local specECC = self.spec_extendedCruiseControl
+	local c = lower(dashboard.dblCommand)
 	local state = tonumber(dashboard.dblState)
 	local mode = 0
 	local returnValue = false
@@ -3602,7 +3605,7 @@ function DashboardLive.getDashboardLiveCC(self, dashboard)
 	 	mode = 3
 	end
 	
-	if dashboard.dblCommand == "active" then
+	if c == "active" then
 		if mode == 1 then
 			if state ~= nil then
 				returnValue = specECC.activeSpeedGroup == state
@@ -3626,7 +3629,7 @@ function DashboardLive.getDashboardLiveCC(self, dashboard)
 		end
 	end	
 	
-	if dashboard.dblCommand == "speed" and state ~= nil then
+	if c == "speed" and state ~= nil then
 		if mode == 1 then
 			returnValue = specECC.cruiseSpeedGroups[state].forward
 		elseif mode == 2 then
@@ -3646,7 +3649,7 @@ function DashboardLive.getDashboardLiveHLM(self, dashboard)
 	local spec = self.spec_DashboardLive
 	local specHLM = self.spec_HeadlandManagement
 	
-	local c = dashboard.dblCommand
+	local c = lower(dashboard.dblCommand)
 	local o = dashboard.dblOption
 	local returnValue = false
 
@@ -3942,7 +3945,7 @@ end
 function DashboardLive.getDashboardLiveBaler(self, dashboard)
 	dbgprint("getDashboardLiveBaler : dblCommand: "..tostring(dashboard.dblCommand), 4)
 	local spec = self.spec_DashboardLive
-	local c = dashboard.dblCommand
+	local c = lower(dashboard.dblCommand)
 	if c == "isroundbale" then
 		return getAttachedStatus(self, dashboard, "isroundbale", false)
 	elseif c == "balesize" then
@@ -3967,7 +3970,7 @@ end
 function DashboardLive.getDashboardLiveCXP(self, dashboard)
 	dbgprint("getDashboardLiveCXP : dblCommand: "..tostring(dashboard.dblCommand), 4)
 	local specXP = findSpecialization(self, "spec_xpCombine")
-	local c, f = dashboard.dblCommand, dashboard.dblFactor
+	local c, f = lower(dashboard.dblCommand), dashboard.dblFactor
 	if specXP ~= nil and specXP.mrCombineLimiter ~= nil then
 		local returnValue
 		local mr = specXP.mrCombineLimiter
@@ -4003,7 +4006,7 @@ end
 
 function DashboardLive.getDashboardLiveFrontloader(self, dashboard)
 	dbgprint("getDashboardLiveFrontloader : dblCommand: "..tostring(dashboard.dblCommand), 4)
-	local c = dashboard.dblCommand
+	local c = lower(dashboard.dblCommand)
 	local returnValue = 0
 	if c == "toolrotation" or c == "tooltranslation" or c == "istoolrotation" or c == "istooltranslation" then
 		returnValue = getAttachedStatus(self, dashboard, c)
@@ -4014,7 +4017,7 @@ end
 
 function DashboardLive.getDashboardLiveMovingTool(self, dashboard)
 	dbgprint("getDashboardLiveMovingTool : dblCommand: "..tostring(dashboard.dblCommand), 4)
-	local c = dashboard.dblCommand
+	local c = lower(dashboard.dblCommand)
 	local s = dashboard.dblStateText or dashboard.dblState
 	local o = dashboard.dblOption
 	
@@ -4050,9 +4053,9 @@ function DashboardLive.getDashboardLiveMovingTool(self, dashboard)
 				if toolIndex == tonumber(dashboard.dblOption) then
 					local origin = tool.transMax or 0
 					local trans = tool.curTrans[tool.translationAxis] * factor
-					if dashboard.dblCommand == "tooltranslation" then
+					if c == "tooltranslation" then
 						movingTool = trans
-					elseif dashboard.dblCommand == "istooltranslation" then
+					elseif c == "istooltranslation" then
 						if dashboard.dblMin ~= nil and dashboard.dblMax ~= nil then
 							movingTool = trans >= dashboard.dblMin and trans <=dashboard.dblMax
 						else
@@ -4095,7 +4098,7 @@ function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
 	
 	-- lets find any attached vehicle with a extendedSprayer specialization.
 	-- in the end, we can only deal with one of them (same as precision farming dlc content)	
-	local c = dashboard.dblCommand
+	local c = lower(dashboard.dblCommand)
 	local o = dashboard.dblOption
 	local t = dashboard.dblTrailer
 	
