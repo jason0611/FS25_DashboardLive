@@ -2442,7 +2442,7 @@ local function getDBLGlobalAttributes(self, xmlFile, key, dashboard, calledBy)
 	-- min/max/factor
 	local min = xmlFile:getValue(key .. "#min")
 	local max = xmlFile:getValue(key .. "#max")
-	local factor = xmlFile:getValue(key .. "#factor")
+	local factor = xmlFile:getValue(key .. "#factor", 1)
 	if min ~= nil then dashboard.dblMin = min end
     if max ~= nil then dashboard.dblMax = max end
     if factor ~= nil then dashboard.dblFactor = factor end
