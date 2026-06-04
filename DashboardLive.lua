@@ -1703,7 +1703,7 @@ local function getAttachedStatus(vehicle, element, mode, default)
 			
 			-- animation
 			elseif mode == "animation" then
-				local animName = element.dblOption or "none"
+				local animName = element.dblCommand or "none"
 				resultValue = (implement.object ~= nil and implement.object.getAnimationTime ~= nil and implement.object:getAnimationTime(animName) or false) * element.dblFactor
 				
 			-- frontloader
