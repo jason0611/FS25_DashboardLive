@@ -3430,47 +3430,49 @@ end
 function DashboardLive.getDashboardLiveCombine(self, dashboard)
 	dbgprint("getDashboardLiveCombine : dblCommand: "..tostring(dashboard.dblCommand), 4)
 	local spec = self.spec_combine
+	local specDBL = self.spec_DashboardLive
+	local returnValue = false
+	
 	if dashboard.dblCommand ~= nil and spec ~= nil then
-		
 		local c = lower(dashboard.dblCommand)
 		local s = dashboard.dblStateText or dashboard.dblState
 		
 		if c == "chopper" then
 			if s == "enabled" then
-				return not spec.isSwathActive
+				returnValue = not spec.isSwathActive
 			elseif s == "active" then
-				return spec.chopperPSenabled
+				returnValue = spec.chopperPSenabled
 			end
 			
 		elseif c == "swath" then
 			if s == "enabled" then 
-				return spec.isSwathActive
+				returnValue = spec.isSwathActive
 			elseif s == "active" then
-				return spec.strawPSenabled
+				returnValue = spec.strawPSenabled
 			end
 			
 		elseif c == "filling" then
-			return spec.isFilling
+			returnValue = spec.isFilling
 		
 		elseif c == "hectars" then
-			return spec.workedHectars
+			returnValue = spec.workedHectars
 			
 		elseif c == "cutheight" then
 			local specCutter = findSpecialization(self, "spec_cutter")
 			if specCutter ~= nil then
-				return specCutter.currentCutHeight or ""
+				returnValue = specCutter.currentCutHeight or ""
 			end
 		
 		elseif c == "pipestate" then
 			local specPipe = self.spec_pipe
 			if specPipe ~= nil and s ~= nil and tonumber(s) ~= nil then
-				return specPipe.currentState == tonumber(s)
+				returnValue = specPipe.currentState == tonumber(s)
 			end
 			
 		elseif c == "pipefolding" then
 			local specPipe = self.spec_pipe
 			if specPipe ~= nil then
-				return specPipe.currentState ~= specPipe.targetState
+				returnValue = specPipe.currentState ~= specPipe.targetState
 			end
 		
 		elseif c == "pipefoldingstate" then
@@ -3478,27 +3480,28 @@ function DashboardLive.getDashboardLiveCombine(self, dashboard)
 			if specPipe ~= nil then
 				local returnValue = specPipe:getAnimationTime(specPipe.animation.name) * dashboard.dblFactor
 				dbgprint("pipeFoldingState: "..tostring(returnValue), 4)
-				return returnValue
+				returnValue = returnValue
 			end		
 			
 		elseif c == "overloading" then
 			local spec_dis = self.spec_dischargeable
 			if spec_dis ~= nil then
 				if s ~= nil and tonumber(s) ~= nil then
-					return spec_dis:getDischargeState() == tonumber(s)
+					returnValue = spec_dis:getDischargeState() == tonumber(s)
 				else
-					return spec_dis:getDischargeState() > 0
+					returnValue = spec_dis:getDischargeState() > 0
 				end
 			end
 		end
 	end
-	
-	--return false
+	return calculate(returnValue, specDBL.stack, dashboard)
 end
 
 function DashboardLive.getDashboardLiveRDA(self, dashboard)
 	dbgprint("getDashboardLiveRDA : dblCommand: "..tostring(dashboard.dblCommand), 4)
 	local specRDA = self.spec_tirePressure
+	local specDBL = self.spec_DashboardLive
+	local returnValue = false
 	
 	if specRDA ~= nil and dashboard.dblCommand ~= nil then
 		local c = lower(dashboard.dblCommand)
@@ -3506,29 +3509,30 @@ function DashboardLive.getDashboardLiveRDA(self, dashboard)
 		local factor = dashboard.dblFactor
 		
 		if c == "inflating" then
-			return specRDA.isInflating
+			returnValue = specRDA.isInflating
 			
 		elseif c == "pressure" then
 			if o == "target" then
-				return specRDA.inflationPressureTarget * factor
+				returnValue = specRDA.inflationPressureTarget * factor
 			elseif o == "min" then
-				return specRDA.pressureMin * factor
+				returnValue = specRDA.pressureMin * factor
 			elseif o == "max" then
-				return specRDA.pressureMax * factor
+				returnValue = specRDA.pressureMax * factor
 			else
-				return specRDA.inflationPressure * factor
+				returnValue = specRDA.inflationPressure * factor
 			end
 			
 		elseif c == "maxSpeed" then
-			return specRDA.maxSpeed
+			returnValue = specRDA.maxSpeed
 		end
 	elseif specRDA == nil then
 		if dashboard.dblCommand == "inflating" then
-			return false
+			returnValue = false
 		else
-			return 0
+			returnValue = 0
 		end
 	end
+	return calculate(returnValue, specDBL.stack, dashboard)
 end
 
 function DashboardLive.getDashboardLiveVCA(self, dashboard)
@@ -3686,7 +3690,7 @@ function DashboardLive.getDashboardLiveHLM(self, dashboard)
 		end
 	end	
 
-	return returnValue
+	return calculate(returnValue, spec.stack, dashboard)
 end
 
 function DashboardLive.getDashboardLiveGPS(self, dashboard)
@@ -3733,7 +3737,7 @@ function DashboardLive.getDashboardLiveGPS(self, dashboard)
 		returnValue = returnValue and specGS.guidanceData ~= nil and specGS.guidanceData.currentLane ~= nil and specGS.guidanceData.currentLane < 0
 	end	
 	
-	return returnValue
+	return calculate(returnValue, spec.stack, dashboard)
 end
 
 function DashboardLive.getDashboardLiveGPSLane(self, dashboard)
@@ -3816,7 +3820,7 @@ function DashboardLive.getDashboardLiveGPSLane(self, dashboard)
 		returnValue = math.min(returnValue, dashboard.dblMax)
 	end
 	
-	return returnValue
+	return calculate(returnValue, spec.stack, dashboard)
 end
 
 function DashboardLive.getDashboardLiveGPSWidth(self, dashboard)
@@ -3843,12 +3847,13 @@ function DashboardLive.getDashboardLiveGPSWidth(self, dashboard)
 		returnValue = math.min(returnValue, dashboard.dblMax)
 	end
 	dbgprint("getDashboardLiveGPSWidth : returnValue: "..tostring(returnValue), 4)
-	return returnValue
+	return calculate(returnValue, spec.stack, dashboard)
 end
 		
 function DashboardLive.getDashboardLivePS(self, dashboard)
 	dbgprint("getDashboardLivePS : running", 4)
 	local o, s = dashboard.dblOption, dashboard.dblState
+	local spec = self.spec_DashboardLive
 	local specPS = findSpecialization(self, "spec_proSeedTramLines")
 	local specSE = findSpecialization(self, "spec_proSeedSowingExtension")
 	local returnValue = " "
@@ -3903,7 +3908,7 @@ function DashboardLive.getDashboardLivePS(self, dashboard)
 	elseif o == "tram" or o == "fert" or o == "segment" or o == "tramtype" or o == "audio" then
 		returnValue = false
 	end
-	return returnValue
+	return calculate(returnValue, spec.stack, dashboard)
 end
 
 function DashboardLive.getDashboardLiveSelection(self, dashboard)
@@ -3946,19 +3951,21 @@ function DashboardLive.getDashboardLiveBaler(self, dashboard)
 	dbgprint("getDashboardLiveBaler : dblCommand: "..tostring(dashboard.dblCommand), 4)
 	local spec = self.spec_DashboardLive
 	local c = lower(dashboard.dblCommand)
+	local returnValue = false
 	if c == "isroundbale" then
-		return getAttachedStatus(self, dashboard, "isroundbale", false)
+		returnValue = getAttachedStatus(self, dashboard, "isroundbale", false)
 	elseif c == "balesize" then
-		return getAttachedStatus(self, dashboard, "balesize", 0)
+		returnValue = getAttachedStatus(self, dashboard, "balesize", 0)
 	elseif c == "balecountanz" then
-		return getAttachedStatus(self, dashboard, "balecountanz", 0)
+		returnValue = getAttachedStatus(self, dashboard, "balecountanz", 0)
 	elseif c == "balecounttotal" then
-		return getAttachedStatus(self, dashboard, "balecounttotal", 0)
+		returnValue = getAttachedStatus(self, dashboard, "balecounttotal", 0)
 	elseif c == "wrappedbalecountanz" then
-		return getAttachedStatus(self, dashboard, "wrappedbalecountanz", 0)
+		returnValue = getAttachedStatus(self, dashboard, "wrappedbalecountanz", 0)
 	elseif c == "wrappedbalecounttotal" then
-		return getAttachedStatus(self, dashboard, "wrappedbalecounttotal", 0)
+		returnValue = getAttachedStatus(self, dashboard, "wrappedbalecounttotal", 0)
 	end
+	return calculate(returnValue, spec.stack, dashboard)
 end
 
 function DashboardLive.getDashboardLiveLSA(self, dashboard)
@@ -3969,10 +3976,11 @@ end
 
 function DashboardLive.getDashboardLiveCXP(self, dashboard)
 	dbgprint("getDashboardLiveCXP : dblCommand: "..tostring(dashboard.dblCommand), 4)
+	local spec = self.spec_DashboardLive
 	local specXP = findSpecialization(self, "spec_xpCombine")
 	local c, f = lower(dashboard.dblCommand), dashboard.dblFactor
+	local returnValue = false
 	if specXP ~= nil and specXP.mrCombineLimiter ~= nil then
-		local returnValue
 		local mr = specXP.mrCombineLimiter
 		if c == "tonperhour" then
 			returnValue = mr.tonPerHour
@@ -3987,12 +3995,13 @@ function DashboardLive.getDashboardLiveCXP(self, dashboard)
 			returnValue = mr.highMoisture
 		end
 		dbgprint("combineXP returnValue: "..tostring(mr[c]), 4)
-		return returnValue
+		return calculate(returnValue, spec.stack, dashboard)
 	elseif c == "highmoisture" then
 		dbgprint("combineXP returnValue ("..tostring(self:getFullName()).."): false (spec not found)", 4)
 		return false
 	end
 	dbgprint("combineXP returnValue ("..tostring(self:getFullName()).."): none (spec not found)", 4)
+	return calculate(returnValue, spec.stack, dashboard)
 end
 
 function DashboardLive.getDashboardLivePrint(self, dashboard)
@@ -4006,17 +4015,19 @@ end
 
 function DashboardLive.getDashboardLiveFrontloader(self, dashboard)
 	dbgprint("getDashboardLiveFrontloader : dblCommand: "..tostring(dashboard.dblCommand), 4)
+	local spec = self.spec_DashboardLive
 	local c = lower(dashboard.dblCommand)
 	local returnValue = 0
 	if c == "toolrotation" or c == "tooltranslation" or c == "istoolrotation" or c == "istooltranslation" then
 		returnValue = getAttachedStatus(self, dashboard, c)
 		dbgprint("getDashboardLiveFrontloader : "..c..": returnValue: "..tostring(returnValue), 4)
 	end
-	return returnValue
+	return calculate(returnValue, spec.stack, dashboard)
 end
 
 function DashboardLive.getDashboardLiveMovingTool(self, dashboard)
 	dbgprint("getDashboardLiveMovingTool : dblCommand: "..tostring(dashboard.dblCommand), 4)
+	local spec = self.spec_DashboardLive
 	local c = lower(dashboard.dblCommand)
 	local s = dashboard.dblStateText or dashboard.dblState
 	local o = dashboard.dblOption
@@ -4068,7 +4079,7 @@ function DashboardLive.getDashboardLiveMovingTool(self, dashboard)
 			dbgprint("getDashboardLiveMovingTool : "..c..": returnValue: "..tostring(returnValue), 4)
 		end
 	end
-	return returnValue
+	return calculate(returnValue, spec.stack, dashboard)
 end
 
 function DashboardLive.getDashboardLiveAnimation(self, dashboard)
@@ -4090,12 +4101,12 @@ function DashboardLive.getDashboardLiveAnimation(self, dashboard)
 	--if dashboard.dblCond ~= nil and dashboard.dblCondValue ~= nil then
 	returnValue = calculate(returnValue, spec.stack, dashboard)
 	--end
-	return returnValue
+	return calculate(returnValue, spec.stack, dashboard)
 end
 
 function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
 	dbgprint("getDashboardLivePrecisionFarming : dblCommand: "..tostring(dashboard.dblCommand), 4)
-	
+	local spec = self.spec_DashboardLive
 	-- lets find any attached vehicle with a extendedSprayer specialization.
 	-- in the end, we can only deal with one of them (same as precision farming dlc content)	
 	local c = lower(dashboard.dblCommand)
@@ -4273,7 +4284,7 @@ function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
 		end
 		dbgrender("returnValue: "..tostring(returnValue), 19, 3)
 	end
-	return returnValue
+	return calculate(returnValue, spec.stack, dashboard)
 end
 
 function DashboardLive.getDashboardLiveCVT(self, dashboard)
