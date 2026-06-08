@@ -2896,6 +2896,16 @@ local function calculate(returnValue, stack, dashboard)
 		end
 	end
 	
+	if dashboard.dblFactor ~= nil and type(returnValue) == "number" then
+		returnValue = returnValue * dashboard.dblFactor
+	end
+	if dashboard.dblMin ~= nil and type(returnValue) == "number" then
+		returnValue = math.max(returnValue, dashboard.dblMin)
+	end
+	if dashboard.dblMax ~= nil and type(returnValue) == "number" then
+		returnValue = math.min(returnValue, dashboard.dblMax)
+	end
+	
 	if cond ~= nil then
 		if type(returnValue) == "boolean" and (cond == "not" or cond == "notequal") then
 			returnValue = not returnValue
@@ -3331,16 +3341,6 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			returnValue = true
 		end
 		
-		if dashboard.dblFactor ~= nil and type(returnValue) == "number" then
-			returnValue = returnValue * dashboard.dblFactor
-		end
-		if dashboard.dblMin ~= nil and type(returnValue) == "number" then
-			returnValue = math.max(returnValue, dashboard.dblMin)
-		end
-		if dashboard.dblMax ~= nil and type(returnValue) == "number" then
-			returnValue = math.min(returnValue, dashboard.dblMax)
-		end
-		
 		local specDBL = self.spec_DashboardLive
 		return calculate(returnValue, specDBL.stack, dashboard)
 	end
@@ -3478,9 +3478,8 @@ function DashboardLive.getDashboardLiveCombine(self, dashboard)
 		elseif c == "pipefoldingstate" then
 			local specPipe = self.spec_pipe
 			if specPipe ~= nil then
-				local returnValue = specPipe:getAnimationTime(specPipe.animation.name) * dashboard.dblFactor
+				returnValue = specPipe:getAnimationTime(specPipe.animation.name)
 				dbgprint("pipeFoldingState: "..tostring(returnValue), 4)
-				returnValue = returnValue
 			end		
 			
 		elseif c == "overloading" then
@@ -3506,20 +3505,19 @@ function DashboardLive.getDashboardLiveRDA(self, dashboard)
 	if specRDA ~= nil and dashboard.dblCommand ~= nil then
 		local c = lower(dashboard.dblCommand)
 		local o = dashboard.dblOption
-		local factor = dashboard.dblFactor
 		
 		if c == "inflating" then
 			returnValue = specRDA.isInflating
 			
 		elseif c == "pressure" then
 			if o == "target" then
-				returnValue = specRDA.inflationPressureTarget * factor
+				returnValue = specRDA.inflationPressureTarget
 			elseif o == "min" then
-				returnValue = specRDA.pressureMin * factor
+				returnValue = specRDA.pressureMin
 			elseif o == "max" then
-				returnValue = specRDA.pressureMax * factor
+				returnValue = specRDA.pressureMax
 			else
-				returnValue = specRDA.inflationPressure * factor
+				returnValue = specRDA.inflationPressure
 			end
 			
 		elseif c == "maxSpeed" then
@@ -3747,9 +3745,8 @@ function DashboardLive.getDashboardLiveGPSLane(self, dashboard)
 	local specGS = self.spec_globalPositioningSystem
 	local returnValue = 0
 	
-	local factor = dashboard.dblFactor or 1
 	if spec.modGuidanceSteeringFound and specGS ~= nil and specGS.guidanceData ~= nil and specGS.guidanceData.currentLane ~= nil then
-		returnValue = math.abs(specGS.guidanceData.currentLane) * factor
+		returnValue = math.abs(specGS.guidanceData.currentLane)
 	end
 	
 	if o == "delta" or o == "dir" or o == "dirleft" or o == "dirright" then
@@ -3761,7 +3758,7 @@ function DashboardLive.getDashboardLiveGPSLane(self, dashboard)
 						or 0
 		
 		if o == "delta" then
-			returnValue = gsValue * factor
+			returnValue = gsValue
 		end
 		
 		if o == "dir" and gsValue < 0 then
@@ -3810,7 +3807,7 @@ function DashboardLive.getDashboardLiveGPSLane(self, dashboard)
 		if offset < -90 then
 			offset = offset + 180
 		end
-		returnValue = offset * factor
+		returnValue = offset
 	end
 	
 	if dashboard.dblMin ~= nil and type(returnValue) == "number" then
@@ -3829,16 +3826,15 @@ function DashboardLive.getDashboardLiveGPSWidth(self, dashboard)
 	local specAI = self.spec_aiAutomaticSteering
 	local specGS = self.spec_globalPositioningSystem
 	local returnValue = 0
-	local factor = dashboard.dblFactor or 1
 	
 	if spec.modGuidanceSteeringFound and specGS ~= nil and specGS.guidanceData ~= nil and specGS.guidanceData.width ~= nil then
-		returnValue = specGS.guidanceData.width * factor
+		returnValue = specGS.guidanceData.width
 	end
 	if spec.modVCAFound and self:vcaGetState("snapDirection") ~= 0 then 
-		returnValue = self.spec_vca.snapDistance * factor
+		returnValue = self.spec_vca.snapDistance
 	end
 	if specAI ~= nil and returnValue == 0 then
-		returnValue = self:getAttacherToolWorkingWidth() * factor
+		returnValue = self:getAttacherToolWorkingWidth()
 	end
 	if dashboard.dblMin ~= nil and type(returnValue) == "number" then
 		returnValue = math.max(returnValue, dashboard.dblMin)
@@ -3896,15 +3892,6 @@ function DashboardLive.getDashboardLivePS(self, dashboard)
 		elseif o == "audio" then
 			returnValue = specSE.allowSound
 		end	
-		if dashboard.dblFactor ~= nil and type(returnValue) == "number" then
-			returnValue = returnValue * dashboard.dblFactor
-		end
-		if dashboard.dblMin ~= nil and type(returnValue) == "number" then
-			returnValue = math.max(returnValue, dashboard.dblMin)
-		end
-		if dashboard.dblMax ~= nil and type(returnValue) == "number" then
-			returnValue = math.min(returnValue, dashboard.dblMax)
-		end
 	elseif o == "tram" or o == "fert" or o == "segment" or o == "tramtype" or o == "audio" then
 		returnValue = false
 	end
@@ -3978,14 +3965,14 @@ function DashboardLive.getDashboardLiveCXP(self, dashboard)
 	dbgprint("getDashboardLiveCXP : dblCommand: "..tostring(dashboard.dblCommand), 4)
 	local spec = self.spec_DashboardLive
 	local specXP = findSpecialization(self, "spec_xpCombine")
-	local c, f = lower(dashboard.dblCommand), dashboard.dblFactor
+	local c = lower(dashboard.dblCommand)
 	local returnValue = false
 	if specXP ~= nil and specXP.mrCombineLimiter ~= nil then
 		local mr = specXP.mrCombineLimiter
 		if c == "tonperhour" then
 			returnValue = mr.tonPerHour
 		elseif c == "engineload" then
-			returnValue = mr.engineLoad * mr.loadMultiplier * f
+			returnValue = mr.engineLoad * mr.loadMultiplier
 		elseif c == "yield" then
 			returnValue = mr.yield
 			if returnValue ~= returnValue then
@@ -4032,7 +4019,6 @@ function DashboardLive.getDashboardLiveMovingTool(self, dashboard)
 	local s = dashboard.dblStateText or dashboard.dblState
 	local o = dashboard.dblOption
 	
-	local factor = dashboard.dblFactor or 1
 	local returnValue = 0
 	
 	local specCyl = self.spec_cylindered
@@ -4044,7 +4030,7 @@ function DashboardLive.getDashboardLiveMovingTool(self, dashboard)
 				if toolIndex == tonumber(o) then
 					local origin = tool.rotMax or 0
 					local originDeg = math.deg(origin) * -1
-					local rot = math.deg(tool.curRot[tool.rotationAxis]) * factor * -1 -- - originDeg
+					local rot = math.deg(tool.curRot[tool.rotationAxis]) * -1 -- - originDeg
 					if s == "origin" then rot = rot - originDeg end
 					if c == "toolrotation" then
 						returnValue = rot
@@ -4063,15 +4049,15 @@ function DashboardLive.getDashboardLiveMovingTool(self, dashboard)
 			for toolIndex, tool in ipairs(specCyl.movingTools) do
 				if toolIndex == tonumber(dashboard.dblOption) then
 					local origin = tool.transMax or 0
-					local trans = tool.curTrans[tool.translationAxis] * factor
+					local trans = tool.curTrans[tool.translationAxis]
 					if c == "tooltranslation" then
-						movingTool = trans
+						returnValue = trans
 					elseif c == "istooltranslation" then
 						if dashboard.dblMin ~= nil and dashboard.dblMax ~= nil then
-							movingTool = trans >= dashboard.dblMin and trans <=dashboard.dblMax
+							returnValue = trans >= dashboard.dblMin and trans <=dashboard.dblMax
 						else
 							print("Warning: valueType=\"base\" cmd=\"istooltranslation\": Missing value for min or max")
-							movingTool = 0
+							returnValue = 0
 						end
 					end
 				end
@@ -4090,17 +4076,8 @@ function DashboardLive.getDashboardLiveAnimation(self, dashboard)
 	if dashboard.dblAttacherJointIndices ~= nil then
 		returnValue = getAttachedStatus(self, dashboard, "animation", 0)
 	else
-		returnValue = (self.getAnimationTime ~= nil and self:getAnimationTime(dashboard.dblCommand) or 0) * dashboard.dblFactor
+		returnValue = (self.getAnimationTime ~= nil and self:getAnimationTime(dashboard.dblCommand) or 0)
 	end
-	if dashboard.dblMin ~= nil and type(returnValue) == "number" then
-		returnValue = math.max(returnValue, dashboard.dblMin)
-	end
-	if dashboard.dblMax ~= nil and type(returnValue) == "number" then
-		returnValue = math.min(returnValue, dashboard.dblMax)
-	end
-	--if dashboard.dblCond ~= nil and dashboard.dblCondValue ~= nil then
-	returnValue = calculate(returnValue, spec.stack, dashboard)
-	--end
 	return calculate(returnValue, spec.stack, dashboard)
 end
 
