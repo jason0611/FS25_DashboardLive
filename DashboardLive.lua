@@ -113,6 +113,7 @@ function DashboardLive.initSpecialization()
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#toStack", "save value to stack")
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#calculate", "add stack value")
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#fromStack", "subtract stack value")
+	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#toLog", "debug entry: print result to log, too")
 	dbgprint("initSpecialization : DashboardLive element options registered", 2)
 	
 	local COMPOUND_GROUP_XML_KEY = "dashboardCompounds.group(?)"
@@ -204,6 +205,7 @@ function DashboardLive.initSpecialization()
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#toStack", "save value to stack")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#calculate", "add stack value")
 		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#fromStack", "subtract stack value")
+		Dashboard.compoundsXMLSchema:register(XMLValueType.STRING, COMPOUND_XML_KEY .. "#toLog", "debug entry: print result to log, too")
 	end
 	dbgprint("initSpecialization : DashboardLive compound options registered", 2)
 	
@@ -2490,11 +2492,13 @@ local function getDBLGlobalAttributes(self, xmlFile, key, dashboard, calledBy)
 	dbgprint(tostring(calledBy).." : cond: "..tostring(dashboard.dblCond), 2)
 	dashboard.dblCondValue = xmlFile:getValue(key .. "#condValue")
 	dbgprint(tostring(calledBy).." : condValue: "..tostring(dashboard.dblCondValue), 2)
-	
 	local valueNumber = tonumber(dashboard.dblCondValue)
 	if valueNumber ~= nil then
 		dashboard.dblCondValue = valueNumber
 	end
+	
+	-- debug entry: toLog
+	dashboard.dblToLog = xmlFile:getValue(key .. "#toLog")
 	
 	return dashboard
 end
@@ -2772,9 +2776,13 @@ function DashboardLive:getValue(superfunc, dashboard)
 	end
 	
 	local function errorHandling(expected, value, dashboard)
-		if dashboard.errorHandlingDone == nil then
-			Logging.warning("Type mismatch: "..tostring(expected).." expected but "..type(value).. " found!")
-			print("*** value = "..tostring(value))
+		if dashboard.errorHandlingDone == nil or (dashboard.dblToLog ~= nil and dashboard.logPrintDone == nil) then
+			if expected ~= "" then
+				Logging.warning("Type mismatch: "..tostring(expected).." expected but "..type(value).. " found!")
+				print("*** value = "..tostring(value))
+			else
+				Logging.info("DashboardLive DEBUG printToLog: returned value ("..type(value)..") is "..tostring(value))
+			end
 			print("*** xmlFilename = "..tostring(dashboard.dblXmlFilename))
 			print("*** xmlKey = "..tostring(dashboard.dblKey))
 			print("*** displayType = "..tostring(getDisplayType(dashboard.displayTypeIndex)))
@@ -2789,8 +2797,12 @@ function DashboardLive:getValue(superfunc, dashboard)
 			print("================")
 			dbgprintCallstack(2)
 			dashboard.errorHandlingDone = true
+			if dashboard.dblToLog == "once" then dashboard.logPrintDone = true end
 		end
 	end
+	
+	local printToLog = dashboard.dblToLog ~= nil
+	local printToLogOnce = dashboard.dblToLog == "once"
 	
 	if displayType == Dashboard.TYPES.EMITTER then
 		if type(value) ~= "boolean" and type(value) ~= "number" then
@@ -2828,6 +2840,8 @@ function DashboardLive:getValue(superfunc, dashboard)
 		if type(value) ~= "table" and type(value) ~= "number" and type(value) ~= "string" and type(value) ~= "boolean" then
 			errorHandling("boolean, table, number or string", value, dashboard)
 		end
+	elseif printToLog then
+		errorHandling("", value, dashboard)
 	end
 	return value, min, max, center, isNumber
 end
