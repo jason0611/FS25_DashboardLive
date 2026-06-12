@@ -3836,12 +3836,6 @@ function DashboardLive.getDashboardLiveGPSWidth(self, dashboard)
 	if specAI ~= nil and returnValue == 0 then
 		returnValue = self:getAttacherToolWorkingWidth()
 	end
-	if dashboard.dblMin ~= nil and type(returnValue) == "number" then
-		returnValue = math.max(returnValue, dashboard.dblMin)
-	end
-	if dashboard.dblMax ~= nil and type(returnValue) == "number" then
-		returnValue = math.min(returnValue, dashboard.dblMax)
-	end
 	dbgprint("getDashboardLiveGPSWidth : returnValue: "..tostring(returnValue), 4)
 	return calculate(returnValue, spec.stack, dashboard)
 end
