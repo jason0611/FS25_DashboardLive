@@ -2499,6 +2499,9 @@ local function getDBLGlobalAttributes(self, xmlFile, key, dashboard, calledBy)
 	
 	-- debug entry: toLog
 	dashboard.dblToLog = xmlFile:getValue(key .. "#toLog")
+	if dashboard.dblToLog ~= nil then
+		print("toLog found!")
+	end
 	
 	return dashboard
 end
@@ -2840,9 +2843,12 @@ function DashboardLive:getValue(superfunc, dashboard)
 		if type(value) ~= "table" and type(value) ~= "number" and type(value) ~= "string" and type(value) ~= "boolean" then
 			errorHandling("boolean, table, number or string", value, dashboard)
 		end
-	elseif printToLog then
+	end
+	
+	if printToLog then
 		errorHandling("", value, dashboard)
 	end
+	
 	return value, min, max, center, isNumber
 end
 DashboardValueType.getValue = Utils.overwrittenFunction(DashboardValueType.getValue, DashboardLive.getValue)
