@@ -2687,8 +2687,9 @@ end
 
 -- print
 function DashboardLive.getDBLAttributesPrint(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
-	dashboard.dblOption = xmlFile:getValue(key .. "#option", "")
-	dbgprint("getDBLAttributePrint : option: "..tostring(dashboard.dblOption), 2)
+	dashboard = getDBLGlobalAttributes(self, xmlFile, key, dashboard, "getDBLAttributesPrint")	
+	dashboard.dblOption = dashboard.dblOption or ""
+	dbgprint("getDBLAttributePrint : option: "..tostring(dashboard.dblOption), 1)
 	return true
 end
 
@@ -4006,7 +4007,7 @@ function DashboardLive.getDashboardLiveCXP(self, dashboard)
 end
 
 function DashboardLive.getDashboardLivePrint(self, dashboard)
-	dbgprint("getDashboardLivePrint : dblOption: "..tostring(dashboard.dblOption), 4)
+	dbgprint("getDashboardLivePrint : dblOption: "..tostring(dashboard.dblOption), 1)
 	
 	local len = string.len(dashboard.textMask or "xxxx")
 	local alignment = dashboard.textAlignment or "LEFT"
