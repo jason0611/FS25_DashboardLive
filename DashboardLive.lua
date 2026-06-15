@@ -4282,7 +4282,7 @@ end
 function DashboardLive.getDashboardLiveCVT(self, dashboard)
 	dbgprint("getDashboardLiveCVT : dblCommand: "..tostring(dashboard.dblCommand), 4)
 	dbgprint("getDashboardLiveCVT : dblState: "..tostring(dashboard.dblState), 4)
-	local c = dashboard.dblCommand
+	local c = lower(dashboard.dblCommand)
 	local s = dashboard.dblState
 	local returnValue = false
 	
