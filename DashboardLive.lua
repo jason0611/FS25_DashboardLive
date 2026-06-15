@@ -4282,7 +4282,7 @@ end
 function DashboardLive.getDashboardLiveCVT(self, dashboard)
 	dbgprint("getDashboardLiveCVT : dblCommand: "..tostring(dashboard.dblCommand), 4)
 	dbgprint("getDashboardLiveCVT : dblState: "..tostring(dashboard.dblState), 4)
-	local c = lower(dashboard.dblCommand)
+	local c = dashboard.dblCommand
 	local s = dashboard.dblState
 	local returnValue = false
 	
@@ -4291,7 +4291,8 @@ function DashboardLive.getDashboardLiveCVT(self, dashboard)
 	
 	if spec ~= nil and type(c)=="string" then
 		local cvtValueFunc = "forDBL_"..c
-		local cvtValue = spec[cvtValueFunc]
+		local cvtValueFuncOld = "forDBL_"..lower(c)
+		local cvtValue = spec[cvtValueFunc] or spec[cvtValueFuncOld] -- ensure backward compatability
 		dbgprint("cvtValue = "..tostring(cvtValue), 4)
 		if s ~= nil then
 			if tonumber(s) ~= nil then
