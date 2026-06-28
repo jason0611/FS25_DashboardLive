@@ -4007,12 +4007,14 @@ function DashboardLive.getDashboardLiveCXP(self, dashboard)
 end
 
 function DashboardLive.getDashboardLivePrint(self, dashboard)
-	dbgprint("getDashboardLivePrint : dblOption: "..tostring(dashboard.dblOption), 1)
+	dbgprint("getDashboardLivePrint : dblOption: "..tostring(dashboard.dblOption), 4)
+	local spec = self.spec_DashboardLive
 	
 	local len = string.len(dashboard.textMask or "xxxx")
 	local alignment = dashboard.textAlignment or "LEFT"
 	
-	return trim(dashboard.dblOption or "", len, alignment)
+	local returnValue = trim(dashboard.dblOption or "", len, alignment)
+	return calculate(returnValue, spec.stack, dashboard)
 end
 
 function DashboardLive.getDashboardLiveFrontloader(self, dashboard)
