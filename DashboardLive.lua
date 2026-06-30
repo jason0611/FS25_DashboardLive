@@ -3846,6 +3846,7 @@ function DashboardLive.getDashboardLiveGPSWidth(self, dashboard)
 	local spec = self.spec_DashboardLive
 	local specAI = self.spec_aiAutomaticSteering
 	local specGS = self.spec_globalPositioningSystem
+	local o = lower(dashboard.dblOption)
 	local returnValue = 0
 	
 	if spec.modGuidanceSteeringFound and specGS ~= nil and specGS.guidanceData ~= nil and specGS.guidanceData.width ~= nil then
@@ -3855,7 +3856,7 @@ function DashboardLive.getDashboardLiveGPSWidth(self, dashboard)
 		returnValue = self.spec_vca.snapDistance
 	end
 	if specAI ~= nil and returnValue == 0 then
-		if specAI.steeringFieldCourse ~= nil and specAI.steeringFieldCourse.fieldCourseSettings ~= nil then
+		if o ~= "workWidth" and specAI.steeringFieldCourse ~= nil and specAI.steeringFieldCourse.fieldCourseSettings ~= nil then
 			returnValue = specAI.steeringFieldCourse.fieldCourseSettings.implementWidth
 		else
 			returnValue = self:getAttacherToolWorkingWidth()
