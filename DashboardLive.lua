@@ -3856,7 +3856,7 @@ function DashboardLive.getDashboardLiveGPSWidth(self, dashboard)
 		returnValue = self.spec_vca.snapDistance
 	end
 	if specAI ~= nil and returnValue == 0 then
-		if o ~= "workWidth" and specAI.steeringFieldCourse ~= nil and specAI.steeringFieldCourse.fieldCourseSettings ~= nil then
+		if o ~= "workwidth" and specAI.steeringFieldCourse ~= nil and specAI.steeringFieldCourse.fieldCourseSettings ~= nil then
 			returnValue = specAI.steeringFieldCourse.fieldCourseSettings.implementWidth
 		else
 			returnValue = self:getAttacherToolWorkingWidth()
