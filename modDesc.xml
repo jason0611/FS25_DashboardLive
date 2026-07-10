@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="110">
 	<author>Glowins Modschmiede</author>
-	<version>2.1.0.B</version>
-	<devStatus>BETA-37</devStatus>
+	<version>2.1.0.0</version>
+	<devStatus>RC</devStatus>
 	<contributors>SbSh, mister_mojo_AT, AgrarPlay und LUWZ, Farming Duds</contributors>
 	<title>
 		<en>Dashboard Live</en>
@@ -113,11 +113,13 @@ V2.1.0.0:
 - Integration of realGPS
 - Items can be active on multiple pages
 - HeadingText expanded
+- Added a fix for the “nil” condition in AISteering's server synchronization
 - Engine temperature will be saved
 - Engine will heat up and cool down without being entered
 - Compatibility with realismAddonGearBox (parking brake)
 - Added a button to release all engaged parking brakes
-
+- Added support for animations
+- Added the ability to temporarily store dashboard values and combine them with other dashboard values
 
 Important: Vehicles must be prepared for DashboardLive in advance in order to be able to use the functions and displays. 
 An installation guide and documentation are included, and video tutorials are also available.
@@ -229,11 +231,13 @@ V2.1.0.0:
 - Integration von realGPS
 - Anzeigen können auf mehreren Seiten aktiv sein
 - HeadingText erweitert
-- nil-condition fix in der Server-Synchronisation von AISteering ergänzt
+- nil-condition fix in der Server-Synchronisation von AISteering ergänzt (behebt u.a. Probleme mit Mods von Dince)
 - Server-Client-Synchronisation überarbeitet
 - Fehlermeldungen und Warnungen teilweise nach devError und devWarning verschoben
 - Kompatibilität mit realismAddonGearBox (Parkbremse)
 - Taste zum Lösen aller vorhandenen Parkbremsen ergänzt
+- Unterstützung von Animationen hinzugefügt
+- Möglichkeit hinzugefügt, Dashboard-Werte zwischenzuspeichern und mit anderen Dashboard-Werten zu verrechnen
 
 Wichtig: Fahrzeuge müssen vorab für DashboardLive vorbereitet werden, um die Funktionen und Anzeigen nutzen zu können.
 Eine Einbauhilfe und Dokumentation sind enthalten, außerdem sind Video-Tutorials verfügbar.
