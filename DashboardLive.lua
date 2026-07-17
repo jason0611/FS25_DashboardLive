@@ -3282,7 +3282,85 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		-- real clock
 		elseif cmds == "realclock" then
 			returnValue = getDate("%T")
-			
+
+		-- Battery voltages
+		elseif cmds == "battery" then
+		    local mspec = self.spec_motorized.motor
+		    local batteryVoltage = self.spec_motorized.battery or 0
+			-- local op = lower(option)
+			local o = dashboard.dblOption
+		    local rpmFactor = 0
+		    if mspec ~= nil and mspec.maxRpm and mspec.minRpm then
+		        local divisor = mspec.maxRpm - mspec.minRpm
+		        if divisor > 0 then
+		            rpmFactor = (mspec.lastMotorRpm - mspec.minRpm) / divisor
+		            rpmFactor = math.max(0, math.min(1, rpmFactor))
+		        end
+		    end
+
+		    if mspec ~= nil and mspec.lastMotorRpm > (mspec.minRpm - 100) then
+		        if o == "12v" then
+		            batteryVoltage = (13.6 + (math.random() * 0.5)) + (rpmFactor * 0.5)
+		        elseif o == "24v" then
+		            batteryVoltage = (26.8 + (math.random() * 0.5)) + (rpmFactor * 1.2)
+		        elseif o == "50v" then 
+		            batteryVoltage = (49.8 + (math.random() * 0.4)) - (rpmFactor * 3.5)
+		        elseif o == "400v" then
+		            batteryVoltage = (395.0 + (math.random() * 2.5)) - (rpmFactor * 30.0)
+		        elseif o == "800v" then
+		            batteryVoltage = (790.0 + (math.random() * 5.0)) - (rpmFactor * 50.0)
+		        end
+		    else
+		        if o == "12v" then
+		            batteryVoltage = 12.2 + (math.random() * 0.4 - 0.2)
+		        elseif o == "24v" then
+		            batteryVoltage = 24.4 + (math.random() * 0.4 - 0.2)
+		        elseif o == "50v" then
+		            batteryVoltage = 51.2 + (math.random() * 0.4 - 0.2)
+		        elseif o == "400v" then
+		            batteryVoltage = 398.5 + (math.random() * 1.5 - 0.75)
+		        elseif o == "800v" then
+		            batteryVoltage = 797.0 + (math.random() * 3.0 - 1.5)
+		        end
+		    end
+		    -- returnValue = batteryVoltage or 0
+			returnValue = tonumber(string.format("%.1f", batteryVoltage)) or 0
+
+		-- Hectare / hour | useful: interpolationSpeed="0.00005"
+		elseif cmds == "haperhour" then
+			local specGS = self.spec_globalPositioningSystem
+			local speed = self:getLastSpeed() or 0
+				local width = self:getAttacherToolWorkingWidth() or 0
+			if specGS ~= nil and specGS.guidanceData ~= nil and specGS.guidanceData.width ~= nil then
+				width = specGS.guidanceData.width or self:getAttacherToolWorkingWidth() or 0
+			end
+			local ha_per_hour = (speed * width) / 10
+			returnValue = ha_per_hour or 0.0
+
+		-- Liters / Hectare | useful: interpolationSpeed="0.009"
+		elseif cmds == "litersperha" then
+		    local specGS = self.spec_globalPositioningSystem
+		    local speed = self:getLastSpeed() or 0
+		    local mspec = self.spec_motorized
+		    local width = self:getAttacherToolWorkingWidth() or 0
+		    
+		    if specGS ~= nil and specGS.guidanceData ~= nil and specGS.guidanceData.width ~= nil then
+		        width = specGS.guidanceData.width or self:getAttacherToolWorkingWidth() or 0
+		    end
+		    local ha_per_hour = (speed * width) / 10
+		    local liters_per_hour = 0
+		    if mspec ~= nil and mspec.lastFuelUsage ~= nil then
+		        liters_per_hour = mspec.lastFuelUsage
+		    end
+
+		    local liters_per_ha = 0.0
+		    if speed > 0.9 and ha_per_hour > 0 then
+		        liters_per_ha = liters_per_hour / ha_per_hour
+		    else
+		        liters_per_ha = 0.0
+		    end
+		    returnValue = liters_per_ha or 0.0
+
 		-- heading
 		elseif cmds == "heading" or cmds == "headingtext1" or cmds == "headingtext2" or cmds == "headingtext3" 
 		 or cmds == "headingtext1de" or cmds == "headingtext2de" or cmds == "headingtext3de" then
