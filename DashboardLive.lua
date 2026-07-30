@@ -919,7 +919,8 @@ function DashboardLive:CHANGEPAGE(actionName, keyStatus)
 		dbgprint("CHANGEPAGE : NewPageGroup = "..tostring(spec.actPageGroup), 2)
 	end
 	if actionName == "DBL_PAGEUP" then
-		local pageNum = spec.pageGroups[spec.actPageGroup].actPage + 1
+		local pageNum = spec.pageGroups[spec.actPageGroup].actPage or 1
+		pageNum = pageNum + 1
 		while not spec.pageGroups[spec.actPageGroup].pages[pageNum] do
 			pageNum = pageNum + 1
 			if pageNum > spec.maxPage then pageNum = 1 end
@@ -928,7 +929,8 @@ function DashboardLive:CHANGEPAGE(actionName, keyStatus)
 		spec.pageGroups[spec.actPageGroup].actPage = pageNum
 	end
 	if actionName == "DBL_PAGEDN" then
-		local pageNum = spec.pageGroups[spec.actPageGroup].actPage - 1
+		local pageNum = spec.pageGroups[spec.actPageGroup].actPage or spec.maxPage
+		pageNum = pageNum - 1
 		while not spec.pageGroups[spec.actPageGroup].pages[pageNum] do
 			pageNum = pageNum - 1
 			if pageNum < 1 then pageNum = spec.maxPage end
