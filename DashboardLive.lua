@@ -2783,8 +2783,8 @@ function DashboardLive:getValue(superfunc, dashboard)
 		if dashboard.errorHandlingDone == nil or (dashboard.dblToLog ~= nil and dashboard.logPrintDone == nil) then
 			local printToLog
 			if expected ~= "" then
-				Logging.warning("Type mismatch: "..tostring(expected).." expected but "..type(value).. " found!")
-				printToLog = Logging.devInfo
+				Logging.devWarning("Type mismatch: "..tostring(expected).." expected but "..type(value).. " found!")
+				printToLog = Logging.devWarning
 				printToLog("*** value = "..tostring(value))
 			else
 				Logging.info("DashboardLive DEBUG printToLog: returned value ("..type(value)..") is "..tostring(value))
