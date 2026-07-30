@@ -3223,6 +3223,9 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 					end
 				end
 			end
+			if returnValue == false and o == "name" then
+				returnValue = ""
+			end
 			
 		-- hasSpec	
 		elseif cmds == "hasspec" then
