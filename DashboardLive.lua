@@ -2455,11 +2455,11 @@ local function getDBLGlobalAttributes(self, xmlFile, key, dashboard, calledBy)
 	-- attacher joints
 	dashboard.dblAttacherJointIndices = xmlFile:getValue(key .. "#joints")
 	local jointSide = xmlFile:getValue(key .. "#jointSide")
-	dbgprint(tostring(calledBy).." : jointSide: "..tostring(jointSide), 1)
+	dbgprint(tostring(calledBy).." : jointSide: "..tostring(jointSide), 2)
 	local jointType = xmlFile:getValue(key .. "#jointType")
-	dbgprint(tostring(calledBy).." : jointType: "..tostring(jointType), 1)
+	dbgprint(tostring(calledBy).." : jointType: "..tostring(jointType), 2)
 	dashboard.dblAttacherJointIndices = jointMapping(self, dashboard.dblAttacherJointIndices, jointSide, jointType)
-	dbgprint(tostring(calledBy).." : joints: "..tostring(dashboard.dblAttacherJointIndices), 1)
+	dbgprint(tostring(calledBy).." : joints: "..tostring(dashboard.dblAttacherJointIndices), 2)
 	
 	-- state
 	dashboard.dblState = xmlFile:getValue(key .. "#state") -- swath state, ridgemarker state, crabsteering state...
@@ -4592,7 +4592,7 @@ function DashboardLive:onUpdateTick(dt)
 		-- trigger syncClient2Server event
 		if spec.needsSyncClientToServer then
 			local name = self.getFullName ~= nil and self:getFullName() or "unknown"
-			dbgprint("C2S sync triggered for: "..name)
+			dbgprint("C2S sync triggered for: "..name, 2)
 			SyncClient2ServerEvent.sendEvent(self, spec.maxPageGroup, spec.pageGroups, spec.orientation, spec.leaveTime)
 			spec.needsSyncClientToServer = false
 		end
