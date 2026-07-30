@@ -2781,24 +2781,27 @@ function DashboardLive:getValue(superfunc, dashboard)
 	
 	local function errorHandling(expected, value, dashboard)
 		if dashboard.errorHandlingDone == nil or (dashboard.dblToLog ~= nil and dashboard.logPrintDone == nil) then
+			local printToLog
 			if expected ~= "" then
 				Logging.warning("Type mismatch: "..tostring(expected).." expected but "..type(value).. " found!")
-				print("*** value = "..tostring(value))
+				printToLog = Logging.devInfo
+				printToLog("*** value = "..tostring(value))
 			else
 				Logging.info("DashboardLive DEBUG printToLog: returned value ("..type(value)..") is "..tostring(value))
+				printToLog = Logging.info
 			end
-			print("*** xmlFilename = "..tostring(dashboard.dblXmlFilename))
-			print("*** xmlKey = "..tostring(dashboard.dblKey))
-			print("*** displayType = "..tostring(getDisplayType(dashboard.displayTypeIndex)))
-			print("*** valueType = "..tostring(dashboard.valueType.fullName))
-			print("*** cmd = "..tostring(dashboard.dblCommand))
-			print("*** option = "..tostring(dashboard.dblOption))
-			print("*** state = "..tostring(dashboard.dblState))
-			print("*** trailer = "..tostring(dashboard.dblTrailer))
-			print("*** partition = "..tostring(dashboard.dblPartition))
-			print("*** cond = "..tostring(dashboard.dblCond))
-			print("*** condValue = "..tostring(dashboard.dblCondValue))		
-			print("================")
+			printToLog("*** xmlFilename = "..tostring(dashboard.dblXmlFilename))
+			printToLog("*** xmlKey = "..tostring(dashboard.dblKey))
+			printToLog("*** displayType = "..tostring(getDisplayType(dashboard.displayTypeIndex)))
+			printToLog("*** valueType = "..tostring(dashboard.valueType.fullName))
+			printToLog("*** cmd = "..tostring(dashboard.dblCommand))
+			printToLog("*** option = "..tostring(dashboard.dblOption))
+			printToLog("*** state = "..tostring(dashboard.dblState))
+			printToLog("*** trailer = "..tostring(dashboard.dblTrailer))
+			printToLog("*** partition = "..tostring(dashboard.dblPartition))
+			printToLog("*** cond = "..tostring(dashboard.dblCond))
+			printToLog("*** condValue = "..tostring(dashboard.dblCondValue))		
+			printToLog("================")
 			dbgprintCallstack(2)
 			dashboard.errorHandlingDone = true
 			if dashboard.dblToLog == "once" then dashboard.logPrintDone = true end
