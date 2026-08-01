@@ -40,7 +40,7 @@ function SyncClient2ServerEvent:readStream(streamId, connection)
 			self.pageGroups[pg] = {}
 			self.pageGroups[pg].actPage = actPage
 		end
-		dbgprint("SyncClient2ServerEvent:readStream : group "..tostring(pg)..": actPage read = "..tostring(pg).." table = "..tostring(self.pageGroups[pg]), 2)
+		dbgprint("SyncClient2ServerEvent:readStream : group "..tostring(pg)..": actPage read = "..tostring(actPage).." table = "..tostring(self.pageGroups[pg]), 2)
 		dbgprint_r(self.pageGroups[pg], 2, 1)
 	end
 	self.orientation = streamReadString(streamId)
@@ -55,7 +55,7 @@ function SyncClient2ServerEvent:run(connection)
 		self.object.spec_DashboardLive.maxPageGroup = self.maxPageGroup
 		for pg = 1, self.maxPageGroup do
 			if self.object.spec_DashboardLive.pageGroups[pg] ~= nil and self.pageGroups[pg] ~= nil then
-				self.object.spec_DashboardLive.pageGroups[pg].actPage = self.pageGroups[pg].actPage
+				self.object.spec_DashboardLive.pageGroups[pg].actPage = self.pageGroups[pg].actPages
 			end
 		end
 		self.object.spec_DashboardLive.orientation = self.orientation
