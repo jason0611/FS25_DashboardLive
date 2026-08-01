@@ -64,8 +64,8 @@ function SyncClient2ServerEvent:run(connection)
 	if not connection:getIsServer() then
 		g_server:broadcastEvent(SyncClient2ServerEvent.new(self.object, self.maxPageGroup, self.pageGroups, self.orientation, self.leaveTime), nil, connection, self.object)
 	end
-	dbgprint("SyncClient2ServerEvent:run : pageGroups table = "..tostring(self.object.spec_DashboardLive.pageGroups[pg]), 2)
-	dbgprint_r(self.object.spec_DashboardLive.pageGroups[pg], 2, 1)
+	dbgprint("SyncClient2ServerEvent:run : pageGroups table = "..tostring(self.object.spec_DashboardLive.pageGroups), 2)
+	dbgprint_r(self.object.spec_DashboardLive.pageGroups, 2, 1)
 end
 
 function SyncClient2ServerEvent.sendEvent(vehicle, maxPageGroup, pageGroups, orientation, leaveTime, noEventSend)
