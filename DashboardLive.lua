@@ -3710,7 +3710,7 @@ function DashboardLive.getDashboardLiveCC(self, dashboard)
 		mode = 1
 	elseif spec.modSpeedControlFound then
 	 	mode = 2
-	 elseif self.spec_drivable ~= nil then
+	elseif self.spec_drivable ~= nil then
 	 	mode = 3
 	end
 	
@@ -3746,7 +3746,7 @@ function DashboardLive.getDashboardLiveCC(self, dashboard)
 			returnValue = specCC.keys[state].speed
 		elseif mode == 3 then
 			local specCC = self.spec_drivable.cruiseControl
-			returnValue = state == 3 and specCC.speed
+			returnValue = specCC.speed or ""
 		end
 	end
 	
