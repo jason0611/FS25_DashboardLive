@@ -19,13 +19,11 @@ end
 function SyncClient2ServerEvent:writeStream(streamId, _)
 	NetworkUtil.writeNodeObject(streamId, self.object)
 	streamWriteInt8(streamId, self.maxPageGroup)
-	if self.maxPageGroup > 1 then
-		for pg = 1, self.maxPageGroup do
-			local actPage = self.pageGroups[pg] ~= nil and self.pageGroups[pg].actPage or 0
-			streamWriteInt8(streamId, actPage)
-			dbgprint("SyncClient2ServerEvent:writeStream : actPage sent = "..tostring(actPage).." table = "..tostring(self.pageGroups[pg]), 2)
-			dbgprint_r(self.pageGroups[pg], 2, 1)
-		end
+	for pg = 1, self.maxPageGroup do
+		local actPage = self.pageGroups[pg] ~= nil and self.pageGroups[pg].actPage or 0
+		streamWriteInt8(streamId, actPage)
+		dbgprint("SyncClient2ServerEvent:writeStream : actPage sent = "..tostring(actPage).." table = "..tostring(self.pageGroups[pg]), 2)
+		dbgprint_r(self.pageGroups[pg], 2, 1)
 	end
 	streamWriteString(streamId, self.orientation)
 	streamWriteFloat32(streamId, self.leaveTime)
@@ -36,16 +34,14 @@ function SyncClient2ServerEvent:readStream(streamId, connection)
 	self.object = NetworkUtil.readNodeObject(streamId)
 	self.maxPageGroup = streamReadInt8(streamId)
 	--self.pageGroups = {}
-	if self.maxPageGroup > 1 then
-		for pg = 1, self.maxPageGroup do
-			local actPage = streamReadInt8(streamId)
-			if actPage ~= 0 then
-				--self.pageGroups[pg] = {}
-				self.pageGroups[pg].actPage = actPage
-			end
-			dbgprint("SyncClient2ServerEvent:readStream : actPage read = "..tostring(pg).." table = "..tostring(self.pageGroups[pg]), 2)
-			dbgprint_r(self.pageGroups[pg], 2, 1)
+	for pg = 1, self.maxPageGroup do
+		local actPage = streamReadInt8(streamId)
+		if actPage ~= 0 then
+			--self.pageGroups[pg] = {}
+			self.pageGroups[pg].actPage = actPage
 		end
+		dbgprint("SyncClient2ServerEvent:readStream : actPage read = "..tostring(pg).." table = "..tostring(self.pageGroups[pg]), 2)
+		dbgprint_r(self.pageGroups[pg], 2, 1)
 	end
 	self.orientation = streamReadString(streamId)
 	self.leaveTime = streamReadFloat32(streamId)
