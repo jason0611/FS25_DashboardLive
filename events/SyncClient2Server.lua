@@ -22,7 +22,7 @@ function SyncClient2ServerEvent:writeStream(streamId, _)
 	for pg = 1, self.maxPageGroup do
 		local actPage = self.pageGroups[pg] ~= nil and self.pageGroups[pg].actPage or 0
 		streamWriteInt8(streamId, actPage)
-		dbgprint("SyncClient2ServerEvent:writeStream : actPage sent = "..tostring(actPage).." table = "..tostring(self.pageGroups[pg]), 2)
+		dbgprint("SyncClient2ServerEvent:writeStream : group "..tostring(pg)..": actPage sent = "..tostring(actPage).." table = "..tostring(self.pageGroups[pg]), 2)
 		dbgprint_r(self.pageGroups[pg], 2, 1)
 	end
 	streamWriteString(streamId, self.orientation)
@@ -40,7 +40,7 @@ function SyncClient2ServerEvent:readStream(streamId, connection)
 			self.pageGroups[pg] = {}
 			self.pageGroups[pg].actPage = actPage
 		end
-		dbgprint("SyncClient2ServerEvent:readStream : actPage read = "..tostring(pg).." table = "..tostring(self.pageGroups[pg]), 2)
+		dbgprint("SyncClient2ServerEvent:readStream : group "..tostring(pg)..": actPage read = "..tostring(pg).." table = "..tostring(self.pageGroups[pg]), 2)
 		dbgprint_r(self.pageGroups[pg], 2, 1)
 	end
 	self.orientation = streamReadString(streamId)
@@ -65,7 +65,7 @@ function SyncClient2ServerEvent:run(connection)
 		g_server:broadcastEvent(SyncClient2ServerEvent.new(self.object, self.maxPageGroup, self.pageGroups, self.orientation, self.leaveTime), nil, connection, self.object)
 	end
 	dbgprint("SyncClient2ServerEvent:run : pageGroups table = "..tostring(self.object.spec_DashboardLive.pageGroups), 2)
-	dbgprint_r(self.object.spec_DashboardLive.pageGroups, 2, 1)
+	dbgprint_r(self.object.spec_DashboardLive.pageGroups, 2, 3)
 end
 
 function SyncClient2ServerEvent.sendEvent(vehicle, maxPageGroup, pageGroups, orientation, leaveTime, noEventSend)
