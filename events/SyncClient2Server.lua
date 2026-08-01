@@ -55,7 +55,7 @@ function SyncClient2ServerEvent:run(connection)
 		self.object.spec_DashboardLive.maxPageGroup = self.maxPageGroup
 		for pg = 1, self.maxPageGroup do
 			if self.object.spec_DashboardLive.pageGroups[pg] ~= nil and self.pageGroups[pg] ~= nil then
-				self.object.spec_DashboardLive.pageGroups[pg].actPage = self.pageGroups[pg].actPages
+				self.object.spec_DashboardLive.pageGroups[pg].actPage = self.pageGroups[pg].actPage
 			end
 		end
 		self.object.spec_DashboardLive.orientation = self.orientation
