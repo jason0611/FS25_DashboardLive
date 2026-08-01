@@ -20,8 +20,10 @@ function SyncClient2ServerEvent:writeStream(streamId, _)
 	NetworkUtil.writeNodeObject(streamId, self.object)
 	streamWriteInt8(streamId, self.maxPageGroup)
 	for pg = 1, self.maxPageGroup do
-		streamWriteInt8(streamId, self.pageGroups[pg] ~= nil and self.pageGroups[pg].actPage or 0)
-		dbgprint("SyncClient2ServerEvent:writeStream : actPage sent = "..tostring(actPage), 2)
+		local actPage = self.pageGroups[pg] ~= nil and self.pageGroups[pg].actPage or 0
+		streamWriteInt8(streamId, actPage)
+		dbgprint("SyncClient2ServerEvent:writeStream : actPage sent = "..tostring(actPage).." table = "..tostring(self.pageGroups[pg]), 2)
+		dbgprint_r(self.pageGroups[pg], 2, 1)
 	end
 	streamWriteString(streamId, self.orientation)
 	streamWriteFloat32(streamId, self.leaveTime)
@@ -38,7 +40,8 @@ function SyncClient2ServerEvent:readStream(streamId, connection)
 			self.pageGroups[pg] = {}
 			self.pageGroups[pg].actPage = actPage
 		end
-		dbgprint("SyncClient2ServerEvent:readStream : actPage "..tostring(pg).." read = "..tostring(self.pageGroups[pg]), 2)
+		dbgprint("SyncClient2ServerEvent:readStream : actPage read = "..tostring(pg).." table = "..tostring(self.pageGroups[pg]), 2)
+		dbgprint_r(self.pageGroups[pg], 2, 1)
 	end
 	self.orientation = streamReadString(streamId)
 	self.leaveTime = streamReadFloat32(streamId)
