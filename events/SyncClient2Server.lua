@@ -33,11 +33,11 @@ end
 function SyncClient2ServerEvent:readStream(streamId, connection)
 	self.object = NetworkUtil.readNodeObject(streamId)
 	self.maxPageGroup = streamReadInt8(streamId)
-	--self.pageGroups = {}
+	self.pageGroups = {}
 	for pg = 1, self.maxPageGroup do
 		local actPage = streamReadInt8(streamId)
 		if actPage ~= 0 then
-			--self.pageGroups[pg] = {}
+			self.pageGroups[pg] = {}
 			self.pageGroups[pg].actPage = actPage
 		end
 		dbgprint("SyncClient2ServerEvent:readStream : actPage read = "..tostring(pg).." table = "..tostring(self.pageGroups[pg]), 2)
@@ -55,7 +55,7 @@ function SyncClient2ServerEvent:run(connection)
 		self.object.spec_DashboardLive.maxPageGroup = self.maxPageGroup
 		for pg = 1, self.maxPageGroup do
 			if self.object.spec_DashboardLive.pageGroups[pg] ~= nil and self.pageGroups[pg] ~= nil then
-				self.object.spec_DashboardLive.pageGroups[pg].actPage = self.pageGroups[pg].actPages
+				self.object.spec_DashboardLive.pageGroups[pg].actPage = self.pageGroups[pg].actPage
 			end
 		end
 		self.object.spec_DashboardLive.orientation = self.orientation
@@ -64,6 +64,8 @@ function SyncClient2ServerEvent:run(connection)
 	if not connection:getIsServer() then
 		g_server:broadcastEvent(SyncClient2ServerEvent.new(self.object, self.maxPageGroup, self.pageGroups, self.orientation, self.leaveTime), nil, connection, self.object)
 	end
+	dbgprint("SyncClient2ServerEvent:run : pageGroups table = "..tostring(self.object.spec_DashboardLive.pageGroups[pg]), 2)
+	dbgprint_r(self.object.spec_DashboardLive.pageGroups[pg], 2, 1)
 end
 
 function SyncClient2ServerEvent.sendEvent(vehicle, maxPageGroup, pageGroups, orientation, leaveTime, noEventSend)
