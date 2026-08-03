@@ -781,7 +781,7 @@ end
 
 function DashboardLive:onReadStream(streamId, connection)
 	local spec = self.spec_DashboardLive
-	dbgprint("onReadStream : Read data for "..self:getName(), 1)
+	dbgprint("onReadStream : Read data for "..self:getName(), 2)
 	spec.motorTemperature = streamReadFloat32(streamId)
 	spec.fanEnabled = streamReadBool(streamId)
 	spec.lastFuelUsage = streamReadFloat32(streamId)
@@ -806,7 +806,7 @@ end
 
 function DashboardLive:onWriteStream(streamId, connection)
 	local spec = self.spec_DashboardLive
-	dbgprint("onWriteStream : Send data for "..self:getName(), 1)
+	dbgprint("onWriteStream : Send data for "..self:getName(), 2)
 	streamWriteFloat32(streamId, spec.motorTemperature)
 	streamWriteBool(streamId, spec.fanEnabled)
 	streamWriteFloat32(streamId, spec.lastFuelUsage)
