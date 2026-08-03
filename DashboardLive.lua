@@ -246,6 +246,7 @@ end
 
 function DashboardLive:onPreLoad(savegame)
 	self.spec_DashboardLive = self["spec_"..DashboardLive.MOD_NAME..".DashboardLive"]
+	dbgprint("onPreLoad : "..self:getName(), 2)
 	if DashboardLive.fontFixApplied == nil then
 		DashboardLive.applyFontFix()
 		DashboardLive.fontFixApplied = true
@@ -254,6 +255,7 @@ end
 
 function DashboardLive:onLoad(savegame)
 	local spec = self.spec_DashboardLive
+	dbgprint("onLoad : "..self:getName(), 2)
 	
 	-- management data
 	spec.needsSyncServerToClient = false
@@ -528,6 +530,7 @@ end
 
 function DashboardLive:onLoadFinished(savegame)
 	local spec = self.spec_DashboardLive
+	dbgprint("onLoadFinished : "..self:getName(), 2)
 	if savegame ~= nil then	
 		dbgprint("onLoadFinished : loading saved data", 2)
 		local xmlFile = savegame.xmlFile
@@ -778,7 +781,7 @@ end
 
 function DashboardLive:onReadStream(streamId, connection)
 	local spec = self.spec_DashboardLive
-	dbgprint("onReadStream : Read data for "..self:getName(), 1)
+	dbgprint("onReadStream : Read data for "..self:getName(), 2)
 	spec.motorTemperature = streamReadFloat32(streamId)
 	spec.fanEnabled = streamReadBool(streamId)
 	spec.lastFuelUsage = streamReadFloat32(streamId)
@@ -803,7 +806,7 @@ end
 
 function DashboardLive:onWriteStream(streamId, connection)
 	local spec = self.spec_DashboardLive
-	dbgprint("onWriteStream : Sent data for "..self:getName(), 1)
+	dbgprint("onWriteStream : Send data for "..self:getName(), 2)
 	streamWriteFloat32(streamId, spec.motorTemperature)
 	streamWriteBool(streamId, spec.fanEnabled)
 	streamWriteFloat32(streamId, spec.lastFuelUsage)
@@ -825,6 +828,7 @@ function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 	if connection:getIsServer() then
 		local spec = self.spec_DashboardLive
 		if streamReadBool(streamId) then
+			dbgprint("onReadUpdateStream : Read data for "..self:getName(), 2)
 			spec.motorTemperature = streamReadFloat32(streamId)
 			spec.fanEnabled = streamReadBool(streamId)
 			spec.lastFuelUsage = streamReadFloat32(streamId)
@@ -839,6 +843,7 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 	if not connection:getIsServer() then
 		local spec = self.spec_DashboardLive
 		if streamWriteBool(streamId, bitAND(dirtyMask, spec.dirtyFlag) ~= 0) then
+			dbgprint("onWriteUpdateStream : Send data for "..self:getName(), 2)
 			streamWriteFloat32(streamId, spec.motorTemperature)
 			streamWriteBool(streamId, spec.fanEnabled)
 			streamWriteFloat32(streamId, spec.lastFuelUsage)
@@ -2240,6 +2245,10 @@ function DashboardLive:getIsDashboardGroupActive(superFunc, group)
 	-- isobus not active
 	elseif group.dblCommand == "noisobus" then
 		returnValue = not spec.isobusActive
+	
+	-- isobus active
+	elseif group.dblCommand == "isobus" then
+		returnValue = spec.isobusActive
 	
 	-- page
 	elseif group.dblCommand == "page" and group.dblPage ~= nil and group.dblPageGroup ~= nil then 
