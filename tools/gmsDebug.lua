@@ -23,6 +23,14 @@ function GMSDebug:init(modName, dbg, dbgLevel)
 	else	
 		GMSDebug.level = dbgLevel
 	end
+	
+	if GMSDebug.state then
+		local level = "BETA"
+		if GMSDebug.level > 1 then
+			level = "DEV"
+		end
+		dbgprint("This version is a "..level.."-Version")
+	end
 end
 
 function GMSDebug:enableConsoleCommands(command)
