@@ -17,17 +17,6 @@ source(DashboardLive.MOD_PATH.."tools/gmsDebug.lua")
 GMSDebug:init(DashboardLive.MOD_NAME, true, 1)
 GMSDebug:enableConsoleCommands("dblDebug")
 
-local dbgLevel = GMSDebug.level
-if GMSDebug.state then
-	local level
-	if GMSDebug.level == 1 then
-		level = "BETA"
-	elseif GMSDebug.level > 1 then
-		level = "DEV"
-	end
-	dbgprint("This version is a "..level.."-Version")
-end
-
 source(DashboardLive.MOD_PATH.."events/SyncClient2Server.lua")
 --source(DashboardLive.MOD_PATH.."events/SyncServer2Client.lua")
 source(DashboardLive.MOD_PATH.."utils/DashboardUtils.lua")
