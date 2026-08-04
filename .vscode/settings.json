@@ -1,0 +1,14 @@
+{
+    "Lua.diagnostics.globals": [
+        "g_currentModName",
+        "g_currentModDirectory",
+        "g_currentModSettingsDirectory",
+        "source",
+        "XMLFile",
+        "Motorized",
+        "Vehicle",
+        "Dashboard",
+        "createFolder",
+        "XMLValueType"
+    ]
+}
