@@ -1,3 +1,4 @@
+---@diagnostic disable: lowercase-global
 --
 -- Glowins Modschmiede: Debug-Tool
 -- Author: Jason06 / Glowins Mod-Schmiede
@@ -76,7 +77,7 @@ function GMSDebug:renderTable(data, pos, prio)
 	local n = 0
 	for i, d in pairs(data) do
 		if string.sub(tostring(d), 1, 5) ~= "table" then
-			renderText(0.50, 0.95 - (pos + n) * 0.02, 0.01, tostring(i)..": "..tostring(d), pos + n, prio)
+			renderText(0.50, 0.95 - (pos + n) * 0.02, 0.01, tostring(i)..": "..tostring(d))
 			n = n + 1
 		end
 	end

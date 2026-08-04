@@ -1,3 +1,4 @@
+---@diagnostic disable: cast-local-type
 --
 -- Dashboard Extension for FS25
 --
@@ -575,11 +576,10 @@ end
 -- modified and adapted giants code
 function DashboardLive.loadIsobusCompoundFromXML(self, xmlFile, key, compound)
 	dbgprint("loadIsobusCompoundFromXML: linkNode = "..tostring(compound.linkNode).." / key = "..tostring(key), 1)
-	local spec = self.spec_DashboardLive
 	local dashboardXMLFile = XMLFile.load("IsobusCompoundXML", compound.filename, Dashboard.compoundsXMLSchema)
 	if dashboardXMLFile ~= nil then
 		local compoundKey
-		dashboardXMLFile:iterate(key, function(index, _compoundKey)
+		dashboardXMLFile:iterate(key, function(_, _compoundKey)
 			if dashboardXMLFile:getValue(_compoundKey .. "#name") == compound.name then
 				compoundKey = _compoundKey
 				return
@@ -861,8 +861,8 @@ function DashboardLive:onRegisterActionEvents(isActiveForInput, isActiveForInput
 	dbgprint("onRegisterActionEvents", 4)
 	if self.isClient then
 		local spec = self.spec_DashboardLive
-		spec.actionEvents = {} 
 		if spec ~= nil then
+			spec.actionEvents = {} 
 			local actionEventId
 			local sp = spec.maxPage > 1
 			local sg = spec.maxPageGroup > 1
@@ -883,20 +883,21 @@ function DashboardLive:onRegisterActionEvents(isActiveForInput, isActiveForInput
 				g_inputBinding:setActionEventTextPriority(actionEventId, GS_PRIO_NORMAL)
 				g_inputBinding:setActionEventTextVisibility(actionEventId, sp)
 			end
-		end	
-		-- solve mod conflict with CameraZoomExtension by Ifko: disable temporary zoom of dbl
-		if not spec.CZEexists then
-			self:addActionEvent(spec.actionEvents, 'DBL_ZOOM', self, DashboardLive.ZOOM, true, true, false, true)	
-		end
-		self:addActionEvent(spec.actionEvents, 'DBL_ZOOM_PERM', self, DashboardLive.ZOOM, false, true, false, true)
-		self:addActionEvent(spec.actionEvents, 'DBL_HUDVISIBILITY_FULL', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
-		self:addActionEvent(spec.actionEvents, 'DBL_HUDVISIBILITY_PART', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
-		self:addActionEvent(spec.actionEvents, 'DBL_MAPORIENTATION', self, DashboardLive.MAPORIENTATION, false, true, false, true)	
-		self:addActionEvent(spec.actionEvents, 'DBL_RADIO_VOL_UP', self, DashboardLive.RADIO, false, true, false, true)
-		self:addActionEvent(spec.actionEvents, 'DBL_RADIO_VOL_DOWN', self, DashboardLive.RADIO, false, true, false, true)
-		self:addActionEvent(spec.actionEvents, 'DBL_RESETPARKBRAKE', self, DashboardLive.RESETPARKBRAKE, false, true, false, true)
-		if spec.darkModeExists then
-			self:addActionEvent(spec.actionEvents, 'DBL_DARKMODE', self, DashboardLive.DARKMODE, false, true, false, true)		
+
+			-- solve mod conflict with CameraZoomExtension by Ifko: disable temporary zoom of dbl
+			if not spec.CZEexists then
+				self:addActionEvent(spec.actionEvents, 'DBL_ZOOM', self, DashboardLive.ZOOM, true, true, false, true)	
+			end
+			self:addActionEvent(spec.actionEvents, 'DBL_ZOOM_PERM', self, DashboardLive.ZOOM, false, true, false, true)
+			self:addActionEvent(spec.actionEvents, 'DBL_HUDVISIBILITY_FULL', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
+			self:addActionEvent(spec.actionEvents, 'DBL_HUDVISIBILITY_PART', self, DashboardLive.HUDVISIBILITY, false, true, false, true)
+			self:addActionEvent(spec.actionEvents, 'DBL_MAPORIENTATION', self, DashboardLive.MAPORIENTATION, false, true, false, true)	
+			self:addActionEvent(spec.actionEvents, 'DBL_RADIO_VOL_UP', self, DashboardLive.RADIO, false, true, false, true)
+			self:addActionEvent(spec.actionEvents, 'DBL_RADIO_VOL_DOWN', self, DashboardLive.RADIO, false, true, false, true)
+			self:addActionEvent(spec.actionEvents, 'DBL_RESETPARKBRAKE', self, DashboardLive.RESETPARKBRAKE, false, true, false, true)
+			if spec.darkModeExists then
+				self:addActionEvent(spec.actionEvents, 'DBL_DARKMODE', self, DashboardLive.DARKMODE, false, true, false, true)		
+			end
 		end
 	end
 end
@@ -955,7 +956,7 @@ function DashboardLive:MAPORIENTATION(actionName, keyStatus)
 	while spec.orientation ~= spec.orientations[index] do
 		index = index + 1
 		if spec.orientations[index] == nil then
-			Logging.xmlFatal(vehicle.xmlFile, "Map orientation mismatch")
+			Logging.xmlFatal(self.xmlFile, "Map orientation mismatch")
 			break
 		end
 	end
@@ -1245,7 +1246,7 @@ local function getChoosenFillLevelState(device, ftPartition, ftType)
 			if fillTypeDesc ~= nil then
 				fillLevel.absKg = fillLevel.absKg + device:getFillUnitFillLevel(i) * fillTypeDesc.massPerLiter * 1000
 			else
-				fillLevel.absKg = filllevel.absKg + device:getFillUnitFillLevel(i)
+				fillLevel.absKg = fillLevel.absKg + device:getFillUnitFillLevel(i)
 			end
 		end
 		if ftPartition ~= 0 then break end
@@ -1258,7 +1259,7 @@ local function getChoosenAttacherState(device, ftType)
 	local fillUnits = device.spec_dynamicMountAttacher.dynamicMountedObjects or {}
 	dbgprint("getChoosenAttacherState: fillUnits = "..tostring(fillUnits), 4)
 	
-	for i,fillUnit in pairs(fillUnits) do
+	for _,fillUnit in pairs(fillUnits) do
 		dbgprint("getChoosenFillLevelState: fillUnit = "..tostring(fillUnit), 4)
 		if fillUnit == nil then break end
 		
@@ -1283,11 +1284,13 @@ local function getChoosenAttacherState(device, ftType)
 	return fillLevel
 end
 
+--[[ 
 local function recursiveTrailerSearch(vehicle, trailer, step)
 	dbgprint("recursiveTrailerSearch", 4)
 	local _, specVehicle = findSpecialization(vehicle, "spec_fillUnit", trailer)
 	return specVehicle
 end
+--]]
 
 -- returns fillLevel {pct, abs, max, absKg}
 -- param vehicle - vehicle reference
@@ -1355,6 +1358,7 @@ local function getIsFoldable(device)
 	return spec ~= nil and spec.foldingParts ~= nil and #spec.foldingParts > 0
 end
 
+--[[ 
 -- from ExtendedSprayerHUDExtension - can be accessed directly?
 local function getFillTypeSourceVehicle(sprayer)
     -- check the valid sprayer if he has a fill type source to consume from, otherwise hide the display
@@ -1372,6 +1376,7 @@ local function getFillTypeSourceVehicle(sprayer)
 
     return sprayer, sprayer:getSprayerFillUnitIndex()
 end
+--]]
 
 local function jointsToTable(jointsRaw)
 	local joints 
@@ -1491,7 +1496,6 @@ local function getAttachedStatus(vehicle, element, mode, default)
 				if vehicle.spec_attacherJoints ~= nil and vehicle.spec_attacherJoints.attacherJoints ~= nil then
 					local joint = vehicle.spec_attacherJoints.attacherJoints[tonumber(jointIndex)]
 					
-					local animationRunning = false
 					local loweringRange = true
 					local spec = findSpecialization(implement.object, "spec_foldable", t)
 					if spec ~= nil and spec.foldMiddleAnimTime ~= nil and (spec.foldAnimTime <= (spec.turnOnFoldMinLimit or 0) or spec.foldAnimTime >= (spec.turnOnFoldMaxLimit or 1)) then 
@@ -1525,14 +1529,18 @@ local function getAttachedStatus(vehicle, element, mode, default)
 			elseif mode == "folded" then
 				local foldable, foldableImplement = recursiveCheck(implement, getIsFoldable, t == nil, true, t) --isFoldable(implement, true, true, t)
 				--local implement = subImplement or implement
-				resultValue = foldable and foldableImplement.object.getIsUnfolded ~= nil and not foldableImplement.object:getIsUnfolded() and (foldableImplement.object.spec_foldable.foldAnimTime == 1 or foldableImplement.object.spec_foldable.foldAnimTime == 0) or false
-            	dbgprint(implement.object:getFullName().." folded: "..tostring(resultValue), 4)
-            	
+				if foldableImplement ~= nil then
+					resultValue = foldable and foldableImplement.object.getIsUnfolded ~= nil and not foldableImplement.object:getIsUnfolded() and (foldableImplement.object.spec_foldable.foldAnimTime == 1 or foldableImplement.object.spec_foldable.foldAnimTime == 0) or false
+					dbgprint(implement.object:getFullName().." folded: "..tostring(resultValue), 4)
+            	end
+
             elseif mode == "unfolded" then
             	local foldable, foldableImplement = recursiveCheck(implement, getIsFoldable, t == nil, true, t) --isFoldable(implement, true, true, t)
-            	resultValue = foldable and foldableImplement.object.getIsUnfolded ~= nil and foldableImplement.object:getIsUnfolded() or false
-            	dbgprint(implement.object:getFullName().." unfolded: "..tostring(resultValue), 4)
-            	
+            	if foldableImplement ~= nil then
+					resultValue = foldable and foldableImplement.object.getIsUnfolded ~= nil and foldableImplement.object:getIsUnfolded() or false
+            		dbgprint(implement.object:getFullName().." unfolded: "..tostring(resultValue), 4)
+				end
+
             elseif mode == "unfolding" or mode == "folding" then
             	local foldable, foldableImplement = recursiveCheck(implement, getIsFoldable, t == nil, true, t) --isFoldable(implement, true, true, t)
             	if not foldable then 
@@ -1550,24 +1558,28 @@ local function getAttachedStatus(vehicle, element, mode, default)
 				
             elseif mode == "unfoldingstate" then
             	local spec = findSpecialization(implement.object, "spec_foldable", t)
-            	local foldable = recursiveCheck(implement, getIsFoldable, t == nil, false, t) --isFoldable(implement, true, false, t)
-            	if foldable and spec.foldAnimTime >= 0 and spec.foldAnimTime <= 1 then 
-            		resultValue = 1 - spec.foldAnimTime
-            	else
-            		resultValue = 0
-            	end
-               	dbgprint(implement.object:getFullName().." unfoldingState: "..tostring(resultValue), 4)
-             
+				if spec ~= nil then
+					local foldable = recursiveCheck(implement, getIsFoldable, t == nil, false, t) --isFoldable(implement, true, false, t)
+					if foldable and spec.foldAnimTime >= 0 and spec.foldAnimTime <= 1 then 
+						resultValue = 1 - spec.foldAnimTime
+					else
+						resultValue = 0
+					end
+					dbgprint(implement.object:getFullName().." unfoldingState: "..tostring(resultValue), 4)
+				end
+
             elseif mode == "foldingstate" then
             	local spec = findSpecialization(implement.object, "spec_foldable", t)
-            	local foldable = recursiveCheck(implement, getIsFoldable, t == nil, false, t) --isFoldable(implement, true, false, t)
-            	if foldable and spec.foldAnimTime >= 0 and spec.foldAnimTime <= 1 then 
-            		resultValue = spec.foldAnimTime
-            	else
-            		resultValue = 0
-            	end
-               	dbgprint(implement.object:getFullName().." foldingState: "..tostring(resultValue), 4)
-               	  	
+				if spec ~= nil then
+					local foldable = recursiveCheck(implement, getIsFoldable, t == nil, false, t) --isFoldable(implement, true, false, t)
+					if foldable and spec.foldAnimTime >= 0 and spec.foldAnimTime <= 1 then 
+						resultValue = spec.foldAnimTime
+					else
+						resultValue = 0
+					end
+					dbgprint(implement.object:getFullName().." foldingState: "..tostring(resultValue), 4)
+				end
+
             elseif mode == "tipping" then
             	local specTR = findSpecialization(implement.object, "spec_trailer", t)
             	resultValue = specTR ~= nil and specTR:getTipState() > 0
@@ -1594,12 +1606,12 @@ local function getAttachedStatus(vehicle, element, mode, default)
 						local fullState = "info_tipSide"..tostring(s)
 						local fullStateName = g_i18n.texts[fullState]
 						resultValue = fullStateName == trailerTipSideName
-						dbgprint("tipSide found for trailer: "..tostring(t).." / tipSide: "..tostring(trailerStateName), 4) 
+						dbgprint("tipSide found for trailer: "..tostring(t).." / tipSide: "..tostring(fullStateName), 4) 
 					elseif mode == "tipsidetext" then
 						local len = string.len(element.textMask or "00.0")
 						local alignment = element.textAlignment or RenderText.ALIGN_RIGHT
 						resultValue = trim(trailerTipSideName, len, alignment)
-						dbgprint("tipSideText found for trailer: "..tostring(t).." / tipSide: "..tostring(returnValue), 4) 
+						dbgprint("tipSideText found for trailer: "..tostring(t).." / tipSide: "..tostring(resultValue), 4) 
 					end
 				else 
 					dbgprint(tostring(mode).." not found for trailer: "..tostring(t), 4)
@@ -1751,7 +1763,7 @@ local function getAttachedStatus(vehicle, element, mode, default)
 				if specCyl ~= nil then
 					for toolIndex, tool in ipairs(specCyl.movingTools) do
 						if toolIndex == tonumber(element.dblOption) then
-							local origin = tool.transMax or 0
+							--local origin = tool.transMax or 0
 							local trans = tool.curTrans[tool.translationAxis] * factor
 							if element.dblCommand == "tooltranslation" then
 								resultValue = trans
@@ -1880,7 +1892,6 @@ Dashboard.registerDashboardXMLPaths = Utils.overwrittenFunction(Dashboard.regist
 function DashboardLive.addDarkModeToLoadEmitterDashboardFromXML(self, superfunc, xmlFile, key, dashboard, ...)
 	local returnValue = superfunc(self, xmlFile, key, dashboard, ...)
 	local specDBL = self.spec_DashboardLive
-	local spec = self.spec_dashboard
 
 	-- Back up light mode values
 	dashboard.baseColorLM = dashboard.baseColor
@@ -2330,7 +2341,7 @@ function DashboardLive:getIsDashboardGroupActive(superFunc, group)
 	elseif specCS ~= nil and group.dblCommand == "base_steering" then
 		local dblOpt = group.dblOption
 		if dblOpt == "" or tonumber(dblOpt) == nil then
-			Logging.xmlDevWarning(vehicle.xmlFile, "No steering mode number given for DashboardLive steering command")
+			Logging.xmlDevWarning(self.xmlFile, "No steering mode number given for DashboardLive steering command")
 			return false
 		end
 		returnValue = specCS.state == tonumber(dblOpt)
@@ -2338,7 +2349,7 @@ function DashboardLive:getIsDashboardGroupActive(superFunc, group)
 	elseif specWM ~= nil and group.dblCommand == "base_swath" then
 		local dblOpt = group.dblOption
 		if dblOpt == "" or tonumber(dblOpt) == nil then
-			Logging.xmlDevWarning(vehicle.xmlFile, "No work mode number given for DashboardLive swath command")
+			Logging.xmlDevWarning(self.xmlFile, "No work mode number given for DashboardLive swath command")
 			return false
 		end
 		returnValue = specWM.state == tonumber(dblOpt)
@@ -2399,7 +2410,7 @@ function DashboardLive:getIsDashboardGroupActive(superFunc, group)
 		returnValue = spec.modGuidanceSteeringFound and gsSpec ~= nil and gsSpec.lastInputValues ~= nil and gsSpec.lastInputValues.guidanceSteeringIsActive
 		returnValue = returnValue or (spec.modVCAFound and self:vcaGetState("snapIsOn")) 
 		returnValue = returnValue or (spec.modEVFound and self.vData.is[5])
-		returnValue = returnValue or (hlmSpec ~= nil and hlmSpec.exists and hlmSpec.isOn and not hlmSpec.isActive and hlmSpec.contour ~= 0 and not contourSetActive)
+		returnValue = returnValue or (hlmSpec ~= nil and hlmSpec.exists and hlmSpec.isOn and not hlmSpec.isActive and hlmSpec.contour ~= 0 and not hlmSpec.contourSetActive)
 		
 	elseif group.dblCommand == "gps_lane+" then
 		local spec = self.spec_DashboardLive
@@ -2820,7 +2831,6 @@ function DashboardLive:getValue(superfunc, dashboard)
 	end
 	
 	local printToLog = dashboard.dblToLog ~= nil
-	local printToLogOnce = dashboard.dblToLog == "once"
 	
 	if displayType == Dashboard.TYPES.EMITTER then
 		if type(value) ~= "boolean" and type(value) ~= "number" then
@@ -2999,14 +3009,12 @@ function DashboardLive.getDashboardLivePage(self, dashboard)
 		returnValue = pageNum == spec.pageGroups[groupNum].actPage
 	end
 	
-	return calculate(resultValue, spec.stack, dashboard)
+	return calculate(returnValue, spec.stack, dashboard)
 end
 
 function DashboardLive.getDashboardLiveBase(self, dashboard)
 	dbgprint("getDashboardLiveBase : dblCommand: "..tostring(dashboard.dblCommand), 4)
 	if dashboard.dblCommand ~= nil then
-		local specWM = self.spec_workMode
-		local specRM = self.spec_ridgeMarker
 		local specMO = self.spec_motorized
 		local specCS = self.spec_crabSteering
 		local specPI = self.spec_pipe
@@ -3381,8 +3389,8 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		-- heading
 		elseif cmds == "heading" or cmds == "headingtext1" or cmds == "headingtext2" or cmds == "headingtext3" 
 		 or cmds == "headingtext1de" or cmds == "headingtext2de" or cmds == "headingtext3de" then
-			local x1, y1, z1 = localToWorld(self.rootNode, 0, 0, 0)
-			local x2, y2, z2 = localToWorld(self.rootNode, 0, 0, 1)
+			local x1, _, z1 = localToWorld(self.rootNode, 0, 0, 0)
+			local x2, _, z2 = localToWorld(self.rootNode, 0, 0, 1)
 			local dx, dz = x2 - x1, z2 - z1
 			local heading = math.floor(180 - (180 / math.pi) * math.atan2(dx, dz))
 			if cmds == "heading" then
@@ -3812,7 +3820,6 @@ function DashboardLive.getDashboardLiveGPS(self, dashboard)
 	local spec = self.spec_DashboardLive
 	local specAI = self.spec_aiAutomaticSteering
 	local specGS = self.spec_globalPositioningSystem
-	local specHLM = self.spec_HeadlandManagement
 	local o = dashboard.dblOption
 	
 	local returnValue = false
@@ -3893,8 +3900,8 @@ function DashboardLive.getDashboardLiveGPSLane(self, dashboard)
 	end
 	
 	if o == "headingdelta" then
-		local x1, y1, z1 = localToWorld(self.rootNode, 0, 0, 0)
-		local x2, y2, z2 = localToWorld(self.rootNode, 0, 0, 1)
+		local x1, _, z1 = localToWorld(self.rootNode, 0, 0, 0)
+		local x2, _, z2 = localToWorld(self.rootNode, 0, 0, 1)
 		local dx, dz = x2 - x1, z2 - z1
 		
 		local heading = math.floor(180 - (180 / math.pi) * math.atan2(dx, dz))
@@ -3909,7 +3916,7 @@ function DashboardLive.getDashboardLiveGPSLane(self, dashboard)
 			end
 		-- VCA
 		elseif (spec.modVCAFound and self:vcaGetState("snapDirection") ~= 0)  then
-			local curSnapAngle, _, curSnapOffset = self:vcaGetCurrentSnapAngle( math.atan2(dx, dz) )
+			local curSnapAngle, _, _ = self:vcaGetCurrentSnapAngle( math.atan2(dx, dz) )
 			snapAngle = 180 - math.deg(curSnapAngle)
 		end
 
@@ -4162,10 +4169,10 @@ function DashboardLive.getDashboardLiveMovingTool(self, dashboard)
 				end
 			end
 		elseif c == "tooltranslation" or c == "istooltranslation" then
-			dbgprint(implement.object:getFullName().." : movingTool - " .. c .. " - " .. s,3)
+			dbgprint(self:getFullName().." : movingTool - " .. c .. " - " .. s, 3)
 			for toolIndex, tool in ipairs(specCyl.movingTools) do
 				if toolIndex == tonumber(dashboard.dblOption) then
-					local origin = tool.transMax or 0
+					--local origin = tool.transMax or 0
 					local trans = tool.curTrans[tool.translationAxis]
 					if c == "tooltranslation" then
 						returnValue = trans
@@ -4450,7 +4457,7 @@ function DashboardLive.getDashboardLiveRDS(self, dashboard)
 	end
 	
 	dbgprint("getDashboardLiveRDS : returnValue: "..tostring(returnValue), 4)
-	return calculate(returnValue, spec.stack, dashboard)
+	return calculate(returnValue, specDBL.stack, dashboard)
 end
 
 function DashboardLive.getDashboardLiveRGPS(self, dashboard)
@@ -4504,7 +4511,7 @@ function DashboardLive.getDashboardLiveADS(self, dashboard)
 	end
 	
 	dbgprint("getDashboardLiveADS : returnValue: "..tostring(returnValue), 4)
-	return calculate(returnValue, spec.stack, dashboard.dblCond, dashboard.dblCondValue)
+	return calculate(returnValue, specDBL.stack, dashboard)
 end
 
 function DashboardLive:onUpdate(dt)
@@ -4528,7 +4535,6 @@ end
 function DashboardLive:onUpdateTick(dt)
 	local spec = self.spec_DashboardLive
 	local specDis = self.spec_dischargeable
-	local specADS = self.spec_AdvancedDamageSystem
 	local dspec = self.spec_dashboard
 	local mspec = self.spec_motorized
 	local syncAllowed = false

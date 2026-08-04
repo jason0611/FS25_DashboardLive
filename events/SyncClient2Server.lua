@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-doc-class
 SyncClient2ServerEvent = {}
 local SyncClient2ServerEvent_mt = Class(SyncClient2ServerEvent, Event)
 InitEventClass(SyncClient2ServerEvent, "SyncClient2ServerEvent")
