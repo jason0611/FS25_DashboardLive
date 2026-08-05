@@ -4608,6 +4608,7 @@ function DashboardLive:onUpdateTick(dt)
 		if spec.needsSyncClientToServer then
 			local name = self.getFullName ~= nil and self:getFullName() or "unknown"
 			dbgprint("C2S sync triggered for: "..name, 2)
+---@diagnostic disable-next-line: undefined-global
 			SyncClient2ServerEvent.sendEvent(self, spec.maxPageGroup, spec.pageGroups, spec.orientation, spec.leaveTime)
 			spec.needsSyncClientToServer = false
 		end
