@@ -4240,7 +4240,7 @@ function DashboardLive.getDashboardLivePrecisionFarming(self, dashboard)
 		specExtendedSprayer, pfVehicle = findLastSpecialization(self, "spec_FS25_precisionFarming.extendedSprayer")
 	end
 	if specExtendedSprayer ~= nil then
-		dbgprint("found spec spec_FS25_precisionFarming.extendedSprayer in "..tostring(pfVehicle:getName()), 4)
+		dbgprint("found spec spec_FS25_precisionFarming.extendedSprayer in "..tostring(pfVehicle ~= nil and pfVehicle:getName() or "Unknown"), 4)
 
 		local sourceVehicle, fillUnitIndex = FS25_precisionFarming.ExtendedSprayer.getFillTypeSourceVehicle(pfVehicle)
 		local hasLimeLoaded, hasFertilizerLoaded = FS25_precisionFarming.ExtendedSprayer.getCurrentSprayerMode(pfVehicle)
@@ -4580,7 +4580,7 @@ function DashboardLive:onUpdateTick(dt)
 			local name = self.getFullName ~= nil and self:getFullName() or "unknown"
 			dbgprint("S2C sync triggered for: "..name, 2)
 			--SyncServer2ClientEvent.sendEvent(self, spec.motorTemperature, spec.fanEnabled, spec.lastFuelUsage, spec.lastDefUsage, spec.lastAirUsage, spec.currentDischargeState)
-			mspec.motorTemperature.valueSend = spec.motorTemperature
+			if mspec ~= nil then mspec.motorTemperature.valueSend = spec.motorTemperature end
 			self:raiseDirtyFlags(spec.dirtyFlag)
 			spec.needsSyncServerToClient = false
 		end
