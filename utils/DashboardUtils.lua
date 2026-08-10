@@ -1,3 +1,4 @@
+---@diagnostic disable: param-type-mismatch
 DashboardUtils = {}
 
 -- ** Vehicle Dashboards **
@@ -49,7 +50,6 @@ end
 I3DUtil.loadI3DMapping = Utils.overwrittenFunction(I3DUtil.loadI3DMapping, DashboardUtils.loadI3DMapping)
 
 function DashboardUtils:loadDashboardGroupsFromXML(superfunc, savegame)
-	local spec = self.spec_dashboard
 	local filename = self.xmlFile.filename
 	local filenameDBL = DashboardLive.INT_PATH..filename
 	local isMod = self.baseDirectory ~= ""
@@ -119,7 +119,6 @@ AnimatedVehicle.onLoad = Utils.overwrittenFunction(AnimatedVehicle.onLoad, Dashb
 
 -- look for alternative compound dashboard xml-file and use it for loading instead of original file
 function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, compound)
-	local spec = self.spec_dashboard
 	local returnValue = false
 	dbgprint("loadDashboardCompoundFromXML :: self.baseDirectory: "..tostring(self.baseDirectory), 2)
 	
@@ -139,7 +138,7 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 	end
 	
 	local baseDirectoryChanged = false
-	if dblReplacementExists or isobusFilename ~= nil then
+	if dblReplacementExists then
 		self.baseDirectoryBackup = self.baseDirectory
 		self.baseDirectory = replacementPath
 		baseDirectoryChanged = true
@@ -161,7 +160,6 @@ Dashboard.loadDashboardCompoundFromXML = Utils.overwrittenFunction(Dashboard.loa
 function DashboardUtils:onDashboardCompoundLoaded(i3dNode, failedReason, args)
 	local spec = self.spec_dashboard
 	local dashboardXMLFile = args.dashboardXMLFile
-	local compound = args.compound
 	local compoundKey = args.compoundKey
 	
 	dbgprint("onDashboardCompoundLoaded :: dashboardXMLFile: "..tostring(dashboardXMLFile.filename), 2)
