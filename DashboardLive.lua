@@ -3720,32 +3720,23 @@ function DashboardLive.getDashboardLiveCC(self, dashboard)
 	local specECC = self.spec_extendedCruiseControl
 	local c = lower(dashboard.dblCommand)
 	local state = tonumber(dashboard.dblState)
-	local mode = 0
 	local returnValue = false
 	
-	if specECC ~= nil then 
-		mode = 1
-	elseif spec.modSpeedControlFound then
-	 	mode = 2
-	elseif self.spec_drivable ~= nil then
-	 	mode = 3
-	end
-	
 	if c == "active" then
-		if mode == 1 then
+		if specECC ~= nil then
 			if state ~= nil then
 				returnValue = specECC.activeSpeedGroup == state
 			else 
 				returnValue = specECC.activeSpeedGroup
 			end		
-		elseif mode == 2 then
+		elseif spec.modSpeedControlFound then
 			local specCC = self.speedControl
 			if state ~= nil then
 				returnValue = specCC.currentKey == state
 			else
 				returnValue = specCC.currentKey
 			end
-		elseif mode == 3 then
+		elseif self.spec_drivable ~= nil then
 			local specCC = self.spec_drivable.cruiseControl
 			if state ~= nil then 
 				returnValue = specCC.state and state == 3
@@ -3756,12 +3747,12 @@ function DashboardLive.getDashboardLiveCC(self, dashboard)
 	end	
 	
 	if c == "speed" and state ~= nil then
-		if mode == 1 then
+		if specECC ~= nil then
 			returnValue = specECC.cruiseSpeedGroups[state].forward
-		elseif mode == 2 then
+		elseif spec.modSpeedControlFound then
 			local specCC = self.speedControl
 			returnValue = specCC.keys[state].speed
-		elseif mode == 3 then
+		elseif self.spec_drivable ~= nil then
 			local specCC = self.spec_drivable.cruiseControl
 			returnValue = specCC.speed or ""
 		end
