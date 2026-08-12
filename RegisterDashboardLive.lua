@@ -5,10 +5,6 @@
 -- Version 0.1.0.1
 --
 
-source(g_currentModDirectory.."tools/gmsDebug.lua")
-GMSDebug:init(g_currentModName, false)
-GMSDebug:enableConsoleCommands()
-
 local specName = g_currentModName..".DashboardLive"
 local specNameIsobus = g_currentModName..".DashboardIsobus"
 

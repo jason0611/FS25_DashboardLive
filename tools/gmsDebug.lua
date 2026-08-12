@@ -1,3 +1,4 @@
+---@diagnostic disable: lowercase-global
 --
 -- Glowins Modschmiede: Debug-Tool
 -- Author: Jason06 / Glowins Mod-Schmiede
@@ -22,6 +23,14 @@ function GMSDebug:init(modName, dbg, dbgLevel)
 		GMSDebug.level = 1
 	else	
 		GMSDebug.level = dbgLevel
+	end
+	
+	if GMSDebug.state then
+		local level = "BETA"
+		if GMSDebug.level > 1 then
+			level = "DEV"
+		end
+		dbgprint("This version is a "..level.."-Version")
 	end
 end
 
@@ -68,7 +77,7 @@ function GMSDebug:renderTable(data, pos, prio)
 	local n = 0
 	for i, d in pairs(data) do
 		if string.sub(tostring(d), 1, 5) ~= "table" then
-			renderText(0.50, 0.95 - (pos + n) * 0.02, 0.01, tostring(i)..": "..tostring(d), pos + n, prio)
+			renderText(0.50, 0.95 - (pos + n) * 0.02, 0.01, tostring(i)..": "..tostring(d))
 			n = n + 1
 		end
 	end

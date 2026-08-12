@@ -9,10 +9,6 @@ end
 
 DashboardIsobus.XMLkey = "vehicle.dashboard.dashboardLive.isobus"
 
-source(DashboardIsobus.MOD_PATH.."tools/gmsDebug.lua")
-GMSDebug:init(DashboardIsobus.MOD_NAME, false)
---GMSDebug:enableConsoleCommands("dblDebug")
-
 function DashboardIsobus.prerequisitesPresent(specializations)
   return SpecializationUtil.hasSpecialization(Attachable, specializations)
 end

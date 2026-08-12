@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<modDesc descVersion="110">
+<modDesc descVersion="111">
 	<author>Glowins Modschmiede</author>
-	<version>2.1.0.0</version>
-	<devStatus>RC</devStatus>
+	<version>2.1.0.1</version>
+	<devStatus>RELEASE</devStatus>
 	<contributors>SbSh, mister_mojo_AT, AgrarPlay und LUWZ, Farming Duds</contributors>
 	<title>
 		<en>Dashboard Live</en>
@@ -121,6 +121,12 @@ V2.1.0.0:
 - Added support for animations
 - Added the ability to temporarily store dashboard values and combine them with other dashboard values
 
+V2.1.0.1:
+- Fixed a bug that caused the terminals to keep dark in multiplayer after another client joined the game
+- Fixed a duplicate factor 100 in slip calculation, triggering the slip alert in John Deere terminals to often
+- Fixed incorrect return values, causing multiple warnings in the log
+- Warnings regarding DBL implementations have been moved to devWarnings to avoid confusion.
+
 Important: Vehicles must be prepared for DashboardLive in advance in order to be able to use the functions and displays. 
 An installation guide and documentation are included, and video tutorials are also available.
 
@@ -238,6 +244,12 @@ V2.1.0.0:
 - Taste zum Lösen aller vorhandenen Parkbremsen ergänzt
 - Unterstützung von Animationen hinzugefügt
 - Möglichkeit hinzugefügt, Dashboard-Werte zwischenzuspeichern und mit anderen Dashboard-Werten zu verrechnen
+
+V2.1.0.1:
+- Fehler behoben, der dazu führte, dass die Terminals im Mehrspielermodus dunkel blieben, nachdem ein weiterer Spieler dem Spiel beigetreten war.
+- Es wurde ein doppelt vorhandener Faktor 100 bei der Schlupfberechnung behoben, der u.a. dazu führte, dass die Schlupfwarnung in den John-Deere-Terminals zu häufig ausgelöst wurde.
+- Es wurden falsche Rückgabewerte behoben, die zu mehreren Warnungen im Protokoll führten.
+- Warnungen zu DBL-Implementierungen wurden nach devWarnings verschoben, um Irritationen zu vermeiden.
 
 Wichtig: Fahrzeuge müssen vorab für DashboardLive vorbereitet werden, um die Funktionen und Anzeigen nutzen zu können.
 Eine Einbauhilfe und Dokumentation sind enthalten, außerdem sind Video-Tutorials verfügbar.
