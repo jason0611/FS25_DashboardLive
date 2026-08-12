@@ -251,8 +251,6 @@ V2.1.0.1:
 - Es wurden falsche Rückgabewerte behoben, die zu mehreren Warnungen im Protokoll führten.
 - Warnungen zu DBL-Implementierungen wurden nach devWarnings verschoben, um Irritationen zu vermeiden.
 
-Übersetzt mit DeepL.com (kostenlose Version)
-
 Wichtig: Fahrzeuge müssen vorab für DashboardLive vorbereitet werden, um die Funktionen und Anzeigen nutzen zu können.
 Eine Einbauhilfe und Dokumentation sind enthalten, außerdem sind Video-Tutorials verfügbar.
 
