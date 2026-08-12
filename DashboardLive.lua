@@ -1532,13 +1532,17 @@ local function getAttachedStatus(vehicle, element, mode, default)
 				if foldableImplement ~= nil then
 					resultValue = foldable and foldableImplement.object.getIsUnfolded ~= nil and not foldableImplement.object:getIsUnfolded() and (foldableImplement.object.spec_foldable.foldAnimTime == 1 or foldableImplement.object.spec_foldable.foldAnimTime == 0) or false
 					dbgprint(implement.object:getFullName().." folded: "..tostring(resultValue), 4)
-            	end
+            	else
+					resultValue = false
+				end
 
             elseif mode == "unfolded" then
             	local foldable, foldableImplement = recursiveCheck(implement, getIsFoldable, t == nil, true, t) --isFoldable(implement, true, true, t)
             	if foldableImplement ~= nil then
 					resultValue = foldable and foldableImplement.object.getIsUnfolded ~= nil and foldableImplement.object:getIsUnfolded() or false
             		dbgprint(implement.object:getFullName().." unfolded: "..tostring(resultValue), 4)
+				else
+					resultValue = false
 				end
 
             elseif mode == "unfolding" or mode == "folding" then
