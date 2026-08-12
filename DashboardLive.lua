@@ -2835,38 +2835,47 @@ function DashboardLive:getValue(superfunc, dashboard)
 	if displayType == Dashboard.TYPES.EMITTER then
 		if type(value) ~= "boolean" and type(value) ~= "number" then
 			errorHandling("boolean or number", value, dashboard)
+			value = false
 		end
 	elseif displayType == Dashboard.TYPES.NUMBER then
 		if type(value) ~= "number" and type(value) ~= "string" then
 			errorHandling("number or String", value, dashboard)
+			value = 0
 		end
 	elseif displayType == Dashboard.TYPES.ANIMATION then
 		if type(value) ~= "boolean" and type(value) ~= "number" then
 			errorHandling("boolean or number", value, dashboard)
+			value = 0
 		end
 	elseif displayType == Dashboard.TYPES.ROT then
 		if type(value) ~= "boolean" and type(value) ~= "number" then
 			errorHandling("boolean or number", value, dashboard)
+			value = 0
 		end
 	elseif displayType == Dashboard.TYPES.TRANS then
 		if type(value) ~= "boolean" and type(value) ~= "number" then
 			errorHandling("boolean or number", value, dashboard)
+			value = 0
 		end
 	elseif displayType == Dashboard.TYPES.VISIBILITY then
 		if type(value) ~= "boolean" and type(value) ~= "number" then
 			errorHandling("boolean or number", value, dashboard)
+			value = false
 		end
 	elseif displayType == Dashboard.TYPES.TEXT then
 		if type(value) ~= "string" and type(value) ~= "number" then
 			errorHandling("string or number", value, dashboard)
+			value = ""
 		end
 	elseif displayType == Dashboard.TYPES.SLIDER then
 		if type(value) ~= "boolean" and type(value) ~= "number" then
 			errorHandling("boolean or number", value, dashboard)
+			value = 0
 		end
 	elseif displayType == Dashboard.TYPES.MULTI_STATE then
 		if type(value) ~= "table" and type(value) ~= "number" and type(value) ~= "string" and type(value) ~= "boolean" then
 			errorHandling("boolean, table, number or string", value, dashboard)
+			value = 0
 		end
 	end
 	
