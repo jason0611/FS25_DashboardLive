@@ -15,7 +15,7 @@ if DashboardLive.MOD_NAME == nil then
 end
 
 source(DashboardLive.MOD_PATH.."tools/gmsDebug.lua")
-GMSDebug:init(DashboardLive.MOD_NAME, false)
+GMSDebug:init(DashboardLive.MOD_NAME, true, 1)
 GMSDebug:enableConsoleCommands("dblDebug")
 
 source(DashboardLive.MOD_PATH.."events/SyncClient2Server.lua")
@@ -1729,7 +1729,7 @@ local function getAttachedStatus(vehicle, element, mode, default)
 			-- animation
 			elseif mode == "animation" then
 				local animName = element.dblCommand or "none"
-				resultValue = (implement.object ~= nil and implement.object.getAnimationTime ~= nil and implement.object:getAnimationTime(animName) or false) * element.dblFactor
+				resultValue = (implement.object ~= nil and implement.object.getAnimationTime ~= nil and implement.object:getAnimationTime(animName) or 0) * element.dblFactor
 				
 			-- frontloader
 			elseif mode == "toolrotation" or mode=="istoolrotation" then
