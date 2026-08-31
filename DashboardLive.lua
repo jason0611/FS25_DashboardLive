@@ -517,6 +517,9 @@ function DashboardLive:onPostLoad(savegame)
 	-- Check if Mod SpeedControl exists
 	spec.modSpeedControlFound = self.speedControl ~= nil 
 	
+	-- Check if Mod moreVehicleControls exists
+	spec.modMVCFound = self.spec_moreVehicleControls ~= nil
+	
 	--Check if Mod HeadlandManagement exists
 	spec.modHLMFound = self.spec_HeadlandManagement ~= nil
 	
@@ -3680,7 +3683,7 @@ function DashboardLive.getDashboardLiveVCA(self, dashboard)
 		local c = lower(dashboard.dblCommand)
 
 		if c == "park" then
-			if (spec.modVCAFound and self:vcaGetState("handbrake")) or (spec.modEVFound and self.vData.is[13]) then
+			if (spec.modVCAFound and self:vcaGetState("handbrake")) or (spec.modEVFound and self.vData.is[13]) or (spec.modMVCFound and self.spec_moreVehicleControls.handbrake) then
 				returnValue = true
 			end
 			if (spec.modRAGBFound and self.spec_realismAddon_gearbox.handbrakeStateME) then 
@@ -3709,7 +3712,8 @@ function DashboardLive.getDashboardLiveVCA(self, dashboard)
 			
 		elseif c == "ksvalue" then
 			returnValue = spec.modVCAFound and self:vcaGetState("ksIsOn") and math.floor(self:vcaGetState("keepSpeed") * 10) / 10 or 0
-			
+			returnValue = returnValue or (spec.modMVCFound and self.spec_moreVehicleControls.keepSpeedActive or false)
+
 		elseif c == "slip" then
 			local slipVCA = spec.modVCAFound and self.spec_vca.wheelSlip ~= nil and (self.spec_vca.wheelSlip - 1) or 0
 			local slipREA = self.spec_wheels ~= nil and self.spec_wheels.SlipSmoothed ~= nil and self.spec_wheels.SlipSmoothed or 0
@@ -3731,6 +3735,7 @@ function DashboardLive.getDashboardLiveCC(self, dashboard)
 	dbgprint("getDashboardLiveCC : dblCommand: "..tostring(dashboard.dblCommand).." / dblState: "..tostring(dashboard.dblState), 4)
 	local spec = self.spec_DashboardLive
 	local specECC = self.spec_extendedCruiseControl
+
 	local c = lower(dashboard.dblCommand)
 	local state = tonumber(dashboard.dblState)
 	local returnValue = false
@@ -3741,7 +3746,14 @@ function DashboardLive.getDashboardLiveCC(self, dashboard)
 				returnValue = specECC.activeSpeedGroup == state
 			else 
 				returnValue = specECC.activeSpeedGroup
-			end		
+			end	
+		elseif spec.modMVCFound then
+			local specMVC = self.spec_moreVehicleControls
+			if state ~= nil then
+				returnValue = specMVC.activePreset == state
+			else
+				returnValue = specMVC.activePreset
+			end	
 		elseif spec.modSpeedControlFound then
 			local specCC = self.speedControl
 			if state ~= nil then
@@ -3760,8 +3772,18 @@ function DashboardLive.getDashboardLiveCC(self, dashboard)
 	end	
 	
 	if c == "speed" and state ~= nil then
+		returnValue = 0
 		if specECC ~= nil then
 			returnValue = specECC.cruiseSpeedGroups[state].forward
+		elseif spec.modMVCFound then
+			local specMVC = self.spec_moreVehicleControls
+			if specMVC.activePreset == 1 then
+				returnValue = specMVC.ccSpeed1
+			elseif specMVC.activePreset == 2 then 
+				returnValue = specMVC.ccSpeed2
+            else 
+				returnValue = specMVC.ccSpeed3
+			end
 		elseif spec.modSpeedControlFound then
 			local specCC = self.speedControl
 			returnValue = specCC.keys[state].speed
