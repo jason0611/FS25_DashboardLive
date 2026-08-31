@@ -1077,6 +1077,15 @@ function DashboardLive:RESETPARKBRAKE(actionName, keyStatus)
 		dbgprint("RESETPARKBRAKE: RAGB", 2)
 		self:processHandbrakeInput(false)
 	end
+	if spec.modMVCFound then
+		dbgprint("RESETPARKBRAKE: MVC", 2)
+		self.spec_moreVehicleControls.handbrake = false
+		if g_server ~= nil then --and FS25_moreVehicleControls.MVCHandbrakeEvent ~= nil then
+            g_server:broadcastEvent(FS25_moreVehicleControls.MVCHandbrakeEvent.new(self, false), nil, nil, self)
+        else
+            g_client:getServerConnection():sendEvent(FS25_moreVehicleControls.MVCHandbrakeEvent.new(self, false))
+        end
+	end
 end
 	
 -- Main script
