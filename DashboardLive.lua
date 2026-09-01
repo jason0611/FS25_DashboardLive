@@ -1069,7 +1069,7 @@ function DashboardLive:RESETPARKBRAKE(actionName, keyStatus)
 		dbgprint("RESETPARKBRAKE: VCA", 2)
 		self:vcaSetState("handbrake", false)
 	end
-	if spec.modEVFound then
+	if spec.modEVFound and self.vData ~= nil then
 		dbgprint("RESETPARKBRAKE: EV", 2)
 		self.vData.want[13] = false
 	end
