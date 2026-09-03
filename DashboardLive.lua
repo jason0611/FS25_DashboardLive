@@ -3687,6 +3687,7 @@ function DashboardLive.getDashboardLiveVCA(self, dashboard)
 	
 	local returnValue = false
 	local spec = self.spec_DashboardLive
+	local mvcSpec = self.spec_mvcDifferentials
 	
 	if dashboard.dblCommand ~= nil then
 		local c = lower(dashboard.dblCommand)
@@ -3701,17 +3702,24 @@ function DashboardLive.getDashboardLiveVCA(self, dashboard)
 				and FS25_realismAddon_gearbox.realismAddon_gearbox_overrides.checkIsManual(self.spec_motorized.motor) 
 			end
 		elseif c == "diff_front" then
-			returnValue = (spec.modVCAFound and self:vcaGetState("diffLockFront")) or (spec.modEVFound and self.vData.is[1])
-	
+			returnValue = (spec.modVCAFound and self:vcaGetState("diffLockFront")) 
+							or (spec.modEVFound and self.vData ~= nil and self.vData.is[1])
+							or (spec.modMVCFound and mvcSpec ~= nil and mvcSpec.frontDiff) 
+
 		elseif c == "diff_back" then
-			returnValue = (spec.modVCAFound and self:vcaGetState("diffLockBack")) or (spec.modEVFound and self.vData.is[2])
+			returnValue = (spec.modVCAFound and self:vcaGetState("diffLockBack")) 
+							or (spec.modEVFound and self.vData.is[2])
+							or (spec.modMVCFound and mvcSpec ~= nil and mvcSpec.rearDiff) 
 	
 		elseif c == "diff" then
 			returnValue = (spec.modVCAFound and (self:vcaGetState("diffLockFront") or self:vcaGetState("diffLockBack"))) 
-					or (spec.modEVFound and (self.vData.is[1] or self.vData.is[2]))
+							or (spec.modEVFound and (self.vData.is[1] or self.vData.is[2]))
+							or (spec.modMVCFound and mvcSpec ~= nil and (mvcSpec.frontDiff or mvcSpec.rearDiff))
 	
 		elseif c == "diff_awd" then
-			returnValue = (spec.modVCAFound and self:vcaGetState("diffLockAWD")) or (spec.modEVFound and self.vData.is[3]==1)
+			returnValue = (spec.modVCAFound and self:vcaGetState("diffLockAWD")) 
+							or (spec.modEVFound and self.vData.is[3]==1)
+							or (spec.modMVCFound and mvcSpec ~= nil and mvcSpec.driveMode == 1) 
 		
 		elseif c == "diff_awdf" then
 			returnValue = spec.modVCAFound and self:vcaGetState("diffFrontAdv")
