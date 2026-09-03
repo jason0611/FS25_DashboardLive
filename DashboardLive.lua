@@ -3250,9 +3250,15 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 					local fillTypeIndex = fillUnit.fillType
 					
 					if o == "name" then
-						local ftName = g_fillTypeManager:getFillTypeTitleByIndex(fillTypeIndex)
-						dbgprint("fillType: Name set to "..ftName, 4)
-						returnValue = ftName
+						if s ~= nil and type(s) == "string" then
+							local ftName = g_fillTypeManager:getFillTypeNameByIndex(fillTypeIndex)
+							dbgprint("fillType: fillTypeName = "..ftName, 4)
+							returnValue = ftName == s
+						else
+							local ftName = g_fillTypeManager:getFillTypeTitleByIndex(fillTypeIndex)
+							dbgprint("fillType: fillTypeTitle = "..ftName, 4)
+							returnValue = ftName
+						end
 						
 					elseif o == "icon" then
 						local ftPath = g_fillTypeManager.fillTypes[fillTypeIndex] ~= nil and g_fillTypeManager.fillTypes[fillTypeIndex].hudOverlayFilename
@@ -3270,7 +3276,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 					end
 				end
 			end
-			if returnValue == false and o == "name" then
+			if returnValue == false and o == "name" and s == nil then
 				returnValue = ""
 			end
 			
