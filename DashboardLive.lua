@@ -831,7 +831,7 @@ function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 	if connection:getIsServer() then
 		local spec = self.spec_DashboardLive
 		if streamReadBool(streamId) then
-			dbgprint("onReadUpdateStream : Read data for "..self:getName(), 2)
+			dbgprint("onReadUpdateStream : Read data for "..self:getName(), 4)
 			spec.motorTemperature = streamReadFloat32(streamId)
 			spec.fanEnabled = streamReadBool(streamId)
 			spec.lastFuelUsage = streamReadFloat32(streamId)
@@ -846,7 +846,7 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 	if not connection:getIsServer() then
 		local spec = self.spec_DashboardLive
 		if streamWriteBool(streamId, bitAND(dirtyMask, spec.dirtyFlag) ~= 0) then
-			dbgprint("onWriteUpdateStream : Send data for "..self:getName(), 2)
+			dbgprint("onWriteUpdateStream : Send data for "..self:getName(), 4)
 			streamWriteFloat32(streamId, spec.motorTemperature)
 			streamWriteBool(streamId, spec.fanEnabled)
 			streamWriteFloat32(streamId, spec.lastFuelUsage)
