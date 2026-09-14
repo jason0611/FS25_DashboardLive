@@ -68,6 +68,7 @@
         "FS22_proSeed",
         "FS25_precisionFarming",
         "FillTypeManager",
-        "addModEventListener"
+        "addModEventListener",
+        "FS25_moreVehicleControls"
     ]
 }
