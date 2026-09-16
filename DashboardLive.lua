@@ -831,7 +831,7 @@ function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 	if connection:getIsServer() then
 		local spec = self.spec_DashboardLive
 		if streamReadBool(streamId) then
-			dbgprint("onReadUpdateStream : Read data for "..self:getName(), 2)
+			dbgprint("onReadUpdateStream : Read data for "..self:getName(), 4)
 			spec.motorTemperature = streamReadFloat32(streamId)
 			spec.fanEnabled = streamReadBool(streamId)
 			spec.lastFuelUsage = streamReadFloat32(streamId)
@@ -846,7 +846,7 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 	if not connection:getIsServer() then
 		local spec = self.spec_DashboardLive
 		if streamWriteBool(streamId, bitAND(dirtyMask, spec.dirtyFlag) ~= 0) then
-			dbgprint("onWriteUpdateStream : Send data for "..self:getName(), 2)
+			dbgprint("onWriteUpdateStream : Send data for "..self:getName(), 4)
 			streamWriteFloat32(streamId, spec.motorTemperature)
 			streamWriteBool(streamId, spec.fanEnabled)
 			streamWriteFloat32(streamId, spec.lastFuelUsage)
@@ -3250,9 +3250,15 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 					local fillTypeIndex = fillUnit.fillType
 					
 					if o == "name" then
-						local ftName = g_fillTypeManager:getFillTypeTitleByIndex(fillTypeIndex)
-						dbgprint("fillType: Name set to "..ftName, 4)
-						returnValue = ftName
+						if s ~= nil and type(s) == "string" then
+							local ftName = g_fillTypeManager:getFillTypeNameByIndex(fillTypeIndex)
+							dbgprint("fillType: fillTypeName = "..ftName, 4)
+							returnValue = ftName == s
+						else
+							local ftName = g_fillTypeManager:getFillTypeTitleByIndex(fillTypeIndex)
+							dbgprint("fillType: fillTypeTitle = "..ftName, 4)
+							returnValue = ftName
+						end
 						
 					elseif o == "icon" then
 						local ftPath = g_fillTypeManager.fillTypes[fillTypeIndex] ~= nil and g_fillTypeManager.fillTypes[fillTypeIndex].hudOverlayFilename
@@ -3270,7 +3276,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 					end
 				end
 			end
-			if returnValue == false and o == "name" then
+			if returnValue == false and o == "name" and s == nil then
 				returnValue = ""
 			end
 			
@@ -4620,8 +4626,6 @@ function DashboardLive:onUpdateTick(dt)
 			end
 		end
 		if spec.needsSyncServerToClient and syncAllowed then
-			local name = self.getFullName ~= nil and self:getFullName() or "unknown"
-			dbgprint("S2C sync triggered for: "..name, 2)
 			--SyncServer2ClientEvent.sendEvent(self, spec.motorTemperature, spec.fanEnabled, spec.lastFuelUsage, spec.lastDefUsage, spec.lastAirUsage, spec.currentDischargeState)
 			if mspec ~= nil then mspec.motorTemperature.valueSend = spec.motorTemperature end
 			self:raiseDirtyFlags(spec.dirtyFlag)
