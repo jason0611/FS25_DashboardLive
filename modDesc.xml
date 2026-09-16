@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<modDesc descVersion="111">
+<modDesc descVersion="113">
 	<author>Glowins Modschmiede</author>
 	<version>2.1.2.0</version>
 	<devStatus>DEV-01</devStatus>
@@ -127,6 +127,13 @@ V2.1.0.1:
 - Fixed incorrect return values, causing multiple warnings in the log
 - Warnings regarding DBL implementations have been moved to devWarnings to avoid confusion.
 
+V2.1.1.0
+- Fixed another bug that caused the terminals to keep dark after game start
+- Added support for mod FS25_moreVehicleControl
+
+V2.1.2.0
+- Added ability to check for given fillTypes
+
 Important: Vehicles must be prepared for DashboardLive in advance in order to be able to use the functions and displays. 
 An installation guide and documentation are included, and video tutorials are also available.
 
@@ -250,6 +257,13 @@ V2.1.0.1:
 - Es wurde ein doppelt vorhandener Faktor 100 bei der Schlupfberechnung behoben, der u.a. dazu führte, dass die Schlupfwarnung in den John-Deere-Terminals zu häufig ausgelöst wurde.
 - Es wurden falsche Rückgabewerte behoben, die zu mehreren Warnungen im Protokoll führten.
 - Warnungen zu DBL-Implementierungen wurden nach devWarnings verschoben, um Irritationen zu vermeiden.
+
+V2.1.1.0
+- Ein weiterer Fehler wurde behoben, der ebenfalls dazu führte, dass die Terminals beim Spielstart dunkel blieben
+- Unterstützung für den Mod „FS25_moreVehicleControl“ hinzugefügt
+
+V2.1.2.0
+- Möglichkeit hinzugefügt, auf bestimmte „fillTypes“ zu prüfen
 
 Wichtig: Fahrzeuge müssen vorab für DashboardLive vorbereitet werden, um die Funktionen und Anzeigen nutzen zu können.
 Eine Einbauhilfe und Dokumentation sind enthalten, außerdem sind Video-Tutorials verfügbar.
