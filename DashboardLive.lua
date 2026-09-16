@@ -517,6 +517,9 @@ function DashboardLive:onPostLoad(savegame)
 	-- Check if Mod SpeedControl exists
 	spec.modSpeedControlFound = self.speedControl ~= nil 
 	
+	-- Check if Mod moreVehicleControls exists
+	spec.modMVCFound = self.spec_moreVehicleControls ~= nil
+	
 	--Check if Mod HeadlandManagement exists
 	spec.modHLMFound = self.spec_HeadlandManagement ~= nil
 	
@@ -828,7 +831,7 @@ function DashboardLive:onReadUpdateStream(streamId, timestamp, connection)
 	if connection:getIsServer() then
 		local spec = self.spec_DashboardLive
 		if streamReadBool(streamId) then
-			dbgprint("onReadUpdateStream : Read data for "..self:getName(), 2)
+			dbgprint("onReadUpdateStream : Read data for "..self:getName(), 4)
 			spec.motorTemperature = streamReadFloat32(streamId)
 			spec.fanEnabled = streamReadBool(streamId)
 			spec.lastFuelUsage = streamReadFloat32(streamId)
@@ -843,7 +846,7 @@ function DashboardLive:onWriteUpdateStream(streamId, connection, dirtyMask)
 	if not connection:getIsServer() then
 		local spec = self.spec_DashboardLive
 		if streamWriteBool(streamId, bitAND(dirtyMask, spec.dirtyFlag) ~= 0) then
-			dbgprint("onWriteUpdateStream : Send data for "..self:getName(), 2)
+			dbgprint("onWriteUpdateStream : Send data for "..self:getName(), 4)
 			streamWriteFloat32(streamId, spec.motorTemperature)
 			streamWriteBool(streamId, spec.fanEnabled)
 			streamWriteFloat32(streamId, spec.lastFuelUsage)
@@ -1066,13 +1069,22 @@ function DashboardLive:RESETPARKBRAKE(actionName, keyStatus)
 		dbgprint("RESETPARKBRAKE: VCA", 2)
 		self:vcaSetState("handbrake", false)
 	end
-	if spec.modEVFound then
+	if spec.modEVFound and self.vData ~= nil then
 		dbgprint("RESETPARKBRAKE: EV", 2)
 		self.vData.want[13] = false
 	end
 	if spec.modRAGBFound then
 		dbgprint("RESETPARKBRAKE: RAGB", 2)
 		self:processHandbrakeInput(false)
+	end
+	if spec.modMVCFound and FS25_moreVehicleControls ~= nil then
+		dbgprint("RESETPARKBRAKE: MVC", 2)
+		self.spec_moreVehicleControls.handbrake = false
+		if g_server ~= nil then
+            g_server:broadcastEvent(FS25_moreVehicleControls.MVCHandbrakeEvent.new(self, false), nil, nil, self)
+        else
+            g_client:getServerConnection():sendEvent(FS25_moreVehicleControls.MVCHandbrakeEvent.new(self, false))
+        end
 	end
 end
 	
@@ -3238,9 +3250,15 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 					local fillTypeIndex = fillUnit.fillType
 					
 					if o == "name" then
-						local ftName = g_fillTypeManager:getFillTypeTitleByIndex(fillTypeIndex)
-						dbgprint("fillType: Name set to "..ftName, 4)
-						returnValue = ftName
+						if s ~= nil and type(s) == "string" then
+							local ftName = g_fillTypeManager:getFillTypeNameByIndex(fillTypeIndex)
+							dbgprint("fillType: fillTypeName = "..ftName, 4)
+							returnValue = ftName == s
+						else
+							local ftName = g_fillTypeManager:getFillTypeTitleByIndex(fillTypeIndex)
+							dbgprint("fillType: fillTypeTitle = "..ftName, 4)
+							returnValue = ftName
+						end
 						
 					elseif o == "icon" then
 						local ftPath = g_fillTypeManager.fillTypes[fillTypeIndex] ~= nil and g_fillTypeManager.fillTypes[fillTypeIndex].hudOverlayFilename
@@ -3258,7 +3276,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 					end
 				end
 			end
-			if returnValue == false and o == "name" then
+			if returnValue == false and o == "name" and s == nil then
 				returnValue = ""
 			end
 			
@@ -3675,12 +3693,13 @@ function DashboardLive.getDashboardLiveVCA(self, dashboard)
 	
 	local returnValue = false
 	local spec = self.spec_DashboardLive
+	local mvcSpec = self.spec_mvcDifferentials
 	
 	if dashboard.dblCommand ~= nil then
 		local c = lower(dashboard.dblCommand)
 
 		if c == "park" then
-			if (spec.modVCAFound and self:vcaGetState("handbrake")) or (spec.modEVFound and self.vData.is[13]) then
+			if (spec.modVCAFound and self:vcaGetState("handbrake")) or (spec.modEVFound and self.vData.is[13]) or (spec.modMVCFound and self.spec_moreVehicleControls.handbrake) then
 				returnValue = true
 			end
 			if (spec.modRAGBFound and self.spec_realismAddon_gearbox.handbrakeStateME) then 
@@ -3689,17 +3708,24 @@ function DashboardLive.getDashboardLiveVCA(self, dashboard)
 				and FS25_realismAddon_gearbox.realismAddon_gearbox_overrides.checkIsManual(self.spec_motorized.motor) 
 			end
 		elseif c == "diff_front" then
-			returnValue = (spec.modVCAFound and self:vcaGetState("diffLockFront")) or (spec.modEVFound and self.vData.is[1])
-	
+			returnValue = (spec.modVCAFound and self:vcaGetState("diffLockFront")) 
+							or (spec.modEVFound and self.vData ~= nil and self.vData.is[1])
+							or (spec.modMVCFound and mvcSpec ~= nil and mvcSpec.frontDiff) 
+
 		elseif c == "diff_back" then
-			returnValue = (spec.modVCAFound and self:vcaGetState("diffLockBack")) or (spec.modEVFound and self.vData.is[2])
+			returnValue = (spec.modVCAFound and self:vcaGetState("diffLockBack")) 
+							or (spec.modEVFound and self.vData.is[2])
+							or (spec.modMVCFound and mvcSpec ~= nil and mvcSpec.rearDiff) 
 	
 		elseif c == "diff" then
 			returnValue = (spec.modVCAFound and (self:vcaGetState("diffLockFront") or self:vcaGetState("diffLockBack"))) 
-					or (spec.modEVFound and (self.vData.is[1] or self.vData.is[2]))
+							or (spec.modEVFound and (self.vData.is[1] or self.vData.is[2]))
+							or (spec.modMVCFound and mvcSpec ~= nil and (mvcSpec.frontDiff or mvcSpec.rearDiff))
 	
 		elseif c == "diff_awd" then
-			returnValue = (spec.modVCAFound and self:vcaGetState("diffLockAWD")) or (spec.modEVFound and self.vData.is[3]==1)
+			returnValue = (spec.modVCAFound and self:vcaGetState("diffLockAWD")) 
+							or (spec.modEVFound and self.vData.is[3]==1)
+							or (spec.modMVCFound and mvcSpec ~= nil and mvcSpec.driveMode == 1) 
 		
 		elseif c == "diff_awdf" then
 			returnValue = spec.modVCAFound and self:vcaGetState("diffFrontAdv")
@@ -3709,7 +3735,8 @@ function DashboardLive.getDashboardLiveVCA(self, dashboard)
 			
 		elseif c == "ksvalue" then
 			returnValue = spec.modVCAFound and self:vcaGetState("ksIsOn") and math.floor(self:vcaGetState("keepSpeed") * 10) / 10 or 0
-			
+			returnValue = returnValue or (spec.modMVCFound and self.spec_moreVehicleControls.keepSpeedActive or false)
+
 		elseif c == "slip" then
 			local slipVCA = spec.modVCAFound and self.spec_vca.wheelSlip ~= nil and (self.spec_vca.wheelSlip - 1) or 0
 			local slipREA = self.spec_wheels ~= nil and self.spec_wheels.SlipSmoothed ~= nil and self.spec_wheels.SlipSmoothed or 0
@@ -3731,6 +3758,7 @@ function DashboardLive.getDashboardLiveCC(self, dashboard)
 	dbgprint("getDashboardLiveCC : dblCommand: "..tostring(dashboard.dblCommand).." / dblState: "..tostring(dashboard.dblState), 4)
 	local spec = self.spec_DashboardLive
 	local specECC = self.spec_extendedCruiseControl
+
 	local c = lower(dashboard.dblCommand)
 	local state = tonumber(dashboard.dblState)
 	local returnValue = false
@@ -3741,7 +3769,14 @@ function DashboardLive.getDashboardLiveCC(self, dashboard)
 				returnValue = specECC.activeSpeedGroup == state
 			else 
 				returnValue = specECC.activeSpeedGroup
-			end		
+			end	
+		elseif spec.modMVCFound then
+			local specMVC = self.spec_moreVehicleControls
+			if state ~= nil then
+				returnValue = specMVC.activePreset == state
+			else
+				returnValue = specMVC.activePreset
+			end	
 		elseif spec.modSpeedControlFound then
 			local specCC = self.speedControl
 			if state ~= nil then
@@ -3760,8 +3795,18 @@ function DashboardLive.getDashboardLiveCC(self, dashboard)
 	end	
 	
 	if c == "speed" and state ~= nil then
+		returnValue = 0
 		if specECC ~= nil then
 			returnValue = specECC.cruiseSpeedGroups[state].forward
+		elseif spec.modMVCFound then
+			local specMVC = self.spec_moreVehicleControls
+			if specMVC.activePreset == 1 then
+				returnValue = specMVC.ccSpeed1
+			elseif specMVC.activePreset == 2 then 
+				returnValue = specMVC.ccSpeed2
+            else 
+				returnValue = specMVC.ccSpeed3
+			end
 		elseif spec.modSpeedControlFound then
 			local specCC = self.speedControl
 			returnValue = specCC.keys[state].speed
@@ -4581,8 +4626,6 @@ function DashboardLive:onUpdateTick(dt)
 			end
 		end
 		if spec.needsSyncServerToClient and syncAllowed then
-			local name = self.getFullName ~= nil and self:getFullName() or "unknown"
-			dbgprint("S2C sync triggered for: "..name, 2)
 			--SyncServer2ClientEvent.sendEvent(self, spec.motorTemperature, spec.fanEnabled, spec.lastFuelUsage, spec.lastDefUsage, spec.lastAirUsage, spec.currentDischargeState)
 			if mspec ~= nil then mspec.motorTemperature.valueSend = spec.motorTemperature end
 			self:raiseDirtyFlags(spec.dirtyFlag)
