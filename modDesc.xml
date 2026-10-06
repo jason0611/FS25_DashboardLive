@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<modDesc descVersion="113">
+<modDesc descVersion="114">
 	<author>Glowins Modschmiede</author>
 	<version>2.1.2.0</version>
 	<devStatus>BETA</devStatus>
@@ -69,10 +69,17 @@ VehicleControlAddon:
 - Hold speed
 - GPS status
 - Slip of the drive wheels
+- Park brake
 
 Enhanced Vehicle:
 - Status of the differential locks
 - Status of the all-wheel drive
+- Park brake
+
+More Vehicle Control:
+- Status of the differential locks
+- Status of the all-wheel drive
+- Park brake
 
 Headland Management:
 - Status
@@ -128,7 +135,7 @@ V2.1.0.1:
 - Warnings regarding DBL implementations have been moved to devWarnings to avoid confusion.
 
 V2.1.1.0
-- Fixed another bug that caused the terminals to keep dark after game start
+- Fixed a bug that caused the game to crash after start in some cases
 - Added support for mod FS25_moreVehicleControl
 
 V2.1.2.0
@@ -201,10 +208,20 @@ VehicleControlAddon:
 - Geschwindigkeit halten
 - GPS-Status
 - Schlupf der Antriebsräder
+- Parkbremse
 
 Enhanced Vehicle:
 - Status der Differentialsperren
 - Status des Allradantriebs
+- Parkbremse
+
+More Vehicle Control:
+- Status der Differentialsperren
+- Status des Allradantriebs
+- Geschwindigkeit halten
+- GPS-Status
+- Schlupf der Antriebsräder
+- Parkbremse
 
 Headland Management:
 - Status
@@ -259,7 +276,7 @@ V2.1.0.1:
 - Warnungen zu DBL-Implementierungen wurden nach devWarnings verschoben, um Irritationen zu vermeiden.
 
 V2.1.1.0
-- Ein weiterer Fehler wurde behoben, der ebenfalls dazu führte, dass die Terminals beim Spielstart dunkel blieben
+- Ein Fehler wurde behoben, durch den das Spiel in einzelnen Fällen nach dem Start abstürzte
 - Unterstützung für den Mod „FS25_moreVehicleControl“ hinzugefügt
 
 V2.1.2.0
