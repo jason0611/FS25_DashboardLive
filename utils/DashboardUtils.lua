@@ -7,8 +7,9 @@ DashboardUtils = {}
 function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	local filenameDBL = DashboardLive.INT_PATH..filename
 	local isMod = string.find(filename, "/mods/") ~= nil
+	local isCompound = string.find(filename, "/shared/") ~= nil
 	
-	if fileExists(filenameDBL) and not isMod then
+	if fileExists(filenameDBL) and not isMod and not isCompound then
 		dbgprint("loadSharedI3DFileAsync: replaced i3d-file: "..tostring(filenameDBL), 2)
 		return superfunc(self, filenameDBL, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	else
@@ -16,7 +17,7 @@ function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate
 		return superfunc(self, filename, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	end
 end
---I3DManager.loadSharedI3DFileAsync = Utils.overwrittenFunction(I3DManager.loadSharedI3DFileAsync, DashboardUtils.loadSharedI3DFileAsync)
+I3DManager.loadSharedI3DFileAsync = Utils.overwrittenFunction(I3DManager.loadSharedI3DFileAsync, DashboardUtils.loadSharedI3DFileAsync)
 
 -- look for alternative xml-file for vehicle and use it for loading instead of original i3dMappings 
 function DashboardUtils.loadI3DMapping(xmlFile, superfunc, vehicleType, rootLevelNodes, i3dMappings, realNumComponents)
@@ -131,14 +132,15 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 	dbgprint("loadDashboardCompoundFromXML :: fileNameNew = "..tostring(DashboardLive.INT_PATH)..fileNameNew, 2)
 	
 	local dblTempCompoundFile = XMLFile.loadIfExists("DBL Replacement", DashboardLive.INT_PATH..fileNameNew, Dashboard.compoundsXMLSchema)
-	local dblReplacementExistsUnchecked = dblTempCompoundFile ~= nil
-	dbgprint("loadDashboardCompoundFromXML :: dblReplacementExistsUnchecked = "..tostring(dblReplacementExistsUnchecked), 2)
+	local dblReplacementExists = dblTempCompoundFile ~= nil
+	dbgprint("loadDashboardCompoundFromXML :: dblReplacementExistsUnchecked = "..tostring(dblReplacementExists), 2)
 	
 	local compoundKey
-	if dblReplacementExistsUnchecked then
+	if dblReplacementExists then
 		local compoundName = xmlFile:getValue(key .. "#name")
 		dbgprint("loadDashboardCompoundFromXML :: compoundName = "..tostring(compoundName), 2)
 		
+---@diagnostic disable-next-line: unused-local
 		dblTempCompoundFile:iterate("dashboardCompounds.dashboardCompound", function(index, _compoundKey)
 			if dblTempCompoundFile:getValue(_compoundKey .. "#name") == compoundName then
 				compoundKey = _compoundKey
@@ -148,14 +150,9 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 		dblTempCompoundFile:delete()
 	end
 	
-	local dblReplacementExists = dblReplacementExistsUnchecked and compoundKey ~= nil
+	local dblReplacementExists = dblReplacementExists and compoundKey ~= nil
 	dbgprint("loadDashboardCompoundFromXML :: compoundKey = "..tostring(compoundKey), 2)
 	dbgprint("loadDashboardCompoundFromXML :: dblReplacementExists = "..tostring(dblReplacementExists), 2)
-	
-	if dblReplacemantExistsUnchecked and not dblReplacementExists then
-		Logging.xmlDevInfo(xmlFile, "No replacement compound found for "..tostring(compoundName).." in "..tostring(DashboardLive.INT_PATH)..fileNameNew.."!")
-		--local index = Utils
-	end
 
 	if dblReplacementExists then
 		xmlFile:setValue(key .. "#filename", fileNameNew)
