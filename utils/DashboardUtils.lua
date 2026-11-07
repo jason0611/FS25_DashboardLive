@@ -7,8 +7,9 @@ DashboardUtils = {}
 function DashboardUtils:loadSharedI3DFileAsync(superfunc, filename, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	local filenameDBL = DashboardLive.INT_PATH..filename
 	local isMod = string.find(filename, "/mods/") ~= nil
+	local isCompound = string.find(filename, "/shared/") ~= nil
 	
-	if fileExists(filenameDBL) and not isMod then
+	if fileExists(filenameDBL) and not isMod and not isCompound then
 		dbgprint("loadSharedI3DFileAsync: replaced i3d-file: "..tostring(filenameDBL), 2)
 		return superfunc(self, filenameDBL, callOnCreate, addToPhysics, asyncCallbackFunction, asyncCallbackObject, asyncCallbackArguments)
 	else
@@ -129,9 +130,30 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 	
 	local fileNameNew = string.sub(fileName, 2) -- rip $ off the path
 	dbgprint("loadDashboardCompoundFromXML :: fileNameNew = "..tostring(DashboardLive.INT_PATH)..fileNameNew, 2)
-	local dblReplacementExists = XMLFile.loadIfExists("DBL Replacement", DashboardLive.INT_PATH..fileNameNew, xmlFile.schema) ~= nil --and self.baseDirectory == ""
-	dbgprint("loadDashboardCompoundFromXML :: dblReplacementExists = "..tostring(dblReplacementExists), 2)
 	
+	local dblTempCompoundFile = XMLFile.loadIfExists("DBL Replacement", DashboardLive.INT_PATH..fileNameNew, Dashboard.compoundsXMLSchema)
+	local dblReplacementExists = dblTempCompoundFile ~= nil
+	dbgprint("loadDashboardCompoundFromXML :: dblReplacementExists (unchecked) = "..tostring(dblReplacementExists), 2)
+	
+	local compoundKey
+	if dblReplacementExists then
+		local compoundName = xmlFile:getValue(key .. "#name")
+		dbgprint("loadDashboardCompoundFromXML :: compoundName = "..tostring(compoundName), 2)
+		
+---@diagnostic disable-next-line: unused-local
+		dblTempCompoundFile:iterate("dashboardCompounds.dashboardCompound", function(index, _compoundKey)
+			if dblTempCompoundFile:getValue(_compoundKey .. "#name") == compoundName then
+				compoundKey = _compoundKey
+				return
+			end
+		end)
+		dblTempCompoundFile:delete()
+	end
+	
+	dblReplacementExists = dblReplacementExists and compoundKey ~= nil
+	dbgprint("loadDashboardCompoundFromXML :: compoundKey = "..tostring(compoundKey), 2)
+	dbgprint("loadDashboardCompoundFromXML :: dblReplacementExists = "..tostring(dblReplacementExists), 2)
+
 	if dblReplacementExists then
 		xmlFile:setValue(key .. "#filename", fileNameNew)
 		dbgprint("loadDashboardCompoundFromXML :: fileName replaced", 2)
