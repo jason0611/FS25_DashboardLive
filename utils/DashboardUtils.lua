@@ -133,7 +133,7 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 	
 	local dblTempCompoundFile = XMLFile.loadIfExists("DBL Replacement", DashboardLive.INT_PATH..fileNameNew, Dashboard.compoundsXMLSchema)
 	local dblReplacementExists = dblTempCompoundFile ~= nil
-	dbgprint("loadDashboardCompoundFromXML :: dblReplacementExistsUnchecked = "..tostring(dblReplacementExists), 2)
+	dbgprint("loadDashboardCompoundFromXML :: dblReplacementExists (unchecked) = "..tostring(dblReplacementExists), 2)
 	
 	local compoundKey
 	if dblReplacementExists then
@@ -150,7 +150,7 @@ function DashboardUtils:loadDashboardCompoundFromXML(superfunc, xmlFile, key, co
 		dblTempCompoundFile:delete()
 	end
 	
-	local dblReplacementExists = dblReplacementExists and compoundKey ~= nil
+	dblReplacementExists = dblReplacementExists and compoundKey ~= nil
 	dbgprint("loadDashboardCompoundFromXML :: compoundKey = "..tostring(compoundKey), 2)
 	dbgprint("loadDashboardCompoundFromXML :: dblReplacementExists = "..tostring(dblReplacementExists), 2)
 
