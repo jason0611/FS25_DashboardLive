@@ -3330,7 +3330,8 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			local specVW = findSpecialization(self, "spec_variableWorkWidth", dashboard.dblTrailer)
 			if specVW ~= nil then
 				local isLeft = lower(o) == "left"
-				returnValue = specVW:getVariableWorkWidth(isLeft)
+				local width, _, valid = specVW:getVariableWorkWidth(isLeft)
+				returnValue = valid and math.abs(width) or 1
 			else
 				returnValue = 1
 			end
