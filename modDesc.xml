@@ -141,6 +141,12 @@ V2.1.1.0
 V2.1.2.0
 - Added ability to check for given fillTypes
 
+V2.1.2.1
+- Fixed: Black screens on John Deere vehicles from the “Beans & Alpacas” dlc when used with DashboardLive_VanillaVehicles
+
+V2.1.2.2
+- Fixed: The return value of “workwidth” could be negative
+
 Important: Vehicles must be prepared for DashboardLive in advance in order to be able to use the functions and displays. 
 An installation guide and documentation are included, and video tutorials are also available.
 
@@ -281,6 +287,12 @@ V2.1.1.0
 
 V2.1.2.0
 - Möglichkeit hinzugefügt, auf bestimmte „fillTypes“ zu prüfen
+
+V2.1.2.1
+- Behoben: Schwarze Bildschirme bei den John Deere der Erweiterung „Beans & Alpacas“ in Verbindung mit DashboardLive_VanillaVehicles
+
+V2.1.2.2
+- Behoben: Der Rückgabewert von „workwidth“ konnte negativ sein
 
 Wichtig: Fahrzeuge müssen vorab für DashboardLive vorbereitet werden, um die Funktionen und Anzeigen nutzen zu können.
 Eine Einbauhilfe und Dokumentation sind enthalten, außerdem sind Video-Tutorials verfügbar.
