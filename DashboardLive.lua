@@ -78,7 +78,7 @@ function DashboardLive.initSpecialization()
 	schema:register(XMLValueType.STRING, Dashboard.GROUP_XML_KEY .. "#dblTrailer", "DBL Trailer")
 	dbgprint("initSpecialization : DashboardLive group options registered", 2)
 	
-	Dashboard.registerDashboardXMLPaths(schema, "vehicle.dashboard.dashboardLive", "dbl.base dbl.fillLevel dbl.fillType dbl.vca dbl.hlm dbl.gps dbl.gps_lane dbl.gps_width dbl.proseed dbl.selector")
+	Dashboard.registerDashboardXMLPaths(schema, "vehicle.dashboard.dashboardLive", "dbl.base dbl.fillLevel dbl.fillType dbl.vca dbl.hlm dbl.gps dbl.gps_lane dbl.gps_width dbl.proseed dbl.selector dbl.rhm")
 	DashboardLive.DBL_XML_KEY = "vehicle.dashboard.dashboardLive.dashboard(?)"
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#cmd", "DashboardLive command")
 	schema:register(XMLValueType.STRING, DashboardLive.DBL_XML_KEY .. "#joints")
@@ -491,6 +491,13 @@ function DashboardLive:onRegisterDashboardValueTypes()
 	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
 	dblValueType:setValue(self, DashboardLive.getDashboardLiveADS)
 	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesADS)
+	self:registerDashboardValueType(dblValueType)
+
+	-- Realistic Harvesting (RHM)
+	dblValueType = DashboardValueType.new("dbl", "rhm")
+	dblValueType:setXMLKey("vehicle.dashboard.dashboardLive")
+	dblValueType:setValue(self, DashboardLive.getDashboardLiveRHM)
+	dblValueType:setAdditionalFunctions(DashboardLive.getDBLAttributesRHM)
 	self:registerDashboardValueType(dblValueType)
 	
 	-- print
@@ -2439,6 +2446,23 @@ function DashboardLive:getIsDashboardGroupActive(superFunc, group)
 		local gsSpec = self.spec_globalPositioningSystem
 		returnValue = spec.modGuidanceSteeringFound and gsSpec ~= nil and gsSpec.lastInputValues ~= nil and gsSpec.lastInputValues.guidanceIsActive
 		returnValue = returnValue and gsSpec.guidanceData ~= nil and gsSpec.guidanceData.currentLane ~= nil and gsSpec.guidanceData.currentLane < 0	
+
+	-- Realistic Harvesting (RHM)
+	elseif group.dblCommand == "rhm_active" then
+		local rhmSpec = findSpecialization(self, "spec_rhm_Combine")
+		returnValue = rhmSpec ~= nil and rhmSpec.isRhmCombine == true
+
+	elseif group.dblCommand == "rhm_inactive" then
+		local rhmSpec = findSpecialization(self, "spec_rhm_Combine")
+		returnValue = not (rhmSpec ~= nil and rhmSpec.isRhmCombine == true)
+
+	elseif group.dblCommand == "rhm_overload" then
+		local rhmSpec = findSpecialization(self, "spec_rhm_Combine")
+		returnValue = rhmSpec ~= nil and rhmSpec.isRhmCombine == true and rhmSpec.forDBL_overload == true
+
+	elseif group.dblCommand == "rhm_highmoisture" then
+		local rhmSpec = findSpecialization(self, "spec_rhm_Combine")
+		returnValue = rhmSpec ~= nil and rhmSpec.isRhmCombine == true and rhmSpec.forDBL_highMoisture == true
 	end
 	
     if group.dblOperator == "and" or group.dblCommand == "page" then 
@@ -2800,6 +2824,24 @@ end
 -- ADS
 function DashboardLive.getDBLAttributesADS(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
 	dashboard = getDBLGlobalAttributes(self, xmlFile, key, dashboard, "getDBLAttributesVCA")	
+	return true
+end
+
+-- Realistic Harvesting (RHM)
+function DashboardLive.getDBLAttributesRHM(self, xmlFile, key, dashboard, components, i3dMappings, parentNode)
+	dashboard = getDBLGlobalAttributes(self, xmlFile, key, dashboard, "getDBLAttributesRHM")
+	dashboard.dblDefault = xmlFile:getValue(key .. "#default")
+	dbgprint("getDBLAttributesRHM : default: "..tostring(dashboard.dblDefault), 2)
+	local isBoolean = dashboard.dblDefault == "true" or dashboard.dblDefault == "false"
+	if isBoolean then
+		dashboard.dblDefault = dashboard.dblDefault == "true"
+	end
+
+	local defaultValue = tonumber(dashboard.dblDefault)
+	if defaultValue ~= nil then
+		dashboard.dblDefault = defaultValue
+	end
+
 	return true
 end
 
@@ -4561,6 +4603,60 @@ function DashboardLive.getDashboardLiveADS(self, dashboard)
 	end
 	
 	dbgprint("getDashboardLiveADS : returnValue: "..tostring(returnValue), 4)
+	return calculate(returnValue, specDBL.stack, dashboard)
+end
+
+function DashboardLive.getDashboardLiveRHM(self, dashboard)
+	dbgprint("getDashboardLiveRHM : dblCommand: "..tostring(dashboard.dblCommand), 4)
+	dbgprint("getDashboardLiveRHM : dblState: "..tostring(dashboard.dblState), 4)
+	local c = dashboard.dblCommand
+	local s = dashboard.dblState
+	local returnValue = false
+
+	local spec = findSpecialization(self, "spec_rhm_Combine")
+	local specDBL = self.spec_DashboardLive
+
+	if spec ~= nil and spec.isRhmCombine == true and type(c) == "string" then
+		local rhmValue = spec["forDBL_"..c]
+		if rhmValue == nil then
+			rhmValue = spec["forDBL_"..lower(c)]
+		end
+		dbgprint("rhmValue = "..tostring(rhmValue), 4)
+		if s ~= nil then
+			if tonumber(s) ~= nil then
+				returnValue = tostring(rhmValue) == tostring(s)
+			else
+				local states = string.split(tostring(s), " ")
+				if states ~= nil and type(states) == "table" then
+					for _, state in pairs(states) do
+						returnValue = returnValue or (tostring(rhmValue) == tostring(state))
+					end
+				end
+			end
+		elseif rhmValue ~= nil then
+			returnValue = rhmValue
+		else
+			returnValue = DashboardLive:getDefaultValue(dashboard)
+		end
+		if type(returnValue) == "number" and returnValue ~= returnValue then
+			returnValue = 0
+		end
+	else
+		local opt = lower(dashboard.dblOption)
+		if opt == "fallbackmotorload" then
+			returnValue = (self.getMotorLoadPercentage ~= nil and ((self:getMotorLoadPercentage() or 0) * 100))
+				or (self.spec_motorized and self.spec_motorized.smoothedLoadPercentage and (self.spec_motorized.smoothedLoadPercentage * 100))
+				or 0
+		elseif opt == "fallbackmotorload80" then
+			returnValue = ((self.getMotorLoadPercentage ~= nil and (self:getMotorLoadPercentage() or 0))
+				or (self.spec_motorized and self.spec_motorized.smoothedLoadPercentage)
+				or 0) * 80
+		else
+			returnValue = DashboardLive:getDefaultValue(dashboard)
+		end
+	end
+
+	dbgprint("getDashboardLiveRHM : returnValue: "..tostring(returnValue), 4)
 	return calculate(returnValue, specDBL.stack, dashboard)
 end
 
