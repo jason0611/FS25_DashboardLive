@@ -1,4 +1,4 @@
----@diagnostic disable: cast-local-type
+---@diagnostic disable: cast-local-type, param-type-mismatch
 --
 -- Dashboard Extension for FS25
 --
@@ -15,7 +15,7 @@ if DashboardLive.MOD_NAME == nil then
 end
 
 source(DashboardLive.MOD_PATH.."tools/gmsDebug.lua")
-GMSDebug:init(DashboardLive.MOD_NAME, true, 1)
+GMSDebug:init(DashboardLive.MOD_NAME, true, 2)
 GMSDebug:enableConsoleCommands("dblDebug")
 
 source(DashboardLive.MOD_PATH.."events/SyncClient2Server.lua")
@@ -2650,6 +2650,19 @@ function DashboardLive.getDBLAttributesCombine(self, xmlFile, key, dashboard, co
     	Logging.xmlWarning(self.xmlFile, "No '#cmd' given for valueType 'combine'")
     	return false
     end
+
+	dashboard.dblDefault = xmlFile:getValue(key .. "#default")
+	dbgprint("getDBLAttributesRHM : default: "..tostring(dashboard.dblDefault), 2)
+	local isBoolean = dashboard.dblDefault == "true" or dashboard.dblDefault == "false"
+	if isBoolean then
+		dashboard.dblDefault = dashboard.dblDefault == "true"
+	end
+
+	local defaultValue = tonumber(dashboard.dblDefault)
+	if defaultValue ~= nil then
+		dashboard.dblDefault = defaultValue
+	end
+
 	return true
 end
 
@@ -3226,7 +3239,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 			end
 			
 			if specPI ~= nil then
-				dbgprint("targetFillLevel: specPI exists", 2)
+				dbgprint("targetFillLevel: specPI exists", 4)
 				local targetId = specPI.nearestObjectInTriggers.objectId
 				if targetId ~= nil then
 					local target = NetworkUtil.getObject(targetId)	
@@ -3237,7 +3250,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 					end
 				end
 			elseif specAJ ~= nil then
-				dbgprint("targetFillLevel: specAJ exists", 2)
+				dbgprint("targetFillLevel: specAJ exists", 4)
 				local implements = self:getRootVehicle():getChildVehicles()
 				for _, implement in pairs(implements) do
 					local spec_di = implement.spec_dischargeable
@@ -3627,14 +3640,19 @@ end
 
 function DashboardLive.getDashboardLiveCombine(self, dashboard)
 	dbgprint("getDashboardLiveCombine : dblCommand: "..tostring(dashboard.dblCommand), 4)
+	dbgprint("getDashboardLiveCombine : dblState: "..tostring(dashboard.dblState), 4)
 	local spec = self.spec_combine
 	local specDBL = self.spec_DashboardLive
-	local returnValue = false
+	local specRHM = findSpecialization(self, "spec_rhm_Combine")
+	local specXP = findSpecialization(self, "spec_xpCombine")
+
+	local c = lower(dashboard.dblCommand)
+	local s = dashboard.dblStateText or dashboard.dblState
 	
-	if dashboard.dblCommand ~= nil and spec ~= nil then
-		local c = lower(dashboard.dblCommand)
-		local s = dashboard.dblStateText or dashboard.dblState
-		
+	local returnValue
+	
+	-- base combine part
+	if spec ~= nil and c ~= nil then		
 		if c == "chopper" then
 			if s == "enabled" then
 				returnValue = not spec.isSwathActive
@@ -3691,6 +3709,74 @@ function DashboardLive.getDashboardLiveCombine(self, dashboard)
 			end
 		end
 	end
+
+	-- realistic harvesting
+	if returnValue == nil and specRHM ~= nil and c ~= nil then
+		if specRHM.isRhmCombine == true and type(c) == "string" then
+			local rhmValue = specRHM["forDBL_"..c]
+			if rhmValue == nil then
+				rhmValue = specRHM["forDBL_"..lower(c)]
+			end
+			dbgprint("rhmValue = "..tostring(rhmValue), 2)
+			if s ~= nil then
+				if tonumber(s) ~= nil then
+					returnValue = tostring(rhmValue) == tostring(s)
+				else
+					local states = string.split(tostring(s), " ")
+					if states ~= nil and type(states) == "table" then
+						for _, state in pairs(states) do
+							returnValue = returnValue or (tostring(rhmValue) == tostring(state))
+						end
+					end
+				end
+			elseif rhmValue ~= nil then
+				returnValue = rhmValue
+			else
+				returnValue = DashboardLive:getDefaultValue(dashboard)
+			end
+			if type(returnValue) == "number" and returnValue ~= returnValue then
+				returnValue = 0
+			end
+		else
+			local opt = lower(dashboard.dblOption)
+			if opt == "fallbackmotorload" then
+				returnValue = (self.getMotorLoadPercentage ~= nil and ((self:getMotorLoadPercentage() or 0) * 100))
+					or (self.spec_motorized and self.spec_motorized.smoothedLoadPercentage and (self.spec_motorized.smoothedLoadPercentage * 100))
+					or 0
+			elseif opt == "fallbackmotorload80" then
+				returnValue = ((self.getMotorLoadPercentage ~= nil and (self:getMotorLoadPercentage() or 0))
+					or (self.spec_motorized and self.spec_motorized.smoothedLoadPercentage)
+					or 0) * 80
+			else
+				returnValue = DashboardLive:getDefaultValue(dashboard)
+			end
+		end
+	end
+
+	-- combine XP
+	if returnValue == nil and specXP ~= nil and c ~= nil then
+		if specXP.mrCombineLimiter ~= nil then
+			local mr = specXP.mrCombineLimiter
+			if c == "tonperhour" then
+				returnValue = mr.tonPerHour
+			elseif c == "engineload" or c == "load" then
+				returnValue = mr.engineLoad * mr.loadMultiplier
+			elseif c == "yield" then
+				returnValue = mr.yield
+				if returnValue ~= returnValue then
+					returnValue = 0
+				end
+			elseif c == "highmoisture" then
+				returnValue = mr.highMoisture
+			end
+			dbgprint("combineXP returnValue: "..tostring(mr[c]), 4)
+		else
+			dbgprint("combineXP returnValue ("..tostring(self:getFullName()).."): nil --> false (spec not found)", 2)
+		end
+	end
+
+	if returnValue == nil then returnValue = false end
+
 	return calculate(returnValue, specDBL.stack, dashboard)
 end
 
@@ -4176,6 +4262,8 @@ function DashboardLive.getDashboardLiveLSA(self, dashboard)
 end
 
 function DashboardLive.getDashboardLiveCXP(self, dashboard)
+	Logging.devWarning("ValueType `dbl.combineXP` is deprecated and will be removed in the future. Please use `dbl.combine` instead.")
+	
 	dbgprint("getDashboardLiveCXP : dblCommand: "..tostring(dashboard.dblCommand), 4)
 	local spec = self.spec_DashboardLive
 	local specXP = findSpecialization(self, "spec_xpCombine")
@@ -4607,8 +4695,10 @@ function DashboardLive.getDashboardLiveADS(self, dashboard)
 end
 
 function DashboardLive.getDashboardLiveRHM(self, dashboard)
-	dbgprint("getDashboardLiveRHM : dblCommand: "..tostring(dashboard.dblCommand), 4)
-	dbgprint("getDashboardLiveRHM : dblState: "..tostring(dashboard.dblState), 4)
+	Logging.devWarning("ValueType `dbl.rhm` is deprecated and will be removed in the future. Please use `dbl.combine` instead.")
+
+	dbgprint("getDashboardLiveRHM : dblCommand: "..tostring(dashboard.dblCommand), 2)
+	dbgprint("getDashboardLiveRHM : dblState: "..tostring(dashboard.dblState), 2)
 	local c = dashboard.dblCommand
 	local s = dashboard.dblState
 	local returnValue = false
@@ -4621,7 +4711,7 @@ function DashboardLive.getDashboardLiveRHM(self, dashboard)
 		if rhmValue == nil then
 			rhmValue = spec["forDBL_"..lower(c)]
 		end
-		dbgprint("rhmValue = "..tostring(rhmValue), 4)
+		dbgprint("rhmValue = "..tostring(rhmValue), 2)
 		if s ~= nil then
 			if tonumber(s) ~= nil then
 				returnValue = tostring(rhmValue) == tostring(s)
@@ -4656,7 +4746,7 @@ function DashboardLive.getDashboardLiveRHM(self, dashboard)
 		end
 	end
 
-	dbgprint("getDashboardLiveRHM : returnValue: "..tostring(returnValue), 4)
+	dbgprint("getDashboardLiveRHM : returnValue: "..tostring(returnValue), 2)
 	return calculate(returnValue, specDBL.stack, dashboard)
 end
 
