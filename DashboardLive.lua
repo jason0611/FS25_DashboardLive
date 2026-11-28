@@ -3442,7 +3442,7 @@ function DashboardLive.getDashboardLiveBase(self, dashboard)
 		elseif cmds == "haperhour" then
 			local specGS = self.spec_globalPositioningSystem
 			local speed = self:getLastSpeed() or 0
-				local width = self:getAttacherToolWorkingWidth() or 0
+			local width = self:getAttacherToolWorkingWidth() or 0
 			if specGS ~= nil and specGS.guidanceData ~= nil and specGS.guidanceData.width ~= nil then
 				width = specGS.guidanceData.width or self:getAttacherToolWorkingWidth() or 0
 			end
@@ -3651,8 +3651,71 @@ function DashboardLive.getDashboardLiveCombine(self, dashboard)
 	
 	local returnValue
 	
+	-- realistic harvesting
+	if specRHM ~= nil and c ~= nil then
+		if specRHM.isRhmCombine == true and type(c) == "string" then
+			local rhmValue = specRHM["forDBL_"..c] or specRHM["forDBL_"..lower(c)]
+			dbgprint("rhmValue = "..tostring(rhmValue), 4)
+			if s ~= nil then
+				if tonumber(s) ~= nil then
+					returnValue = tostring(rhmValue) == tostring(s)
+				else
+					local states = string.split(tostring(s), " ")
+					if states ~= nil and type(states) == "table" then
+						for _, state in pairs(states) do
+							returnValue = returnValue or (tostring(rhmValue) == tostring(state))
+						end
+					end
+				end
+			elseif rhmValue ~= nil then
+				returnValue = rhmValue
+			else
+				returnValue = DashboardLive:getDefaultValue(dashboard)
+			end
+			if type(returnValue) == "number" and returnValue ~= returnValue then
+				returnValue = 0
+			end
+
+		else
+			local opt = lower(dashboard.dblOption)
+			if opt == "fallbackmotorload" then
+				returnValue = (self.getMotorLoadPercentage ~= nil and ((self:getMotorLoadPercentage() or 0) * 100))
+					or (self.spec_motorized and self.spec_motorized.smoothedLoadPercentage and (self.spec_motorized.smoothedLoadPercentage * 100))
+					or 0
+			elseif opt == "fallbackmotorload80" then
+				returnValue = ((self.getMotorLoadPercentage ~= nil and (self:getMotorLoadPercentage() or 0))
+					or (self.spec_motorized and self.spec_motorized.smoothedLoadPercentage)
+					or 0) * 80
+			else
+				returnValue = DashboardLive:getDefaultValue(dashboard)
+			end
+		end
+	end
+
+	-- combine XP
+	if returnValue == nil and specXP ~= nil and c ~= nil then
+		if specXP.mrCombineLimiter ~= nil then
+			local mr = specXP.mrCombineLimiter
+			if c == "tonperhour" then
+				returnValue = mr.tonPerHour
+			elseif c == "engineload" or c == "load" then
+				returnValue = mr.engineLoad * mr.loadMultiplier * 100
+			elseif c == "yield" then
+				returnValue = mr.yield
+				if returnValue ~= returnValue then
+					returnValue = 0
+				end
+			elseif c == "highmoisture" then
+				returnValue = mr.highMoisture
+			end
+			dbgprint("combineXP returnValue: "..tostring(mr[c]), 4)
+		else
+			dbgprint("combineXP returnValue ("..tostring(self:getFullName()).."): nil --> false (spec not found)", 2)
+		end
+	end
+
 	-- base combine part
-	if spec ~= nil and c ~= nil then		
+	if returnValue == nil and spec ~= nil and c ~= nil then		
 		if c == "chopper" then
 			if s == "enabled" then
 				returnValue = not spec.isSwathActive
@@ -3707,71 +3770,18 @@ function DashboardLive.getDashboardLiveCombine(self, dashboard)
 					returnValue = spec_dis:getDischargeState() > 0
 				end
 			end
-		end
-	end
+		
+		elseif c == "load" then
+			local specMO = self.spec_motorized ~= nil and self.spec_motorized.motor or nil
+			if specMO ~= nil then
+				returnValue = specMO.smoothedLoadPercentage * 100
+			end
 
-	-- realistic harvesting
-	if returnValue == nil and specRHM ~= nil and c ~= nil then
-		if specRHM.isRhmCombine == true and type(c) == "string" then
-			local rhmValue = specRHM["forDBL_"..c]
-			if rhmValue == nil then
-				rhmValue = specRHM["forDBL_"..lower(c)]
-			end
-			dbgprint("rhmValue = "..tostring(rhmValue), 2)
-			if s ~= nil then
-				if tonumber(s) ~= nil then
-					returnValue = tostring(rhmValue) == tostring(s)
-				else
-					local states = string.split(tostring(s), " ")
-					if states ~= nil and type(states) == "table" then
-						for _, state in pairs(states) do
-							returnValue = returnValue or (tostring(rhmValue) == tostring(state))
-						end
-					end
-				end
-			elseif rhmValue ~= nil then
-				returnValue = rhmValue
-			else
-				returnValue = DashboardLive:getDefaultValue(dashboard)
-			end
-			if type(returnValue) == "number" and returnValue ~= returnValue then
-				returnValue = 0
-			end
-		else
-			local opt = lower(dashboard.dblOption)
-			if opt == "fallbackmotorload" then
-				returnValue = (self.getMotorLoadPercentage ~= nil and ((self:getMotorLoadPercentage() or 0) * 100))
-					or (self.spec_motorized and self.spec_motorized.smoothedLoadPercentage and (self.spec_motorized.smoothedLoadPercentage * 100))
-					or 0
-			elseif opt == "fallbackmotorload80" then
-				returnValue = ((self.getMotorLoadPercentage ~= nil and (self:getMotorLoadPercentage() or 0))
-					or (self.spec_motorized and self.spec_motorized.smoothedLoadPercentage)
-					or 0) * 80
-			else
-				returnValue = DashboardLive:getDefaultValue(dashboard)
-			end
-		end
-	end
-
-	-- combine XP
-	if returnValue == nil and specXP ~= nil and c ~= nil then
-		if specXP.mrCombineLimiter ~= nil then
-			local mr = specXP.mrCombineLimiter
-			if c == "tonperhour" then
-				returnValue = mr.tonPerHour
-			elseif c == "engineload" or c == "load" then
-				returnValue = mr.engineLoad * mr.loadMultiplier
-			elseif c == "yield" then
-				returnValue = mr.yield
-				if returnValue ~= returnValue then
-					returnValue = 0
-				end
-			elseif c == "highmoisture" then
-				returnValue = mr.highMoisture
-			end
-			dbgprint("combineXP returnValue: "..tostring(mr[c]), 4)
-		else
-			dbgprint("combineXP returnValue ("..tostring(self:getFullName()).."): nil --> false (spec not found)", 2)
+		elseif c == "hectaresPerHour" then
+			local speed = self:getLastSpeed() or 0
+			local width = self:getAttacherToolWorkingWidth() or 0
+			local ha_per_hour = (speed * width) / 10
+			returnValue = ha_per_hour or 0.0
 		end
 	end
 
